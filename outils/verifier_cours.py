@@ -399,13 +399,25 @@ def verifier_cours(chemin, executer_code=True, n_questions=20):
 def main(args):
     executer_code = "--sans-execution" not in args
     fichiers = [a for a in args if not a.startswith("--")]
+    erreurs_catalogue = 0
     if "--tous" in args:
         racine = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cours")
-        fichiers += sorted(os.path.join(racine, f) for f in os.listdir(racine) if f.endswith(".json"))
+        fichiers += sorted(os.path.join(racine, f) for f in os.listdir(racine) if f.endswith(".json") and f != "catalogue.json")
+        # le catalogue de l'accueil : chaque cours cité existe, et chaque cours est cité
+        with open(os.path.join(racine, "catalogue.json"), encoding="utf-8") as f:
+            cat = json.load(f)
+        ids = [c.get("id") for c in cat.get("cours", [])]
+        presents = sorted(os.path.splitext(os.path.basename(x))[0] for x in fichiers)
+        if sorted(ids) != presents:
+            print(f"== cours/catalogue.json\n  ERREUR · le catalogue cite {sorted(ids)}, les fichiers sont {presents}")
+            erreurs_catalogue = 1
+        else:
+            print(f"== cours/catalogue.json : {len(ids)} cours, conforme")
     if not fichiers:
         print(__doc__)
         return 2
     total = 0
+    total += erreurs_catalogue
     for chemin in fichiers:
         r, info = verifier_cours(chemin, executer_code)
         print(f"== {chemin}")
