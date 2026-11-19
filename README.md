@@ -8,7 +8,7 @@
 
 **Gratuit · sans compte · rien à installer · aussi sur téléphone · rien n'est enregistré en ligne ; le prénom ou le pseudo passe seulement en direct dans la séance**
 
-QuizzNSI fait partie des [Ressources NSI et SNT](https://babash.github.io/Babash-NSI-SNT/), rubrique [NSI Terminale](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/).
+QuizzNSI fait partie des [Ressources NSI et SNT](https://babash.github.io/Babash-NSI-SNT/), rubrique [NSI Terminale](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/). Il a d'abord été développé dans le dépôt du site, dont il garde l'historique ; les anciennes adresses redirigent ici.
 
 ---
 
@@ -32,8 +32,8 @@ Viennent ensuite les définitions (structure de données, structure linéaire, i
 |---|---|
 | Reconnaître | pile ou file ? quel élément sort en premier ? |
 | Suivre | l'état d'une pile ou d'une file après une suite d'opérations (`empiler`, `depiler`, `sommet`, `enfiler`, `defiler`, `tete`) |
-| Analyser | un code qui parcourt une pile sans la détruire, une file faite de deux piles, un vérificateur de parenthèses |
-| Trouver l'erreur | dépiler une pile vide, `pop()` au lieu de `pop(0)`, une fonction qui vide la pile par accident |
+| Analyser | une fonction qui compte les éléments d'une pile, une file faite de deux piles, un vérificateur de parenthèses |
+| Trouver l'erreur | une boucle qui dépile trop, retirer le mauvais élément d'une liste, une fonction qui doit lire une pile sans la modifier |
 
 Chaque question a un objectif affiché, quatre options tirées d'erreurs fréquentes et un feedback pour chacune. Chaque code affiché a été exécuté par le vérificateur.
 
