@@ -228,8 +228,8 @@
 
   /* ── Ménage du stockage ──────────────────── */
   // L'entrée « eleve » (code, pseudo, identifiant) et l'historique de séance « hist:<identifiant> »
-  // vivent 12 heures au plus : périmés ou mal formés, ils sont effacés au chargement de chaque page de
-  // QuizzNSI (et à la fin d'une séance, par la page élève).
+  // sont effacés à la fin de la séance (par la page élève), et sinon au premier chargement d'une page de
+  // QuizzNSI après 12 heures ; une entrée mal formée est effacée au premier chargement.
   Q.DUREE_ELEVE = 12 * 3600 * 1000;
   Q.menage = function (maintenant) {
     const t = maintenant || Date.now();

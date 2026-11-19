@@ -58,7 +58,7 @@ Chaque question a un objectif affiché, quatre options tirées d'erreurs fréque
 
 - **Enregistré en ligne** (canaux temps réel de Supabase, sans aucune table) : rien. Le prénom ou le pseudo et les réponses passent en direct dans la séance, sans être gardés en ligne. Pas d'adresse électronique, pas de nom de famille.
 - **Visible par les autres** : pendant la séance seulement, ce que montre l'écran projeté (les pseudos présents, la répartition des réponses, les rebonds, le podium quand il est affiché). Les réponses partent chiffrées pour la page projetée ; une fausse page projetée, ouverte par quelqu'un qui connaît le code, les reçoit aussi (voir les risques acceptés, [docs/DONNEES.md](docs/DONNEES.md)).
-- **Sur l'appareil** : le code de séance, le pseudo, un identifiant et les points de la séance, effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, les réponses du mode autonome.
+- **Sur l'appareil** : le code de séance, le pseudo, un identifiant, les réponses et les points de la séance, effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, les réponses du mode autonome.
 - **Pour effacer** : rien à effacer en ligne ; sur l'appareil, « Quitter » ou « Recommencer à zéro », ou l'effacement des données du navigateur.
 
 Le détail : [docs/DONNEES.md](docs/DONNEES.md).

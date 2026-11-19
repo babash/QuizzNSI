@@ -222,8 +222,9 @@
   }
 
   /* ── Mes points, calculés ici ───────────── */
-  // L'historique de la séance, sur l'appareil (comme l'entrée « eleve » : 12 heures au plus, effacé à la
-  // fin de la séance) : les questions corrigées dans l'ordre, mes résultats, mes réponses données.
+  // L'historique de la séance, sur l'appareil (comme l'entrée « eleve » : effacé à la fin de la séance, et sinon
+  // au premier chargement d'une page de QuizzNSI après 12 heures) : les questions corrigées dans l'ordre,
+  // mes résultats, mes réponses données.
   // Il permet de rouvrir la page (onglet fermé, QR code scanné de nouveau) sans perdre ses points.
   function historique() {
     const v = moi ? Q.stock.lire('hist:' + moi.id, null) : null, h = { ordre: [], res: {}, reps: {}, total: 0 };
