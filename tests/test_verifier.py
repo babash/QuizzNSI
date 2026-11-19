@@ -133,6 +133,38 @@ class TestVerifier(unittest.TestCase):
         self.assertTrue(any("renvoi à la question 4" in x for x in self.modifie(f)))
 
 
+class TestCatalogue(unittest.TestCase):
+    """Le contrôle du catalogue de l'accueil (verifier_cours.py --tous)."""
+    def essai(self, ids):
+        import contextlib, io, shutil
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(os.path.join(d, "outils")); os.makedirs(os.path.join(d, "cours"))
+            shutil.copy(os.path.join(RACINE, "outils", "verifier_cours.py"), os.path.join(d, "outils"))
+            shutil.copy(os.path.join(RACINE, "cours", "piles-files.json"), os.path.join(d, "cours"))
+            with open(os.path.join(d, "cours", "catalogue.json"), "w", encoding="utf-8") as f:
+                json.dump({"format": "quizz-nsi-catalogue/1", "cours": [{"id": i, "titre": i, "niveau": "x", "questions": 20} for i in ids]}, f)
+            sys.path.insert(0, os.path.join(d, "outils"))
+            import importlib, verifier_cours as W
+            importlib.reload(W)
+            sys.path.pop(0)
+            sortie = io.StringIO()
+            with contextlib.redirect_stdout(sortie):
+                code = W.main(["--tous", "--sans-execution"])
+            return code, sortie.getvalue()
+
+    def test_catalogue_conforme(self):
+        self.assertEqual(self.essai(["piles-files"])[0], 0)
+
+    def test_cours_cite_mais_absent(self):
+        self.assertEqual(self.essai(["piles-files", "arbres"])[0], 1)
+
+    def test_cours_present_non_cite(self):
+        self.assertEqual(self.essai([])[0], 1)
+
+    def test_doublon(self):
+        self.assertEqual(self.essai(["piles-files", "piles-files"])[0], 1)
+
+
 class TestCaracteres(unittest.TestCase):
     def test_caracteres_releves(self):
         sys.path.insert(0, os.path.join(RACINE, "outils"))

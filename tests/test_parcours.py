@@ -279,8 +279,8 @@ def seance(nav, base):
     assert "invisible" in p0.inner_text("#erreurPseudo"), p0.inner_text("#erreurPseudo")
     p0.close()
 
-    nadia = eleve("Kobalt", theme="light")
-    ali = eleve("Ixo", theme="dark")
+    eleve_1 = eleve("Kobalt", theme="light")
+    eleve_2 = eleve("Ixo", theme="dark")
     intrus = eleve("Pseudo Bizarre")
     attendre_texte(prof, "#eleves", "Pseudo Bizarre")
     attendre_texte(prof, "#eleves", "Kobalt")
@@ -312,17 +312,17 @@ def seance(nav, base):
             suivante(prof, "#action", "#compteur", i)
         if d["type"] == "humour":
             # le téléphone suit les apparitions progressives de l'écran projeté
-            assert nadia.evaluate("document.querySelectorAll('#ecran .frag.vu').length") == 0
+            assert eleve_1.evaluate("document.querySelectorAll('#ecran .frag.vu').length") == 0
             prof.click("#action"); prof.click("#action")
-            nadia.wait_for_function("() => document.querySelectorAll('#ecran .frag.vu').length === 2")
+            eleve_1.wait_for_function("() => document.querySelectorAll('#ecran .frag.vu').length === 2")
             while prof.inner_text("#action").startswith("Suite"):
                 prof.click("#action")
             prof.screenshot(path=os.path.join(SORTIE, "seance-humour-1440.png"))
-            attendre_texte(nadia, "#ecran", d["chute"].rstrip("!").strip())
-            nadia.screenshot(path=os.path.join(SORTIE, "eleve-humour-320.png"), full_page=True)
+            attendre_texte(eleve_1, "#ecran", d["chute"].rstrip("!").strip())
+            eleve_1.screenshot(path=os.path.join(SORTIE, "eleve-humour-320.png"), full_page=True)
         if d["type"] != "question":
             continue
-        for page, nom, ch in ((nadia, "Kobalt", choix_n), (ali, "Ixo", choix_a)):
+        for page, nom, ch in ((eleve_1, "Kobalt", choix_n), (eleve_2, "Ixo", choix_a)):
             page.wait_for_selector(f'section.d-question button.option[data-choix="{ch[k]}"]:not([disabled])', timeout=8000)
             attendre_texte(page, ".q-num", f"Question {k + 1} sur 20")
             if k == 2 and nom == "Kobalt":
@@ -332,45 +332,45 @@ def seance(nav, base):
             attendu[nom] += points(juste, prec[nom])
             prec[nom] = "juste" if juste else "faux"
         attendre_texte(prof, "#statutQ", "Tout le monde a répondu")
-        attendre_texte(nadia, "#envoyee", "reçue")
+        attendre_texte(eleve_1, "#envoyee", "reçue")
         if k == 5:
             # réouverture en cours de séance : onglet fermé, QR code scanné de nouveau, sur le même appareil
-            ident = nadia.evaluate("() => JSON.parse(sessionStorage.getItem('quizz-nsi:eleve'))")
-            nadia.close()
-            nadia = ctx.new_page()
-            nadia.set_viewport_size({"width": 320, "height": 740})
-            surveiller(nadia, "Kobalt rouvert")
-            nadia.goto(base + "index.html")
+            ident = eleve_1.evaluate("() => JSON.parse(sessionStorage.getItem('quizz-nsi:eleve'))")
+            eleve_1.close()
+            eleve_1 = ctx.new_page()
+            eleve_1.set_viewport_size({"width": 320, "height": 740})
+            surveiller(eleve_1, "Kobalt rouvert")
+            eleve_1.goto(base + "index.html")
             # dans ce test, les deux élèves partagent le stockage du navigateur : on remet celui de Kobalt
-            nadia.evaluate("e => localStorage.setItem('quizz-nsi:eleve', JSON.stringify(Object.assign(e, { jusqua: Date.now() + 3600000 })))", ident)
-            nadia.goto(base + f"rejoindre.html?s={code}")
-            assert nadia.input_value("#champPseudo") == "Kobalt"
-            nadia.click("#rejoindre")
-            attendre_texte(nadia, "#points", f"{attendu['Kobalt'] - points(choix_n[k] == BONNES[k], 'juste' if choix_n[k - 1] == BONNES[k - 1] else 'faux')} pts")
-            nadia.wait_for_selector(f'button.option.choisie[data-choix="{choix_n[k]}"]')  # sa réponse est retrouvée
+            eleve_1.evaluate("e => localStorage.setItem('quizz-nsi:eleve', JSON.stringify(Object.assign(e, { jusqua: Date.now() + 3600000 })))", ident)
+            eleve_1.goto(base + f"rejoindre.html?s={code}")
+            assert eleve_1.input_value("#champPseudo") == "Kobalt"
+            eleve_1.click("#rejoindre")
+            attendre_texte(eleve_1, "#points", f"{attendu['Kobalt'] - points(choix_n[k] == BONNES[k], 'juste' if choix_n[k - 1] == BONNES[k - 1] else 'faux')} pts")
+            eleve_1.wait_for_selector(f'button.option.choisie[data-choix="{choix_n[k]}"]')  # sa réponse est retrouvée
             print("  réouverture : points et réponse retrouvés après la fermeture de l'onglet")
         if k == 4:
             prof.screenshot(path=os.path.join(SORTIE, "seance-question-1440.png"))
         prof.click("#action")  # montrer la réponse
-        for page, nom in ((nadia, "Kobalt"), (ali, "Ixo")):
+        for page, nom in ((eleve_1, "Kobalt"), (eleve_2, "Ixo")):
             attendre_texte(page, ".q-num", f"Question {k + 1} sur 20 · correction")
             attendre_texte(page, "#points", f"{attendu[nom]} pts")
         if k == 4:
             prof.screenshot(path=os.path.join(SORTIE, "seance-correction-1440.png"), full_page=True)
-            nadia.screenshot(path=os.path.join(SORTIE, "eleve-correction-320.png"), full_page=True)
-            ali.screenshot(path=os.path.join(SORTIE, "eleve-correction-320-obscur.png"), full_page=True)
+            eleve_1.screenshot(path=os.path.join(SORTIE, "eleve-correction-320.png"), full_page=True)
+            eleve_2.screenshot(path=os.path.join(SORTIE, "eleve-correction-320-obscur.png"), full_page=True)
         k += 1
     assert k == 20
     prof.click("#action")  # terminer la séance
     prof.wait_for_selector("#podiumBoite[open]")
     attendre_texte(prof, "#podiumCorps", "Kobalt")
     prof.screenshot(path=os.path.join(SORTIE, "seance-podium-1440.png"))
-    attendre_texte(nadia, "#ecran", "Fin de la séance")
-    attendre_texte(nadia, "#ecran", f"{attendu['Kobalt']} points")
-    attendre_texte(nadia, "#ecran", "1re place")
-    nadia.screenshot(path=os.path.join(SORTIE, "eleve-fin-320.png"), full_page=True)
-    assert nadia.evaluate("localStorage.getItem('quizz-nsi:eleve')") is None, "l'entrée « eleve » doit être effacée à la fin de la séance"
-    attendre_texte(ali, "#ecran", f"{attendu['Ixo']} points")
+    attendre_texte(eleve_1, "#ecran", "Fin de la séance")
+    attendre_texte(eleve_1, "#ecran", f"{attendu['Kobalt']} points")
+    attendre_texte(eleve_1, "#ecran", "1re place")
+    eleve_1.screenshot(path=os.path.join(SORTIE, "eleve-fin-320.png"), full_page=True)
+    assert eleve_1.evaluate("localStorage.getItem('quizz-nsi:eleve')") is None, "l'entrée « eleve » doit être effacée à la fin de la séance"
+    attendre_texte(eleve_2, "#ecran", f"{attendu['Ixo']} points")
     print(f"  séance : 20 questions, points Kobalt {attendu['Kobalt']}, Ixo {attendu['Ixo']}, envois {prof.evaluate('window.__fauxTempsReel.envois')}")
     ctx.close()
 
