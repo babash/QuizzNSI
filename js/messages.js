@@ -6,7 +6,7 @@
    créés un à un, jamais par innerHTML ; le texte des questions vient du fichier du cours, pas du canal.
    Ce que le canal diffuse se limite à ce que l'écran projeté montre déjà à toute la classe : la bonne
    réponse, la répartition des réponses (en nombres), le podium quand il est affiché. Chaque téléphone
-   calcule ses propres points ; les réponses des élèves arrivent chiffrées pour la seule page projetée.
+   calcule ses propres points ; les réponses des élèves arrivent chiffrées pour la page projetée.
    Fonctions pures, testées par tests/test_messages.js. */
 (function (racine) {
   'use strict';

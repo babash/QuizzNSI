@@ -13,6 +13,6 @@ Ce que QuizzNSI garde, où, combien de temps, et ce que voient les autres. Rien 
 
 ## Ce que diffuse une séance
 
-Le canal ne diffuse que ce que l'écran projeté montre à toute la classe : la diapositive en cours, la bonne réponse, la répartition des réponses en nombres, les rebonds, et le podium quand il est affiché. Les réponses partent chiffrées (ECDH P-256 et AES-GCM, par l'API Web Crypto du navigateur) pour la seule page projetée ; l'accusé de réception ne porte qu'un nombre tiré au hasard, jamais l'identifiant de l'élève.
+Le canal ne diffuse que ce que l'écran projeté montre à toute la classe : la diapositive en cours, la bonne réponse, la répartition des réponses en nombres, les rebonds, et le podium quand il est affiché. Les réponses partent chiffrées (ECDH P-256 et AES-GCM, par l'API Web Crypto du navigateur) pour la page projetée (une fausse page projetée les reçoit aussi : voir les risques acceptés ci-dessus) ; l'accusé de réception ne porte qu'un nombre tiré au hasard, jamais l'identifiant de l'élève.
 
 Les tests le vérifient : un « espion » écoute tout le canal pendant une séance ([tests/test_parcours.py](../tests/test_parcours.py)), et des centaines de messages forgés sont rejetés ([tests/test_messages.js](../tests/test_messages.js)).

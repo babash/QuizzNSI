@@ -2,7 +2,8 @@
    Le canal temps réel est public : tout message y est reçu par tous les appareils de la séance.
    La réponse d'un·e élève n'est donc lisible que par la page projetée : celle-ci publie une clé
    publique (ECDH P-256) dans sa présence ; chaque téléphone en tire une clé AES-GCM qu'il partage
-   seul avec elle, et chiffre sa réponse. Les autres téléphones ne voient qu'un message illisible.
+   avec elle, et chiffre sa réponse. Les autres téléphones ne voient qu'un message illisible ; une fausse page
+   projetée, ouverte avec le code de séance, recevrait aussi les réponses (risque accepté, docs/DONNEES.md).
    Tout passe par l'API Web Crypto du navigateur (pages en https ou en local). */
 (function (racine) {
   'use strict';
