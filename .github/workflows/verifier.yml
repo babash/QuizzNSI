@@ -31,7 +31,7 @@ jobs:
         run: python3 -I outils/caracteres.py
       - name: Installer Chromium pour Playwright
         run: |
-          python3 -m pip install --quiet playwright
+          python3 -m pip install --quiet playwright==1.63.0  # version fixée : une nouvelle version ne fait pas rougir le parcours sans raison
           python3 -m playwright install --with-deps chromium
       - name: Le parcours dans le navigateur (séance, injection, stockage, mode autonome, impression, rendus)
         run: python3 -I tests/test_parcours.py tests/captures

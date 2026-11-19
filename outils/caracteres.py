@@ -2,7 +2,8 @@
 """QuizzNSI : recherche des caractères invisibles ou trompeurs dans les fichiers du dépôt.
 
 Lancement, depuis la racine : python3 -I outils/caracteres.py [FICHIER ...]
-Sans argument : tous les fichiers texte du dépôt, sauf vendor/ (bibliothèques tierces) et .git/.
+Sans argument : tous les fichiers texte du dépôt (par leur extension, plus LICENSE, .gitignore et
+.nojekyll), sauf vendor/ (bibliothèques tierces) et .git/.
 
 Relève, avec le fichier, la ligne et la colonne :
 - les caractères de contrôle (sauf tabulation et fin de ligne) ;
@@ -20,6 +21,7 @@ import sys
 import unicodedata
 
 EXTENSIONS = {".html", ".css", ".js", ".json", ".md", ".py", ".yml", ".yaml", ".txt", ".svg"}
+SANS_EXTENSION = {"LICENSE", ".gitignore", ".nojekyll"}  # fichiers texte sans extension, lus aussi
 IGNORES = {".git", "vendor", "__pycache__", "captures"}
 POINTS = {0x2022, 0x2219, 0x22C5, 0x2027}
 PERMIS = {0x00A0, 0x202F, 0x00B7}
@@ -49,7 +51,7 @@ def fichiers(racine):
     for d, sous, noms in os.walk(racine):
         sous[:] = sorted(s for s in sous if s not in IGNORES)
         for n in sorted(noms):
-            if os.path.splitext(n)[1] in EXTENSIONS:
+            if os.path.splitext(n)[1] in EXTENSIONS or n in SANS_EXTENSION:
                 yield os.path.join(d, n)
 
 
