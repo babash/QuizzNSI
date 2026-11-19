@@ -2,12 +2,12 @@
    L'élève entre le code de la séance et un prénom ou un pseudo, puis répond aux questions.
    Points : le téléphone calcule lui-même ses points (js/bareme.js) à partir de sa réponse, de son temps,
    de la bonne réponse et du barème reçus à la correction ; personne d'autre ne les reçoit. Sa réponse
-   part chiffrée pour la seule page projetée (js/chiffre.js).
+   part chiffrée pour la page projetée (js/chiffre.js).
    Sécurité : chaque message reçu est validé par js/messages.js (schéma strict) ; le texte des
    notions et des questions vient du fichier du cours (cours/<id>.json, même site), jamais du canal ;
    les valeurs reçues (points, séries, pseudos du podium) s'affichent par textContent seulement.
    Rien n'est enregistré en ligne. Sur l'appareil : le code, le pseudo et un identifiant de séance,
-   12 heures au plus, pour revenir après une coupure avec ses points (même code et même pseudo). */
+   effacés à la fin de la séance, et sinon au premier chargement d'une page après 12 heures, pour revenir après une coupure avec ses points (même code et même pseudo). */
 (function () {
   'use strict';
   const Q = window.QuizzNSI, $ = Q.$, el = Q.el;
@@ -222,8 +222,9 @@
   }
 
   /* ── Mes points, calculés ici ───────────── */
-  // L'historique de la séance, sur l'appareil (comme l'entrée « eleve » : 12 heures au plus, effacé à la
-  // fin de la séance) : les questions corrigées dans l'ordre, mes résultats, mes réponses données.
+  // L'historique de la séance, sur l'appareil (comme l'entrée « eleve » : effacé à la fin de la séance, et sinon
+  // au premier chargement d'une page de QuizzNSI après 12 heures) : les questions corrigées dans l'ordre,
+  // mes résultats, mes réponses données.
   // Il permet de rouvrir la page (onglet fermé, QR code scanné de nouveau) sans perdre ses points.
   function historique() {
     const v = moi ? Q.stock.lire('hist:' + moi.id, null) : null, h = { ordre: [], res: {}, reps: {}, total: 0 };

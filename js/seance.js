@@ -1,6 +1,6 @@
 /* QuizzNSI : une séance en direct (MIT, Babash - NSI Tani Malandi).
    Rien n'est enregistré en ligne : une séance est un canal temps réel de Supabase (diffusion et
-   présence), sans aucune table. Le pseudo et les réponses passent en direct, puis disparaissent.
+   présence), sans aucune table. Le pseudo et les réponses passent en direct, sans être gardés en ligne.
    Mode démo (?demo, ou sans configuration) : la séance passe entre les onglets de ce navigateur.
 
    ouvrirSeance(code, moi, { onMessage, onPresence, onEtat }) renvoie { envoyer, maj, fermer, demo }.
