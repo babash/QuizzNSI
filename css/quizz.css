@@ -97,6 +97,7 @@ pre.code .guide { border-left: 1px solid var(--guide); }
 .schema-svg text.etiq { font-weight: 700; fill: var(--accent); }
 .schema-svg text.muet { fill: var(--ink-soft); }
 .schema-svg text.petit { font-size: 13px; }
+.schema-svg text.grand { font-size: 21px; }
 .etapes { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 16px; list-style: none; padding: 0; margin: 0; counter-reset: etape; }
 .etapes li { display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: 46%; }
 .etapes li > div { display: flex; align-items: flex-end; min-height: 4em; }

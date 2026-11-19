@@ -1,0 +1,44 @@
+# QuizzNSI : vérifications à chaque envoi (MIT, Babash - NSI Tani Malandi).
+# Le parcours utilise un faux client temps réel (tests/faux-temps-reel.js) : la vraie base n'est jamais appelée.
+name: Vérifier
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Les cours (forme, règle 22, répartition, exécution du code, schémas)
+        run: python3 -I outils/verifier_cours.py --tous
+      - name: Le moteur (barème, pseudo, échappement, schémas, stockage)
+        run: node tests/test_moteur.js
+      - name: Les messages du canal (messages forgés)
+        run: node tests/test_messages.js
+      - name: Le vérificateur
+        run: python3 -I -m unittest discover -s tests -p "test_v*.py"
+      - name: Caractères invisibles ou de contrôle dans les fichiers
+        run: python3 -I outils/caracteres.py
+      - name: Installer Chromium pour Playwright
+        run: |
+          python3 -m pip install --quiet playwright
+          python3 -m playwright install --with-deps chromium
+      - name: Le parcours dans le navigateur (séance, injection, stockage, mode autonome, impression, rendus)
+        run: python3 -I tests/test_parcours.py tests/captures
+      - name: Les captures, en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures
+          path: tests/captures
+          retention-days: 7

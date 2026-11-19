@@ -133,5 +133,19 @@ class TestVerifier(unittest.TestCase):
         self.assertTrue(any("renvoi à la question 4" in x for x in self.modifie(f)))
 
 
+class TestCaracteres(unittest.TestCase):
+    def test_caracteres_releves(self):
+        sys.path.insert(0, os.path.join(RACINE, "outils"))
+        import caracteres as C
+        with tempfile.TemporaryDirectory() as d:
+            f = os.path.join(d, "x.md")
+            with open(f, "w", encoding="utf-8") as h:
+                h.write("a" + chr(0x200B) + "b " + chr(0x202E) + " élève" + chr(0x2022) + "s enseignant·e" + chr(0xA0) + "!")
+            self.assertEqual(C.main([f]), 1)
+            with open(f, "w", encoding="utf-8") as h:
+                h.write("enseignant·e" + chr(0xA0) + "!")
+            self.assertEqual(C.main([f]), 0)
+
+
 if __name__ == "__main__":
     unittest.main()

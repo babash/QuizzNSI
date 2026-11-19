@@ -4,15 +4,15 @@
 
 > Tu projettes le cours : une notion par diapositive, puis une question pour la pratiquer. Tes élèves rejoignent la séance avec un QR code et un prénom ou un pseudo, répondent depuis leur téléphone, et voient aussitôt l'explication de leur réponse, juste ou fausse. Le même cours se révise seul·e à la maison et s'imprime sur papier.
 
-## 👉 Essayer maintenant
+## 👉 [Essayer maintenant : babash.github.io/QuizzNSI](https://babash.github.io/QuizzNSI/)
 
-- **[Réviser seul·e : piles et files](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/fichiers/quizz-nsi/revision.html?cours=piles-files)** (le cours et ses 20 questions, corrigées tout de suite)
-- **[Animer en classe](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/fichiers/quizz-nsi/animer.html?cours=piles-files)**, ou d'abord [en mode démo](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/fichiers/quizz-nsi/animer.html?cours=piles-files&demo), entre les onglets de ton navigateur
-- **[Les questions à imprimer](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/fichiers/quizz-nsi/imprimer.html?cours=piles-files)** et [leur corrigé](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/fichiers/quizz-nsi/imprimer.html?cours=piles-files&corrige)
+- **[Réviser seul·e : piles et files](https://babash.github.io/QuizzNSI/revision.html?cours=piles-files)** (le cours et ses 20 questions, corrigées tout de suite)
+- **[Animer en classe](https://babash.github.io/QuizzNSI/animer.html?cours=piles-files)**, ou d'abord [en mode démo](https://babash.github.io/QuizzNSI/animer.html?cours=piles-files&demo), entre les onglets de ton navigateur
+- **[Les questions à imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=piles-files)** et [leur corrigé](https://babash.github.io/QuizzNSI/imprimer.html?cours=piles-files&corrige)
 
 **Gratuit · sans compte · rien à installer · sur téléphone · rien n'est enregistré en ligne ; le prénom ou le pseudo et les réponses passent seulement en direct dans la séance**
 
-QuizzNSI fait partie des [Ressources NSI et SNT](https://babash.github.io/Babash-NSI-SNT/), rubrique [NSI Terminale](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/). *Les adresses changeront quand QuizzNSI aura son propre dépôt.*
+QuizzNSI fait partie des [Ressources NSI et SNT](https://babash.github.io/Babash-NSI-SNT/), rubrique [NSI Terminale](https://babash.github.io/Babash-NSI-SNT/nsi-terminale/). Il a été développé dans le dépôt du site (`nsi-terminale/fichiers/quizz-nsi/`), dont il garde l'historique ; les anciennes adresses redirigent ici.
 
 ---
 
@@ -90,6 +90,11 @@ Le parcours utilise un faux client temps réel ([tests/faux-temps-reel.js](tests
 | [cours/FORMAT.md](cours/FORMAT.md) | Écrire un cours-quiz |
 | [outils/verifier_cours.py](outils/verifier_cours.py) | Le vérificateur |
 | [vendor/LICENCES-BIBLIOTHEQUES.txt](vendor/LICENCES-BIBLIOTHEQUES.txt) | Le client temps réel de Supabase et le générateur de QR codes, avec leurs licences |
+| [.github/workflows/verifier.yml](.github/workflows/verifier.yml) | À chaque envoi : le vérificateur des cours, les tests du moteur, des messages et du vérificateur, et le parcours dans Chromium (avec un faux client temps réel : la vraie base n'est jamais appelée) |
+
+### La publication
+
+Le site est publié par GitHub Pages **depuis la branche `main`**, dossier `/ (root)` (*Settings › Pages › Deploy from a branch*), sans workflow de publication. Aucun fichier ne dépend de Jekyll (`.nojekyll` à la racine). Les liens de séance et le QR code sont construits depuis l'adresse de la page : une copie publiée ailleurs marche sans rien changer.
 
 ### Installer ta copie
 
@@ -108,7 +113,7 @@ Sans projet Supabase, laisse `SUPABASE_URL` vide : les séances passent en mode 
 ## Contact
 
 Conçu par Babash - NSI Tani Malandi pour les classes de NSI et de SNT de l'académie de Mayotte, développé avec l'aide de l'IA ([Claude Code](https://claude.com/claude-code)).
-Une question, une idée, un bug ? Les [issues GitHub](https://github.com/babash/Babash-NSI-SNT/issues). Toutes les ressources sont sur le site [Ressources NSI et SNT](https://babash.github.io/Babash-NSI-SNT/).
+Une question, une idée, un bug ? Les [issues GitHub](https://github.com/babash/QuizzNSI/issues). Toutes les ressources sont sur le site [Ressources NSI et SNT](https://babash.github.io/Babash-NSI-SNT/).
 
 ## Licence
 
