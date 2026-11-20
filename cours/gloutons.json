@@ -1,0 +1,620 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "gloutons",
+ "titre": "Les algorithmes gloutons",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Algorithmique : algorithmes gloutons (résoudre un problème grâce à un algorithme glouton ; exemples du rendu de monnaie et du sac à dos ; un algorithme glouton ne donne pas toujours une solution optimale)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/gloutons/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les algorithmes gloutons » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je reconnais un choix glouton.",
+  "Niveau 2 : je déroule un rendu de monnaie et un sac à dos gloutons.",
+  "Niveau 3 : je trouve un contre-exemple qui montre qu'un glouton n'est pas optimal."
+ ],
+ "conventions": [
+  "Les pièces sont données de la plus grande à la plus petite, sauf mention contraire.",
+  "Dans le sac à dos, un produit se prend en entier ou pas du tout."
+ ],
+ "prelude_python": [
+  "def rendu(s, pieces):",
+  "    pris = []",
+  "    for p in pieces:",
+  "        while s >= p:",
+  "            pris.append(p)",
+  "            s = s - p",
+  "    return pris",
+  "def optimal(somme, pieces):",
+  "    mini = [0] + [None] * somme",
+  "    for s in range(1, somme + 1):",
+  "        essais = [mini[s - p] for p in pieces if p <= s and mini[s - p] is not None]",
+  "        mini[s] = min(essais) + 1 if essais else None",
+  "    return mini[somme]",
+  "PRODUITS = [(\"mangues\", 6, 30), (\"bananes\", 5, 20), (\"ananas\", 5, 20)]",
+  "def sac_glouton(objets, capacite):",
+  "    tries = sorted(objets, key=lambda o: o[2] / o[1], reverse=True)",
+  "    pris, masse = [], 0",
+  "    for nom, m, v in tries:",
+  "        if masse + m <= capacite:",
+  "            pris.append(nom)",
+  "            masse = masse + m",
+  "    return pris",
+  "def sac_optimal(objets, capacite):",
+  "    from itertools import combinations",
+  "    meilleur = 0",
+  "    for k in range(len(objets) + 1):",
+  "        for choix in combinations(objets, k):",
+  "            if sum(o[1] for o in choix) <= capacite:",
+  "                meilleur = max(meilleur, sum(o[2] for o in choix))",
+  "    return meilleur"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Les algorithmes gloutons",
+   "conventions": false,
+   "texte": [
+    "Algorithmique · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment rendre 37 € avec le moins de billets et de pièces ?",
+   "texte": [
+    "Au doukabé, la caisse a des billets de 20, 10 et 5 €, des pièces de 2 et 1 €."
+   ],
+   "pistes": [
+    "On commence par le plus gros ?"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Rendu de monnaie] Rendre 37 €",
+   "objectif": "Appliquer la méthode « la plus grande valeur d'abord » pour rendre la monnaie.",
+   "enonce": [
+    "Au doukabé, il faut rendre 37 € avec des billets de 20, 10 et 5 € et des pièces de 2 et 1 €.",
+    "On prend à chaque fois la plus grande valeur qui ne dépasse pas ce qui reste à rendre. Que rend-on ?"
+   ],
+   "options": [
+    {
+     "texte": "20, 10, 5, 2",
+     "juste": true,
+     "feedback": "Oui. Il reste 17, puis 7, puis 2, puis 0. Quatre billets et pièces : avec les euros, on ne peut pas faire mieux."
+    },
+    {
+     "texte": "20, 10, 5, 1, 1",
+     "feedback": "Le total est juste, mais il restait 2 € après le billet de 5 : la pièce de 2 € ne dépasse pas 2. Une pièce au lieu de deux."
+    },
+    {
+     "texte": "10, 10, 10, 5, 2",
+     "feedback": "Le total est juste, mais on a sauté le billet de 20 €, qui ne dépassait pas 37. Le plus gros d'abord : 20, puis 10."
+    },
+    {
+     "texte": "20, 10, 2, 2, 2, 1",
+     "feedback": "Le total est juste, mais il restait 7 € après 20 et 10 : le billet de 5 € ne dépasse pas 7. On aurait 4 billets et pièces au lieu de 6."
+    }
+   ],
+   "explication": "À chaque étape, la plus grande valeur qui ne dépasse pas le reste.",
+   "verifications": [
+    {
+     "code": [
+      "print(rendu(37, [20, 10, 5, 2, 1]))"
+     ],
+     "sortie": "[20, 10, 5, 2]"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Un algorithme glouton",
+   "texte": [
+    "À chaque étape, on fait le ==meilleur choix du moment==.",
+    "On ne revient ==jamais en arrière==."
+   ],
+   "vocabulaire": "glouton = greedy ; rendu de monnaie = change-making"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Choix glouton] Il reste 8 € à rendre",
+   "objectif": "Identifier le choix glouton à une étape.",
+   "enonce": [
+    "Avec des billets de 20, 10 et 5 € et des pièces de 2 et 1 €, il reste 8 € à rendre.",
+    "Quel est le choix glouton pour cette étape ?"
+   ],
+   "options": [
+    {
+     "texte": "Un billet de 10 €, la plus grande valeur de la caisse.",
+     "feedback": "10 € dépasse les 8 € à rendre : on rendrait trop. Le glouton prend la plus grande valeur qui ne dépasse pas le reste."
+    },
+    {
+     "texte": "Quatre pièces de 2 €, qui font exactement 8 €.",
+     "feedback": "4 × 2 = 8, mais c'est 4 pièces d'un coup. Le glouton choisit une seule valeur par étape, la plus grande possible : 5, puis 2, puis 1."
+    },
+    {
+     "texte": "Un billet de 5 €, le plus grand qui ne dépasse pas 8.",
+     "juste": true,
+     "feedback": "Oui. 10 et 20 dépassent 8 ; 5 est la plus grande valeur possible. Ensuite, il restera 3 : une pièce de 2, puis une de 1."
+    },
+    {
+     "texte": "Une pièce de 1 €, pour être sûr de ne pas dépasser.",
+     "feedback": "On ne dépasse pas, mais on rendrait beaucoup de pièces. Le meilleur choix du moment est la plus grande valeur possible : 5 €."
+    }
+   ],
+   "explication": "Le choix glouton : la plus grande valeur qui ne dépasse pas le reste.",
+   "verifications": [
+    {
+     "code": [
+      "print(rendu(8, [20, 10, 5, 2, 1]))"
+     ],
+     "sortie": "[5, 2, 1]"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le rendu en Python",
+   "texte": [
+    "`s` est la somme à rendre ; les pièces vont de la plus ==grande== à la plus petite.",
+    "On prend chaque pièce ==tant que== c'est possible."
+   ],
+   "code": [
+    "def rendu(s, pieces):",
+    "    pris = []",
+    "    for p in pieces:",
+    "        while s >= p:",
+    "            pris.append(p)",
+    "            s = s - p",
+    "    return pris"
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Un rendu qui oublie 2 €",
+   "objectif": "Distinguer `if` et `while` en lisant ce qu'affiche un programme.",
+   "enonce": [
+    "Ce programme doit rendre 40 € : `[20, 20]`.",
+    "Il affiche `[20, 10, 5, 2, 1]` : chaque valeur est prise une fois, et 38 € seulement sont rendus.",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "def rendu(s, pieces):",
+    "    pris = []",
+    "    for p in pieces:",
+    "        if s >= p:",
+    "            pris.append(p)",
+    "            s = s - p",
+    "    return pris",
+    "euros = [20, 10, 5, 2, 1]",
+    "print(rendu(40, euros))"
+   ],
+   "ligne": 4,
+   "correction": "        while s >= p:",
+   "feedback": "Bien vu : un `if` ne prend chaque pièce qu'une fois. Avec `while`, on reprend le billet de 20 tant qu'il ne dépasse pas le reste. Corrigé : `[20, 20]`.",
+   "feedback_autre": "Cette ligne est correcte. Chaque valeur n'est prise qu'une fois : cherche la ligne qui devrait répéter la prise d'une même pièce.",
+   "pieges": {
+    "3": "La boucle `for` passe bien sur chaque valeur, de la plus grande à la plus petite. C'est à l'intérieur qu'il faut répéter : regarde la ligne suivante."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "[20, 10, 5, 2, 1]"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "[20, 20]"
+    }
+   ],
+   "explication": "`while s >= p` reprend la même pièce tant qu'elle ne dépasse pas le reste ; un `if` ne la prend qu'une fois."
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Code] Des pièces dans le désordre",
+   "objectif": "Comprendre pourquoi on range les pièces de la plus grande à la plus petite.",
+   "enonce": [
+    "On appelle la fonction `rendu` de l'écran précédent avec les pièces rangées dans l'ordre croissant.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "print(rendu(8, [1, 2, 5]))"
+   ],
+   "options": [
+    {
+     "texte": "[5, 2, 1]",
+     "feedback": "Ce serait vrai avec `[5, 2, 1]`. La fonction ne trie pas les pièces : elle les prend dans l'ordre donné, en commençant ici par 1."
+    },
+    {
+     "texte": "[1, 1, 1, 1, 1, 1, 1, 1]",
+     "juste": true,
+     "feedback": "Exact. La boucle commence par 1 et la reprend tant que c'est possible : tout est rendu en pièces de 1. Il faut ranger de la plus grande à la plus petite."
+    },
+    {
+     "texte": "[1, 2, 5]",
+     "feedback": "1 + 2 + 5 = 8, mais la fonction ne prend pas chaque pièce une fois : le `while` reprend la pièce de 1 tant que `s >= 1`, jusqu'à 0."
+    },
+    {
+     "texte": "[2, 2, 2, 2]",
+     "feedback": "La première pièce essayée est 1, pas 2 : le `while` la reprend 8 fois, et il ne reste plus rien pour les pièces de 2 et de 5."
+    }
+   ],
+   "explication": "Le glouton ne marche que si les choix sont rangés du meilleur au moins bon.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "[1, 1, 1, 1, 1, 1, 1, 1]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Rendu de monnaie] Des pièces de 4, 3 et 1",
+   "objectif": "Dérouler le glouton sur un autre système de pièces.",
+   "enonce": [
+    "Dans un jeu, les pièces valent 4, 3 et 1.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "print(rendu(6, [4, 3, 1]))"
+   ],
+   "options": [
+    {
+     "texte": "[3, 3]",
+     "feedback": "3 + 3 = 6 en deux pièces : c'est la meilleure solution ! Mais le glouton ne la voit pas : il prend d'abord 4, la plus grande pièce."
+    },
+    {
+     "texte": "[4, 2]",
+     "feedback": "Il n'y a pas de pièce de 2 dans ce jeu : seulement 4, 3 et 1. Il reste 2 à rendre après 4 : deux pièces de 1."
+    },
+    {
+     "texte": "[4, 3]",
+     "feedback": "4 + 3 = 7 : on rendrait trop. Après 4, il reste 2 ; la pièce de 3 dépasse 2, le glouton passe à la pièce de 1."
+    },
+    {
+     "texte": "[4, 1, 1]",
+     "juste": true,
+     "feedback": "Oui. 4 ne dépasse pas 6 : on le prend, il reste 2. 3 dépasse 2, on passe. Puis deux pièces de 1. Trois pièces en tout."
+    }
+   ],
+   "explication": "Le glouton rend `[4, 1, 1]` : il ne revient pas sur son premier choix.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "[4, 1, 1]"
+    },
+    {
+     "code": [
+      "print(optimal(6, [4, 3, 1]))"
+     ],
+     "sortie": "[4, 1, 1]\n2"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Pas toujours la meilleure",
+   "texte": [
+    "Le glouton donne ==une== solution, pas toujours la ==meilleure== : l'==optimale==.",
+    "Un seul ==contre-exemple== suffit à le montrer."
+   ],
+   "code": [
+    "print(rendu(6, [4, 3, 1]))",
+    "# glouton : 4, 1, 1",
+    "# optimal : 3, 3"
+   ],
+   "vocabulaire": "optimal = optimal ; contre-exemple = counterexample"
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Optimalité] Rendre 12 avec 10, 6 et 1",
+   "objectif": "Comparer la solution gloutonne à la solution optimale.",
+   "enonce": [
+    "Les pièces valent 10, 6 et 1. On rend 12 avec la méthode gloutonne.",
+    "Quelle affirmation est juste ?"
+   ],
+   "options": [
+    {
+     "texte": "Le glouton rend 6, 6 : c'est optimal.",
+     "feedback": "6 + 6 est bien la meilleure solution, mais ce n'est pas celle du glouton : il prend d'abord la plus grande pièce, 10."
+    },
+    {
+     "texte": "Le glouton rend 10, 1, 1 : c'est optimal, car 10 est la plus grande.",
+     "feedback": "C'est bien ce que rend le glouton. Mais prendre la plus grande d'abord ne garantit pas le moins de pièces : 6 + 6 fait mieux."
+    },
+    {
+     "texte": "Le glouton rend 10, 1, 1 : ce n'est pas optimal, 6 et 6 suffisent.",
+     "juste": true,
+     "feedback": "Exact. Le glouton prend 10, puis deux pièces de 1 : trois pièces. 6 + 6 n'en demande que deux : ce cas est un contre-exemple."
+    },
+    {
+     "texte": "Le glouton rend 10, 2 : il reste 2 à rendre.",
+     "feedback": "Il n'y a pas de pièce de 2 ici : seulement 10, 6 et 1. Le reste, 2, se rend avec deux pièces de 1."
+    }
+   ],
+   "explication": "Un contre-exemple suffit : le glouton n'est pas toujours optimal.",
+   "verifications": [
+    {
+     "code": [
+      "print(rendu(12, [10, 6, 1]), optimal(12, [10, 6, 1]))"
+     ],
+     "sortie": "[10, 1, 1] 2"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Optimalité] Et avec les euros ?",
+   "objectif": "Savoir dans quels cas le rendu glouton est optimal.",
+   "enonce": [
+    "Quelle affirmation sur le rendu de monnaie glouton est juste ?"
+   ],
+   "options": [
+    {
+     "texte": "Avec les euros, il rend toujours le moins de pièces et de billets possible.",
+     "juste": true,
+     "feedback": "Oui. Avec 1, 2, 5, 10, 20, 50… le glouton est optimal : c'est démontré, et vérifié pour toutes les sommes de 1 à 200 €."
+    },
+    {
+     "texte": "Il rend toujours le moins de pièces possible, quelles que soient les pièces.",
+     "feedback": "Un contre-exemple suffit à le contredire : avec des pièces de 4, 3 et 1, le glouton rend 4, 1, 1 pour 6, alors que 3, 3 suffit."
+    },
+    {
+     "texte": "Il ne rend jamais le moins de pièces possible.",
+     "feedback": "Il trouve souvent la meilleure solution : pour 37 € en euros, 20, 10, 5, 2 est optimal. Il n'est simplement pas garanti partout."
+    },
+    {
+     "texte": "Un exemple où il marche suffit à prouver qu'il est optimal.",
+     "feedback": "Un exemple qui marche ne prouve rien pour les autres sommes : il faut une démonstration. En revanche, un seul contre-exemple prouve qu'il ne l'est pas."
+    }
+   ],
+   "explication": "Glouton optimal avec les euros, pas avec n'importe quelles pièces.",
+   "verifications": [
+    {
+     "code": [
+      "euros = [200, 100, 50, 20, 10, 5, 2, 1]",
+      "print(all(len(rendu(s, euros)) == optimal(s, euros) for s in range(1, 201)))"
+     ],
+     "sortie": "True"
+    }
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Quels produits emporter au marché ?",
+   "texte": [
+    "Le panier supporte 10 kg au plus. On veut la plus grande valeur."
+   ],
+   "pistes": [
+    "Le plus cher d'abord ?",
+    "Le plus léger d'abord ?"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le sac à dos",
+   "texte": [
+    "Choix glouton : le produit de plus grande ==valeur par kilo== qui rentre encore."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 330 150\" width=\"330\" height=\"150\" role=\"img\" aria-label=\"Trois produits pour un panier de 10 kg au plus : mangues, 6 kg, 30 euros, 5 euros le kilo ; bananes, 5 kg, 20 euros, 4 euros le kilo ; ananas, 5 kg, 20 euros, 4 euros le kilo.\"><title>Trois produits, un panier de 10 kg au plus</title><text x=\"10\" y=\"22\" class=\"muet petit\">produit</text><text x=\"130\" y=\"22\" class=\"muet petit\">masse</text><text x=\"200\" y=\"22\" class=\"muet petit\">valeur</text><text x=\"262\" y=\"22\" class=\"muet petit\">par kg</text><line x1=\"6\" y1=\"30\" x2=\"324\" y2=\"30\" class=\"trait\"/><rect x=\"4\" y=\"36\" width=\"322\" height=\"32\" rx=\"4\" class=\"case sommet\"/><text x=\"10\" y=\"58\" class=\"val\">mangues</text><text x=\"130\" y=\"58\" class=\"val\">6 kg</text><text x=\"200\" y=\"58\" class=\"val\">30 €</text><text x=\"262\" y=\"58\" class=\"etiq\">5 €</text><rect x=\"4\" y=\"72\" width=\"322\" height=\"32\" rx=\"4\" class=\"case\"/><text x=\"10\" y=\"94\" class=\"val\">bananes</text><text x=\"130\" y=\"94\" class=\"val\">5 kg</text><text x=\"200\" y=\"94\" class=\"val\">20 €</text><text x=\"262\" y=\"94\" class=\"val\">4 €</text><rect x=\"4\" y=\"108\" width=\"322\" height=\"32\" rx=\"4\" class=\"case\"/><text x=\"10\" y=\"130\" class=\"val\">ananas</text><text x=\"130\" y=\"130\" class=\"val\">5 kg</text><text x=\"200\" y=\"130\" class=\"val\">20 €</text><text x=\"262\" y=\"130\" class=\"val\">4 €</text></svg>"
+   },
+   "vocabulaire": "problème du sac à dos = knapsack problem"
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Sac à dos] Le choix glouton",
+   "objectif": "Appliquer le glouton « valeur par kilo » au problème du sac à dos.",
+   "enonce": [
+    "Le panier supporte 10 kg au plus. On prend les produits de l'écran précédent par valeur par kilo décroissante, s'ils rentrent encore.",
+    "Que contient le panier ?"
+   ],
+   "options": [
+    {
+     "texte": "Les bananes et les ananas : 40 €.",
+     "feedback": "C'est la meilleure solution, mais pas celle du glouton : il prend d'abord les mangues, et après, ni les bananes ni les ananas ne rentrent."
+    },
+    {
+     "texte": "Les mangues et les bananes : 50 €.",
+     "feedback": "6 + 5 = 11 kg : c'est trop lourd. Le glouton ne prend un produit que s'il rentre encore dans les 10 kg."
+    },
+    {
+     "texte": "Les mangues et 4 kg de bananes : 46 €.",
+     "feedback": "Ici, on ne coupe pas un produit : on le prend en entier, ou pas du tout. Après les mangues, il reste 4 kg : les bananes, 5 kg, ne rentrent pas."
+    },
+    {
+     "texte": "Les mangues seulement : 30 €.",
+     "juste": true,
+     "feedback": "Oui. Les mangues d'abord (5 € le kilo) : 6 kg. Les bananes feraient 11 kg, les ananas aussi : ils ne rentrent plus."
+    }
+   ],
+   "explication": "Glouton « valeur par kilo » : les mangues seulement, 30 €.",
+   "verifications": [
+    {
+     "code": [
+      "print(sac_glouton(PRODUITS, 10))"
+     ],
+     "sortie": "['mangues']"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Sac à dos] La meilleure solution",
+   "objectif": "Trouver la solution optimale et la comparer au glouton.",
+   "enonce": [
+    "Avec les mêmes produits et le même panier de 10 kg, quelle est la plus grande valeur possible ?"
+   ],
+   "options": [
+    {
+     "texte": "30 €",
+     "feedback": "C'est ce que trouve le glouton, avec les mangues seules. Mais bananes et ananas rentrent ensemble, 10 kg, et rapportent 40 €."
+    },
+    {
+     "texte": "40 €",
+     "juste": true,
+     "feedback": "Oui : les bananes et les ananas, 5 + 5 = 10 kg, 20 + 20 = 40 €. Le glouton n'en trouve que 30 : il n'est pas optimal ici."
+    },
+    {
+     "texte": "50 €",
+     "feedback": "Mangues et bananes rapportent 50 €, mais pèsent 11 kg : le panier ne les supporte pas."
+    },
+    {
+     "texte": "70 €",
+     "feedback": "C'est la valeur des trois produits, mais ils pèsent 16 kg en tout : bien plus que les 10 kg du panier."
+    }
+   ],
+   "explication": "Optimal : 40 € ; glouton : 30 €. Encore un contre-exemple.",
+   "verifications": [
+    {
+     "code": [
+      "print(sac_optimal(PRODUITS, 10))"
+     ],
+     "sortie": "40"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Reconnaître] Une méthode gloutonne",
+   "objectif": "Reconnaître une stratégie gloutonne parmi d'autres méthodes.",
+   "enonce": [
+    "Pour aller de Mamoudzou à Sada en taxi, laquelle de ces méthodes est gloutonne ?"
+   ],
+   "options": [
+    {
+     "texte": "À chaque carrefour, prendre la plus courte route suivante.",
+     "juste": true,
+     "feedback": "Oui. Le meilleur choix du moment, carrefour après carrefour, sans revenir en arrière : c'est glouton. Rapide, mais pas toujours le trajet le plus court."
+    },
+    {
+     "texte": "Essayer tous les trajets possibles et garder le plus court.",
+     "feedback": "C'est une recherche exhaustive : elle trouve le meilleur trajet, mais elle est lente. Le glouton ne compare pas des trajets entiers."
+    },
+    {
+     "texte": "Revenir en arrière dès qu'un trajet semble trop long.",
+     "feedback": "Revenir en arrière, c'est justement ce que le glouton ne fait jamais : il garde chacun de ses choix."
+    },
+    {
+     "texte": "Couper la carte en deux et chercher dans la bonne moitié.",
+     "feedback": "C'est l'idée de la dichotomie, une recherche dans des données triées. Le glouton construit une solution, étape par étape."
+    }
+   ],
+   "explication": "Glouton : le meilleur choix local à chaque étape, sans retour en arrière."
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Synthèse] Pourquoi l'utiliser ?",
+   "objectif": "Savoir ce qu'apporte un algorithme glouton, et sa limite.",
+   "enonce": [
+    "Un algorithme glouton ne donne pas toujours la meilleure solution.",
+    "Pourquoi l'utilise-t-on quand même ?"
+   ],
+   "options": [
+    {
+     "texte": "Il essaie toutes les solutions, donc il ne se trompe jamais.",
+     "feedback": "C'est l'inverse : il n'essaie qu'une seule suite de choix. C'est ce qui le rend rapide, et parfois pas optimal."
+    },
+    {
+     "texte": "C'est le seul algorithme possible pour ces problèmes.",
+     "feedback": "D'autres méthodes existent, comme essayer toutes les solutions. Elles sont plus sûres, mais souvent bien plus lentes."
+    },
+    {
+     "texte": "Il devient optimal si on l'exécute plusieurs fois.",
+     "feedback": "Il fait toujours les mêmes choix : l'exécuter de nouveau donne la même solution. Sa limite vient de la méthode, pas du nombre d'essais."
+    },
+    {
+     "texte": "Il est simple et rapide, et sa solution est souvent bonne.",
+     "juste": true,
+     "feedback": "Oui. Un seul passage, sans retour en arrière : c'est rapide. Quand il faut la meilleure solution à coup sûr, on prouve qu'il est optimal, ou on change de méthode."
+    }
+   ],
+   "explication": "Glouton : simple et rapide ; optimal seulement si on le prouve."
+  },
+  {
+   "type": "relier",
+   "id": "a02",
+   "nom": "[Vocabulaire] Les mots des gloutons",
+   "objectif": "Associer chaque mot du chapitre à son sens.",
+   "enonce": [
+    "Relier chaque mot à ce qu'il veut dire."
+   ],
+   "paires": [
+    {
+     "gauche": "choix glouton",
+     "droite": "le meilleur choix du moment, sans retour en arrière",
+     "feedback": "Le glouton choisit à chaque étape ce qui semble le mieux tout de suite, et garde ce choix."
+    },
+    {
+     "gauche": "solution optimale",
+     "droite": "la meilleure solution possible",
+     "feedback": "Optimale veut dire la meilleure : le moins de pièces, ou la plus grande valeur dans le sac."
+    },
+    {
+     "gauche": "contre-exemple",
+     "droite": "un cas où le glouton ne trouve pas la meilleure solution",
+     "feedback": "Rendre 6 avec 4, 3 et 1 : le glouton rend 3 pièces au lieu de 2. Un seul cas suffit."
+    },
+    {
+     "gauche": "problème d'optimisation",
+     "droite": "chercher la meilleure solution parmi beaucoup de solutions",
+     "feedback": "Le rendu de monnaie et le sac à dos ont beaucoup de solutions : on cherche la meilleure."
+    }
+   ],
+   "explication": "Un problème d'optimisation cherche la solution optimale ; le glouton fait des choix du moment ; un contre-exemple montre qu'il peut se tromper."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Algorithme glouton"
+    ],
+    "lignes": [
+     [
+      "Principe",
+      "le meilleur choix du moment, sans retour en arrière"
+     ],
+     [
+      "Rendu de monnaie",
+      "la plus grande valeur qui ne dépasse pas le reste"
+     ],
+     [
+      "Sac à dos",
+      "la plus grande valeur par kilo qui rentre encore"
+     ],
+     [
+      "Qualités",
+      "simple et rapide"
+     ],
+     [
+      "Limite",
+      "pas toujours optimal : un contre-exemple le montre"
+     ]
+    ]
+   },
+   "ticket": [
+    "Qu'est-ce qui est encore flou pour toi dans les algorithmes gloutons ?",
+    "De 1 à 5, à quel point peux-tu trouver un contre-exemple au rendu glouton devant un·e camarade ?"
+   ]
+  }
+ ]
+}

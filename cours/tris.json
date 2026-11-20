@@ -1,0 +1,765 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "tris",
+ "titre": "Tris par sélection et par insertion",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Algorithmique : tris par insertion, par sélection (écrire un algorithme de tri ; décrire un invariant de boucle qui prouve la correction des tris par insertion, par sélection ; coût quadratique dans le pire cas)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/tris/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les tris par sélection et par insertion » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je reconnais un tri par sélection ou par insertion.",
+  "Niveau 2 : je donne l'état d'un tableau après quelques tours de chaque tri.",
+  "Niveau 3 : je lis le code et j'explique pourquoi le coût est quadratique."
+ ],
+ "conventions": [
+  "Les cases d'un tableau sont numérotées à partir de 0 : `t[0]` est la première.",
+  "Un tour est un passage de la boucle `for i` : le premier tour de la sélection est `i = 0`, celui de l'insertion `i = 1`.",
+  "On trie dans l'ordre croissant, du plus petit au plus grand."
+ ],
+ "prelude_python": [
+  "def pos_min(t, i):",
+  "    m, n = i, len(t)",
+  "    for j in range(i+1, n):",
+  "        if t[j] < t[m]:",
+  "            m = j",
+  "    return m",
+  "def tri_selection(t):",
+  "    for i in range(len(t)):",
+  "        m = pos_min(t, i)",
+  "        # on échange",
+  "        x = t[i]",
+  "        t[i] = t[m]",
+  "        t[m] = x",
+  "def tri_insertion(t):",
+  "    for i in range(1, len(t)):",
+  "        cle = t[i]",
+  "        j = i - 1",
+  "        while j >= 0 and t[j] > cle:",
+  "            t[j + 1] = t[j]",
+  "            j = j - 1",
+  "        t[j + 1] = cle",
+  "def selection_tours(t, k):",
+  "    t = list(t)",
+  "    for i in range(k):",
+  "        i_min = i",
+  "        for j in range(i + 1, len(t)):",
+  "            if t[j] < t[i_min]:",
+  "                i_min = j",
+  "        t[i], t[i_min] = t[i_min], t[i]",
+  "    return t",
+  "def insertion_tours(t, k):",
+  "    t = list(t)",
+  "    for i in range(1, k + 1):",
+  "        cle = t[i]",
+  "        j = i - 1",
+  "        while j >= 0 and t[j] > cle:",
+  "            t[j + 1] = t[j]",
+  "            j = j - 1",
+  "        t[j + 1] = cle",
+  "    return t",
+  "def comparaisons_selection(t):",
+  "    t, c = list(t), 0",
+  "    for i in range(len(t) - 1):",
+  "        i_min = i",
+  "        for j in range(i + 1, len(t)):",
+  "            c = c + 1",
+  "            if t[j] < t[i_min]:",
+  "                i_min = j",
+  "        t[i], t[i_min] = t[i_min], t[i]",
+  "    return c",
+  "def comparaisons_insertion(t):",
+  "    t, c = list(t), 0",
+  "    for i in range(1, len(t)):",
+  "        cle, j = t[i], i - 1",
+  "        while j >= 0:",
+  "            c = c + 1",
+  "            if t[j] <= cle:",
+  "                break",
+  "            t[j + 1] = t[j]",
+  "            j = j - 1",
+  "        t[j + 1] = cle",
+  "    return c"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Tris par sélection et par insertion",
+   "conventions": false,
+   "texte": [
+    "Algorithmique · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment ranger ces mangues de la plus petite à la plus grosse ?",
+   "texte": [
+    "Cinq mangues sont alignées sur l'étal du marché."
+   ],
+   "pistes": [
+    "Chercher la plus petite, puis la suivante… ?",
+    "Ou glisser chaque mangue à sa place ?"
+   ],
+   "schema": {
+    "type": "liste",
+    "elements": [
+     3,
+     5,
+     1,
+     4,
+     2
+    ],
+    "legende": "Tailles des mangues."
+   }
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Reconnaître] Chercher la plus petite de ce qui reste",
+   "objectif": "Reconnaître le tri par sélection dans une situation de la vie courante.",
+   "enonce": [
+    "Pour ranger des mangues de la plus petite à la plus grosse, on cherche la plus petite parmi celles qui restent, on la pose à la suite des mangues déjà rangées, et on recommence.",
+    "Quelle méthode de tri est décrite ?"
+   ],
+   "options": [
+    {
+     "texte": "Le tri par insertion",
+     "feedback": "L'insertion ne cherche pas le minimum : elle prend la mangue suivante, telle qu'elle vient, et la glisse à sa place parmi les mangues déjà rangées."
+    },
+    {
+     "texte": "Le tri par sélection",
+     "juste": true,
+     "feedback": "Oui. À chaque tour, on sélectionne le minimum de ce qui reste et on le place au bout de la partie rangée : c'est le tri par sélection."
+    },
+    {
+     "texte": "La recherche dichotomique",
+     "feedback": "La dichotomie ne range rien : elle cherche une valeur dans un tableau déjà trié. Ici, on range les mangues : c'est un tri."
+    },
+    {
+     "texte": "Le tri par insertion, car on insère au bout",
+     "feedback": "On pose bien la mangue au bout, mais le geste qui compte est de chercher la plus petite de ce qui reste : c'est la sélection."
+    }
+   ],
+   "explication": "Sélection : chercher le minimum de ce qui reste, le mettre à sa place."
+  },
+  {
+   "type": "notion",
+   "titre": "Le tri par sélection",
+   "texte": [
+    "On cherche le ==minimum== de la partie non triée.",
+    "On l'==échange== avec la première case de cette partie."
+   ],
+   "schema": {
+    "type": "liste",
+    "elements": [
+     1,
+     2,
+     8,
+     5
+    ],
+    "code": [
+     "liste = [5, 2, 8, 1]",
+     "liste[0], liste[3] = liste[3], liste[0]"
+    ],
+    "legende": "Tour 0 : 1 et 5 échangés."
+   },
+   "vocabulaire": "trier = sort ; tri par sélection = selection sort ; échanger = swap"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Sélection] Le premier tour",
+   "objectif": "Appliquer un tour du tri par sélection : un minimum, un seul échange.",
+   "enonce": [
+    "Le tableau `[6, 3, 9, 1, 4]` est trié par sélection.",
+    "Que contient-il après le premier tour ?"
+   ],
+   "options": [
+    {
+     "texte": "`[1, 6, 3, 9, 4]`",
+     "feedback": "Tu as glissé 1 au début en décalant les autres : c'est le geste de l'insertion. La sélection fait un seul échange : 1 et 6 changent de place."
+    },
+    {
+     "texte": "`[3, 6, 9, 1, 4]`",
+     "feedback": "C'est le premier tour du tri par insertion (3 glissé devant 6). La sélection cherche d'abord le minimum de tout le tableau : 1."
+    },
+    {
+     "texte": "`[1, 3, 4, 6, 9]`",
+     "feedback": "C'est le tableau entièrement trié. Un tour de sélection ne place qu'un seul élément : le minimum, en première case."
+    },
+    {
+     "texte": "`[1, 3, 9, 6, 4]`",
+     "juste": true,
+     "feedback": "Oui. Le minimum est 1, en case 3. Il est échangé avec 6, la première case : 6 prend la place de 1, le reste ne bouge pas."
+    }
+   ],
+   "explication": "Un tour de sélection : un minimum trouvé, un échange.",
+   "verifications": [
+    {
+     "code": [
+      "print(selection_tours([6, 3, 9, 1, 4], 1))"
+     ],
+     "sortie": "[1, 3, 9, 6, 4]"
+    },
+    {
+     "code": [
+      "print(insertion_tours([6, 3, 9, 1, 4], 1))"
+     ],
+     "sortie": "[3, 6, 9, 1, 4]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Sélection] Après deux tours",
+   "objectif": "Enchaîner deux tours du tri par sélection.",
+   "enonce": [
+    "Le tableau `[4, 3, 1, 2]` est trié par sélection.",
+    "Que contient-il après les deux premiers tours ?"
+   ],
+   "options": [
+    {
+     "texte": "`[1, 2, 4, 3]`",
+     "juste": true,
+     "feedback": "Exact. Tour 0 : 1 et 4 échangés, `[1, 3, 4, 2]`. Tour 1 : le minimum du reste est 2, échangé avec 3."
+    },
+    {
+     "texte": "`[1, 3, 4, 2]`",
+     "feedback": "C'est l'état après un seul tour. Le deuxième tour cherche le minimum de `[3, 4, 2]`, c'est 2, et l'échange avec 3."
+    },
+    {
+     "texte": "`[1, 2, 3, 4]`",
+     "feedback": "C'est le tableau trié, après tous les tours. Après deux tours, seules les deux premières cases sont à leur place définitive."
+    },
+    {
+     "texte": "`[1, 3, 2, 4]`",
+     "feedback": "Tu as échangé 2 avec la dernière case. L'échange se fait avec la première case de la partie non triée : ici 3, en case 1."
+    }
+   ],
+   "explication": "Après deux tours, les deux plus petits sont à leur place.",
+   "trace": {
+    "colonnes": [
+     "Tour",
+     "Minimum du reste",
+     "Tableau"
+    ],
+    "lignes": [
+     [
+      "0",
+      "1, échangé avec 4",
+      "[1, 3, 4, 2]"
+     ],
+     [
+      "1",
+      "2, échangé avec 3",
+      "[1, 2, 4, 3]"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [
+      "print(selection_tours([4, 3, 1, 2], 1), selection_tours([4, 3, 1, 2], 2))"
+     ],
+     "sortie": "[1, 3, 4, 2] [1, 2, 4, 3]"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le tri par insertion",
+   "texte": [
+    "On ==insère== l'élément suivant à sa place dans la partie triée.",
+    "Les plus grands se ==décalent==."
+   ],
+   "schema": {
+    "type": "liste",
+    "elements": [
+     2,
+     5,
+     8,
+     1
+    ],
+    "legende": "Au tour 3, 1 se glisse au début."
+   },
+   "vocabulaire": "tri par insertion = insertion sort ; insérer = insert"
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Insertion] Après trois tours",
+   "objectif": "Appliquer le tri par insertion : glisser chaque élément à sa place.",
+   "enonce": [
+    "Le tableau `[6, 3, 9, 1, 4]` est trié par insertion.",
+    "Que contient-il après les trois premiers tours ?"
+   ],
+   "options": [
+    {
+     "texte": "`[1, 3, 4, 6, 9]`",
+     "feedback": "C'est le tableau trié. Après trois tours, seuls les quatre premiers éléments sont rangés : 4, le dernier, attend encore son tour."
+    },
+    {
+     "texte": "`[1, 3, 9, 6, 4]`",
+     "feedback": "C'est le premier tour du tri par sélection (1 et 6 échangés). L'insertion n'échange pas avec le minimum : elle glisse chaque élément."
+    },
+    {
+     "texte": "`[1, 3, 6, 9, 4]`",
+     "juste": true,
+     "feedback": "Oui. 3 se glisse devant 6, puis 9 reste à sa place, puis 1 glisse tout au début : 9, 6 et 3 se décalent. 4 attend son tour."
+    },
+    {
+     "texte": "`[3, 6, 1, 9, 4]`",
+     "feedback": "1 s'est arrêté trop tôt. On décale tant que l'élément de gauche est plus grand : 9, 6 et 3 sont plus grands que 1, il va jusqu'au début."
+    }
+   ],
+   "explication": "L'insertion range le début du tableau, un élément de plus à chaque tour.",
+   "trace": {
+    "colonnes": [
+     "Tour",
+     "Élément pris",
+     "Tableau"
+    ],
+    "lignes": [
+     [
+      "1",
+      "3",
+      "[3, 6, 9, 1, 4]"
+     ],
+     [
+      "2",
+      "9",
+      "[3, 6, 9, 1, 4]"
+     ],
+     [
+      "3",
+      "1",
+      "[1, 3, 6, 9, 4]"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [
+      "for k in (1, 2, 3):",
+      "    print(insertion_tours([6, 3, 9, 1, 4], k))"
+     ],
+     "sortie": "[3, 6, 9, 1, 4]\n[3, 6, 9, 1, 4]\n[1, 3, 6, 9, 4]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Reconnaître] Quel tri a laissé cette trace ?",
+   "objectif": "Reconnaître un tri à la façon dont le tableau évolue.",
+   "enonce": [
+    "Un tableau passe par ces états, tour après tour : `[7, 2, 5, 1]`, `[2, 7, 5, 1]`, `[2, 5, 7, 1]`, `[1, 2, 5, 7]`.",
+    "Quel tri est utilisé ?"
+   ],
+   "options": [
+    {
+     "texte": "L'insertion : chaque élément suivant se glisse dans la partie triée.",
+     "juste": true,
+     "feedback": "Oui. 2, puis 5, puis 1 sont pris dans l'ordre et glissés à leur place à gauche. Le minimum 1 n'arrive qu'au dernier tour."
+    },
+    {
+     "texte": "La sélection : à chaque tour, le minimum du reste va au début.",
+     "feedback": "Avec la sélection, le minimum 1 serait en première case dès le premier tour. Ici, il n'arrive qu'au dernier tour."
+    },
+    {
+     "texte": "La sélection : à chaque tour, le plus grand arrive à sa place.",
+     "feedback": "Une sélection « par le maximum » existe, mais ici 7 n'est pas en dernière case après le premier tour. Les éléments sont pris dans l'ordre."
+    },
+    {
+     "texte": "L'insertion : à chaque tour, le minimum du reste est inséré au début.",
+     "feedback": "Le nom est juste, pas la raison : l'insertion ne cherche pas le minimum. Elle prend l'élément suivant, 2, puis 5, puis 1."
+    }
+   ],
+   "explication": "Minimum placé dès le premier tour : sélection. Éléments pris dans l'ordre : insertion.",
+   "verifications": [
+    {
+     "code": [
+      "for k in (1, 2, 3):",
+      "    print(insertion_tours([7, 2, 5, 1], k))"
+     ],
+     "sortie": "[2, 7, 5, 1]\n[2, 5, 7, 1]\n[1, 2, 5, 7]"
+    },
+    {
+     "code": [
+      "print(selection_tours([7, 2, 5, 1], 1))"
+     ],
+     "sortie": "[1, 2, 5, 7]"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le code de la sélection",
+   "texte": [
+    "`pos_min(t, i)` renvoie la ==position== du minimum, de la case `i` à la fin.",
+    "On l'==échange== avec la case `i`."
+   ],
+   "code": [
+    "def tri_selection(t):",
+    "    for i in range(len(t)):",
+    "        m = pos_min(t, i)",
+    "        # on échange",
+    "        x = t[i]",
+    "        t[i] = t[m]",
+    "        t[m] = x"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Code] À quoi sert `m` ?",
+   "objectif": "Lire le code de la recherche du minimum et le rôle de chaque variable.",
+   "enonce": [
+    "Voici la fonction `pos_min` utilisée par `tri_selection`. Ses deux boucles sont imbriquées : `pos_min` est appelée à chaque tour de `tri_selection`.",
+    "À quoi sert la variable `m` ?"
+   ],
+   "code": [
+    "def pos_min(t, i):",
+    "    m, n = i, len(t)",
+    "    for j in range(i+1, n):",
+    "        if t[j] < t[m]:",
+    "            m = j",
+    "    return m"
+   ],
+   "options": [
+    {
+     "texte": "Elle garde la plus petite valeur du tableau, pour l'échanger à la fin.",
+     "feedback": "C'est un indice, pas une valeur : `m = j` range une position. Avec la seule valeur, on ne saurait plus où faire l'échange."
+    },
+    {
+     "texte": "Elle compte le nombre d'échanges déjà faits.",
+     "feedback": "Aucune ligne n'ajoute 1 à `m`. Elle reçoit `i`, puis `j` quand `t[j]` est plus petit : c'est une position dans le tableau."
+    },
+    {
+     "texte": "Elle garde la position de la première case de la partie non triée.",
+     "feedback": "Ça, c'est `i`. `m` part de `i`, mais change dès qu'on trouve plus petit plus loin : elle finit sur la case du minimum."
+    },
+    {
+     "texte": "Elle garde la position du plus petit élément trouvé dans la partie non triée.",
+     "juste": true,
+     "feedback": "Oui. Avec cette position, `tri_selection` sait où est le minimum : elle peut l'échanger avec la case `i`."
+    }
+   ],
+   "explication": "`m` est l'indice du minimum : on sait où échanger.",
+   "verifications": [
+    {
+     "code": [
+      "t = [6, 3, 9, 1, 4]",
+      "print(pos_min(t, 0), pos_min(t, 1))",
+      "tri_selection(t)",
+      "print(t)"
+     ],
+     "sortie": "3 3\n[1, 3, 4, 6, 9]"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Trier en place",
+   "texte": [
+    "Ces tris ==modifient== le tableau et ne renvoient rien.",
+    "Écrire `t = tri_selection(t)` perd le tableau : `t` vaut `None`."
+   ],
+   "vocabulaire": "en place = in place"
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[En place] Ce que renvoie un tri en place",
+   "objectif": "Savoir qu'un tri en place modifie le tableau et renvoie `None`.",
+   "enonce": [
+    "On exécute le code suivant, avec la fonction `tri_selection` de l'écran précédent.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "notes = [12, 8, 15]",
+    "r = tri_selection(notes)",
+    "print(r, notes)"
+   ],
+   "options": [
+    {
+     "texte": "[8, 12, 15] [12, 8, 15]",
+     "feedback": "Tu as pensé que la fonction fabrique une copie triée. Elle modifie le tableau lui-même, et ne renvoie rien : `r` vaut `None`."
+    },
+    {
+     "texte": "None [8, 12, 15]",
+     "juste": true,
+     "feedback": "Exact. La fonction trie `notes` sur place et ne renvoie rien : `r` vaut `None`, et `notes` est trié."
+    },
+    {
+     "texte": "[8, 12, 15] [8, 12, 15]",
+     "feedback": "`notes` est bien trié. Mais la fonction n'a pas de `return` : elle renvoie `None`, et c'est ce que contient `r`."
+    },
+    {
+     "texte": "None [12, 8, 15]",
+     "feedback": "`r` vaut bien `None`. Mais le tri a eu lieu : la fonction a modifié `notes` lui-même, qui est maintenant trié."
+    }
+   ],
+   "explication": "Un tri en place modifie le tableau et renvoie `None`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "None [8, 12, 15]"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Un tri qui fait perdre le tableau",
+   "objectif": "Lire un message d'erreur et retrouver la ligne qui l'a provoqué, même plus haut.",
+   "enonce": [
+    "Ce programme range le tableau `t` des tailles de mangues (en cm) et doit afficher la plus petite. La fonction `tri_selection` est celle de l'écran « Le code de la sélection ».",
+    "Il s'arrête à la ligne 3 sur l'erreur `TypeError: 'NoneType' object is not subscriptable` (« on ne peut pas prendre une case de `None` »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "t = [14, 9, 12, 11]",
+    "t = tri_selection(t)",
+    "print(t[0])"
+   ],
+   "ligne": 2,
+   "correction": "tri_selection(t)",
+   "feedback": "Bien vu : `tri_selection` trie en place et renvoie `None`, et `t = ...` range ce `None` dans `t`. Corrigé, le programme affiche 9.",
+   "feedback_autre": "Cette ligne est correcte. Le message dit que `t` vaut `None` à la ligne 3 : cherche la ligne qui a donné à `t` la valeur `None`.",
+   "pieges": {
+    "3": "Python s'arrête bien ici, mais `t[0]` est juste si `t` est un tableau. Le problème vient d'avant : quelle ligne a fait de `t` un `None` ?"
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "9"
+    }
+   ],
+   "explication": "Un tri en place s'appelle seul : `tri_selection(t)`, jamais `t = tri_selection(t)`."
+  },
+  {
+   "type": "notion",
+   "titre": "Le coût",
+   "texte": [
+    "Pour ==n== éléments, environ ==n²== comparaisons : le coût est ==quadratique==.",
+    "Un tableau 10 fois plus grand : environ 100 fois plus de temps."
+   ],
+   "vocabulaire": "coût = cost ; quadratique = quadratic"
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Coût] Compter les comparaisons",
+   "objectif": "Compter les comparaisons du tri par sélection sur un petit tableau.",
+   "enonce": [
+    "Le tri par sélection compare `t[j] < t[m]` dans `pos_min`, à chaque tour.",
+    "Combien de comparaisons fait-il pour un tableau de 5 éléments ?"
+   ],
+   "options": [
+    {
+     "texte": "25",
+     "feedback": "5 × 5 = 25 donne l'ordre de grandeur, n², mais pas le compte exact : la partie non triée raccourcit à chaque tour, 4 + 3 + 2 + 1."
+    },
+    {
+     "texte": "5",
+     "feedback": "Une comparaison par élément ne suffit pas : à chaque tour, on compare le minimum provisoire à tous les éléments qui restent."
+    },
+    {
+     "texte": "10",
+     "juste": true,
+     "feedback": "Oui. Au tour 0, on compare 4 fois ; puis 3, 2, 1 fois, car la partie non triée raccourcit : 4 + 3 + 2 + 1 = 10."
+    },
+    {
+     "texte": "20",
+     "feedback": "Tu as compté 4 comparaisons à chaque tour, sur 5 tours. Mais il y a 4 tours, et la partie non triée raccourcit : 4, puis 3, 2, 1."
+    }
+   ],
+   "explication": "Sélection sur n éléments : (n − 1) + … + 1 = n(n − 1)/2 comparaisons.",
+   "verifications": [
+    {
+     "code": [
+      "print(comparaisons_selection([6, 3, 9, 1, 4]), comparaisons_selection([1, 2, 3, 4, 5]))"
+     ],
+     "sortie": "10 10"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Coût] Dix fois plus de notes",
+   "objectif": "Prévoir l'effet d'un coût quadratique sur le temps d'exécution.",
+   "enonce": [
+    "Un tri par sélection de 1 000 notes prend 2 secondes sur un ordinateur.",
+    "Combien de temps faut-il, environ, pour 10 000 notes sur le même ordinateur ?"
+   ],
+   "options": [
+    {
+     "texte": "20 secondes",
+     "feedback": "Ce serait vrai pour un coût linéaire, avec une seule boucle. Le tri par sélection a deux boucles imbriquées : 10 × 10 = 100 fois plus de comparaisons."
+    },
+    {
+     "texte": "2 secondes",
+     "feedback": "Le temps dépend du nombre de comparaisons, qui grandit avec la taille du tableau. Pour 10 fois plus de notes, environ 100 fois plus de comparaisons."
+    },
+    {
+     "texte": "2 000 secondes",
+     "feedback": "Tu as multiplié par 1 000 : ce serait un coût en n³, avec trois boucles imbriquées. Le tri par sélection en a deux : 10 × 10 = 100."
+    },
+    {
+     "texte": "200 secondes",
+     "juste": true,
+     "feedback": "Oui. 10 fois plus d'éléments, c'est 10 × 10 = 100 fois plus de comparaisons pour un coût quadratique : 2 × 100 = 200 secondes."
+    }
+   ],
+   "explication": "Coût quadratique : taille × 10, temps × 100.",
+   "verifications": [
+    {
+     "code": [
+      "def c(n):",
+      "    return n * (n - 1) // 2",
+      "print(c(1000), c(10000), round(c(10000) / c(1000)))"
+     ],
+     "sortie": "499500 49995000 100"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Pourquoi ça marche",
+   "texte": [
+    "Après le tour `i`, le début du tableau, jusqu'à la case `i`, est ==trié==.",
+    "C'est l'==invariant== : il prouve que le tri est juste."
+   ],
+   "vocabulaire": "invariant de boucle = loop invariant"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Invariant] Ce qui est vrai après chaque tour",
+   "objectif": "Distinguer l'invariant du tri par sélection de celui du tri par insertion.",
+   "enonce": [
+    "On trie `[6, 2, 9, 1]`. Après le tour `i = 1`, la sélection donne `[1, 2, 9, 6]` et l'insertion donne `[2, 6, 9, 1]`.",
+    "Quelle affirmation est juste ?"
+   ],
+   "options": [
+    {
+     "texte": "Les deux débuts sont triés ; seule la sélection a fini de placer le sien.",
+     "juste": true,
+     "feedback": "Exact. La sélection a placé les deux plus petits, 1 et 2, pour de bon. L'insertion a trié `[2, 6]`, mais 1 viendra encore s'y glisser."
+    },
+    {
+     "texte": "Seule la sélection a un début trié ; l'insertion n'a encore rien trié.",
+     "feedback": "`[2, 6]` est bien trié : l'insertion trie aussi le début du tableau, tour après tour. Simplement, 1 viendra encore s'y glisser."
+    },
+    {
+     "texte": "Dans les deux cas, les deux premières cases ont leur valeur définitive.",
+     "feedback": "Vrai pour la sélection, qui a placé 1 et 2. Avec l'insertion, 2 et 6 bougeront encore : 1 viendra se glisser devant eux."
+    },
+    {
+     "texte": "Aucun des deux n'a de début trié avant la fin du tri.",
+     "feedback": "Regarde les deux premières cases : `[1, 2]` et `[2, 6]` sont déjà triées. C'est l'invariant : il est vrai à la fin de chaque tour."
+    }
+   ],
+   "explication": "Les deux tris ont un début trié ; la sélection le place pour de bon.",
+   "verifications": [
+    {
+     "code": [
+      "print(selection_tours([6, 2, 9, 1], 2), insertion_tours([6, 2, 9, 1], 1))"
+     ],
+     "sortie": "[1, 2, 9, 6] [2, 6, 9, 1]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Choisir] Un rang presque trié",
+   "objectif": "Savoir que le tri par insertion est rapide sur un tableau presque trié.",
+   "enonce": [
+    "Pour la photo de classe, 10 élèves sont déjà rangé·e·s par taille, sauf deux voisin·e·s inversé·e·s.",
+    "Quel tri fait le moins de comparaisons pour finir de les ranger ?"
+   ],
+   "options": [
+    {
+     "texte": "La sélection : elle ne fait qu'un seul échange utile.",
+     "feedback": "Elle fait peu d'échanges utiles, mais elle cherche toujours le minimum dans tout le reste : 45 comparaisons pour 10 élèves, rangé·e·s ou pas."
+    },
+    {
+     "texte": "L'insertion : chaque élément est déjà presque à sa place.",
+     "juste": true,
+     "feedback": "Oui. À chaque tour, l'insertion s'arrête dès que l'élément de gauche est plus petit : 10 comparaisons ici, contre 45 pour la sélection."
+    },
+    {
+     "texte": "Les deux font autant de comparaisons : leur coût est quadratique.",
+     "feedback": "Quadratique, c'est le pire cas. Sur un rang presque trié, l'insertion s'arrête vite à chaque tour : 10 comparaisons ici, contre 45."
+    },
+    {
+     "texte": "Aucun : ces tris ne marchent pas sur un rang presque trié.",
+     "feedback": "Les deux tris marchent sur n'importe quel tableau, trié ou non. La question est leur vitesse : l'insertion profite de l'ordre déjà là."
+    }
+   ],
+   "explication": "Presque trié : l'insertion fait peu de comparaisons ; la sélection, toujours autant.",
+   "verifications": [
+    {
+     "code": [
+      "rang = [1, 2, 3, 5, 4, 6, 7, 8, 9, 10]",
+      "print(comparaisons_insertion(rang), comparaisons_selection(rang))"
+     ],
+     "sortie": "10 45"
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Sélection",
+     "Insertion"
+    ],
+    "lignes": [
+     [
+      "Geste",
+      "chercher le minimum du reste, l'échanger",
+      "prendre le suivant, l'insérer en décalant"
+     ],
+     [
+      "Après le tour `i`",
+      "début trié, à sa place définitive",
+      "début trié, pas encore définitif"
+     ],
+     [
+      "Coût",
+      "quadratique, toujours",
+      "quadratique ; rapide si presque trié"
+     ],
+     [
+      "En Python",
+      "en place : renvoie `None`",
+      "en place : renvoie `None`"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quel tri est encore flou pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu dérouler un tri par insertion devant un·e camarade ?"
+   ]
+  }
+ ]
+}
