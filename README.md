@@ -24,6 +24,46 @@ Tu veux d'abord découvrir QuizzNSI seul·e ? Ouvre l'animation [en mode démo](
 
 Une seule page projetée par séance : si une deuxième est ouverte (onglet dupliqué, autre ordinateur), la page avertit. Sans réseau, la page d'animation marche comme un simple diaporama, et la page élève propose le mode autonome.
 
+## Les cours
+
+22 cours-quiz d'introduction, un par fiche de [FichesNSI](https://babash.github.io/FichesNSI/), et 2 révisions. Le titre ouvre le mode autonome.
+
+**Première NSI** (12 introductions, 1 révision, dans l'ordre de l'année)
+
+| Cours-quiz | Gabarit | Liens |
+|---|---|---|
+| [Variables et opérateurs](https://babash.github.io/QuizzNSI/revision.html?cours=variables) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=variables) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=variables) |
+| [Conditions et boucles](https://babash.github.io/QuizzNSI/revision.html?cours=conditions-boucles) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=conditions-boucles) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=conditions-boucles) |
+| [Fonctions](https://babash.github.io/QuizzNSI/revision.html?cours=fonctions) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=fonctions) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=fonctions) |
+| [Révision : conditions, boucles, fonctions](https://babash.github.io/QuizzNSI/revision.html?cours=revision-conditions-boucles) | révision · 20 questions · 25 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=revision-conditions-boucles) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=revision-conditions-boucles) |
+| [Chaînes de caractères](https://babash.github.io/QuizzNSI/revision.html?cours=chaines) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=chaines) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=chaines) |
+| [Binaire et hexadécimal](https://babash.github.io/QuizzNSI/revision.html?cours=binaire) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=binaire) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=binaire) |
+| [Tableaux (listes)](https://babash.github.io/QuizzNSI/revision.html?cours=listes) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=listes) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=listes) |
+| [P-uplets (tuples)](https://babash.github.io/QuizzNSI/revision.html?cours=tuples) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=tuples) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=tuples) |
+| [Dictionnaires](https://babash.github.io/QuizzNSI/revision.html?cours=dictionnaires) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=dictionnaires) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=dictionnaires) |
+| [Parcours d'un tableau](https://babash.github.io/QuizzNSI/revision.html?cours=parcours-tableau) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=parcours-tableau) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=parcours-tableau) |
+| [Tris par sélection et insertion](https://babash.github.io/QuizzNSI/revision.html?cours=tris) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=tris) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=tris) |
+| [Recherche dichotomique](https://babash.github.io/QuizzNSI/revision.html?cours=dichotomie) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=dichotomie) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=dichotomie) |
+| [Algorithmes gloutons](https://babash.github.io/QuizzNSI/revision.html?cours=gloutons) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=gloutons) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=gloutons) |
+
+**Terminale NSI** (10 introductions, 1 révision, dans l'ordre de l'année)
+
+| Cours-quiz | Gabarit | Liens |
+|---|---|---|
+| [Programmation objet](https://babash.github.io/QuizzNSI/revision.html?cours=poo) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=poo) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=poo) |
+| [Piles et files](https://babash.github.io/QuizzNSI/revision.html?cours=piles-files) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=piles-files) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=piles-files) |
+| [Révision : piles et files](https://babash.github.io/QuizzNSI/revision.html?cours=revision-piles-files) | révision · 20 questions · 30 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=revision-piles-files) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=revision-piles-files) |
+| [Récursivité](https://babash.github.io/QuizzNSI/revision.html?cours=recursivite) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=recursivite) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=recursivite) |
+| [Tri fusion](https://babash.github.io/QuizzNSI/revision.html?cours=tri-fusion) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=tri-fusion) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=tri-fusion) |
+| [Arbres binaires](https://babash.github.io/QuizzNSI/revision.html?cours=arbres-binaires) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=arbres-binaires) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=arbres-binaires) |
+| [Arbres binaires de recherche](https://babash.github.io/QuizzNSI/revision.html?cours=abr) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=abr) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=abr) |
+| [Graphes](https://babash.github.io/QuizzNSI/revision.html?cours=graphes) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=graphes) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=graphes) |
+| [Bases de données et SQL](https://babash.github.io/QuizzNSI/revision.html?cours=sql) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=sql) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=sql) |
+| [Processus et ordonnancement](https://babash.github.io/QuizzNSI/revision.html?cours=processus) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=processus) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=processus) |
+| [Routage : RIP et OSPF](https://babash.github.io/QuizzNSI/revision.html?cours=routage) | introduction · 12 questions · 15 min | [animer](https://babash.github.io/QuizzNSI/animer.html?cours=routage) · [imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=routage) |
+
+Chaque introduction ne dit que l'essentiel de la notion : le reste va au cours ou TD applicatif, aux TP, au TD type bac et à la fiche de révision.
+
 ## Ce que font les élèves
 
 Deux gabarits de cours-quiz ([le format](cours/FORMAT.md#les-gabarits)) :
@@ -33,7 +73,7 @@ Deux gabarits de cours-quiz ([le format](cours/FORMAT.md#les-gabarits)) :
 | **Introduction** | la première rencontre avec une notion, avant le cours ou TD applicatif, les TP, le TD type bac et la feuille de révision | 15 min | 12 | 8 écrans au plus, 25 mots au plus chacun : l'enseignant·e présente à l'oral, on apprend par les questions et leurs feedbacks |
 | **Révision** | un bilan avant un contrôle | 25 à 45 min | 20 | peu ou pas de cours |
 
-Le premier cours, **piles et files**, est une introduction : 8 écrans très courts et 12 questions. Il part du quotidien à Mayotte (la boîte de chips en tube pour la pile, la file au doukabé et le bouchon vers Mamoudzou pour la file, les véhicules qui attendent la barge), puis passe à l'informatique (le bouton « Annuler », l'imprimante de la salle info).
+Le cours modèle, **piles et files**, est une introduction : 8 écrans très courts et 12 questions. Il part du quotidien à Mayotte (la boîte de chips en tube pour la pile, la file au doukabé et le bouchon vers Mamoudzou pour la file, les véhicules qui attendent la barge), puis passe à l'informatique (le bouton « Annuler », l'imprimante de la salle info).
 
 **« Conditions, boucles, fonctions »** (Première), est une séance de révision : pas de cours, mais [4 blocs de 5 questions](https://babash.github.io/QuizzNSI/animer.html?cours=revision-conditions-boucles) (les conditions, la boucle `for`, la boucle `while`, les fonctions). À la fin de chaque bloc, chaque élève note son score sur sa feuille de route : le quiz sert de bilan avant un contrôle.
 
@@ -50,7 +90,7 @@ Les 12 questions construisent la notion dans l'ordre :
 
 Les définitions (interface et implémentation), Python (`append`, `pop()`, `pop(0)` et son coût), la file à deux piles, les parenthèses et la pile d'appels viennent ensuite, dans le cours ou TD applicatif et le TD type bac, puis dans **[la révision « Piles et files »](https://babash.github.io/QuizzNSI/animer.html?cours=revision-piles-files)** (Terminale, 30 min) : 4 blocs de 5 questions (implémenter avec une liste, parcourir une pile, des files, applications), pour faire son bilan en fin de chapitre.
 
-Toutes les questions notées sont numérotées ensemble, quel que soit leur type : « Question 12 sur 12 » pour la ligne fautive de l'introduction (le nuage de mots, non noté, n'a pas de numéro). Quand un code s'arrête sur une erreur, le message réel de Python 3.13 s'affiche en entier dans une console compacte sous le code.
+Toutes les questions notées sont numérotées ensemble, quel que soit leur type : « Question 12 sur 12 » pour la ligne fautive de l'introduction (le nuage de mots, non noté, n'a pas de numéro). Dans une question « Trouve l'erreur » ou une ligne fautive dont le code s'arrête sur une erreur, le message réel de Python 3.13 s'affiche en entier (« Did you mean » compris) dans une console compacte sous le code ; le vérificateur exécute ce code et compare le message mot pour mot. Les messages de SQLite du cours SQL sont cités dans l'énoncé. Les autres codes n'affichent pas leur sortie : la trouver, c'est la question.
 
 Chaque question a un objectif affiché, quatre options tirées d'erreurs fréquentes et un feedback pour chacune. Chaque code affiché a été exécuté par le vérificateur.
 
@@ -77,7 +117,7 @@ Chaque question a un objectif affiché, quatre options tirées d'erreurs fréque
 - **Enregistré en ligne** (canaux temps réel de Supabase, sans aucune table) : rien. Le prénom ou le pseudo et les réponses passent en direct dans la séance, sans être gardés en ligne. Pas d'adresse électronique, pas de nom de famille.
 - **Visible par les autres** : pendant la séance seulement, ce que montre l'écran projeté (les pseudos présents, la répartition des réponses, les rebonds, le podium quand il est affiché, et les mots du nuage, sans les pseudos, au tableau et sur les téléphones, quand l'enseignant·e montre le nuage). Les réponses partent chiffrées pour la page projetée ; une fausse page projetée, ouverte par quelqu'un qui connaît le code, les reçoit aussi (voir les risques acceptés, [docs/DONNEES.md](docs/DONNEES.md)).
 - **Le nuage de mots** : le seul texte libre d'élève qui circule. Les mots partent chiffrés vers la page projetée ; rien ne s'affiche avant « Montrer le nuage » ; ensuite, les mots du tableau (jamais leur auteur·rice) partent en clair vers les téléphones de la classe, qui votent. Chaque mot est filtré (un ou deux mots, sans caractère spécial) et affiché comme du texte ; l'enseignant·e supprime un mot à tout moment, partout. Rien n'est gardé, ni en ligne ni sur les téléphones. Le filtre ne juge pas le sens : un mot déplacé s'affiche jusqu'à sa suppression (risques décrits dans [docs/DONNEES.md](docs/DONNEES.md)).
-- **Sur l'appareil** : le code de séance, le pseudo, un identifiant, les réponses et les points de la séance (pas les mots ni les voix du nuage), effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, les réponses du mode autonome ; pour rejouer le quiz, l'ordre tiré et les réponses, dans l'onglet seulement (effacés à sa fermeture).
+- **Sur l'appareil** : le code de séance, le pseudo, un identifiant, les réponses et les points de la séance (pas les mots ni les voix du nuage), effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, la progression du mode autonome, gardée un jour après le dernier passage ; pour rejouer le quiz, l'ordre tiré et les réponses, dans l'onglet seulement (effacés à sa fermeture).
 - **Pour effacer** : rien à effacer en ligne ; sur l'appareil, « Quitter » ou « Recommencer à zéro », ou l'effacement des données du navigateur.
 
 Le détail : [docs/DONNEES.md](docs/DONNEES.md).
@@ -106,7 +146,6 @@ Chaque téléphone calcule ses propres points ; la page projetée fait seule foi
 
 ## Feuille de route
 
-- **Un cours-quiz d'introduction par fiche de FichesNSI** (21 autres fiches), au gabarit introduction, sur le modèle de piles et files ;
 - **Un essai en classe**, pour régler le temps par question et le barème ;
 - **Les cours de SNT**, avec les compétences Pix explicitées.
 
