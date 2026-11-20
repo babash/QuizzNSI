@@ -1,0 +1,654 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "routage",
+ "titre": "Le routage : RIP et OSPF",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Terminale NSI",
+ "programme": "Architectures matérielles, systèmes d'exploitation et réseaux : protocoles de routage (identifier, suivant le protocole de routage utilisé, RIP ou OSPF, la route empruntée par un paquet)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/routage/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision FichesNSI « Le routage : RIP et OSPF » (Terminale NSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je lis une table de routage : la passerelle et la métrique d'une destination.",
+  "Niveau 2 : je trouve la route choisie par RIP (le moins de sauts) et par OSPF (le plus petit coût).",
+  "Niveau 3 : je calcule un coût OSPF et je mets une table à jour après une panne."
+ ],
+ "conventions": [
+  "RIP : la métrique est le nombre de sauts, c'est-à-dire de liens entre routeurs ; un voisin direct est à 1 saut.",
+  "OSPF : le coût d'un lien vaut 10⁸ / débit, le débit en bit/s ; le coût d'une route est la somme des coûts de ses liens.",
+  "1 Mbit/s = 10⁶ bit/s ; 1 Gbit/s = 10⁹ bit/s."
+ ],
+ "prelude_python": [
+  "liens = {('A', 'B'): 10**7, ('B', 'E'): 10**7, ('A', 'C'): 10**8, ('C', 'D'): 10**8, ('D', 'E'): 10**8}",
+  "def debit(a, b):",
+  "    return liens.get((a, b), liens.get((b, a)))",
+  "def routes(dep, arr, sans=(), chemin=None):",
+  "    chemin = (chemin or []) + [dep]",
+  "    if dep == arr:",
+  "        return [chemin]",
+  "    res = []",
+  "    for (a, b) in liens:",
+  "        if (a, b) in sans or dep not in (a, b):",
+  "            continue",
+  "        v = b if a == dep else a",
+  "        if v not in chemin:",
+  "            res += routes(v, arr, sans, chemin)",
+  "    return res",
+  "def sauts(r):",
+  "    return len(r) - 1",
+  "def cout_route(r):",
+  "    return sum(10**8 / debit(a, b) for a, b in zip(r, r[1:]))",
+  "def rip(dep, arr, sans=()):",
+  "    r = min(routes(dep, arr, sans), key=sauts)",
+  "    return '-'.join(r), sauts(r)",
+  "def ospf(dep, arr, sans=()):",
+  "    r = min(routes(dep, arr, sans), key=cout_route)",
+  "    return '-'.join(r), cout_route(r)"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Le routage : RIP et OSPF",
+   "conventions": false,
+   "texte": [
+    "Thème 4 · Réseaux · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Vers Mamoudzou : la route la plus courte, ou la plus rapide ?",
+   "texte": [
+    "Le matin, la route directe est bouchée ; le détour roule."
+   ],
+   "pistes": [
+    "Compter les étapes, ou compter le temps ?"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Routeur et table de routage",
+   "texte": [
+    "Un ==routeur== transmet chaque paquet au ==prochain saut== : un routeur voisin.",
+    "Sa ==table de routage== donne, pour chaque destination, la passerelle et la ==métrique==."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 287 167\" width=\"287\" height=\"167\" role=\"img\" aria-label=\"Table de routage RIP du routeur A : vers B, passerelle B, 1 saut ; vers C, passerelle C, 1 saut ; vers D, passerelle C, 2 sauts ; vers E, passerelle B, 2 sauts.\"><title>Table de routage RIP du routeur A : vers B, passerelle B, 1 saut ; vers C, passerelle C, 1 saut ; vers D, passerelle C, 2 sauts ; vers E, passerelle B, 2 sauts.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">table de routage de A (RIP)</text><rect x=\"4\" y=\"28\" width=\"104\" height=\"27\" class=\"case sommet\"/><text x=\"56.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">destination</text><rect x=\"108\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"156.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">passerelle</text><rect x=\"204\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"243.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">métrique</text><rect x=\"4\" y=\"55\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"108\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"204\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"82\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"108\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"204\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"109\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"108\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"204\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"136\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">E</text><rect x=\"108\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"204\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">2</text></svg>"
+   },
+   "vocabulaire": "routeur = router ; prochain saut = next hop ; passerelle = gateway ; métrique = metric"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Table de routage] À qui transmettre ?",
+   "objectif": "Lire une table de routage : la passerelle vers une destination.",
+   "enonce": [
+    "Le routeur A reçoit un paquet pour le routeur D. Voici sa table de routage.",
+    "À quel routeur A transmet-il le paquet ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 287 167\" width=\"287\" height=\"167\" role=\"img\" aria-label=\"Table de routage RIP du routeur A : vers B, passerelle B, 1 saut ; vers C, passerelle C, 1 saut ; vers D, passerelle C, 2 sauts ; vers E, passerelle B, 2 sauts.\"><title>Table de routage RIP du routeur A : vers B, passerelle B, 1 saut ; vers C, passerelle C, 1 saut ; vers D, passerelle C, 2 sauts ; vers E, passerelle B, 2 sauts.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">table de routage de A (RIP)</text><rect x=\"4\" y=\"28\" width=\"104\" height=\"27\" class=\"case sommet\"/><text x=\"56.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">destination</text><rect x=\"108\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"156.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">passerelle</text><rect x=\"204\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"243.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">métrique</text><rect x=\"4\" y=\"55\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"108\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"204\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"82\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"108\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"204\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"109\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"108\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"204\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"136\" width=\"104\" height=\"27\" class=\"case\"/><text x=\"56.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">E</text><rect x=\"108\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"156.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"204\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"243.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">2</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "À D, directement",
+     "feedback": "A et D ne sont pas voisins : aucun lien ne les relie. Un routeur ne transmet qu'à un voisin, celui que donne la colonne passerelle."
+    },
+    {
+     "texte": "À B",
+     "feedback": "B est la passerelle vers E, pas vers D. Cherche la ligne dont la destination est D."
+    },
+    {
+     "texte": "À C",
+     "juste": true,
+     "feedback": "Oui : la ligne de la destination D donne la passerelle C. A ne s'occupe que du prochain saut ; C fera de même avec sa propre table."
+    },
+    {
+     "texte": "À tous ses voisins, B et C",
+     "feedback": "Un routeur n'envoie pas le paquet partout : il choisit un seul prochain saut, grâce à sa table."
+    }
+   ],
+   "explication": "La passerelle d'une ligne est le prochain saut vers sa destination.",
+   "verifications": [
+    {
+     "code": [
+      "print(rip('A', 'D'))"
+     ],
+     "sortie": "('A-C-D', 2)"
+    }
+   ],
+   "note_verification": "Lecture de la table de routage donnée (elle est recalculée dans la vérification)."
+  },
+  {
+   "type": "notion",
+   "titre": "RIP : compter les sauts",
+   "texte": [
+    "==RIP== choisit la route qui traverse le moins de liens : le moins de ==sauts==.",
+    "Chaque routeur envoie régulièrement sa table à ses voisins."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.\"><title>Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"190\" y1=\"30\" x2=\"340\" y2=\"95\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"110\" y1=\"175\" x2=\"270\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"224.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"265.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"145.0\" y=\"164.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"190.0\" y=\"180.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text></svg>"
+   },
+   "vocabulaire": "RIP = Routing Information Protocol ; saut = hop"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[RIP] La route de A vers E",
+   "objectif": "Identifier la route choisie par le protocole RIP.",
+   "enonce": [
+    "Les routeurs utilisent le protocole RIP.",
+    "Quelle route suit un paquet de A vers E ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.\"><title>Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"190\" y1=\"30\" x2=\"340\" y2=\"95\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"110\" y1=\"175\" x2=\"270\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"224.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"265.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"145.0\" y=\"164.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"190.0\" y=\"180.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "A-B-E, en 2 sauts",
+     "juste": true,
+     "feedback": "Oui : RIP compte les sauts. A-B-E en a 2, A-C-D-E en a 3. Le débit des liens ne compte pas pour RIP."
+    },
+    {
+     "texte": "A-C-D-E, en 3 sauts",
+     "feedback": "C'est la route la plus rapide, mais RIP ne regarde pas le débit : il compte les sauts, et A-B-E n'en a que 2."
+    },
+    {
+     "texte": "A-E, en 1 saut",
+     "feedback": "Aucun lien ne relie A et E directement : le paquet doit traverser au moins un routeur."
+    },
+    {
+     "texte": "A-C-D-E, en 2 sauts",
+     "feedback": "Compte les liens traversés : A-C, C-D, D-E, cela fait 3 sauts. A-B-E en fait 2."
+    }
+   ],
+   "explication": "RIP : la route qui a le moins de sauts.",
+   "verifications": [
+    {
+     "code": [
+      "print(rip('A', 'E'), sauts(['A', 'C', 'D', 'E']))"
+     ],
+     "sortie": "('A-B-E', 2) 3"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[RIP] Ce que B annonce à A",
+   "objectif": "Comprendre la mise à jour d'une table de routage RIP.",
+   "enonce": [
+    "B envoie sa table à son voisin A : « je suis à 1 saut de E ». A n'a pas de meilleure route vers E.",
+    "Quelle ligne A écrit-il dans sa table pour la destination E ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.\"><title>Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"190\" y1=\"30\" x2=\"340\" y2=\"95\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"110\" y1=\"175\" x2=\"270\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"224.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"265.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"145.0\" y=\"164.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"190.0\" y=\"180.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Passerelle B, métrique 1",
+     "feedback": "B est à 1 saut de E, mais A est encore à 1 saut de B. A ajoute ce saut : 1 + 1 = 2."
+    },
+    {
+     "texte": "Passerelle E, métrique 2",
+     "feedback": "La passerelle est le voisin à qui transmettre, ici B. E n'est pas voisin de A."
+    },
+    {
+     "texte": "Passerelle B, métrique 3",
+     "feedback": "A ajoute un seul saut, celui qui le sépare de B : 1 + 1 = 2."
+    },
+    {
+     "texte": "Passerelle B, métrique 2",
+     "juste": true,
+     "feedback": "Oui : pour aller à E, A passe par B (le prochain saut), et ajoute 1 saut, celui de A à B : 1 + 1 = 2."
+    }
+   ],
+   "explication": "RIP : métrique annoncée par le voisin + 1, passerelle = ce voisin.",
+   "verifications": [
+    {
+     "code": [
+      "print(rip('B', 'E'), rip('A', 'E'))"
+     ],
+     "sortie": "('B-E', 1) ('A-B-E', 2)"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[RIP] Ce que sait un routeur",
+   "objectif": "Savoir ce que contient la table d'un routeur RIP.",
+   "enonce": [
+    "Les routeurs utilisent RIP.",
+    "Que sait le routeur A de la route vers E ?"
+   ],
+   "options": [
+    {
+     "texte": "Toute la route : A, puis B, puis E.",
+     "feedback": "A ne connaît que le premier pas, vers B. B, à son tour, choisira le suivant avec sa propre table."
+    },
+    {
+     "texte": "Son prochain saut (B) et la distance (2 sauts).",
+     "juste": true,
+     "feedback": "Oui : avec RIP, un routeur ne connaît que ce que ses voisins lui annoncent. Il ne voit pas toute la route."
+    },
+    {
+     "texte": "La carte complète du réseau et le débit de chaque lien.",
+     "feedback": "C'est ce que sait un routeur OSPF. Avec RIP, chacun ne reçoit que les tables de ses voisins."
+    },
+    {
+     "texte": "Rien : il envoie le paquet au hasard.",
+     "feedback": "A sait à qui transmettre : sa table de routage donne, pour E, la passerelle B et la métrique 2."
+    }
+   ],
+   "explication": "RIP : un routeur ne connaît que le prochain saut et la distance.",
+   "note_verification": "Fonctionnement du protocole RIP (à vecteur de distances) : fiche FichesNSI « Le routage : RIP et OSPF »."
+  },
+  {
+   "type": "notion",
+   "titre": "OSPF : additionner des coûts",
+   "texte": [
+    "==OSPF== connaît toute la carte et choisit le plus petit ==coût== total.",
+    "Coût d'un lien : 10⁸ / débit (en bit/s). Un lien rapide coûte peu."
+   ],
+   "code": [
+    "def cout(debit):  # bit/s",
+    "    return 10**8 / debit",
+    "cout(10**7)  # 10.0",
+    "cout(10**8)  # 1.0"
+   ],
+   "vocabulaire": "OSPF = Open Shortest Path First ; coût = cost ; débit = bandwidth"
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[OSPF] Le coût d'un lien à 1 Gbit/s",
+   "objectif": "Calculer le coût OSPF d'un lien à partir de son débit.",
+   "enonce": [
+    "Un lien a un débit de 1 Gbit/s, c'est-à-dire 10⁹ bit/s.",
+    "Quel est son coût OSPF ?"
+   ],
+   "code": [
+    "def cout(debit):  # bit/s",
+    "    return 10**8 / debit",
+    "x = cout(10**9)"
+   ],
+   "options": [
+    {
+     "texte": "0,1",
+     "juste": true,
+     "feedback": "Oui : 10⁸ / 10⁹ = 0,1. Plus le lien est rapide, plus son coût est petit."
+    },
+    {
+     "texte": "10",
+     "feedback": "Tu as fait le calcul à l'envers, débit / 10⁸. Le coût est 10⁸ / débit : un lien rapide doit coûter peu."
+    },
+    {
+     "texte": "10⁸",
+     "feedback": "Tu as divisé par 1, le nombre de Gbit/s. Le débit s'écrit en bit/s : 1 Gbit/s = 10⁹ bit/s."
+    },
+    {
+     "texte": "100 000",
+     "feedback": "Tu as divisé par 1 000, comme si le débit était en Mbit/s. En bit/s, 1 Gbit/s = 10⁹ bit/s : le coût vaut 0,1."
+    }
+   ],
+   "explication": "Coût OSPF = 10⁸ / débit en bit/s.",
+   "verifications": [
+    {
+     "code": [
+      "print(x, 10**9 / 10**8, cout(1), cout(1000))"
+     ],
+     "sortie": "0.1 10.0 100000000.0 100000.0"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[OSPF] La route de A vers E",
+   "objectif": "Identifier la route choisie par le protocole OSPF.",
+   "enonce": [
+    "Les routeurs utilisent maintenant OSPF.",
+    "Quelle route suit un paquet de A vers E ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.\"><title>Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"190\" y1=\"30\" x2=\"340\" y2=\"95\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"110\" y1=\"175\" x2=\"270\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"224.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"265.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"145.0\" y=\"164.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"190.0\" y=\"180.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "A-B-E, coût 20",
+     "feedback": "Le calcul est juste, mais A-C-D-E ne coûte que 3. OSPF choisit le plus petit coût total, même avec plus de sauts."
+    },
+    {
+     "texte": "A-B-E, coût 2",
+     "feedback": "2 est le nombre de sauts de A-B-E, la métrique de RIP. OSPF additionne des coûts : 10 + 10 = 20 par B."
+    },
+    {
+     "texte": "A-C-D-E, coût 300",
+     "feedback": "Tu as additionné les débits (en Mbit/s). OSPF additionne les coûts, 10⁸ / débit : 1 par lien à 100 Mbit/s."
+    },
+    {
+     "texte": "A-C-D-E, coût 3",
+     "juste": true,
+     "feedback": "Oui : trois liens à 100 Mbit/s, de coût 1 chacun : 1 + 1 + 1 = 3. Par B, deux liens à 10 Mbit/s coûtent 10 + 10 = 20."
+    }
+   ],
+   "explication": "OSPF : la route de plus petit coût total, même si elle a plus de sauts.",
+   "verifications": [
+    {
+     "code": [
+      "print(ospf('A', 'E'), cout_route(['A', 'B', 'E']))"
+     ],
+     "sortie": "('A-C-D-E', 3.0) 20.0"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[OSPF] La ligne de E dans la table de A",
+   "objectif": "Écrire une ligne de la table de routage OSPF : passerelle et coût.",
+   "enonce": [
+    "Avec OSPF, quelle est la ligne de la destination E dans la table de routage de A ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.\"><title>Réseau : Cinq routeurs. A relié à B (10 Mbit/s) et à C (100 Mbit/s) ; B relié à E (10 Mbit/s) ; C relié à D (100 Mbit/s) ; D relié à E (100 Mbit/s). Traits pointillés : 10 Mbit/s ; traits épais : 100 Mbit/s.</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"190\" y1=\"30\" x2=\"340\" y2=\"95\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"110\" y1=\"175\" x2=\"270\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"224.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"265.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"145.0\" y=\"164.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"190.0\" y=\"180.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Passerelle D, coût 3",
+     "feedback": "D est le dernier routeur avant E. La passerelle est le prochain saut depuis A : C."
+    },
+    {
+     "texte": "Passerelle B, coût 20",
+     "feedback": "Avec OSPF, A ne passe pas par B : la route par C coûte 3, moins que 20."
+    },
+    {
+     "texte": "Passerelle C, coût 3",
+     "juste": true,
+     "feedback": "Oui : la route choisie est A-C-D-E. La passerelle est le premier routeur après A, C ; la métrique est le coût total, 3."
+    },
+    {
+     "texte": "Passerelle C, coût 1",
+     "feedback": "1 est le coût du seul lien A-C. La métrique de la table est le coût de toute la route : 3."
+    }
+   ],
+   "explication": "Dans une table : la passerelle est le premier pas, la métrique compte toute la route.",
+   "verifications": [
+    {
+     "code": [
+      "r, c = ospf('A', 'E')",
+      "print(r.split('-')[1], c)"
+     ],
+     "sortie": "C 3.0"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Protocoles] Le bouchon jusqu'à Mamoudzou",
+   "objectif": "Relier le choix d'une route à la métrique d'un protocole.",
+   "enonce": [
+    "Le matin, une application de navigation propose un détour par une route plus longue mais fluide, plutôt que la route directe, bouchée.",
+    "Elle raisonne comme quel protocole ?"
+   ],
+   "options": [
+    {
+     "texte": "Comme RIP : elle compte les étapes.",
+     "feedback": "RIP prendrait la route directe, qui a le moins d'étapes, même bouchée. L'application regarde le temps, comme OSPF regarde le coût."
+    },
+    {
+     "texte": "Comme RIP : elle choisit la route la plus rapide.",
+     "feedback": "RIP ne connaît pas la vitesse des liens : il ne compte que les sauts. C'est OSPF qui tient compte du débit."
+    },
+    {
+     "texte": "Comme OSPF : elle choisit la route la plus courte en kilomètres.",
+     "feedback": "Le détour est plus long en kilomètres. OSPF ne mesure pas la longueur : son coût dépend du débit, comme ici le temps dépend du trafic."
+    },
+    {
+     "texte": "Comme OSPF : elle additionne des coûts, ici des temps de trajet.",
+     "juste": true,
+     "feedback": "Oui : OSPF choisit le plus petit coût total, comme l'application choisit le plus petit temps. Le nombre d'étapes compte peu."
+    }
+   ],
+   "explication": "RIP compte les sauts ; OSPF additionne des coûts liés au débit.",
+   "note_verification": "Analogie : question de compréhension, sans calcul."
+  },
+  {
+   "type": "notion",
+   "titre": "Quand un lien tombe",
+   "texte": [
+    "Les routeurs ==mettent à jour== leurs tables.",
+    "La route change, s'il en existe une autre."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Le réseau, avec le lien C–D en panne (croix) : il reste A-B-E.\"><title>Le réseau, avec le lien C–D en panne (croix) : il reste A-B-E.</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"190\" y1=\"30\" x2=\"340\" y2=\"95\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"224.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"265.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text><line x1=\"178.0\" y1=\"163.0\" x2=\"202.0\" y2=\"187.0\" class=\"trait\" style=\"stroke-width:4\"/><line x1=\"178.0\" y1=\"187.0\" x2=\"202.0\" y2=\"163.0\" class=\"trait\" style=\"stroke-width:4\"/></svg>"
+   },
+   "vocabulaire": "panne = failure ; mise à jour = update"
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[OSPF] Le lien C–D en panne",
+   "objectif": "Trouver la nouvelle route OSPF après une panne.",
+   "enonce": [
+    "Le lien C–D tombe en panne. Les routeurs utilisent OSPF.",
+    "Quelle route prend un paquet de A vers E ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Le réseau, avec le lien C–D en panne (croix).\"><title>Le réseau, avec le lien C–D en panne (croix).</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"190\" y1=\"30\" x2=\"340\" y2=\"95\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"224.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"265.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text><line x1=\"178.0\" y1=\"163.0\" x2=\"202.0\" y2=\"187.0\" class=\"trait\" style=\"stroke-width:4\"/><line x1=\"178.0\" y1=\"187.0\" x2=\"202.0\" y2=\"163.0\" class=\"trait\" style=\"stroke-width:4\"/></svg>"
+   },
+   "options": [
+    {
+     "texte": "A-B-E, coût 20",
+     "juste": true,
+     "feedback": "Oui : sans C–D, il ne reste que la route par B. Elle coûte 10 + 10 = 20 : plus cher, mais c'est la seule."
+    },
+    {
+     "texte": "A-C-D-E, coût 3",
+     "feedback": "Cette route passe par le lien C–D, qui est en panne : elle n'existe plus. Les tables sont mises à jour."
+    },
+    {
+     "texte": "Aucune : E est injoignable.",
+     "feedback": "Il reste une route, par B. Elle est plus lente, mais elle existe : OSPF la prend."
+    },
+    {
+     "texte": "A-C-E, coût 2",
+     "feedback": "Aucun lien ne relie C et E directement. Sans C–D, la seule route passe par B."
+    }
+   ],
+   "explication": "Après une panne, le protocole choisit la meilleure route qui reste.",
+   "verifications": [
+    {
+     "code": [
+      "print(ospf('A', 'E', sans=[('C', 'D')]))"
+     ],
+     "sortie": "('A-B-E', 20.0)"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[RIP] Le lien B–E en panne",
+   "objectif": "Trouver la nouvelle route RIP après une panne.",
+   "enonce": [
+    "Le lien B–E tombe en panne. Les routeurs utilisent RIP.",
+    "Quelle ligne A écrit-il pour la destination E ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 380 205\" width=\"380\" height=\"205\" role=\"img\" aria-label=\"Le réseau, avec le lien B–E en panne (croix).\"><title>Le réseau, avec le lien B–E en panne (croix).</title><line x1=\"40\" y1=\"95\" x2=\"190\" y2=\"30\" class=\"trait\" stroke-dasharray=\"6 4\"/><line x1=\"40\" y1=\"95\" x2=\"110\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"110\" y1=\"175\" x2=\"270\" y2=\"175\" class=\"trait\" style=\"stroke-width:5\"/><line x1=\"270\" y1=\"175\" x2=\"340\" y2=\"95\" class=\"trait\" style=\"stroke-width:5\"/><rect x=\"74.0\" y=\"51.5\" width=\"82\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"115.0\" y=\"67.5\" text-anchor=\"middle\" class=\"petit\">10 Mbit/s</text><rect x=\"30.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"75.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"145.0\" y=\"164.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"190.0\" y=\"180.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"260.0\" y=\"124.0\" width=\"90\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"305.0\" y=\"140.0\" text-anchor=\"middle\" class=\"petit\">100 Mbit/s</text><rect x=\"26.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"40\" y=\"100\" text-anchor=\"middle\" class=\"val\">A</text><rect x=\"176.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"190\" y=\"35\" text-anchor=\"middle\" class=\"val\">B</text><rect x=\"96.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"110\" y=\"180\" text-anchor=\"middle\" class=\"val\">C</text><rect x=\"256.5\" y=\"160\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"270\" y=\"180\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"326.5\" y=\"80\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"340\" y=\"100\" text-anchor=\"middle\" class=\"val\">E</text><line x1=\"253.0\" y1=\"50.5\" x2=\"277.0\" y2=\"74.5\" class=\"trait\" style=\"stroke-width:4\"/><line x1=\"253.0\" y1=\"74.5\" x2=\"277.0\" y2=\"50.5\" class=\"trait\" style=\"stroke-width:4\"/></svg>"
+   },
+   "options": [
+    {
+     "texte": "Passerelle B, métrique 2",
+     "feedback": "C'était la ligne d'avant la panne. Sans le lien B–E, la route par B n'existe plus."
+    },
+    {
+     "texte": "Passerelle C, métrique 3",
+     "juste": true,
+     "feedback": "Oui : il ne reste que A-C-D-E, en 3 sauts. Le prochain saut est C."
+    },
+    {
+     "texte": "Passerelle D, métrique 3",
+     "feedback": "D n'est pas voisin de A : la passerelle est le prochain saut, C."
+    },
+    {
+     "texte": "Passerelle C, métrique 2",
+     "feedback": "Compte les liens de A-C-D-E : A-C, C-D, D-E. Cela fait 3 sauts."
+    }
+   ],
+   "explication": "Après une panne, RIP reprend la route qui a le moins de sauts parmi celles qui restent.",
+   "verifications": [
+    {
+     "code": [
+      "print(rip('A', 'E', sans=[('B', 'E')]))"
+     ],
+     "sortie": "('A-C-D-E', 3)"
+    }
+   ]
+  },
+  {
+   "type": "relier",
+   "id": "mots-routage",
+   "nom": "[Vocabulaire] Les mots du routage",
+   "objectif": "Associer chaque mot du routage à sa définition.",
+   "enonce": [
+    "Relier chaque définition au mot qui lui correspond."
+   ],
+   "paires": [
+    {
+     "gauche": "Relie plusieurs réseaux et aiguille les paquets",
+     "droite": "un routeur",
+     "feedback": "Le routeur choisit, pour chaque paquet, le voisin à qui le transmettre."
+    },
+    {
+     "gauche": "Le voisin à qui transmettre le paquet",
+     "droite": "la passerelle",
+     "feedback": "La passerelle, ou prochain saut, est donnée par la table de routage."
+    },
+    {
+     "gauche": "La « distance » d'une route dans la table",
+     "droite": "la métrique",
+     "feedback": "La métrique : des sauts pour RIP, un coût pour OSPF."
+    },
+    {
+     "gauche": "Choisit la route qui a le moins de sauts",
+     "droite": "RIP",
+     "feedback": "RIP compte les sauts, sans regarder le débit des liens."
+    },
+    {
+     "gauche": "Choisit la route de plus petit coût total",
+     "droite": "OSPF",
+     "feedback": "OSPF additionne les coûts, 10⁸ / débit pour chaque lien."
+    }
+   ],
+   "explication": "Routeur, passerelle (prochain saut), métrique ; RIP compte les sauts, OSPF additionne des coûts."
+  },
+  {
+   "type": "ligne",
+   "id": "cout-route",
+   "nom": "[Erreur] Le coût d'une route",
+   "objectif": "Lire un message d'erreur dans un calcul de coût OSPF.",
+   "enonce": [
+    "Ce programme doit calculer le coût OSPF de la route A-C-D-E. Le dictionnaire `d` donne le débit de chaque lien.",
+    "Il s'arrête sur l'erreur `TypeError: unsupported operand type(s) for /: 'int' and 'str'` (« on ne peut pas diviser un entier par une chaîne »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "d = {\"A-C\": 10**8,",
+    "     \"C-D\": 10**8,",
+    "     \"D-E\": 10**8}",
+    "def cout(debit):",
+    "    return 10**8 / debit",
+    "total = 0",
+    "for lien in d:",
+    "    total += cout(lien)",
+    "print(total)"
+   ],
+   "ligne": 8,
+   "correction": "    total += cout(d[lien])",
+   "feedback": "Bien vu : `lien` est une clé du dictionnaire, la chaîne \"A-C\". Le débit est la valeur `d[lien]`. Corrigé, le programme affiche 3.0.",
+   "feedback_autre": "Cette ligne est correcte. Le message dit qu'on divise un entier par une chaîne : cherche quelle chaîne arrive dans `cout`.",
+   "pieges": {
+    "5": "La division est bien là, mais la formule est juste : 10⁸ / débit. C'est la valeur reçue par `cout` qui est une chaîne : cherche l'appel.",
+    "7": "`for lien in d` parcourt les clés du dictionnaire : c'est voulu. Mais une clé est une chaîne, pas un débit : regarde ce qu'on passe à `cout`."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    },
+    {
+     "code": [
+      "try:",
+      "    10**8 / 'A-C'",
+      "except TypeError as e:",
+      "    print('TypeError:', e)"
+     ],
+     "sortie": "TypeError: unsupported operand type(s) for /: 'int' and 'str'",
+     "reprendre_code": false
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "3.0"
+    }
+   ],
+   "explication": "Une boucle sur un dictionnaire donne les clés ; la valeur s'obtient avec `d[cle]`."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "RIP",
+     "OSPF"
+    ],
+    "lignes": [
+     [
+      "Métrique",
+      "le nombre de sauts",
+      "le coût total : 10⁸ / débit par lien"
+     ],
+     [
+      "Ce que sait un routeur",
+      "les tables de ses voisins",
+      "toute la carte du réseau"
+     ],
+     [
+      "Route de A vers E",
+      "A-B-E (2 sauts)",
+      "A-C-D-E (coût 3)"
+     ],
+     [
+      "Dans la table",
+      "destination, passerelle (prochain saut), métrique",
+      "idem"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu trouver la route choisie par RIP, puis par OSPF ?"
+   ]
+  }
+ ]
+}

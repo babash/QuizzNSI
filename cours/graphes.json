@@ -1,0 +1,800 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "graphes",
+ "titre": "Les graphes",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Terminale NSI",
+ "programme": "Structures de données : graphes, structures relationnelles (sommets, arcs, arêtes, graphes orientés ou non orientés ; matrice d'adjacence, liste de successeurs) ; algorithmique : parcours en largeur d'abord",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/graphes/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision FichesNSI « Les graphes » (Terminale NSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je reconnais les sommets, les arêtes, les voisins et le degré d'un sommet.",
+  "Niveau 2 : je trouve un chemin, un cycle, et je passe d'un dessin à un dictionnaire ou à une matrice.",
+  "Niveau 3 : je donne l'ordre d'un parcours en largeur et je lis un petit programme."
+ ],
+ "conventions": [
+  "Les sommets d'une matrice d'adjacence sont numérotés à partir de 0.",
+  "La longueur d'un chemin est son nombre d'arêtes ; dans un graphe pondéré, la somme de ses poids.",
+  "Un graphe est représenté en Python par un dictionnaire : `g[s]` est la liste des voisins de `s`."
+ ],
+ "prelude_python": [
+  "g = {\"Mamoudzou\": [\"Koungou\", \"Dzaoudzi\", \"Dembéni\", \"Ouangani\"],",
+  "     \"Koungou\": [\"Mamoudzou\"],",
+  "     \"Dzaoudzi\": [\"Mamoudzou\"],",
+  "     \"Dembéni\": [\"Mamoudzou\", \"Chirongui\"],",
+  "     \"Ouangani\": [\"Mamoudzou\", \"Sada\"],",
+  "     \"Sada\": [\"Ouangani\", \"Chirongui\"],",
+  "     \"Chirongui\": [\"Dembéni\", \"Sada\"]}",
+  "poids = {(\"Koungou\", \"Mamoudzou\"): 15, (\"Mamoudzou\", \"Dzaoudzi\"): 20, (\"Mamoudzou\", \"Dembéni\"): 25, (\"Mamoudzou\", \"Ouangani\"): 20, (\"Ouangani\", \"Sada\"): 15, (\"Sada\", \"Chirongui\"): 20, (\"Dembéni\", \"Chirongui\"): 40}",
+  "def duree(chemin):",
+  "    t = 0",
+  "    for a, b in zip(chemin, chemin[1:]):",
+  "        t = t + poids.get((a, b), poids.get((b, a)))",
+  "    return t",
+  "def est_chemin(g, ch):",
+  "    return all(b in g[a] for a, b in zip(ch, ch[1:]))",
+  "def largeur(g, depart):",
+  "    vus = [depart]",
+  "    file = [depart]",
+  "    while len(file) > 0:",
+  "        s = file.pop(0)",
+  "        for v in g[s]:",
+  "            if v not in vus:",
+  "                vus.append(v)",
+  "                file.append(v)",
+  "    return vus",
+  "def profondeur(g, s, vus=None):",
+  "    if vus is None:",
+  "        vus = []",
+  "    vus.append(s)",
+  "    for v in g[s]:",
+  "        if v not in vus:",
+  "            profondeur(g, v, vus)",
+  "    return vus"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Les graphes",
+   "conventions": false,
+   "texte": [
+    "Thème 1 · Structures de données · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment aller de Koungou à Sada ?",
+   "texte": [
+    "Des villages, des routes, et la barge pour Dzaoudzi."
+   ],
+   "pistes": [
+    "Des points et des traits suffisent !"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>",
+    "legende": "Réseau simplifié, sans valeur géographique."
+   }
+  },
+  {
+   "type": "notion",
+   "titre": "Un graphe",
+   "texte": [
+    "Un ==graphe== : des ==sommets== reliés par des ==arêtes==.",
+    "Deux sommets reliés sont ==voisins== ; le ==degré== d'un sommet compte ses voisins."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "vocabulaire": "graphe = graph ; sommet = vertex ; arête = edge ; voisin = neighbour ; degré = degree"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Vocabulaire] Compter les sommets et les arêtes",
+   "objectif": "Modéliser une situation par un graphe : reconnaître ses sommets et ses arêtes.",
+   "enonce": [
+    "Le réseau des villages est modélisé par le graphe de l'écran précédent.",
+    "Combien ce graphe a-t-il de sommets et d'arêtes ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "7 sommets et 14 arêtes.",
+     "feedback": "Tu as compté chaque arête deux fois, une fois à chaque bout. L'arête Koungou–Mamoudzou est une seule arête, même si elle touche deux sommets."
+    },
+    {
+     "texte": "7 sommets et 7 arêtes.",
+     "juste": true,
+     "feedback": "Oui : un sommet par village, une arête par liaison. La barge est une liaison comme une autre : Mamoudzou–Dzaoudzi est une arête."
+    },
+    {
+     "texte": "7 sommets et 6 arêtes.",
+     "feedback": "Tu as oublié la barge. Pour le graphe, peu importe le moyen de transport : Mamoudzou–Dzaoudzi est une liaison, donc une arête."
+    },
+    {
+     "texte": "6 sommets et 7 arêtes.",
+     "feedback": "Compte encore les villages : Koungou, Mamoudzou, Dzaoudzi, Ouangani, Sada, Dembéni et Chirongui. Chacun est un sommet, même Dzaoudzi, de l'autre côté de l'eau."
+    }
+   ],
+   "explication": "Un sommet par objet, une arête par lien entre deux objets.",
+   "verifications": [
+    {
+     "code": [
+      "print(len(g), sum(len(v) for v in g.values()) // 2)"
+     ],
+     "sortie": "7 7"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Degré] Le degré de Mamoudzou",
+   "objectif": "Trouver les voisins et le degré d'un sommet.",
+   "enonce": [
+    "Dans le graphe des villages, quel est le degré du sommet Mamoudzou ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "3",
+     "feedback": "Tu as oublié un voisin : la barge relie Mamoudzou à Dzaoudzi. Les voisins sont Koungou, Dzaoudzi, Dembéni et Ouangani."
+    },
+    {
+     "texte": "6",
+     "feedback": "On peut aller de Mamoudzou aux 6 autres villages, mais pas directement : Sada et Chirongui ne sont pas reliés à Mamoudzou par une arête. Le degré ne compte que les voisins."
+    },
+    {
+     "texte": "7",
+     "feedback": "7 est le nombre de sommets du graphe, son ordre. Le degré d'un sommet ne compte que ses voisins, et jamais le sommet lui-même."
+    },
+    {
+     "texte": "4",
+     "juste": true,
+     "feedback": "Oui : Mamoudzou a 4 voisins, Koungou, Dzaoudzi, Dembéni et Ouangani. Le degré, c'est le nombre de voisins."
+    }
+   ],
+   "explication": "Le degré d'un sommet est son nombre de voisins.",
+   "verifications": [
+    {
+     "code": [
+      "print(len(g['Mamoudzou']))"
+     ],
+     "sortie": "4"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Chemins et cycles",
+   "texte": [
+    "Un ==chemin== va de voisin en voisin ; sa ==longueur== est son nombre d'arêtes.",
+    "Un ==cycle== est un chemin qui revient à son départ."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "vocabulaire": "chemin = path ; cycle = cycle"
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Chemin] Le plus court chemin de Koungou à Sada",
+   "objectif": "Trouver un chemin, et le plus court en nombre d'arêtes.",
+   "enonce": [
+    "Quel est le plus court chemin de Koungou à Sada, en nombre d'arêtes ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Koungou, Mamoudzou, Ouangani, Sada",
+     "juste": true,
+     "feedback": "Oui : 3 arêtes, et chaque sommet est voisin du suivant. Par Dembéni et Chirongui, il en faudrait 4."
+    },
+    {
+     "texte": "Koungou, Ouangani, Sada",
+     "feedback": "Koungou et Ouangani ne sont pas voisins : aucune arête ne les relie. Un chemin passe toujours d'un sommet à l'un de ses voisins."
+    },
+    {
+     "texte": "Koungou, Mamoudzou, Sada",
+     "feedback": "Mamoudzou et Sada ne sont pas voisins : il faut passer par Ouangani. Vérifie chaque pas d'un chemin sur le graphe."
+    },
+    {
+     "texte": "Koungou, Mamoudzou, Dembéni, Chirongui, Sada",
+     "feedback": "C'est bien un chemin, mais il a 4 arêtes. Par Ouangani, il n'en faut que 3 : ce n'est pas le plus court."
+    }
+   ],
+   "explication": "Un chemin passe de voisin en voisin ; sa longueur compte ses arêtes.",
+   "verifications": [
+    {
+     "code": [
+      "c = ['Koungou', 'Mamoudzou', 'Ouangani', 'Sada']",
+      "print(est_chemin(g, c), len(c) - 1)"
+     ],
+     "sortie": "True 3"
+    },
+    {
+     "code": [
+      "print(est_chemin(g, ['Koungou', 'Ouangani', 'Sada']), est_chemin(g, ['Koungou', 'Mamoudzou', 'Sada']))"
+     ],
+     "sortie": "False False"
+    },
+    {
+     "code": [
+      "c = ['Koungou', 'Mamoudzou', 'Dembéni', 'Chirongui', 'Sada']",
+      "print(est_chemin(g, c), len(c) - 1)"
+     ],
+     "sortie": "True 4"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Cycle] Reconnaître un cycle",
+   "objectif": "Reconnaître un cycle dans un graphe non orienté.",
+   "enonce": [
+    "Laquelle de ces suites de sommets est un cycle du graphe des villages ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Mamoudzou, Ouangani, Sada, Chirongui, Dembéni",
+     "feedback": "C'est un chemin, mais il s'arrête à Dembéni. Un cycle revient à son point de départ : il manque la dernière arête, Dembéni–Mamoudzou."
+    },
+    {
+     "texte": "Mamoudzou, Koungou, Mamoudzou",
+     "feedback": "Tu reviens au départ, mais en reprenant la même arête dans l'autre sens. Un cycle n'emprunte jamais deux fois la même arête."
+    },
+    {
+     "texte": "Mamoudzou, Ouangani, Sada, Chirongui, Dembéni, Mamoudzou",
+     "juste": true,
+     "feedback": "Oui : chaque sommet est voisin du suivant, aucune arête n'est prise deux fois, et on revient au départ. C'est le tour du sud."
+    },
+    {
+     "texte": "Dzaoudzi, Mamoudzou, Dembéni, Dzaoudzi",
+     "feedback": "Dembéni et Dzaoudzi ne sont pas voisins : la barge ne part que de Mamoudzou. Ce n'est même pas un chemin."
+    }
+   ],
+   "explication": "Un cycle revient à son départ sans reprendre une arête.",
+   "verifications": [
+    {
+     "code": [
+      "c = ['Mamoudzou', 'Ouangani', 'Sada', 'Chirongui', 'Dembéni', 'Mamoudzou']",
+      "print(est_chemin(g, c), c[0] == c[-1])"
+     ],
+     "sortie": "True True"
+    },
+    {
+     "code": [
+      "print(est_chemin(g, ['Dzaoudzi', 'Mamoudzou', 'Dembéni', 'Dzaoudzi']))"
+     ],
+     "sortie": "False"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Orienté, pondéré",
+   "texte": [
+    "Des liens à sens unique sont des ==arcs== : le graphe est ==orienté==.",
+    "Un nombre sur chaque lien : le graphe est ==pondéré==."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Le même graphe, pondéré par des durées fictives en minutes : Koungou–Mamoudzou 15, Mamoudzou–Dzaoudzi 20, Mamoudzou–Dembéni 25, Mamoudzou–Ouangani 20, Ouangani–Sada 15, Sada–Chirongui 20, Dembéni–Chirongui 40.\"><title>Le même graphe, pondéré par des durées fictives en minutes : Koungou–Mamoudzou 15, Mamoudzou–Dzaoudzi 20, Mamoudzou–Dembéni 25, Mamoudzou–Ouangani 20, Ouangani–Sada 15, Sada–Chirongui 20, Dembéni–Chirongui 40.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"192.0\" y=\"45.5\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"205.0\" y=\"61.5\" text-anchor=\"middle\" class=\"petit\">15</text><rect x=\"253.5\" y=\"108.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">20</text><rect x=\"204.5\" y=\"118.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"217.5\" y=\"134.0\" text-anchor=\"middle\" class=\"petit\">25</text><rect x=\"152.0\" y=\"90.5\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"165.0\" y=\"106.5\" text-anchor=\"middle\" class=\"petit\">20</text><rect x=\"63.5\" y=\"139.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"76.5\" y=\"155.0\" text-anchor=\"middle\" class=\"petit\">15</text><rect x=\"78.5\" y=\"195.5\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"91.5\" y=\"211.5\" text-anchor=\"middle\" class=\"petit\">20</text><rect x=\"159.5\" y=\"188.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"172.5\" y=\"204.0\" text-anchor=\"middle\" class=\"petit\">40</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>",
+    "legende": "Durées fictives, en minutes."
+   },
+   "vocabulaire": "orienté = directed ; arc = arc ; pondéré = weighted ; poids = weight"
+  },
+  {
+   "type": "relier",
+   "id": "vocab-g",
+   "nom": "[Vocabulaire] Les mots des graphes",
+   "objectif": "Associer chaque mot du vocabulaire des graphes à sa définition.",
+   "enonce": [
+    "Relier chaque définition au mot qui lui correspond."
+   ],
+   "paires": [
+    {
+     "gauche": "Un lien qu'on suit dans les deux sens",
+     "droite": "une arête",
+     "feedback": "Une arête n'a pas de sens : la route Koungou–Mamoudzou se prend dans les deux sens."
+    },
+    {
+     "gauche": "Un lien à sens unique",
+     "droite": "un arc",
+     "feedback": "Un arc a un départ et une arrivée : un graphe qui a des arcs est orienté."
+    },
+    {
+     "gauche": "Un nombre porté par un lien",
+     "droite": "un poids",
+     "feedback": "Le poids est une durée, une distance, un prix : le graphe est alors pondéré."
+    },
+    {
+     "gauche": "Le nombre de voisins d'un sommet",
+     "droite": "le degré",
+     "feedback": "Le degré compte les voisins : Mamoudzou a pour degré 4."
+    },
+    {
+     "gauche": "Un chemin qui revient à son départ",
+     "droite": "un cycle",
+     "feedback": "Un cycle revient au départ sans reprendre une arête, comme le tour du sud."
+    }
+   ],
+   "explication": "Arête (deux sens), arc (sens unique), poids (un nombre), degré (les voisins), cycle (le retour au départ)."
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Pondéré] Le trajet le plus rapide",
+   "objectif": "Comparer des chemins dans un graphe pondéré : additionner les poids.",
+   "enonce": [
+    "Le graphe est pondéré par les durées des trajets, en minutes.",
+    "Quel trajet est le plus rapide de Koungou à Chirongui ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Le même graphe, pondéré par des durées fictives en minutes : Koungou–Mamoudzou 15, Mamoudzou–Dzaoudzi 20, Mamoudzou–Dembéni 25, Mamoudzou–Ouangani 20, Ouangani–Sada 15, Sada–Chirongui 20, Dembéni–Chirongui 40.\"><title>Le même graphe, pondéré par des durées fictives en minutes : Koungou–Mamoudzou 15, Mamoudzou–Dzaoudzi 20, Mamoudzou–Dembéni 25, Mamoudzou–Ouangani 20, Ouangani–Sada 15, Sada–Chirongui 20, Dembéni–Chirongui 40.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"192.0\" y=\"45.5\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"205.0\" y=\"61.5\" text-anchor=\"middle\" class=\"petit\">15</text><rect x=\"253.5\" y=\"108.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">20</text><rect x=\"204.5\" y=\"118.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"217.5\" y=\"134.0\" text-anchor=\"middle\" class=\"petit\">25</text><rect x=\"152.0\" y=\"90.5\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"165.0\" y=\"106.5\" text-anchor=\"middle\" class=\"petit\">20</text><rect x=\"63.5\" y=\"139.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"76.5\" y=\"155.0\" text-anchor=\"middle\" class=\"petit\">15</text><rect x=\"78.5\" y=\"195.5\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"91.5\" y=\"211.5\" text-anchor=\"middle\" class=\"petit\">20</text><rect x=\"159.5\" y=\"188.0\" width=\"26\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"172.5\" y=\"204.0\" text-anchor=\"middle\" class=\"petit\">40</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Par Ouangani et Sada : 70 minutes.",
+     "juste": true,
+     "feedback": "Oui : 15 + 20 + 15 + 20 = 70. Il a une arête de plus que le trajet par Dembéni (15 + 25 + 40 = 80), mais il est plus rapide."
+    },
+    {
+     "texte": "Par Dembéni : 80 minutes.",
+     "feedback": "Le calcul est juste, mais l'autre trajet fait mieux : 15 + 20 + 15 + 20 = 70 minutes par Ouangani et Sada. Moins d'arêtes ne veut pas dire moins de temps."
+    },
+    {
+     "texte": "Par Dembéni : 3 arêtes.",
+     "feedback": "3 est la longueur du chemin, en arêtes. Dans un graphe pondéré, on compare la somme des poids : 80 minutes par Dembéni, 70 par Ouangani et Sada."
+    },
+    {
+     "texte": "Par Dembéni : 40 minutes.",
+     "feedback": "40 est le poids de la seule arête Dembéni–Chirongui. Le trajet entier additionne tous les poids : 15 + 25 + 40 = 80 minutes."
+    }
+   ],
+   "explication": "Dans un graphe pondéré, la longueur d'un chemin est la somme de ses poids.",
+   "verifications": [
+    {
+     "code": [
+      "print(duree(['Koungou', 'Mamoudzou', 'Ouangani', 'Sada', 'Chirongui']), duree(['Koungou', 'Mamoudzou', 'Dembéni', 'Chirongui']))"
+     ],
+     "sortie": "70 80"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "En Python : un dictionnaire",
+   "texte": [
+    "Chaque sommet donne la liste de ses voisins : c'est un ==dictionnaire d'adjacence==.",
+    "Une arête s'écrit dans les deux listes."
+   ],
+   "code": [
+    "g = {",
+    "    \"Sada\": [\"Ouangani\"],",
+    "    \"Ouangani\": [\"Sada\",",
+    "        \"Mamoudzou\"],",
+    "    \"Mamoudzou\":",
+    "        [\"Ouangani\"]",
+    "}",
+    "g[\"Ouangani\"]    # voisins",
+    "len(g[\"Sada\"])   # degré 1"
+   ],
+   "vocabulaire": "liste d'adjacence = adjacency list"
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Représentation] Du dessin au dictionnaire",
+   "objectif": "Écrire le dictionnaire d'adjacence d'un graphe non orienté.",
+   "enonce": [
+    "Les villages sont notés par leur initiale : M pour Mamoudzou, K pour Koungou, D pour Dembéni, C pour Chirongui.",
+    "Quel dictionnaire représente ce graphe non orienté ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 220 140\" width=\"220\" height=\"140\" role=\"img\" aria-label=\"Petit graphe : M (Mamoudzou) relié à K (Koungou) et à D (Dembéni) ; D relié à C (Chirongui).\"><title>Petit graphe : M (Mamoudzou) relié à K (Koungou) et à D (Dembéni) ; D relié à C (Chirongui).</title><line x1=\"50\" y1=\"30\" x2=\"50\" y2=\"110\" class=\"trait\"/><line x1=\"50\" y1=\"30\" x2=\"170\" y2=\"30\" class=\"trait\"/><line x1=\"170\" y1=\"30\" x2=\"170\" y2=\"110\" class=\"trait\"/><rect x=\"36.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"50\" y=\"35\" text-anchor=\"middle\" class=\"val\">M</text><rect x=\"36.5\" y=\"95\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"50\" y=\"115\" text-anchor=\"middle\" class=\"val\">K</text><rect x=\"156.5\" y=\"15\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"170\" y=\"35\" text-anchor=\"middle\" class=\"val\">D</text><rect x=\"156.5\" y=\"95\" width=\"27\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"170\" y=\"115\" text-anchor=\"middle\" class=\"val\">C</text></svg>"
+   },
+   "options": [
+    {
+     "code": [
+      "g = {\"M\": [\"K\", \"D\"],",
+      "     \"K\": [],",
+      "     \"D\": [\"C\"],",
+      "     \"C\": []}"
+     ],
+     "feedback": "Chaque arête n'est écrite que dans un sens : K n'aurait aucun voisin. Le graphe n'est pas orienté : M doit être dans la liste de K, et K dans celle de M."
+    },
+    {
+     "code": [
+      "g = {\"M\": [\"K\", \"D\", \"C\"],",
+      "     \"K\": [\"M\"],",
+      "     \"D\": [\"M\", \"C\"],",
+      "     \"C\": [\"M\", \"D\"]}"
+     ],
+     "feedback": "Tu as relié M et C : on peut aller de l'un à l'autre, mais en passant par D. Une liste d'adjacence ne contient que les voisins directs."
+    },
+    {
+     "code": [
+      "g = {\"M\": \"K\",",
+      "     \"M\": \"D\",",
+      "     \"D\": \"C\"}"
+     ],
+     "feedback": "Une clé n'apparaît qu'une fois dans un dictionnaire : le second \"M\" remplace le premier, et K disparaît. On range tous les voisins dans une seule liste."
+    },
+    {
+     "code": [
+      "g = {\"M\": [\"K\", \"D\"],",
+      "     \"K\": [\"M\"],",
+      "     \"D\": [\"M\", \"C\"],",
+      "     \"C\": [\"D\"]}"
+     ],
+     "juste": true,
+     "feedback": "Oui : chaque sommet a la liste de tous ses voisins, et chaque arête apparaît deux fois, une fois à chaque bout (D est dans la liste de M, et M dans celle de D)."
+    }
+   ],
+   "explication": "Non orienté : chaque arête s'écrit dans la liste de ses deux sommets.",
+   "verifications": [
+    {
+     "code": [
+      "g = {\"M\": [\"K\", \"D\"],",
+      "     \"K\": [\"M\"],",
+      "     \"D\": [\"M\", \"C\"],",
+      "     \"C\": [\"D\"]}",
+      "print(g == {'M': ['K', 'D'], 'K': ['M'], 'D': ['M', 'C'], 'C': ['D']})"
+     ],
+     "sortie": "True"
+    },
+    {
+     "code": [
+      "g = {\"M\": [\"K\", \"D\"],",
+      "     \"K\": [],",
+      "     \"D\": [\"C\"],",
+      "     \"C\": []}",
+      "print(g == {'M': ['K', 'D'], 'K': ['M'], 'D': ['M', 'C'], 'C': ['D']})"
+     ],
+     "sortie": "False"
+    },
+    {
+     "code": [
+      "g = {\"M\": \"K\",",
+      "     \"M\": \"D\",",
+      "     \"D\": \"C\"}",
+      "print(g)"
+     ],
+     "sortie": "{'M': 'D', 'D': 'C'}"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Analyse de code] Les voisins et leur degré",
+   "objectif": "Lire un programme qui parcourt les voisins d'un sommet.",
+   "enonce": [
+    "Les villages sont notés par leur initiale : O pour Ouangani, M pour Mamoudzou, S pour Sada, K pour Koungou. On exécute le programme suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "g = {\"O\": [\"M\", \"S\"],",
+    "     \"M\": [\"O\", \"K\"],",
+    "     \"S\": [\"O\"],",
+    "     \"K\": [\"M\"]}",
+    "for v in g[\"O\"]:",
+    "    print(v, len(g[v]))"
+   ],
+   "options": [
+    {
+     "texte": "O 2",
+     "feedback": "`len(g[v])` porte sur chaque voisin `v`, pas sur O. La boucle tourne deux fois, une fois par voisin d'Ouangani."
+    },
+    {
+     "texte": "M 2, puis S 1",
+     "juste": true,
+     "feedback": "Oui : la boucle parcourt les voisins d'Ouangani, M puis S, et affiche le degré de chacun : `len(g[v])`."
+    },
+    {
+     "texte": "M 1, puis S 1",
+     "feedback": "`len(g[v])` ne compte pas la place de `v` : il compte les voisins de `v`. M a 2 voisins, O et K."
+    },
+    {
+     "texte": "M, puis S",
+     "feedback": "Le programme affiche deux valeurs par ligne : le voisin `v`, et `len(g[v])`, le nombre de voisins de `v`, c'est-à-dire son degré."
+    }
+   ],
+   "explication": "`g[s]` donne les voisins de `s` ; `len(g[s])` donne son degré.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "M 2\nS 1"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "En Python : une matrice",
+   "texte": [
+    "Les sommets sont numérotés à partir de 0.",
+    "`m[i][j]` vaut 1 si `i` et `j` sont voisins, 0 sinon : c'est la ==matrice d'adjacence==."
+   ],
+   "code": [
+    "# 0 Mamoudzou, 1 Koungou,",
+    "# 2 Dzaoudzi",
+    "m = [[0, 1, 1],",
+    "     [1, 0, 0],",
+    "     [1, 0, 0]]",
+    "m[0][2]    # 1 : voisins",
+    "m[1][2]    # 0",
+    "sum(m[0])  # degré : 2"
+   ],
+   "vocabulaire": "matrice d'adjacence = adjacency matrix"
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Matrice] Que calcule `sum(m[2])` ?",
+   "objectif": "Lire une matrice d'adjacence : une ligne donne les voisins d'un sommet.",
+   "enonce": [
+    "Ce graphe a 4 sommets, numérotés de 0 à 3. On exécute le code suivant.",
+    "Que représente `x` ?"
+   ],
+   "code": [
+    "# 0 Mamoudzou, 1 Dembéni,",
+    "# 2 Chirongui, 3 Sada",
+    "m = [[0, 1, 0, 0],",
+    "     [1, 0, 1, 0],",
+    "     [0, 1, 0, 1],",
+    "     [0, 0, 1, 0]]",
+    "x = sum(m[2])"
+   ],
+   "options": [
+    {
+     "texte": "Le degré de Dembéni",
+     "feedback": "Tu as compté à partir de 1. Les numéros commencent à 0 : `m[2]` est la ligne du sommet 2, Chirongui. Dembéni est le sommet 1."
+    },
+    {
+     "texte": "Le nombre de sommets du graphe",
+     "feedback": "Le nombre de sommets, c'est la longueur d'une ligne, `len(m[2])`, qui vaut 4. `sum` additionne les 0 et les 1 de la ligne : il compte les voisins."
+    },
+    {
+     "texte": "Le degré de Chirongui",
+     "juste": true,
+     "feedback": "Oui : la ligne 2 est celle de Chirongui, et ses 1 sont ses voisins, Dembéni et Sada. Leur somme vaut 2, le degré de Chirongui."
+    },
+    {
+     "texte": "La somme des numéros des voisins de Chirongui",
+     "feedback": "La ligne ne contient pas les numéros des voisins, mais un 0 ou un 1 pour chaque sommet. La somme compte donc les 1, c'est-à-dire les voisins."
+    }
+   ],
+   "explication": "Dans une matrice d'adjacence, la somme de la ligne `i` est le degré du sommet `i`.",
+   "verifications": [
+    {
+     "code": [
+      "print(x, len(m[2]), [j for j in range(4) if m[2][j] == 1])"
+     ],
+     "sortie": "2 4 [1, 3]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Orienté] Une matrice qui n'est pas symétrique",
+   "objectif": "Reconnaître un graphe orienté à sa matrice d'adjacence.",
+   "enonce": [
+    "On donne la matrice d'adjacence d'un graphe.",
+    "Ce graphe est-il orienté ?"
+   ],
+   "code": [
+    "# 0 Mamoudzou, 1 Koungou,",
+    "# 2 Dzaoudzi",
+    "m = [[0, 1, 1],",
+    "     [0, 0, 0],",
+    "     [1, 0, 0]]"
+   ],
+   "options": [
+    {
+     "texte": "Non : une matrice d'adjacence décrit toujours des liens dans les deux sens.",
+     "feedback": "Une matrice peut décrire un graphe orienté : `m[i][j]` dit s'il y a un arc de `i` vers `j`. Elle n'est symétrique que si le graphe n'est pas orienté."
+    },
+    {
+     "texte": "Oui : la diagonale ne contient que des 0.",
+     "feedback": "La diagonale dit si un sommet est relié à lui-même : ce n'est pas le cas ici, ni dans la plupart des graphes. Pour savoir s'il est orienté, compare `m[i][j]` et `m[j][i]`."
+    },
+    {
+     "texte": "Non : la matrice ne contient que des 0 et des 1.",
+     "feedback": "Les 0 et les 1 disent seulement s'il y a un lien. Orienté ou non, on le voit en comparant `m[0][1]` et `m[1][0]` : ici, 1 et 0."
+    },
+    {
+     "texte": "Oui : il y a un arc de 0 vers 1, mais pas de 1 vers 0.",
+     "juste": true,
+     "feedback": "Oui : `m[0][1]` vaut 1 et `m[1][0]` vaut 0. Le lien de Mamoudzou vers Koungou n'existe que dans un sens : c'est un arc."
+    }
+   ],
+   "explication": "Non orienté : la matrice est symétrique, `m[i][j] == m[j][i]`.",
+   "verifications": [
+    {
+     "code": [
+      "print(m[0][1], m[1][0], all(m[i][j] == m[j][i] for i in range(3) for j in range(3)))"
+     ],
+     "sortie": "1 0 False"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "matrice-g",
+   "nom": "[Erreur] Le numéro d'un sommet",
+   "objectif": "Lire un message d'erreur et retrouver la numérotation des sommets.",
+   "enonce": [
+    "Ce programme doit afficher le degré de Dzaoudzi.",
+    "Il s'arrête sur l'erreur `IndexError: list index out of range` (« indice en dehors de la liste »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "# 0 Mamoudzou, 1 Koungou,",
+    "# 2 Dzaoudzi",
+    "m = [[0, 1, 1],",
+    "     [1, 0, 0],",
+    "     [1, 0, 0]]",
+    "dzaoudzi = 3",
+    "print(sum(m[dzaoudzi]))"
+   ],
+   "ligne": 6,
+   "correction": "dzaoudzi = 2",
+   "feedback": "Bien vu : les sommets sont numérotés à partir de 0, Dzaoudzi est le sommet 2. La matrice n'a que les lignes 0, 1 et 2. Corrigé, le programme affiche 1.",
+   "feedback_autre": "Cette ligne est correcte. Le message dit qu'on lit une ligne de la matrice qui n'existe pas : cherche le numéro donné à Dzaoudzi.",
+   "pieges": {
+    "7": "`sum(m[...])` donne bien le degré. Mais l'indice qu'il reçoit est trop grand : cherche où ce numéro est fixé.",
+    "3": "La matrice est bien écrite : 3 lignes de 3 nombres, symétrique. Le message parle d'un indice trop grand : cherche le numéro de Dzaoudzi."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "IndexError"
+    },
+    {
+     "code": [
+      "m = [[0, 1, 1], [1, 0, 0], [1, 0, 0]]",
+      "try:",
+      "    m[3]",
+      "except IndexError as e:",
+      "    print('IndexError:', e)"
+     ],
+     "sortie": "IndexError: list index out of range",
+     "reprendre_code": false
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "1"
+    }
+   ],
+   "explication": "Avec `n` sommets, les numéros vont de 0 à `n - 1`."
+  },
+  {
+   "type": "notion",
+   "titre": "Le parcours en largeur",
+   "texte": [
+    "Le départ, puis ses voisins, puis leurs voisins : par ==distance== croissante.",
+    "Une ==file== garde les sommets à visiter."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 268\" width=\"360\" height=\"268\" role=\"img\" aria-label=\"Le graphe des villages ; distance à Koungou, en arêtes : Koungou 0 ; Mamoudzou 1 ; Dzaoudzi, Dembéni et Ouangani 2 ; Sada et Chirongui 3.\"><title>Le graphe des villages ; distance à Koungou, en arêtes : Koungou 0 ; Mamoudzou 1 ; Dzaoudzi, Dembéni et Ouangani 2 ; Sada et Chirongui 3.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case sommet\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"144.0\" y=\"43\" width=\"82\" height=\"18\" rx=\"4\" class=\"case\"/><text x=\"185\" y=\"57\" text-anchor=\"middle\" class=\"etiq petit\">distance 0</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"184.0\" y=\"106\" width=\"82\" height=\"18\" rx=\"4\" class=\"case\"/><text x=\"225\" y=\"120\" text-anchor=\"middle\" class=\"etiq petit\">distance 1</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"267.0\" y=\"168\" width=\"82\" height=\"18\" rx=\"4\" class=\"case\"/><text x=\"308\" y=\"182\" text-anchor=\"middle\" class=\"etiq petit\">distance 2</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"64.0\" y=\"133\" width=\"82\" height=\"18\" rx=\"4\" class=\"case\"/><text x=\"105\" y=\"147\" text-anchor=\"middle\" class=\"etiq petit\">distance 2</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"7.0\" y=\"203\" width=\"82\" height=\"18\" rx=\"4\" class=\"case\"/><text x=\"48\" y=\"217\" text-anchor=\"middle\" class=\"etiq petit\">distance 3</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"169.0\" y=\"188\" width=\"82\" height=\"18\" rx=\"4\" class=\"case\"/><text x=\"210\" y=\"202\" text-anchor=\"middle\" class=\"etiq petit\">distance 2</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"94.0\" y=\"246\" width=\"82\" height=\"18\" rx=\"4\" class=\"case\"/><text x=\"135\" y=\"260\" text-anchor=\"middle\" class=\"etiq petit\">distance 3</text></svg>",
+    "legende": "Depuis Koungou : la distance en arêtes."
+   },
+   "vocabulaire": "parcours en largeur = breadth-first search (BFS)"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Parcours] Un parcours en largeur depuis Dzaoudzi",
+   "objectif": "Donner l'ordre de visite d'un parcours en largeur.",
+   "enonce": [
+    "On parcourt le graphe des villages en largeur, depuis Dzaoudzi. Les voisins sont pris dans l'ordre du dictionnaire `g` : pour Mamoudzou, Koungou, Dzaoudzi, Dembéni, Ouangani.",
+    "Dans quel ordre les sommets sont-ils visités ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 250\" width=\"360\" height=\"250\" role=\"img\" aria-label=\"Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.\"><title>Graphe des villages : Koungou relié à Mamoudzou ; Mamoudzou relié à Dzaoudzi (par la barge), à Dembéni et à Ouangani ; Ouangani relié à Sada ; Sada relié à Chirongui ; Chirongui relié à Dembéni.</title><line x1=\"185\" y1=\"25\" x2=\"225\" y2=\"88\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"308\" y2=\"150\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"210\" y2=\"170\" class=\"trait\"/><line x1=\"225\" y1=\"88\" x2=\"105\" y2=\"115\" class=\"trait\"/><line x1=\"105\" y1=\"115\" x2=\"48\" y2=\"185\" class=\"trait\"/><line x1=\"48\" y1=\"185\" x2=\"135\" y2=\"228\" class=\"trait\"/><line x1=\"210\" y1=\"170\" x2=\"135\" y2=\"228\" class=\"trait\"/><rect x=\"241.5\" y=\"108.0\" width=\"50\" height=\"22\" rx=\"4\" class=\"case\"/><text x=\"266.5\" y=\"124.0\" text-anchor=\"middle\" class=\"petit\">barge</text><rect x=\"144.0\" y=\"10\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"185\" y=\"30\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"175.0\" y=\"73\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"225\" y=\"93\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"262.5\" y=\"135\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"308\" y=\"155\" text-anchor=\"middle\" class=\"val\">Dzaoudzi</text><rect x=\"59.5\" y=\"100\" width=\"91\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"105\" y=\"120\" text-anchor=\"middle\" class=\"val\">Ouangani</text><rect x=\"21.0\" y=\"170\" width=\"54\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"48\" y=\"190\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"169.0\" y=\"155\" width=\"82\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"210\" y=\"175\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"85.0\" y=\"213\" width=\"100\" height=\"30\" rx=\"14\" class=\"case\"/><text x=\"135\" y=\"233\" text-anchor=\"middle\" class=\"val\">Chirongui</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Dzaoudzi, Mamoudzou, Koungou, Dembéni, Chirongui, Sada, Ouangani",
+     "feedback": "Tu vas le plus loin possible avant de revenir : c'est un parcours en profondeur. En largeur, Ouangani, à 2 arêtes, passe avant Chirongui et Sada, à 3 arêtes."
+    },
+    {
+     "texte": "Dzaoudzi, Mamoudzou, Koungou, Dembéni, Ouangani, Chirongui, Sada",
+     "juste": true,
+     "feedback": "Oui : Dzaoudzi (distance 0), Mamoudzou (1), puis Koungou, Dembéni et Ouangani (2), enfin Chirongui et Sada (3). La file sert les sommets dans l'ordre où on les découvre."
+    },
+    {
+     "texte": "Mamoudzou, Koungou, Dzaoudzi, Dembéni, Ouangani, Chirongui, Sada",
+     "feedback": "Le parcours commence par son départ, Dzaoudzi. Tu as suivi l'ordre des clés du dictionnaire : il ne dit pas d'où l'on part."
+    },
+    {
+     "texte": "Dzaoudzi, Mamoudzou, Koungou, Mamoudzou, Dembéni, Ouangani, Chirongui, Sada",
+     "feedback": "Mamoudzou est visité deux fois : un parcours marque les sommets déjà vus et ne les revisite jamais. Sans ce marquage, un cycle ferait tourner le parcours sans fin."
+    }
+   ],
+   "explication": "En largeur : les sommets par distance croissante, chacun une seule fois.",
+   "verifications": [
+    {
+     "code": [
+      "print(largeur(g, 'Dzaoudzi'))"
+     ],
+     "sortie": "['Dzaoudzi', 'Mamoudzou', 'Koungou', 'Dembéni', 'Ouangani', 'Chirongui', 'Sada']"
+    },
+    {
+     "code": [
+      "print(profondeur(g, 'Dzaoudzi'))"
+     ],
+     "sortie": "['Dzaoudzi', 'Mamoudzou', 'Koungou', 'Dembéni', 'Chirongui', 'Sada', 'Ouangani']"
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Les graphes"
+    ],
+    "lignes": [
+     [
+      "Vocabulaire",
+      "sommets, arêtes (arcs si orienté), voisins, degré, poids"
+     ],
+     [
+      "Chemin, cycle",
+      "de voisin en voisin ; un cycle revient au départ"
+     ],
+     [
+      "Dictionnaire",
+      "`g[s]` : la liste des voisins de `s`"
+     ],
+     [
+      "Matrice",
+      "`m[i][j]` vaut 1 si `i` et `j` sont voisins ; symétrique si non orienté"
+     ],
+     [
+      "Largeur",
+      "par distance croissante, avec une file"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu passer d'un dessin de graphe à son dictionnaire, et l'inverse ?"
+   ]
+  }
+ ]
+}
