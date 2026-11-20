@@ -153,13 +153,13 @@
      "feedback": "Un cœur n'exécute qu'un processus à la fois. L'impression de simultanéité vient de l'alternance très rapide, réglée par l'ordonnanceur."
     },
     {
-     "texte": "La musique passe d'abord, le texte attend qu'elle soit finie.",
-     "feedback": "Si chacun attendait la fin de l'autre, on ne pourrait pas écrire pendant la musique. L'ordonnanceur les fait alterner, par petits morceaux."
-    },
-    {
      "texte": "L'ordonnanceur fait alterner les deux processus, des centaines de fois par seconde.",
      "juste": true,
      "feedback": "Oui : chacun s'exécute à son tour, un court instant. L'alternance est si rapide qu'on croit qu'ils tournent en même temps."
+    },
+    {
+     "texte": "La musique passe d'abord, le texte attend qu'elle soit finie.",
+     "feedback": "Si chacun attendait la fin de l'autre, on ne pourrait pas écrire pendant la musique. L'ordonnanceur les fait alterner, par petits morceaux."
     },
     {
      "texte": "La musique n'a pas besoin du processeur une fois lancée.",

@@ -214,13 +214,13 @@
      "feedback": "24, c'est fact(4). fact(5) multiplie encore ce résultat par 5 : 5 × 24."
     },
     {
-     "texte": "15",
-     "feedback": "15, c'est 5 + 4 + 3 + 2 + 1 : tu as additionné. La factorielle multiplie : 5 × 4 × 3 × 2 × 1."
-    },
-    {
      "texte": "120",
      "juste": true,
      "feedback": "Bravo : 5 × 4 × 3 × 2 × 1 × 1 = 120. Le dernier 1 est celui du cas de base, fact(0)."
+    },
+    {
+     "texte": "15",
+     "feedback": "15, c'est 5 + 4 + 3 + 2 + 1 : tu as additionné. La factorielle multiplie : 5 × 4 × 3 × 2 × 1."
     },
     {
      "texte": "0",
