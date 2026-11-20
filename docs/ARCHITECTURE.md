@@ -19,11 +19,13 @@
 
 ## Ajouter un cours
 
-Un cours-quiz est **un seul fichier JSON** : le moteur ne change pas. Le format est décrit dans [cours/FORMAT.md](../cours/FORMAT.md), le modèle est [cours/piles-files.json](../cours/piles-files.json).
+Un cours-quiz est **un seul fichier JSON** : le moteur ne change pas. Le format est décrit dans [cours/FORMAT.md](../cours/FORMAT.md) ; le modèle d'une introduction (15 min, 12 questions, 8 écrans courts) est [cours/piles-files.json](../cours/piles-files.json), celui d'une révision (20 questions) [cours/revision-conditions-boucles.json](../cours/revision-conditions-boucles.json).
 
 ```bash
-python3 -I outils/verifier_cours.py cours/<id>.json     # 20 questions, 4 options, une juste, feedbacks,
-                                                       # répartition A-D, caractères, exécution du code
+python3 -I outils/verifier_cours.py cours/<id>.json     # gabarit (questions, écrans, mots, durée estimée),
+                                                       # 4 options, une juste, feedbacks, répartition A-D,
+                                                       # caractères, exécution du code
+python3 -I outils/verifier_cours.py --tous              # tous les cours, et le catalogue de l'accueil
 ```
 
 ## Les tests

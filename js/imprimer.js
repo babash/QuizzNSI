@@ -1,5 +1,5 @@
 /* QuizzNSI : la version à imprimer (MIT, Babash - NSI Tani Malandi).
-   imprimer.html?cours=<id> : le sujet (les 20 questions) ; &corrige : le corrigé, à part. */
+   imprimer.html?cours=<id> : le sujet (toutes les questions) ; &corrige : le corrigé, à part. */
 (function () {
   'use strict';
   const Q = window.QuizzNSI, $ = Q.$, t = Q.texte, e = Q.echapper;

@@ -148,7 +148,68 @@ class TestVerifier(unittest.TestCase):
             q = questions(c)[-1]
             c["diapositives"].remove(q)
         e = self.modifie(retirer)
-        self.assertTrue(any("19 questions" in x for x in e))
+        self.assertTrue(any("11 questions au lieu de 12" in x for x in e))
+
+    # ── le gabarit « introduction » (le modèle, piles-files) ──
+    def test_introduction_12_questions_et_15_minutes(self):
+        self.assertEqual(MODELE["gabarit"], "introduction")
+        self.assertEqual(len(questions(MODELE)) + len([d for d in MODELE["diapositives"] if d["type"] in ("relier", "puzzle", "ligne")]), 12)
+        e = self.modifie(lambda c: c.update(duree_minutes=20))
+        self.assertTrue(any("15 minutes" in x for x in e))
+
+    def test_introduction_trop_d_ecrans(self):
+        e = self.modifie(lambda c: c["diapositives"].insert(1, {"type": "notion", "titre": "Encore", "texte": ["Un écran de trop."]}))
+        self.assertTrue(any("9 écrans de cours" in x for x in e))
+
+    def test_introduction_trop_de_mots(self):
+        def f(c):
+            n = next(d for d in c["diapositives"] if d["type"] == "notion")
+            n["texte"] = ["Une pile range les éléments les uns sur les autres et on ne peut prendre que celui du dessus, qui est le dernier arrivé, jamais un autre."]
+        self.assertTrue(any("mots : 25 au plus" in x for x in self.modifie(f)))
+
+    def test_introduction_trois_phrases(self):
+        def f(c):
+            next(d for d in c["diapositives"] if d["type"] == "notion")["texte"] = ["Un.", "Deux.", "Trois."]
+        self.assertTrue(any("3 phrases" in x for x in self.modifie(f)))
+
+    def test_introduction_sans_nuage(self):
+        nuage = copy.deepcopy(autre(DEMO, "nuage"))
+        e = self.modifie(lambda c: c["diapositives"].insert(2, nuage))
+        self.assertTrue(any("nuage" in x for x in e))
+
+    def test_introduction_trois_autres_types(self):
+        def f(c):
+            for t in ("relier", "puzzle"):
+                c["diapositives"].insert(-1, copy.deepcopy(autre(DEMO, t)))
+        e = self.modifie(f)
+        self.assertTrue(any("3 questions relier, puzzle ou ligne fautive" in x for x in e))
+
+    def test_introduction_code_d_ecran_execute(self):
+        c = copy.deepcopy(MODELE)
+        next(d for d in c["diapositives"] if d["type"] == "notion" and d.get("code"))["code"] = ["p = Pile()", "p.depiler()"]
+        self.assertTrue(any("ne s'exécute pas" in x for x in self.verifier(c, executer=True)))
+
+    def test_demonstration_sans_gabarit(self):
+        e = self.rev(lambda c: c.update(gabarit="revision"))
+        self.assertTrue(any("pas de gabarit" in x for x in e))
+
+    def test_gabarit_inconnu(self):
+        self.assertTrue(any("gabarit" in x for x in self.modifie(lambda c: c.update(gabarit="long"))))
+
+    def test_revision_par_defaut(self):
+        # un cours sans « gabarit » (le format d'avant T113) est une révision : 20 questions à choix
+        self.assertNotIn("gabarit", REVISION)
+        c = copy.deepcopy(MODELE)
+        del c["gabarit"]
+        self.assertTrue(any("11 questions au lieu de 20" in x for x in self.verifier(c)))
+
+    def test_compter_les_mots(self):
+        self.assertEqual(V.mots("On l'écrit ==du haut vers le bas== : le sommet d'abord."), 10)
+        self.assertEqual(V.mots("Avant de dépiler, on teste `p.est_vide()`."), 6)
+        self.assertEqual(V.mots("Le bouton « Annuler » (Ctrl + Z)."), 5)
+
+    def test_duree_estimee(self):
+        self.assertAlmostEqual(V.duree_estimee(MODELE["diapositives"]), 15, delta=1)
 
     def test_repartition_desequilibree(self):
         def tout_en_a(c):
@@ -161,13 +222,13 @@ class TestVerifier(unittest.TestCase):
 
     def test_sortie_fausse_detectee_a_l_execution(self):
         c = copy.deepcopy(MODELE)
-        questions(c)[4]["verifications"][0]["sortie"] = "[4, 1, 3]"
+        questions(c)[3]["verifications"][0]["sortie"] = "[4, 1, 3]"
         e = self.verifier(c, executer=True)
         self.assertTrue(any("sortie attendue" in x for x in e))
 
     def test_erreur_attendue_detectee(self):
         c = copy.deepcopy(MODELE)
-        questions(c)[7]["verifications"][0]["erreur"] = "KeyError"
+        questions(c)[4]["verifications"][0]["erreur"] = "KeyError"
         e = self.verifier(c, executer=True)
         self.assertTrue(any("erreur attendue" in x for x in e))
 
@@ -186,7 +247,9 @@ class TestVerifier(unittest.TestCase):
     def test_schema_deux_piles_faux(self):
         # l'erreur relevée par le Gardien : la pile auxiliaire dessinée dans le même ordre que p
         c = copy.deepcopy(MODELE)
-        self.schema(c, lambda s: s["type"] == "deux-piles" and s["droite"]["nom"] == "aux")["droite"]["elements"] = ["c", "b", "a"]
+        questions(c)[0]["schema"] = {"type": "deux-piles", "gauche": {"nom": "p", "elements": []}, "droite": {"nom": "aux", "elements": ["c", "b", "a"]},
+                                     "code": ["p = Pile()", "for e in [\"c\", \"b\", \"a\"]:", "    p.empiler(e)", "aux = Pile()",
+                                              "while not p.est_vide():", "    aux.empiler(p.depiler())"]}
         self.assertTrue(any("schéma faux" in x and "aux" in x for x in self.verifier(c, executer=True)))
 
     def test_schema_etapes_etat_faux(self):
@@ -203,7 +266,7 @@ class TestVerifier(unittest.TestCase):
 
     def test_nom_de_variable_inconnu_dans_une_option(self):
         def f(c):
-            q = next(q for q in questions(c) if q.get("code") and any("impressions" in l for l in q["code"]))
+            q = next(q for q in questions(c) if q.get("code") and any("Pile()" in l for l in q["code"]))
             q["options"][1]["texte"] = "Il faut écrire `file.pop(0)`."
         self.assertTrue(any("« file »" in x for x in self.modifie(f)))
 
@@ -216,14 +279,14 @@ class TestVerifier(unittest.TestCase):
 
 class TestCatalogue(unittest.TestCase):
     """Le contrôle du catalogue de l'accueil (verifier_cours.py --tous)."""
-    def essai(self, ids):
+    def essai(self, ids, n=12):
         import contextlib, io, shutil
         with tempfile.TemporaryDirectory() as d:
             os.makedirs(os.path.join(d, "outils")); os.makedirs(os.path.join(d, "cours"))
             shutil.copy(os.path.join(RACINE, "outils", "verifier_cours.py"), os.path.join(d, "outils"))
             shutil.copy(os.path.join(RACINE, "cours", "piles-files.json"), os.path.join(d, "cours"))
             with open(os.path.join(d, "cours", "catalogue.json"), "w", encoding="utf-8") as f:
-                json.dump({"format": "quizz-nsi-catalogue/1", "cours": [{"id": i, "titre": i, "niveau": "x", "questions": 20} for i in ids]}, f)
+                json.dump({"format": "quizz-nsi-catalogue/1", "cours": [{"id": i, "titre": i, "niveau": "x", "questions": n} for i in ids]}, f)
             sys.path.insert(0, os.path.join(d, "outils"))
             import importlib, verifier_cours as W
             importlib.reload(W)
@@ -241,6 +304,11 @@ class TestCatalogue(unittest.TestCase):
 
     def test_cours_present_non_cite(self):
         self.assertEqual(self.essai([])[0], 1)
+
+    def test_nombre_de_questions_du_catalogue(self):
+        code, sortie = self.essai(["piles-files"], n=20)
+        self.assertEqual(code, 1)
+        self.assertIn("« questions » vaut 20, le cours dit 12", sortie)
 
     def test_doublon(self):
         self.assertEqual(self.essai(["piles-files", "piles-files"])[0], 1)
