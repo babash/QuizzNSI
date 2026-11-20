@@ -19,8 +19,9 @@
   "Niveau 3 : j'écris un constructeur et je corrige un `self` oublié."
  ],
  "conventions": [
-  "La classe `Barge` est fictive : elle sert d'exemple.",
-  "Un nom de classe commence par une majuscule (`Barge`), un nom d'objet par une minuscule (`b1`)."
+  "La classe `Barge` est fictive : elle sert d'exemple. `Barge(300)` crée une barge de capacité 300.",
+  "Un nom de classe commence par une majuscule (`Barge`), un nom d'objet par une minuscule (`b1`).",
+  "`x += n` ajoute n à x ; `x -= n` lui retire n."
  ],
  "diapositives": [
   {
@@ -35,7 +36,7 @@
    "type": "classe",
    "question": "Qu'ont en commun toutes les barges ?",
    "texte": [
-    "Chaque barge a un nom, un nombre de passagers, une capacité."
+    "Chaque barge a une capacité et un nombre de passagers."
    ],
    "pistes": [
     "Un même plan, des valeurs différentes pour chaque barge."
@@ -77,17 +78,17 @@
    "titre": "Classe et objet",
    "texte": [
     "Une ==classe== est un plan ; un ==objet== est fabriqué avec ce plan.",
-    "Chaque objet a ses propres ==attributs== : `b1.nom`, `b1.passagers`."
+    "Chaque objet a ses propres ==attributs== : `b1.capacite`, `b1.passagers`."
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom):",
-    "        self.nom = nom",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
-    "b1 = Barge(\"Barge 1\")",
-    "b2 = Barge(\"Barge 2\")",
-    "print(b1.nom, b2.passagers)"
+    "b1 = Barge(300)",
+    "b2 = Barge(250)",
+    "print(b1.capacite)"
    ],
    "vocabulaire": "classe = class ; objet = object ; instance = instance ; attribut = attribute"
   },
@@ -98,35 +99,36 @@
    "objectif": "Comprendre que chaque objet a ses propres attributs.",
    "enonce": [
     "On exécute le code suivant.",
-    "Qu'affiche la dernière ligne ?"
+    "Qu'affichent les deux dernières lignes ?"
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom):",
-    "        self.nom = nom",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
-    "b1 = Barge(\"Barge 1\")",
-    "b2 = Barge(\"Barge 2\")",
+    "b1 = Barge(300)",
+    "b2 = Barge(250)",
     "b1.passagers = 120",
-    "print(b1.passagers, b2.passagers)"
+    "print(b1.passagers)",
+    "print(b2.passagers)"
    ],
    "options": [
     {
-     "texte": "120 0",
+     "texte": "120, puis 0",
      "juste": true,
      "feedback": "Exact. `b1` et `b2` sont deux objets distincts : changer `b1.passagers` ne touche pas `b2.passagers`."
     },
     {
-     "texte": "120 120",
+     "texte": "120, puis 120",
      "feedback": "Les deux barges ne partagent pas leurs attributs : chaque objet a les siens. `b2.passagers` vaut toujours 0."
     },
     {
-     "texte": "0 0",
+     "texte": "0, puis 0",
      "feedback": "On peut modifier un attribut avec la notation pointée : `b1.passagers = 120` change bien la valeur de `b1`."
     },
     {
-     "texte": "0 120",
+     "texte": "0, puis 120",
      "feedback": "Tu as inversé : c'est l'attribut de `b1` qui reçoit 120. `b2`, créé avec 0 passager, n'a pas changé."
     }
    ],
@@ -134,7 +136,7 @@
    "verifications": [
     {
      "code": [],
-     "sortie": "120 0"
+     "sortie": "120\n0"
     }
    ]
   },
@@ -142,7 +144,7 @@
    "type": "notion",
    "titre": "Le constructeur",
    "texte": [
-    "`Barge(\"Barge 1\")` crée un objet et appelle `__init__`, le ==constructeur== : il donne leur valeur de départ aux attributs.",
+    "`Barge(300)` crée un objet et appelle `__init__`, le ==constructeur== : il donne leur valeur de départ aux attributs.",
     "`self` est l'objet en cours de création."
    ],
    "vocabulaire": "constructeur = constructor ; self = soi-même"
@@ -162,7 +164,7 @@
      "feedback": "Lire la classe définit seulement le plan. `__init__` s'exécute plus tard, une fois par objet créé."
     },
     {
-     "texte": "Seulement si on écrit `b1.__init__()`.",
+     "texte": "Seulement si on écrit `b1.__init__(300)`.",
      "feedback": "On ne l'appelle jamais soi-même : Python l'appelle tout seul quand on écrit `Barge(...)`."
     },
     {
@@ -172,7 +174,7 @@
     {
      "texte": "À chaque création d'un objet par `Barge(...)`.",
      "juste": true,
-     "feedback": "Oui. Ici, `__init__` est exécuté deux fois : pour `b1`, puis pour `b2`. Chaque fois, `self` est le nouvel objet."
+     "feedback": "Oui. Pour `b1` et `b2`, `__init__` est exécuté deux fois. Chaque fois, `self` est le nouvel objet, et `c` la capacité donnée."
     }
    ],
    "explication": "`Barge(...)` crée un objet puis appelle `__init__` sur lui.",
@@ -181,12 +183,12 @@
      "code": [
       "creations = 0",
       "class Barge:",
-      "    def __init__(self, nom):",
+      "    def __init__(self, c):",
       "        global creations",
       "        creations = creations + 1",
-      "        self.nom = nom",
-      "b1 = Barge(\"Barge 1\")",
-      "b2 = Barge(\"Barge 2\")",
+      "        self.capacite = c",
+      "b1 = Barge(300)",
+      "b2 = Barge(250)",
       "print(creations)"
      ],
      "sortie": "2",
@@ -203,14 +205,14 @@
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom):",
-    "        self.nom = nom",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
     "    def embarquer(self, n):",
-    "        self.passagers = self.passagers + n"
+    "        self.passagers += n"
    ],
-   "vocabulaire": "méthode = method ; embarquer = to board"
+   "vocabulaire": "méthode = method ; embarquer = to board ; `+= n` : ajouter n"
   },
   {
    "type": "question",
@@ -218,19 +220,19 @@
    "nom": "[Méthodes] Appeler une méthode",
    "objectif": "Appeler une méthode avec la notation pointée, sans donner `self`.",
    "enonce": [
-    "On reprend la classe `Barge` avec sa méthode `embarquer`, et `b1 = Barge(\"Barge 1\")`.",
+    "On reprend la classe `Barge` avec sa méthode `embarquer`, et `b1 = Barge(300)`.",
     "Quelle instruction ajoute 50 passagers à `b1` ?"
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom):",
-    "        self.nom = nom",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
     "    def embarquer(self, n):",
-    "        self.passagers = self.passagers + n",
+    "        self.passagers += n",
     "",
-    "b1 = Barge(\"Barge 1\")"
+    "b1 = Barge(300)"
    ],
    "options": [
     {
@@ -286,120 +288,125 @@
   {
    "type": "question",
    "id": "q05",
-   "nom": "[Méthodes] Une barge pleine",
-   "objectif": "Suivre l'état d'un objet après plusieurs appels de méthode.",
+   "nom": "[Méthodes] Embarquer et débarquer",
+   "objectif": "Suivre l'état de deux objets après plusieurs appels de méthode.",
    "enonce": [
-    "La méthode `embarquer` refuse les passagers si la barge est trop pleine : elle renvoie alors `False` et ne change rien.",
-    "Qu'affiche la dernière ligne ?"
+    "La classe a maintenant une méthode `debarquer`.",
+    "Qu'affichent les deux dernières lignes ?"
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom, capacite=300):",
-    "        self.nom = nom",
-    "        self.capacite = capacite",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
     "    def embarquer(self, n):",
-    "        if self.passagers + n <= self.capacite:",
-    "            self.passagers = self.passagers + n",
-    "            return True",
-    "        return False",
+    "        self.passagers += n",
     "",
-    "b1 = Barge(\"Barge 1\")",
-    "a = b1.embarquer(120)",
-    "b = b1.embarquer(200)",
-    "print(a, b, b1.passagers)"
+    "    def debarquer(self, n):",
+    "        self.passagers -= n",
+    "",
+    "b1 = Barge(300)",
+    "b2 = Barge(250)",
+    "b1.embarquer(120)",
+    "b1.debarquer(30)",
+    "b2.embarquer(50)",
+    "print(b1.passagers)",
+    "print(b2.passagers)"
    ],
    "options": [
     {
-     "texte": "True False 120",
+     "texte": "90, puis 50",
      "juste": true,
-     "feedback": "Exact. 0 + 120 ≤ 300 : accepté. Puis 120 + 200 > 300 : refusé, l'objet ne change pas. Il reste 120 passagers."
+     "feedback": "Exact. `b1` reçoit 120 passagers puis en perd 30 : 90. `b2` en reçoit 50. Chaque objet garde ses propres valeurs."
     },
     {
-     "texte": "True True 320",
-     "feedback": "120 + 200 = 320 dépasse la capacité de 300 : le test de la ligne 8 est faux, l'embarquement est refusé."
+     "texte": "120, puis 50",
+     "feedback": "`b1.debarquer(30)` modifie bien `b1` : 120 − 30 = 90. Une méthode change les attributs de l'objet sur lequel on l'appelle."
     },
     {
-     "texte": "True False 320",
-     "feedback": "Le refus est bien vu. Mais quand le test est faux, la ligne 9 n'est pas exécutée : `passagers` reste à 120."
+     "texte": "140, puis 140",
+     "feedback": "Tu as additionné tous les mouvements, comme si les barges partageaient leurs passagers. `b1` et `b2` sont deux objets distincts."
     },
     {
-     "texte": "True False 0",
-     "feedback": "Le premier embarquement est accepté : il modifie vraiment l'objet. `b1.passagers` passe à 120 et y reste."
+     "texte": "90, puis 0",
+     "feedback": "`b2.embarquer(50)` modifie `b2` : ses passagers passent de 0 à 50."
     }
    ],
-   "explication": "Une méthode peut modifier les attributs de l'objet : il garde ces valeurs ensuite.",
+   "explication": "Une méthode modifie les attributs de l'objet sur lequel on l'appelle, et de lui seul.",
    "verifications": [
     {
      "code": [],
-     "sortie": "True False 120"
+     "sortie": "90\n50"
     }
    ]
   },
   {
    "type": "notion",
-   "titre": "Une valeur par défaut",
+   "titre": "Une méthode qui renvoie",
    "texte": [
-    "Avec `capacite=300`, si l'appel ne donne pas la capacité, elle vaut ==300==."
+    "Une méthode peut lire les attributs avec `self` et renvoyer un résultat."
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom, capacite=300):",
-    "        self.nom = nom",
-    "        self.capacite = capacite"
+    "    # (début de la classe)",
+    "    def libres(self):",
+    "        c = self.capacite",
+    "        p = self.passagers",
+    "        return c - p"
    ]
   },
   {
    "type": "question",
    "id": "q06",
-   "nom": "[Constructeur] Utiliser la valeur par défaut",
-   "objectif": "Prévoir la valeur d'un attribut quand un paramètre a une valeur par défaut.",
+   "nom": "[Méthodes] Les places libres",
+   "objectif": "Prévoir la valeur renvoyée par une méthode.",
    "enonce": [
-    "On reprend la classe `Barge` avec `capacite=300`.",
-    "Qu'affiche ce programme ?"
+    "On ajoute la méthode `libres` à la classe `Barge`.",
+    "Qu'affiche la dernière ligne ?"
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom, capacite=300):",
-    "        self.nom = nom",
-    "        self.capacite = capacite",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
     "    def embarquer(self, n):",
-    "        if self.passagers + n <= self.capacite:",
-    "            self.passagers = self.passagers + n",
-    "            return True",
-    "        return False",
+    "        self.passagers += n",
     "",
-    "b1 = Barge(\"Barge 1\")",
-    "b2 = Barge(\"Barge 2\", 250)",
-    "print(b1.capacite, b2.capacite)"
+    "    def libres(self):",
+    "        c = self.capacite",
+    "        p = self.passagers",
+    "        return c - p",
+    "",
+    "b1 = Barge(300)",
+    "b1.embarquer(120)",
+    "print(b1.libres())"
    ],
    "options": [
     {
-     "texte": "300 300",
-     "feedback": "`b2` donne sa capacité, 250 : la valeur par défaut ne sert que si l'appel ne donne rien."
+     "texte": "300",
+     "feedback": "300, c'est la capacité. `libres` lui retire les passagers déjà embarqués."
     },
     {
-     "texte": "Une erreur : il manque la capacité de `b1`.",
-     "feedback": "Il ne manque rien : grâce à `capacite=300`, l'argument est facultatif. Sans lui, la capacité vaut 300."
+     "texte": "120",
+     "feedback": "120, ce sont les passagers embarqués. La méthode renvoie la capacité moins ces passagers."
     },
     {
-     "texte": "300 250",
+     "texte": "180",
      "juste": true,
-     "feedback": "Oui. `b1` ne donne pas de capacité : elle vaut 300 par défaut. `b2` donne 250."
+     "feedback": "Oui : `c` vaut 300, `p` vaut 120, et la méthode renvoie 300 − 120 = 180."
     },
     {
-     "texte": "250 250",
-     "feedback": "La valeur 250 n'est donnée que pour `b2`. Chaque objet est construit avec ses propres arguments."
+     "texte": "420",
+     "feedback": "La méthode soustrait, elle n'additionne pas : `return c - p`."
     }
    ],
-   "explication": "Un paramètre par défaut prend sa valeur quand l'appel ne la donne pas.",
+   "explication": "Une méthode lit les attributs de l'objet avec `self.` et peut renvoyer un résultat.",
    "verifications": [
     {
      "code": [],
-     "sortie": "300 250"
+     "sortie": "180"
     }
    ]
   },
@@ -422,40 +429,35 @@
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom, capacite=300):",
-    "        self.nom = nom",
-    "        self.capacite = capacite",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
-    "    def embarquer(self, n):",
-    "        if self.passagers + n <= self.capacite:",
-    "            self.passagers = self.passagers + n",
-    "            return True",
-    "        return False",
+    "    def libres(self):",
+    "        c = capacite",
+    "        p = self.passagers",
+    "        return c - p",
     "",
-    "    def places_libres(self):",
-    "        return capacite - passagers",
-    "",
-    "b1 = Barge(\"Barge 1\")",
-    "print(b1.places_libres())"
+    "b1 = Barge(300)",
+    "print(b1.libres())"
    ],
    "options": [
     {
-     "texte": "Il faut écrire `def places_libres(capacite, passagers):`.",
+     "texte": "Il faut écrire `def libres(self, capacite):`.",
      "feedback": "On n'a pas à redonner les attributs en paramètres : ils sont déjà dans l'objet, accessibles par `self`."
     },
     {
      "texte": "L'attribut `capacite` n'a pas été créé par `__init__`.",
-     "feedback": "Il a bien été créé, par `self.capacite = capacite`. C'est la ligne 14 qui ne va pas le chercher dans l'objet."
+     "feedback": "Il a bien été créé, par `self.capacite = c`. C'est la ligne 7 qui ne va pas le chercher dans l'objet."
     },
     {
-     "texte": "Il faut appeler `Barge.places_libres()` au lieu de `b1.places_libres()`.",
-     "feedback": "Appeler la méthode sur la classe ne donnerait pas d'objet à `self`. L'appel `b1.places_libres()` est le bon."
+     "texte": "Il faut appeler `Barge.libres()` au lieu de `b1.libres()`.",
+     "feedback": "Appeler la méthode sur la classe ne donnerait pas d'objet à `self`. L'appel `b1.libres()` est le bon."
     },
     {
-     "texte": "Il faut écrire `self.capacite - self.passagers` à la ligne 14.",
+     "texte": "Il faut écrire `c = self.capacite` à la ligne 7.",
      "juste": true,
-     "feedback": "Oui. Sans `self.`, Python cherche une variable locale `capacite`, qui n'existe pas. Avec `self.`, il lit l'attribut de l'objet."
+     "feedback": "Oui. Sans `self.`, Python cherche une variable `capacite`, qui n'existe pas : il le suggère lui-même. Avec `self.`, il lit l'attribut de l'objet."
     }
    ],
    "explication": "Dans une méthode, on lit et on modifie un attribut avec `self.attribut`.",
@@ -466,15 +468,18 @@
     },
     {
      "code": [
-      "class B:",
-      "    def __init__(self):",
-      "        self.capacite = 300",
-      "        self.passagers = 120",
-      "    def places_libres(self):",
-      "        return self.capacite - self.passagers",
-      "print(B().places_libres())"
+      "class Barge:",
+      "    def __init__(self, c):",
+      "        self.capacite = c",
+      "        self.passagers = 0",
+      "",
+      "    def libres(self):",
+      "        c = self.capacite",
+      "        p = self.passagers",
+      "        return c - p",
+      "print(Barge(300).libres())"
      ],
-     "sortie": "180",
+     "sortie": "300",
      "reprendre_code": false
     }
    ]
@@ -485,27 +490,28 @@
    "nom": "[Erreur] Le paramètre `self` oublié",
    "objectif": "Lire un message d'erreur et retrouver le paramètre `self` oublié.",
    "enonce": [
-    "Le programme s'arrête sur l'erreur `TypeError: Barge.places_libres() takes 0 positional arguments but 1 was given` (« la méthode n'attend aucun argument, mais en a reçu un »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Le programme s'arrête sur l'erreur `TypeError: Barge.libres() takes 0 positional arguments but 1 was given` (« la méthode n'attend aucun argument, mais en a reçu un »)."
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom, capacite=300):",
-    "        self.capacite = capacite",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
-    "    def places_libres():",
-    "        return self.capacite - self.passagers",
+    "    def libres():",
+    "        c = self.capacite",
+    "        p = self.passagers",
+    "        return c - p",
     "",
-    "b1 = Barge(\"Barge 1\")",
-    "print(b1.places_libres())"
+    "b1 = Barge(300)",
+    "print(b1.libres())"
    ],
    "ligne": 6,
-   "correction": "    def places_libres(self):",
+   "correction": "    def libres(self):",
    "feedback": "Bien vu : Python donne toujours l'objet `b1` en premier argument, mais la méthode n'a aucun paramètre pour le recevoir. Avec `self`, le programme affiche 300.",
    "feedback_autre": "Cette ligne est correcte. Le message dit qu'une méthode a reçu un argument qu'elle n'attendait pas : cherche la définition de cette méthode.",
    "pieges": {
-    "10": "L'appel `b1.places_libres()` est juste : on ne donne pas `self` à l'appel. C'est la définition de la méthode qui oublie de le recevoir.",
+    "12": "L'appel `b1.libres()` est juste : on ne donne pas `self` à l'appel. C'est la définition de la méthode qui oublie de le recevoir.",
     "7": "Cette ligne utilise bien `self.` : elle serait juste si `self` était un paramètre de la méthode."
    },
    "verifications": [
@@ -528,16 +534,16 @@
    "nom": "[Erreur] La classe ou l'objet ?",
    "objectif": "Distinguer l'attribut d'un objet et la classe elle-même.",
    "enonce": [
-    "Après `b1 = Barge(\"Barge 1\")`, on écrit `print(Barge.passagers)`.",
+    "Après `b1 = Barge(300)`, on écrit `print(Barge.passagers)`.",
     "Python répond `AttributeError: type object 'Barge' has no attribute 'passagers'` (« la classe Barge n'a pas d'attribut passagers »). Pourquoi ?"
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom):",
-    "        self.nom = nom",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
-    "b1 = Barge(\"Barge 1\")"
+    "b1 = Barge(300)"
    ],
    "options": [
     {
@@ -585,14 +591,14 @@
    ],
    "code": [
     "class Barge:",
-    "    def __init__(self, nom):",
-    "        self.nom = nom",
+    "    def __init__(self, c):",
+    "        self.capacite = c",
     "        self.passagers = 0",
     "",
     "    def embarquer(self, n):",
-    "        self.passagers = self.passagers + n",
+    "        self.passagers += n",
     "",
-    "b1 = Barge(\"Barge 1\")",
+    "b1 = Barge(300)",
     "b3 = b1",
     "b3.embarquer(10)",
     "print(b1.passagers)"
@@ -636,16 +642,16 @@
    "nom": "[Écrire] Une classe pour les taxis",
    "objectif": "Écrire correctement le constructeur d'une classe.",
    "enonce": [
-    "On veut une classe `Taxi` : `t = Taxi(\"Mamoudzou\", 4)` crée un taxi qui part de Mamoudzou avec 4 places, puis `print(t.depart, t.places)` affiche Mamoudzou 4.",
+    "On veut une classe `Taxi` : `t = Taxi(\"Sada\")` crée un taxi qui part de Sada avec 4 places, puis `print(t.depart, t.places)` affiche Sada 4.",
     "Quelle définition convient ?"
    ],
    "options": [
     {
      "code": [
       "class Taxi:",
-      "    def __init__(self, depart, places):",
-      "        self.depart = depart",
-      "        self.places = places"
+      "    def __init__(self, d):",
+      "        self.depart = d",
+      "        self.places = 4"
      ],
      "juste": true,
      "feedback": "Oui : le constructeur s'appelle `__init__`, reçoit `self` en premier, et range chaque valeur dans un attribut `self.…`."
@@ -653,27 +659,27 @@
     {
      "code": [
       "class Taxi:",
-      "    def __init__(depart, places):",
-      "        self.depart = depart",
-      "        self.places = places"
+      "    def __init__(d):",
+      "        self.depart = d",
+      "        self.places = 4"
      ],
-     "feedback": "Il manque `self` dans les paramètres : Python répond `TypeError: Taxi.__init__() takes 2 positional arguments but 3 were given`."
+     "feedback": "Il manque `self` dans les paramètres : Python répond `TypeError: Taxi.__init__() takes 1 positional argument but 2 were given`."
     },
     {
      "code": [
       "class Taxi:",
-      "    def __init__(self, depart, places):",
-      "        depart = depart",
-      "        places = places"
+      "    def __init__(self, d):",
+      "        depart = d",
+      "        places = 4"
      ],
      "feedback": "Sans `self.`, les valeurs vont dans des variables locales, perdues à la fin de `__init__`. Python répond `AttributeError: 'Taxi' object has no attribute 'depart'`."
     },
     {
      "code": [
       "class Taxi:",
-      "    def init(self, depart, places):",
-      "        self.depart = depart",
-      "        self.places = places"
+      "    def init(self, d):",
+      "        self.depart = d",
+      "        self.places = 4"
      ],
      "feedback": "Le constructeur s'appelle `__init__`, avec deux tirets bas de chaque côté. Sans lui, Python répond `TypeError: Taxi() takes no arguments`."
     }
@@ -683,22 +689,22 @@
     {
      "code": [
       "class Taxi:",
-      "    def __init__(self, depart, places):",
-      "        self.depart = depart",
-      "        self.places = places",
-      "t = Taxi(\"Mamoudzou\", 4)",
+      "    def __init__(self, d):",
+      "        self.depart = d",
+      "        self.places = 4",
+      "t = Taxi(\"Sada\")",
       "print(t.depart, t.places)"
      ],
-     "sortie": "Mamoudzou 4",
+     "sortie": "Sada 4",
      "reprendre_code": false
     },
     {
      "code": [
       "class Taxi:",
-      "    def __init__(depart, places):",
-      "        self.depart = depart",
-      "        self.places = places",
-      "t = Taxi(\"Mamoudzou\", 4)",
+      "    def __init__(d):",
+      "        self.depart = d",
+      "        self.places = 4",
+      "t = Taxi(\"Sada\")",
       "print(t.depart, t.places)"
      ],
      "erreur": "TypeError",
@@ -708,10 +714,10 @@
     {
      "code": [
       "class Taxi:",
-      "    def __init__(self, depart, places):",
-      "        depart = depart",
-      "        places = places",
-      "t = Taxi(\"Mamoudzou\", 4)",
+      "    def __init__(self, d):",
+      "        depart = d",
+      "        places = 4",
+      "t = Taxi(\"Sada\")",
       "print(t.depart, t.places)"
      ],
      "erreur": "AttributeError",
@@ -721,10 +727,10 @@
     {
      "code": [
       "class Taxi:",
-      "    def init(self, depart, places):",
-      "        self.depart = depart",
-      "        self.places = places",
-      "t = Taxi(\"Mamoudzou\", 4)",
+      "    def init(self, d):",
+      "        self.depart = d",
+      "        self.places = 4",
+      "t = Taxi(\"Sada\")",
       "print(t.depart, t.places)"
      ],
      "erreur": "TypeError",
@@ -748,7 +754,7 @@
     "        self.valeur = 0",
     "",
     "    def ajouter(self):",
-    "        self.valeur = self.valeur + 1",
+    "        self.valeur += 1",
     "",
     "a = Compteur()",
     "b = Compteur()",
@@ -795,7 +801,7 @@
     "lignes": [
      [
       "Classe et objet",
-      "`class Barge:` définit le plan ; `Barge(...)` crée un objet"
+      "`class Barge:` définit le plan ; `Barge(300)` crée un objet"
      ],
      [
       "Constructeur",
