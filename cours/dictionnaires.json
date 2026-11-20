@@ -66,7 +66,9 @@
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "ages = {\"Anli\": 16, \"Inès\": 15, \"Kamal\": 17}",
+    "ages = {\"Anli\": 16,",
+    "        \"Inès\": 15,",
+    "        \"Kamal\": 17}",
     "print(ages[\"Inès\"])"
    ],
    "options": [
@@ -106,7 +108,8 @@
     "Que se passe-t-il ?"
    ],
    "code": [
-    "prix = {\"mangue\": 1, \"coco\": 2}",
+    "prix = {\"mangue\": 1,",
+    "        \"coco\": 2}",
     "print(prix[0])"
    ],
    "options": [
@@ -156,23 +159,24 @@
    "nom": "[Modifier] Ajouter ou remplacer",
    "objectif": "Distinguer l'ajout d'une paire et la modification d'une valeur.",
    "enonce": [
-    "Le dictionnaire `notes` associe des prénoms à des notes.",
+    "Le dictionnaire `d` associe des prénoms à des notes.",
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "notes = {\"Anli\": 12, \"Faïza\": 15}",
-    "notes[\"Anli\"] = notes[\"Anli\"] + 3",
-    "notes[\"Zaïna\"] = 9",
-    "print(len(notes), notes[\"Anli\"])"
+    "d = {\"Anli\": 12,",
+    "     \"Faïza\": 15}",
+    "d[\"Anli\"] = d[\"Anli\"] + 3",
+    "d[\"Zaïna\"] = 9",
+    "print(len(d), d[\"Anli\"])"
    ],
    "options": [
     {
      "texte": "`2 15`",
-     "feedback": "La clé \"Zaïna\" n'existait pas : `notes[\"Zaïna\"] = 9` ajoute une troisième paire."
+     "feedback": "La clé \"Zaïna\" n'existait pas : `d[\"Zaïna\"] = 9` ajoute une troisième paire."
     },
     {
      "texte": "`3 12`",
-     "feedback": "`notes[\"Anli\"] = notes[\"Anli\"] + 3` remplace la valeur d'Anli : 12 + 3, soit 15."
+     "feedback": "`d[\"Anli\"] = d[\"Anli\"] + 3` remplace la valeur d'Anli : 12 + 3, soit 15."
     },
     {
      "texte": "`3 15`",
@@ -181,7 +185,7 @@
     },
     {
      "texte": "Une erreur : la clé \"Zaïna\" n'existe pas.",
-     "feedback": "Lire une clé absente provoque une erreur, mais écrire `notes[\"Zaïna\"] = 9`, avec une clé nouvelle, ajoute la paire."
+     "feedback": "Lire une clé absente provoque une erreur, mais écrire `d[\"Zaïna\"] = 9`, avec une clé nouvelle, ajoute la paire."
     }
    ],
    "explication": "`d[cle] = v` ajoute si la clé est nouvelle, remplace sinon.",
@@ -243,21 +247,21 @@
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "prenoms = [\"Anli\", \"Inès\"]",
+    "noms = [\"Anli\", \"Inès\"]",
     "ages = [16, 15]",
     "d = {}",
-    "for i in range(len(prenoms)):",
-    "    d[prenoms[i]] = ages[i]",
+    "for i in range(len(noms)):",
+    "    d[noms[i]] = ages[i]",
     "print(d)"
    ],
    "options": [
     {
      "texte": "`{16: 'Anli', 15: 'Inès'}`",
-     "feedback": "Tu as inversé : la clé est entre crochets, à gauche du `=`. Ici, la clé est `prenoms[i]`, la valeur `ages[i]`."
+     "feedback": "Tu as inversé : la clé est entre crochets, à gauche du `=`. Ici, la clé est `noms[i]`, la valeur `ages[i]`."
     },
     {
      "texte": "`{0: 'Anli', 1: 'Inès'}`",
-     "feedback": "La clé n'est pas l'indice `i` : c'est `prenoms[i]`, le prénom rangé à cet indice."
+     "feedback": "La clé n'est pas l'indice `i` : c'est `noms[i]`, le prénom rangé à cet indice."
     },
     {
      "texte": "`{'Anli': 0, 'Inès': 1}`",
@@ -266,7 +270,7 @@
     {
      "texte": "`{'Anli': 16, 'Inès': 15}`",
      "juste": true,
-     "feedback": "Oui. À chaque tour, `d[prenoms[i]] = ages[i]` ajoute la paire prénom et âge."
+     "feedback": "Oui. À chaque tour, `d[noms[i]] = ages[i]` ajoute la paire prénom et âge."
     }
    ],
    "explication": "`d[cle] = valeur` construit le dictionnaire, une entrée à la fois.",
@@ -301,8 +305,9 @@
     "Qu'affiche-t-il ?"
    ],
    "code": [
-    "ages = {\"Anli\": 16, \"Inès\": 15}",
-    "print(16 in ages, \"Anli\" in ages)"
+    "a = {\"Anli\": 16,",
+    "     \"Inès\": 15}",
+    "print(16 in a, \"Anli\" in a)"
    ],
    "options": [
     {
@@ -320,7 +325,7 @@
     },
     {
      "texte": "`False False`",
-     "feedback": "\"Anli\" est une clé : `\"Anli\" in ages` vaut `True`. Seul 16, qui est une valeur, donne `False`."
+     "feedback": "\"Anli\" est une clé : `\"Anli\" in a` vaut `True`. Seul 16, qui est une valeur, donne `False`."
     }
    ],
    "explication": "`cle in d` cherche parmi les clés, jamais parmi les valeurs.",
@@ -341,13 +346,15 @@
     "Qu'affiche-t-il ?"
    ],
    "code": [
-    "notes = {\"Anli\": 12}",
-    "print(notes.get(\"Zaïna\", \"absente\"))"
+    "n = {\"Anli\": 12}",
+    "r = n.get(\"Zaïna\",",
+    "          \"absente\")",
+    "print(r)"
    ],
    "options": [
     {
-     "texte": "Une erreur `KeyError`",
-     "feedback": "C'est `notes[\"Zaïna\"]` qui s'arrêterait sur `KeyError: 'Zaïna'`. `get` ne provoque pas d'erreur : il renvoie la valeur par défaut."
+     "texte": "Une erreur `KeyError: 'Zaïna'`",
+     "feedback": "C'est `n[\"Zaïna\"]` qui s'arrêterait sur `KeyError: 'Zaïna'`. `get` ne provoque pas d'erreur : il renvoie la valeur par défaut."
     },
     {
      "texte": "`None`",
@@ -371,14 +378,14 @@
     },
     {
      "code": [
-      "print(notes.get(\"Zaïna\"))"
+      "print(n.get(\"Zaïna\"))"
      ],
      "sortie": "absente\nNone",
      "option": 1
     },
     {
      "code": [
-      "print(notes[\"Zaïna\"])"
+      "print(n[\"Zaïna\"])"
      ],
      "sortie": "absente",
      "erreur": "KeyError",
@@ -413,7 +420,8 @@
     "Qu'affiche-t-il ?"
    ],
    "code": [
-    "notes = {\"Anli\": 12, \"Faïza\": 15}",
+    "notes = {\"Anli\": 12,",
+    "         \"Faïza\": 15}",
     "for x in notes:",
     "    print(x)"
    ],
@@ -454,7 +462,8 @@
     "Quelle boucle convient ?"
    ],
    "code": [
-    "prix = {\"mangue\": 1, \"coco\": 2}"
+    "prix = {\"mangue\": 1,",
+    "        \"coco\": 2}"
    ],
    "options": [
     {
@@ -532,9 +541,11 @@
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "stock = {\"mangue\": 8, \"coco\": 4, \"banane\": 6}",
+    "stock = {\"mangue\": 8,",
+    "         \"coco\": 4,",
+    "         \"banane\": 6}",
     "total = 0",
-    "for fruit, n in stock.items():",
+    "for f, n in stock.items():",
     "    total = total + n",
     "print(total)"
    ],
@@ -554,7 +565,7 @@
     },
     {
      "texte": "Une erreur : `items()` ne donne pas deux valeurs.",
-     "feedback": "`items()` donne des paires (clé, valeur), des p-uplets de deux valeurs, déballés dans `fruit` et `n`."
+     "feedback": "`items()` donne des paires (clé, valeur), des p-uplets de deux valeurs, déballés dans `f` et `n`."
     }
    ],
    "explication": "`for cle, v in d.items()` parcourt les paires ; `v` est la valeur.",
@@ -592,19 +603,21 @@
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "communes = [\"Sada\", \"Ouangani\", \"Sada\", \"Bandrélé\", \"Sada\"]",
-    "effectifs = {}",
-    "for c in communes:",
-    "    if c in effectifs:",
-    "        effectifs[c] = effectifs[c] + 1",
+    "t = [\"Sada\", \"Ouangani\",",
+    "     \"Sada\", \"Bandrélé\",",
+    "     \"Sada\"]",
+    "n = {}",
+    "for c in t:",
+    "    if c in n:",
+    "        n[c] = n[c] + 1",
     "    else:",
-    "        effectifs[c] = 1",
-    "print(effectifs[\"Sada\"], len(effectifs))"
+    "        n[c] = 1",
+    "print(n[\"Sada\"], len(n))"
    ],
    "options": [
     {
      "texte": "`3 5`",
-     "feedback": "`len(effectifs)` compte les paires du dictionnaire, une par commune différente : 3, pas les 5 élèves."
+     "feedback": "`len(n)` compte les paires du dictionnaire, une par commune différente : 3, pas les 5 élèves."
     },
     {
      "texte": "`3 3`",
@@ -617,14 +630,14 @@
     },
     {
      "texte": "`5 3`",
-     "feedback": "`effectifs[\"Sada\"]` compte seulement les \"Sada\" : 3. Le total de 5 serait la somme de toutes les valeurs."
+     "feedback": "`n[\"Sada\"]` compte seulement les \"Sada\" : 3. Le total de 5 serait la somme de toutes les valeurs."
     }
    ],
    "explication": "Le motif « si la clé existe, ajouter 1 ; sinon, mettre 1 » compte les occurrences.",
    "verifications": [
     {
      "code": [
-      "print(effectifs)"
+      "print(n)"
      ],
      "sortie": "3 3\n{'Sada': 3, 'Ouangani': 1, 'Bandrélé': 1}"
     }
@@ -641,19 +654,20 @@
     "Toucher la ligne qui contient l'erreur."
    ],
    "code": [
-    "communes = [\"Sada\", \"Chiconi\", \"Sada\"]",
-    "effectifs = {}",
-    "for c in communes:",
-    "    effectifs[c] = effectifs[c] + 1",
-    "print(effectifs)"
+    "t = [\"Sada\", \"Chiconi\",",
+    "     \"Sada\"]",
+    "n = {}",
+    "for c in t:",
+    "    n[c] = n[c] + 1",
+    "print(n)"
    ],
-   "ligne": 4,
-   "correction": "    effectifs[c] = effectifs.get(c, 0) + 1",
-   "feedback": "Bien vu. Au premier tour, \"Sada\" n'est pas encore une clé : `effectifs[c]` la lit et échoue. Avec `effectifs.get(c, 0)`, une clé absente vaut 0 ; le programme affiche alors {'Sada': 2, 'Chiconi': 1}.",
-   "feedback_autre": "Cette ligne est correcte. Le message `KeyError` dit qu'on lit une clé absente : cherche la ligne qui lit `effectifs[c]`.",
+   "ligne": 5,
+   "correction": "    n[c] = n.get(c, 0) + 1",
+   "feedback": "Bien vu. Au premier tour, \"Sada\" n'est pas encore une clé : `n[c]` la lit et échoue. Avec `n.get(c, 0)`, une clé absente vaut 0 ; le programme affiche alors {'Sada': 2, 'Chiconi': 1}.",
+   "feedback_autre": "Cette ligne est correcte. Le message `KeyError` dit qu'on lit une clé absente : cherche la ligne qui lit `n[c]`.",
    "pieges": {
-    "2": "`effectifs = {}` crée un dictionnaire vide : c'est juste, on le remplit dans la boucle.",
-    "5": "Le programme s'arrête avant cette ligne, dès le premier tour de boucle. Cherche où l'on lit une clé qui n'existe pas encore."
+    "3": "`n = {}` crée un dictionnaire vide : c'est juste, on le remplit dans la boucle.",
+    "6": "Le programme s'arrête avant cette ligne, dès le premier tour de boucle. Cherche où l'on lit une clé qui n'existe pas encore."
    },
    "verifications": [
     {
