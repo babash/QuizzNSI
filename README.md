@@ -1,6 +1,6 @@
 # 🎯 QuizzNSI
 
-**Un cours court en diapositives et des questions tout de suite, sur le téléphone de chaque élève.** Pour la terminale NSI.
+**Un cours court en diapositives et des questions tout de suite, sur le téléphone de chaque élève.** Pour la NSI de première et de terminale.
 
 > Tes élèves rejoignent la séance avec un QR code et un prénom ou un pseudo. Le cours avance au tableau, une notion par diapositive ; à chaque question, chacun·e répond depuis son téléphone et lit aussitôt l'explication de sa réponse, juste ou fausse. Après une erreur, l'explication dit pourquoi, et le « rebond » récompense la bonne réponse suivante. Le même cours se révise seul·e à la maison et s'imprime sur papier.
 
@@ -112,7 +112,7 @@ Chaque téléphone calcule ses propres points ; la page projetée fait seule foi
 
 ## Contact
 
-Conçu par Babash - NSI Tani Malandi pour les classes de NSI de terminale de l'académie de Mayotte, développé avec l'aide de l'IA ([Claude Code](https://claude.com/claude-code)).
+Conçu par Babash - NSI Tani Malandi pour les classes de NSI de première et de terminale de l'académie de Mayotte, développé avec l'aide de l'IA ([Claude Code](https://claude.com/claude-code)).
 Une question, une idée, un bug ? Les [issues GitHub](https://github.com/babash/QuizzNSI/issues) du dépôt. Toutes les ressources sont sur le site [Ressources NSI et SNT](https://babash.github.io/Babash-NSI-SNT/).
 
 ## Licence
