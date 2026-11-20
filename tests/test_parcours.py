@@ -15,6 +15,8 @@ Lancement, depuis la racine de QuizzNSI :
    chaîne très longue). Un piège sur innerHTML, outerHTML, insertAdjacentHTML, createContextualFragment
    et document.write échoue si une donnée venue du canal (marquée XSSMARK) y passe, même échappée :
    les deux élèves ont un pseudo qui contient XSSMARK, le podium est affiché après chaque question.
+1 ter. Le QR code en très grand (bouton et touche Q), à l'accueil et pendant une question, à 3 largeurs et
+   dans les 2 thèmes ; un·e élève en retard rejoint en pleine question et reçoit ses points.
 2. Le mode autonome : les 37 diapositives, une erreur puis la bonne réponse, le bilan.
 3. La version imprimable : le sujet et le corrigé en PDF A4, sans débordement.
 4. Toutes les pages à 320, 768 et 1440 px, en clair et en obscur : aucun défilement horizontal.
@@ -375,6 +377,65 @@ def seance(nav, base):
     ctx.close()
 
 
+def qr_et_retard(nav, base):
+    """Le QR code en très grand, à tout moment (bouton ou touche Q), et un·e élève en retard qui rejoint en pleine question."""
+    ctx = contexte(nav, base)
+    prof = ctx.new_page()
+    surveiller(prof, "QR en grand")
+    for largeur, hauteur in ((1440, 900), (768, 1024), (320, 640)):
+        prof.set_viewport_size({"width": largeur, "height": hauteur})
+        prof.goto(base + "animer.html?cours=piles-files")
+        attendre_texte(prof, "#etatConnexion", "Séance ouverte")
+        prof.click("#btnQrGrand")  # dès l'accueil
+        prof.wait_for_selector("#qrBoite[open]")
+        taille = prof.evaluate("() => { const r = document.querySelector('#qrGrand').getBoundingClientRect(); return Math.min(r.width, r.height) / Math.min(innerWidth, innerHeight); }")
+        assert taille > 0.5, f"QR code trop petit à {largeur} px : {taille:.2f} de l'écran"
+        large = prof.evaluate("() => document.documentElement.scrollWidth - window.innerWidth")
+        assert large <= 0, f"QR en grand à {largeur} px : défilement horizontal"
+        hors = prof.evaluate("""() => [...document.querySelectorAll('#qrBoite *')].filter(e => { const r = e.getBoundingClientRect(); return r.width && (r.left < -1 || r.right > innerWidth + 1 || e.scrollWidth > e.clientWidth + 1 && getComputedStyle(e).overflowX === 'visible' && e.tagName !== 'svg'); }).map(e => e.id || e.className)""")
+        assert not hors, f"QR en grand à {largeur} px : {hors} sort de l'écran"
+        haut = prof.evaluate("() => { const b = document.querySelector('#qrBoite'); return b.scrollHeight - b.clientHeight; }")
+        assert haut <= 0, f"QR en grand à {largeur} px : il faut faire défiler ({haut} px)"
+        for theme in ("light", "dark"):
+            prof.emulate_media(color_scheme=theme)
+            prof.screenshot(path=os.path.join(SORTIE, f"qr-grand-{largeur}-{theme}.png"))
+        prof.emulate_media(color_scheme="light")
+        prof.keyboard.press("Escape")
+        prof.wait_for_selector("#qrBoite:not([open])", state="attached")
+    prof.set_viewport_size({"width": 1440, "height": 900})
+    code = prof.inner_text("#code").strip()
+    tot = prof.evaluate("document.querySelector('#codeGrand').textContent")
+    assert tot == code, (tot, code)
+    prof.select_option("#duree", "0")
+    prof.click("#commencer")
+    premiere = next(i for i, d in enumerate(COURS["diapositives"]) if d["type"] == "question")
+    suivante(prof, "#action", "#compteur", premiere)
+    # pendant la question : la touche Q ouvre, puis referme ; les flèches ne font pas avancer le cours pendant ce temps
+    prof.keyboard.press("q")
+    prof.wait_for_selector("#qrBoite[open]")
+    compteur = prof.inner_text("#compteur")
+    prof.keyboard.press("ArrowRight")
+    assert prof.inner_text("#compteur") == compteur, "le cours a avancé sous le QR code"
+    prof.keyboard.press("q")
+    prof.wait_for_selector("#qrBoite:not([open])", state="attached")
+    # un·e élève en retard scanne le QR code : il ou elle arrive directement sur la question en cours
+    e = ctx.new_page()
+    e.set_viewport_size({"width": 320, "height": 740})
+    surveiller(e, "en retard")
+    e.goto(base + f"rejoindre.html?s={code}")
+    e.fill("#champPseudo", "Retard")
+    e.click("#rejoindre")
+    e.wait_for_selector('button.option[data-choix="0"]:not([disabled])')
+    attendre_texte(e, ".q-num", "Question 1 sur 20")
+    e.click(f'button.option[data-choix="{BONNES[0]}"]')
+    attendre_texte(e, "#envoyee", "reçue")
+    attendre_texte(prof, "#statutQ", "Tout le monde a répondu")
+    prof.click("#action")
+    attendre_texte(e, "#points", "110 pts")
+    print("  QR en grand : bouton et touche Q, à l'accueil et pendant une question (3 largeurs, 2 thèmes) ; élève en retard : question en cours, réponse reçue, points")
+    ctx.close()
+
+
 def sans_chiffrement(nav, base):
     """Un téléphone qui ne sait pas chiffrer le dit tout de suite ; un accusé qui ne vient pas est signalé."""
     for nom, script in (("sans crypto.subtle", "Object.defineProperty(window.crypto, 'subtle', { get: () => undefined });"),
@@ -507,6 +568,7 @@ def main():
         nav = pw.chromium.launch()
         seance(nav, base)
         injection(nav, base)
+        qr_et_retard(nav, base)
         stockage(nav, base)
         sans_chiffrement(nav, base)
         autonome(nav, base)

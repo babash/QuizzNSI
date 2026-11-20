@@ -33,6 +33,20 @@ select, input[type="text"] { font: inherit; color: var(--ink); background: var(-
 .carte-rejoindre h3 { font-size: 1em; margin: .4em 0 .2em; }
 .carte-rejoindre .eleves { max-height: 30vh; }
 
+/* Le QR code en très grand, lisible du fond de la classe (bouton ou touche Q, à tout moment) */
+.qr-boite { border: 0; padding: 2vh 3vw; margin: 0; width: 100vw; height: 100vh; max-width: none; max-height: none; overflow: auto; background: var(--panel); color: var(--ink); display: none; flex-direction: column; align-items: center; justify-content: safe center; gap: 1.5vh; }
+.qr-boite[open] { display: flex; }
+.qr-boite::backdrop { background: var(--panel); }
+.qr-titre { font-size: clamp(22px, 4.5vh, 52px); margin: 0; text-align: center; }
+.qr-grand-corps { display: flex; align-items: center; justify-content: center; gap: 4vw; flex-wrap: wrap; max-width: 100%; }
+.qr-boite .qr { width: min(46vh, 88vw); padding: 2.5%; border: 2px solid var(--line); }
+.qr-grand-texte { min-width: 0; max-width: 100%; text-align: center; }
+.qr-boite .lien { font-size: clamp(14px, 2.6vh, 30px); }
+.qr-boite .etape { font-size: clamp(16px, 2.4vh, 28px); }
+.qr-boite .aide { font-size: clamp(14px, 2.2vh, 24px); }
+.code-seance.geant { font-size: clamp(40px, min(10vh, 19vw), 220px); white-space: nowrap; margin: .05em 0 .1em; }
+@media (min-aspect-ratio: 4/3) { .qr-grand-corps { flex-wrap: nowrap; } .qr-boite .qr { width: min(74vh, 52vw); } .qr-grand-texte { text-align: left; } .code-seance.geant { font-size: clamp(40px, min(17vh, 9vw), 220px); } }
+
 .options.avec-barres .option { flex-wrap: wrap; padding-bottom: 10px; }
 .rep-barre { flex-basis: 100%; height: 12px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 99px; overflow: hidden; display: block; }
 .rep-barre > span { display: block; height: 100%; background: var(--ink-soft); }
