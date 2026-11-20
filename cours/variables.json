@@ -1,0 +1,747 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "variables",
+ "titre": "Variables et opérateurs",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Langages et programmation : constructions élémentaires (affectation, séquences) ; types de base : entiers, flottants, booléens, chaînes (SNT : variables et affectations)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/variable/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les variables et les opérateurs en Python » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je dis ce que contient une variable après quelques affectations.",
+  "Niveau 2 : je reconnais le type d'une valeur et je calcule avec `/`, `//` et `%`.",
+  "Niveau 3 : je lis un message d'erreur et je corrige la ligne fautive."
+ ],
+ "conventions": [
+  "Tous les codes sont en Python 3. Quand un code affiche plusieurs lignes, les réponses les donnent dans l'ordre, séparées par « puis ».",
+  "« On tape 15 » : la personne qui utilise le programme tape 15 au clavier, puis Entrée."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Variables et opérateurs",
+   "conventions": false,
+   "texte": [
+    "Les bases de Python · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Que garde l'ardoise du marché ?",
+   "texte": [
+    "Au marché, le prix des mangues est écrit sur une ardoise. À midi, on l'efface et on le change."
+   ],
+   "pistes": [
+    "Seule la dernière valeur reste !"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "L'affectation",
+   "texte": [
+    "`prix = 2` se lit « prix ==reçoit== 2 ».",
+    "Python calcule ==à droite== du `=`, puis range le résultat dans la variable à gauche."
+   ],
+   "code": [
+    "prix = 2",
+    "prix = prix + 1",
+    "print(prix)   # 3"
+   ],
+   "vocabulaire": "variable = variable ; affectation = assignment ; valeur = value"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Affectation] Une variable garde sa dernière valeur",
+   "objectif": "Savoir qu'une variable ne garde que la dernière valeur reçue.",
+   "enonce": [
+    "Le prix d'un kilo de mangues change dans la journée. On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "prix = 2",
+    "prix = 3",
+    "print(prix)"
+   ],
+   "options": [
+    {
+     "texte": "`2`",
+     "feedback": "2 est la première valeur reçue, mais la ligne 2 l'a remplacée. Une variable ne garde que sa dernière valeur."
+    },
+    {
+     "texte": "`3`",
+     "juste": true,
+     "feedback": "Oui. Chaque affectation remplace la valeur précédente, comme sur l'ardoise : à la ligne 3, `prix` contient 3."
+    },
+    {
+     "texte": "`2 3`",
+     "feedback": "Une variable ne garde pas un historique de ses valeurs : la ligne 2 efface le 2 et range 3 à sa place."
+    },
+    {
+     "texte": "Une erreur : `prix` reçoit deux valeurs.",
+     "feedback": "On a le droit de changer la valeur d'une variable autant de fois qu'on veut : c'est pour ça qu'elle s'appelle variable."
+    }
+   ],
+   "explication": "Une nouvelle affectation remplace l'ancienne valeur.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Affectation] Calculer à droite, ranger à gauche",
+   "objectif": "Lire une affectation qui utilise la variable elle-même.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que vaut `n` à la fin ?"
+   ],
+   "code": [
+    "n = 4",
+    "n = n * 2 + 1"
+   ],
+   "options": [
+    {
+     "texte": "`4`",
+     "feedback": "Ce n'est pas une équation de maths : la ligne 2 ne vérifie rien, elle calcule 4 * 2 + 1 et range le résultat dans `n`."
+    },
+    {
+     "texte": "`12`",
+     "feedback": "Tu as calculé 4 * (2 + 1). Python suit les priorités des maths : la multiplication d'abord, donc 4 * 2 + 1 = 9."
+    },
+    {
+     "texte": "Une erreur : `n` est des deux côtés du `=`.",
+     "feedback": "C'est permis, et très courant : à droite, `n` vaut encore 4 ; le résultat remplace ensuite l'ancienne valeur."
+    },
+    {
+     "texte": "`9`",
+     "juste": true,
+     "feedback": "Exact. Python calcule d'abord la droite avec l'ancienne valeur : 4 * 2 + 1 = 9, puis range 9 dans `n`."
+    }
+   ],
+   "explication": "`n = n * 2 + 1` : on calcule avec l'ancienne valeur, puis on la remplace.",
+   "verifications": [
+    {
+     "code": [
+      "print(n)"
+     ],
+     "sortie": "9"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Trace] Copier une valeur, puis changer l'original",
+   "objectif": "Comprendre qu'une affectation `y = x` copie la valeur une fois pour toutes.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "x = 3",
+    "y = x",
+    "x = x + 1",
+    "print(x, y)"
+   ],
+   "options": [
+    {
+     "texte": "`4 3`",
+     "juste": true,
+     "feedback": "Oui. À la ligne 2, `y` reçoit la valeur 3. Quand `x` change ensuite, `y` garde son 3."
+    },
+    {
+     "texte": "`4 4`",
+     "feedback": "`y = x` ne relie pas les deux variables : `y` reçoit la valeur de `x` à ce moment-là, 3, et ne la change plus."
+    },
+    {
+     "texte": "`3 3`",
+     "feedback": "La ligne 3 change bien `x` : elle calcule 3 + 1 et range 4 dans `x`. Seule `y` garde 3."
+    },
+    {
+     "texte": "`3 4`",
+     "feedback": "Tu as inversé les deux : c'est `x` qui reçoit 4 à la ligne 3, et `y` qui garde l'ancienne valeur 3."
+    }
+   ],
+   "explication": "Après `y = x`, changer `x` ne change pas `y`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "4 3"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Trace] Échanger deux variables ?",
+   "objectif": "Suivre pas à pas des affectations qui se suivent.",
+   "enonce": [
+    "On veut échanger le contenu de `a` et de `b`. On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "a = \"taxi\"",
+    "b = \"barge\"",
+    "a = b",
+    "b = a",
+    "print(a, b)"
+   ],
+   "options": [
+    {
+     "texte": "`barge taxi`",
+     "feedback": "C'est ce qu'on voulait, mais la ligne 3 a déjà effacé \"taxi\" : à la ligne 4, `a` vaut \"barge\". Il faut une troisième variable."
+    },
+    {
+     "texte": "`taxi taxi`",
+     "feedback": "Les lignes s'exécutent dans l'ordre, de haut en bas : la ligne 3 d'abord. `a` reçoit \"barge\" avant que `b` ne reçoive `a`."
+    },
+    {
+     "texte": "`barge barge`",
+     "juste": true,
+     "feedback": "Exact. La ligne 3 range \"barge\" dans `a` : \"taxi\" est perdu. La ligne 4 recopie ce \"barge\" dans `b`."
+    },
+    {
+     "texte": "`taxi barge`",
+     "feedback": "Les lignes 3 et 4 changent bien les variables. Suis-les une par une : après la ligne 3, `a` vaut déjà \"barge\"."
+    }
+   ],
+   "explication": "On suit les lignes dans l'ordre : une valeur écrasée est perdue.",
+   "trace": {
+    "colonnes": [
+     "Après la ligne",
+     "a",
+     "b"
+    ],
+    "lignes": [
+     [
+      "2",
+      "\"taxi\"",
+      "\"barge\""
+     ],
+     [
+      "3 : a = b",
+      "\"barge\"",
+      "\"barge\""
+     ],
+     [
+      "4 : b = a",
+      "\"barge\"",
+      "\"barge\""
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "barge barge"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le type vient de la valeur",
+   "texte": [
+    "==int== : un entier ; ==float== : un nombre à virgule ; ==str== : un texte entre guillemets ; ==bool== : `True` ou `False`."
+   ],
+   "code": [
+    "age = 15         # int",
+    "taille = 1.75    # float",
+    "ville = \"Sada\"   # str",
+    "majeur = False   # bool"
+   ],
+   "vocabulaire": "int = integer (entier) ; float = flottant ; str = string (chaîne) ; bool = booléen"
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Types] Un nombre entre guillemets",
+   "objectif": "Reconnaître le type d'une valeur écrite entre guillemets.",
+   "enonce": [
+    "On exécute `x = \"15\"`.",
+    "Quel est le type de `x` ?"
+   ],
+   "code": [
+    "x = \"15\""
+   ],
+   "options": [
+    {
+     "texte": "`str`",
+     "juste": true,
+     "feedback": "Oui. Les guillemets font de 15 un texte : deux caractères, 1 et 5. Sans guillemets, ce serait un `int`."
+    },
+    {
+     "texte": "`int`",
+     "feedback": "15 est bien un entier, mais ici il est entre guillemets : pour Python, c'est un texte, de type `str`."
+    },
+    {
+     "texte": "`float`",
+     "feedback": "Un `float` est un nombre à virgule, comme 1.75. Ici, les guillemets font de 15 un texte, de type `str`."
+    },
+    {
+     "texte": "`bool`",
+     "feedback": "Un `bool` ne vaut que `True` ou `False`. Ici, les guillemets font de 15 un texte, de type `str`."
+    }
+   ],
+   "explication": "Entre guillemets, c'est un texte : le type `str`.",
+   "verifications": [
+    {
+     "code": [
+      "print(type(x))"
+     ],
+     "sortie": "<class 'str'>"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Types] Additionner deux textes",
+   "objectif": "Prévoir l'effet de `+` sur deux chaînes.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "a = \"5\"",
+    "b = \"3\"",
+    "print(a + b)"
+   ],
+   "options": [
+    {
+     "texte": "`8`",
+     "feedback": "Ce serait vrai sans les guillemets. Ici, \"5\" et \"3\" sont des textes : `+` les colle au lieu de les additionner."
+    },
+    {
+     "texte": "`53`",
+     "juste": true,
+     "feedback": "Exact. Entre deux chaînes, `+` colle les textes bout à bout : \"5\" puis \"3\" donne \"53\"."
+    },
+    {
+     "texte": "Une erreur `TypeError`.",
+     "feedback": "Python refuse de coller un texte et un nombre. Mais ici, \"5\" et \"3\" sont deux textes : ils se collent sans erreur."
+    },
+    {
+     "texte": "`5 + 3`",
+     "feedback": "Python calcule toujours l'expression avant de l'afficher. Entre deux textes, `+` les colle : il affiche 53."
+    }
+   ],
+   "explication": "Entre deux `str`, `+` colle les textes : c'est la concaténation.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "53"
+    },
+    {
+     "code": [
+      "print(5 + 3)"
+     ],
+     "sortie": "8",
+     "reprendre_code": false,
+     "option": 0
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Diviser en Python",
+   "texte": [
+    "`/` donne un ==float== ; `//` donne le ==quotient== entier ; `%` donne le ==reste== (modulo)."
+   ],
+   "code": [
+    "print(7 / 2)    # 3.5",
+    "print(7 // 2)   # 3",
+    "print(7 % 2)    # 1",
+    "print(2 ** 3)   # 8"
+   ],
+   "vocabulaire": "quotient = quotient ; reste = remainder ; modulo = modulo ; puissance = power"
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Opérateurs] Combien de taxis pleins ?",
+   "objectif": "Utiliser le quotient `//` et le reste `%` dans une situation concrète.",
+   "enonce": [
+    "Une classe de 23 élèves part en sortie au lagon, en taxi. Un taxi a 4 places.",
+    "Qu'affiche le code suivant ?"
+   ],
+   "code": [
+    "eleves = 23",
+    "places = 4",
+    "taxis = eleves // places",
+    "reste = eleves % places",
+    "print(taxis, reste)"
+   ],
+   "options": [
+    {
+     "texte": "`5.75 3`",
+     "feedback": "`//` donne le quotient entier, sans virgule : 5. C'est `/` qui donnerait 5.75."
+    },
+    {
+     "texte": "`3 5`",
+     "feedback": "Tu as inversé : `//` donne le quotient, 5, et `%` le reste, 3. Le premier nombre affiché est `taxis`, le quotient."
+    },
+    {
+     "texte": "`5 0.75`",
+     "feedback": "`%` donne le reste de la division entière, un entier : 23 = 5 × 4 + 3, le reste est 3."
+    },
+    {
+     "texte": "`5 3`",
+     "juste": true,
+     "feedback": "Bravo : 5 taxis pleins (5 × 4 = 20 élèves), et il reste 3 élèves pour un sixième taxi."
+    }
+   ],
+   "explication": "`a // b` : combien de fois `b` dans `a` ; `a % b` : ce qui reste.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "5 3"
+    },
+    {
+     "code": [
+      "print(23 / 4)"
+     ],
+     "sortie": "5.75",
+     "reprendre_code": false,
+     "option": 0
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Opérateurs] Le résultat de `/`",
+   "objectif": "Savoir que `/` donne toujours un `float`.",
+   "enonce": [
+    "On exécute `print(10 / 2)`.",
+    "Qu'affiche Python ?"
+   ],
+   "code": [
+    "print(10 / 2)"
+   ],
+   "options": [
+    {
+     "texte": "`5`",
+     "feedback": "Le calcul est juste, mais `/` donne toujours un nombre à virgule, un `float` : Python affiche 5.0. `10 // 2` donnerait 5."
+    },
+    {
+     "texte": "`0`",
+     "feedback": "0 est le reste de la division, celui que donne `10 % 2`. `/` fait la vraie division : 5.0."
+    },
+    {
+     "texte": "`5.0`",
+     "juste": true,
+     "feedback": "Exact. `/` donne toujours un `float`, même quand la division tombe juste : 5.0. Pour l'entier 5, on écrit `10 // 2`."
+    },
+    {
+     "texte": "`5,0`",
+     "feedback": "Presque ! Mais Python écrit les nombres à l'anglaise, avec un point : 5.0. Une virgule sépare deux valeurs."
+    }
+   ],
+   "explication": "`/` donne un `float` (5.0) ; `//` donne un `int` (5).",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "5.0"
+    },
+    {
+     "code": [
+      "print(10 // 2, 10 % 2)"
+     ],
+     "sortie": "5 0",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Comparer",
+   "texte": [
+    "`==` ==compare== deux valeurs : le résultat est `True` ou `False`.",
+    "`and` : les deux sont vraies ; `or` : au moins une est vraie."
+   ],
+   "code": [
+    "maree = 3",
+    "print(maree == 3)   # True",
+    "print(maree != 3)   # False",
+    "print(maree < 5)    # True"
+   ],
+   "vocabulaire": "et = and ; ou = or ; non = not ; vrai = True ; faux = False"
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Booléens] Une condition avec `or`",
+   "objectif": "Évaluer une expression avec `or`.",
+   "enonce": [
+    "La hauteur d'eau du lagon est rangée dans `h`, en mètres.",
+    "Qu'affiche le code suivant ?"
+   ],
+   "code": [
+    "h = 2",
+    "print(h < 1 or h > 3)"
+   ],
+   "options": [
+    {
+     "texte": "`True`",
+     "feedback": "`or` est vrai si au moins une des deux comparaisons est vraie. Ici, 2 n'est ni plus petit que 1, ni plus grand que 3."
+    },
+    {
+     "texte": "`False`",
+     "juste": true,
+     "feedback": "Oui. 2 < 1 est faux, 2 > 3 est faux aussi. `or` demande au moins une comparaison vraie : il n'y en a aucune."
+    },
+    {
+     "texte": "`2`",
+     "feedback": "Une comparaison ne renvoie pas un nombre : elle vaut `True` ou `False`. L'expression entière vaut donc un booléen."
+    },
+    {
+     "texte": "Une erreur : on ne peut pas mettre deux comparaisons.",
+     "feedback": "On peut relier autant de comparaisons qu'on veut avec `and` et `or`. Ici, les deux sont fausses : `False`."
+    }
+   ],
+   "explication": "`a or b` vaut `True` dès qu'une des deux est vraie, `False` sinon.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "False"
+    },
+    {
+     "code": [
+      "h = 2",
+      "print(h < 1, h > 3)"
+     ],
+     "sortie": "False False",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "`input()` donne du texte",
+   "texte": [
+    "`input()` renvoie toujours une ==chaîne==, même si on tape un nombre.",
+    "Pour calculer, on la convertit : `int(...)` ou `float(...)`."
+   ],
+   "code": [
+    "age = int(\"15\")",
+    "print(age + 1)   # 16"
+   ],
+   "vocabulaire": "entrée = input ; convertir = convert"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Entrée] Calculer avec `input()`",
+   "objectif": "Prévoir l'erreur d'un calcul fait sur une saisie non convertie.",
+   "enonce": [
+    "On exécute le code suivant et on tape 15.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "age = input(\"Ton âge ? \")",
+    "print(age + 1)"
+   ],
+   "options": [
+    {
+     "texte": "Une erreur `TypeError` : `age` est une chaîne.",
+     "juste": true,
+     "feedback": "Exact. `input()` renvoie le texte \"15\". Python refuse \"15\" + 1 : `TypeError: can only concatenate str (not \"int\") to str` (« on ne colle qu'une chaîne à une chaîne »)."
+    },
+    {
+     "texte": "Le programme affiche `16`.",
+     "feedback": "Ce serait vrai avec `int(input(...))`. Sans conversion, `age` vaut le texte \"15\" : Python refuse d'y ajouter le nombre 1."
+    },
+    {
+     "texte": "Le programme affiche `151`.",
+     "feedback": "Pour coller, il faudrait deux textes : \"15\" + \"1\". Ici, 1 est un nombre : Python refuse avec une erreur `TypeError`."
+    },
+    {
+     "texte": "Le programme affiche `15 1`.",
+     "feedback": "`+` ne met jamais d'espace. Et ici, il y a un texte et un nombre : Python refuse avec une erreur `TypeError`."
+    }
+   ],
+   "explication": "`input()` donne un `str` : on convertit avec `int(...)` avant de calculer.",
+   "verifications": [
+    {
+     "code": [
+      "input = lambda message='': '15'",
+      "age = input(\"Ton âge ? \")",
+      "print(age + 1)"
+     ],
+     "erreur": "TypeError",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "input = lambda message='': '15'",
+      "age = int(input(\"Ton âge ? \"))",
+      "print(age + 1)"
+     ],
+     "sortie": "16",
+     "reprendre_code": false,
+     "option": 1
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Entrée] Convertir la saisie",
+   "objectif": "Choisir la ligne qui lit un nombre au clavier et le convertit.",
+   "enonce": [
+    "Le programme doit afficher le double du nombre tapé. Sa deuxième ligne est `print(n * 2)`.",
+    "On tape 3. Quelle première ligne fait afficher 6 ?"
+   ],
+   "options": [
+    {
+     "code": [
+      "n = input(\"Nombre ? \")"
+     ],
+     "feedback": "Sans conversion, `n` vaut le texte \"3\" : `n * 2` répète le texte et affiche 33."
+    },
+    {
+     "code": [
+      "n = input(int(\"Nombre ? \"))"
+     ],
+     "feedback": "Les fonctions sont dans le mauvais ordre : Python essaie de convertir la question « Nombre ? » en entier, d'où `ValueError: invalid literal for int() with base 10: 'Nombre ? '`."
+    },
+    {
+     "code": [
+      "n = int(input(\"Nombre ? \"))"
+     ],
+     "juste": true,
+     "feedback": "Oui. `input()` lit le texte \"3\", puis `int(...)` le convertit en l'entier 3 : `n * 2` vaut 6."
+    },
+    {
+     "code": [
+      "int(n) = input(\"Nombre ? \")"
+     ],
+     "feedback": "À gauche du `=`, il faut un nom de variable, pas un calcul : `SyntaxError: cannot assign to function call here. Maybe you meant '==' instead of '='?` (« on ne range rien dans un appel de fonction »)."
+    }
+   ],
+   "explication": "On convertit le résultat de `input()` : `int(input(...))`.",
+   "verifications": [
+    {
+     "code": [
+      "input = lambda message='': '3'",
+      "n = int(input(\"Nombre ? \"))",
+      "print(n * 2)"
+     ],
+     "sortie": "6",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "input = lambda message='': '3'",
+      "n = input(\"Nombre ? \")",
+      "print(n * 2)"
+     ],
+     "sortie": "33",
+     "reprendre_code": false,
+     "option": 0
+    },
+    {
+     "code": [
+      "input = lambda message='': '3'",
+      "n = input(int(\"Nombre ? \"))"
+     ],
+     "erreur": "ValueError",
+     "reprendre_code": false,
+     "option": 1
+    },
+    {
+     "code": [
+      "input = lambda message='': '3'",
+      "int(n) = input(\"Nombre ? \")"
+     ],
+     "erreur": "SyntaxError",
+     "reprendre_code": false,
+     "option": 3
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Une majuscule qui change tout",
+   "objectif": "Lire un message `NameError` et retrouver la variable mal écrite.",
+   "enonce": [
+    "Ce programme calcule le prix de 3 kilos de mangues.",
+    "Il s'arrête sur l'erreur `NameError: name 'Total' is not defined. Did you mean: 'total'?` (« le nom Total n'est pas défini. Vouliez-vous dire total ? »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "prix = 2",
+    "nombre = 3",
+    "total = prix * nombre",
+    "print(Total)"
+   ],
+   "ligne": 4,
+   "correction": "print(total)",
+   "feedback": "Bien vu : `Total` et `total` sont deux noms différents pour Python. Corrigé, le programme affiche 6.",
+   "feedback_autre": "Cette ligne est correcte. Le message parle du nom `Total`, avec une majuscule : cherche la ligne où il est écrit.",
+   "pieges": {
+    "3": "La ligne 3 crée bien la variable `total`, en minuscules. Le message parle de `Total`, avec une majuscule : cherche où il est utilisé."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "NameError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "6"
+    }
+   ],
+   "explication": "Python distingue majuscules et minuscules : `Total` n'est pas `total`. Le message propose souvent le bon nom."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Ce qu'il faut savoir"
+    ],
+    "lignes": [
+     [
+      "Affectation",
+      "`x = expression` : on calcule à droite, on range à gauche ; seule la dernière valeur reste"
+     ],
+     [
+      "Types",
+      "`int` 15, `float` 1.75, `str` \"Sada\", `bool` `True`"
+     ],
+     [
+      "Opérateurs",
+      "`/` donne un `float` ; `//` le quotient ; `%` le reste"
+     ],
+     [
+      "Comparer",
+      "`==` compare, `=` affecte ; le résultat est `True` ou `False`"
+     ],
+     [
+      "Saisie",
+      "`input()` donne un `str` : `int(input(...))` pour calculer"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade la différence entre `=` et `==` ?"
+   ]
+  }
+ ]
+}
