@@ -75,7 +75,8 @@
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "marees = [2.9, 3.4, 3.8, 3.6, 3.1]",
+    "marees = [2.9, 3.4, 3.8,",
+    "          3.6, 3.1]",
     "print(marees[2])"
    ],
    "options": [
@@ -115,7 +116,9 @@
     "Quelle expression vaut `\"Mamoudzou\"` ?"
    ],
    "code": [
-    "arrets = [\"Sada\", \"Chiconi\", \"Ouangani\", \"Mamoudzou\"]"
+    "arrets = [\"Sada\",",
+    "  \"Chiconi\", \"Ouangani\",",
+    "  \"Mamoudzou\"]"
    ],
    "options": [
     {
@@ -262,15 +265,15 @@
    "nom": "[Ajouter] Remplir un tableau vide",
    "objectif": "Ajouter des éléments à la fin d'un tableau avec `append`.",
    "enonce": [
-    "On remplit un panier, vide au départ.",
+    "On remplit un panier `p`, vide au départ.",
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "panier = []",
-    "panier.append(\"mangue\")",
-    "panier.append(\"banane\")",
-    "panier.append(\"coco\")",
-    "print(len(panier), panier[0])"
+    "p = []",
+    "p.append(\"mangue\")",
+    "p.append(\"banane\")",
+    "p.append(\"coco\")",
+    "print(len(p), p[0])"
    ],
    "options": [
     {
@@ -418,7 +421,7 @@
       "for i in t:",
       "    t[i] = 2 * t[i]"
      ],
-     "feedback": "Ici `i` prend les valeurs 1, 2, 3, pas les indices. Le tableau devient `[1, 4, 3]`, puis `t[4]` provoque `IndexError`."
+     "feedback": "Ici `i` prend les valeurs 1, 2, 3, pas les indices. Le tableau devient `[1, 4, 3]`, puis `t[4]` provoque `IndexError: list index out of range`."
     },
     {
      "code": [
@@ -507,7 +510,8 @@
     "Qu'affiche-t-il ?"
    ],
    "code": [
-    "carres = [i * i for i in range(4)]",
+    "carres = [i * i",
+    "  for i in range(4)]",
     "print(carres)"
    ],
    "options": [
@@ -548,7 +552,8 @@
    ],
    "code": [
     "notes = [12, 8, 15, 9, 10]",
-    "ok = [n for n in notes if n >= 10]"
+    "ok = [n for n in notes",
+    "      if n >= 10]"
    ],
    "options": [
     {
@@ -605,8 +610,9 @@
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "places = [[\"Anli\", \"Inès\", \"Lucas\"],",
-    "          [\"Zaïna\", \"Kamal\", \"Chloé\"]]",
+    "places = [",
+    " [\"Anli\", \"Inès\", \"Lucas\"],",
+    " [\"Mia\", \"Kamal\", \"Chloé\"]]",
     "print(places[1][2])"
    ],
    "options": [
@@ -615,13 +621,13 @@
      "feedback": "Tu as compté les lignes et les colonnes à partir de 1. On compte à partir de 0 : la ligne 1 est la deuxième rangée."
     },
     {
-     "texte": "Une erreur `IndexError`",
+     "texte": "Une erreur `IndexError: list index out of range`",
      "feedback": "Il n'y a pas d'erreur : la ligne 1 existe (la deuxième rangée) et elle a une colonne 2. Tu as peut-être lu la colonne d'abord."
     },
     {
      "texte": "Chloé",
      "juste": true,
-     "feedback": "Exact. `places[1]` est la deuxième rangée, `[\"Zaïna\", \"Kamal\", \"Chloé\"]`, et son élément d'indice 2 est \"Chloé\"."
+     "feedback": "Exact. `places[1]` est la deuxième rangée, `[\"Mia\", \"Kamal\", \"Chloé\"]`, et son élément d'indice 2 est \"Chloé\"."
     },
     {
      "texte": "Lucas",
