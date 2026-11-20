@@ -38,7 +38,7 @@
     </section>
   </div>
   <h2>Les cours</h2>
-  <ul class="cours-liste" id="cours"><li class="cadre"><strong>Piles et files</strong> · Terminale NSI · introduction · 12 questions · 15 min ·
+  <ul class="cours-liste" id="cours"><li class="cadre"><strong>Piles et files</strong> · Terminale NSI · introduction · 12 questions · 15&nbsp;min ·
     <a href="revision.html?cours=piles-files">réviser</a> · <a href="animer.html?cours=piles-files">animer</a> · <a href="imprimer.html?cours=piles-files">imprimer</a> · <a href="imprimer.html?cours=piles-files&amp;corrige">corrigé</a> · <a href="revision.html?cours=piles-files&amp;rejouer">rejouer</a></li></ul>
   <p class="info">Rien n'est enregistré en ligne. En classe, le prénom ou le pseudo et les réponses passent seulement en direct dans la séance ; sur le téléphone, ils sont effacés à la fin de la séance (et sinon au premier chargement d'une page de QuizzNSI après 12 heures). Tu veux d'abord essayer seul·e ? Ouvre l'animation <a href="animer.html?cours=piles-files&amp;demo">en mode démo</a> : la séance passe alors entre les onglets de ton navigateur.</p>
 </main>
@@ -54,7 +54,7 @@
       const id = encodeURIComponent(x.id);
       // un cours de démonstration (les types de questions) : marqué comme tel, ce n'est pas un cours de classe
       const gabarit = x.gabarit === 'introduction' ? 'introduction · ' : x.gabarit === 'revision' ? 'révision · ' : '';
-      const duree = (x.duree_minutes | 0) > 0 ? ' · ' + (x.duree_minutes | 0) + ' min' : '';
+      const duree = (x.duree_minutes | 0) > 0 ? ' · ' + (x.duree_minutes | 0) + String.fromCharCode(0xA0) + 'min' : '';
       const quoi = x.demonstration === true ? 'démonstration des types de questions' : gabarit + (x.questions | 0) + ' questions' + duree;
       return '<li class="cadre"><strong>' + Q.echapper(x.titre) + '</strong> · ' + Q.echapper(x.niveau) + ' · ' + quoi + ' · '
         + '<a href="revision.html?cours=' + id + '">réviser</a> · <a href="animer.html?cours=' + id + '">animer</a> · <a href="imprimer.html?cours=' + id + '">imprimer</a> · <a href="imprimer.html?cours=' + id + '&amp;corrige">corrigé</a> · <a href="revision.html?cours=' + id + '&amp;rejouer">rejouer</a></li>';
