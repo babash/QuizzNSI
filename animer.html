@@ -82,6 +82,13 @@
     <form method="dialog"><button class="bouton fort" type="submit" id="qrFermer">Fermer (Q ou Échap)</button></form>
   </dialog>
 
+  <dialog id="motsBoite" class="podium-boite" aria-labelledby="motsTitre">
+    <h2 id="motsTitre">Relire les mots avant de les montrer</h2>
+    <p class="alerte">Si ton écran est projeté, la classe voit aussi cette liste : coupe d'abord la projection (touche du vidéoprojecteur, ou écran étendu).</p>
+    <ul class="mots-liste" id="motsListe"></ul>
+    <form method="dialog"><button class="bouton fort" type="submit">Fermer</button></form>
+  </dialog>
+
   <dialog id="podiumBoite" class="podium-boite" aria-labelledby="podiumTitre">
     <h2 id="podiumTitre">Podium</h2>
     <div id="podiumCorps"></div>
@@ -107,6 +114,7 @@
 <script src="vendor/temps-reel.js"></script>
 <script src="vendor/qrcode.js"></script>
 <script src="js/commun.js"></script>
+<script src="js/activites.js"></script>
 <script src="js/chiffre.js"></script>
 <script src="js/messages.js"></script>
 <script src="js/bareme.js"></script>

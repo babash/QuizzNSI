@@ -74,6 +74,14 @@
         const pd = podium(m.podium); if (pd === undefined) return null;
         return { t: 'correction', cours: m.cours, qid: m.qid, precedente: m.precedente, bonne: m.bonne, rep: m.rep.slice(), bareme: b, duree: m.duree, podium: pd };
       }
+      // la correction d'une question d'un autre type (relier, puzzle, ligne fautive, nuage de mots) : seulement le
+      // nombre de réponses et le nombre de réponses tout à fait justes, comme à l'écran ; la solution vient du fichier du cours
+      case 'corrige': {
+        if (!cles(m, ['t', 'cours', 'qid', 'precedente', 'duree', 'nb', 'justes', 'podium']) || !estCours(m.cours) || !estQid(m.qid)) return null;
+        if (!(m.precedente === null || estQid(m.precedente)) || !entier(m.duree, 0, 3600) || !entier(m.nb, 0, MAX_ELEVES) || !entier(m.justes, 0, MAX_ELEVES) || m.justes > m.nb) return null;
+        const pd = podium(m.podium); if (pd === undefined) return null;
+        return { t: 'corrige', cours: m.cours, qid: m.qid, precedente: m.precedente, duree: m.duree, nb: m.nb, justes: m.justes, podium: pd };
+      }
       case 'fin': {
         if (!cles(m, ['t', 'cours', 'podium']) || !estCours(m.cours)) return null;
         const pd = podium(m.podium); if (pd === undefined) return null;
@@ -93,9 +101,22 @@
       && typeof m.donnees === 'string' && /^[A-Za-z0-9_-]{1,400}$/.test(m.donnees) ? { t: 'rep', de: { x: m.de.x, y: m.de.y }, iv: m.iv, donnees: m.donnees } : null;
     return null;
   }
-  /* Le contenu déchiffré d'une réponse. */
+  /* Le contenu déchiffré d'une réponse : { id, qid, c, n } pour une question à choix (c de 0 à 3),
+     { id, qid, r, n } pour un autre type. Ici, on ne contrôle que la forme de r ; la page projetée la contrôle
+     ensuite contre la diapositive du cours (js/activites.js, valider). */
+  function formeReponse(r) {
+    if (typeof r === 'string') return r.length >= 1 && r.length <= 64 ? r : undefined;          // nuage de mots
+    if (entier(r, 0, 199)) return r;                                                          // ligne fautive
+    if (!Array.isArray(r) || r.length < 1 || r.length > 16) return undefined;
+    if (r.every(x => entier(x, -1, 15))) return r.slice();                                     // relier
+    if (r.every(x => Array.isArray(x) && x.length === 2 && entier(x[0], 0, 15) && entier(x[1], 0, 6))) return r.map(x => [x[0], x[1]]); // puzzle
+    return undefined;
+  }
   function reponse(m) {
-    return cles(m, ['id', 'qid', 'c', 'n']) && estId(m.id) && estQid(m.qid) && entier(m.c, 0, 3) && typeof m.n === 'string' && NONCE.test(m.n) ? { id: m.id, qid: m.qid, c: m.c, n: m.n } : null;
+    if (!objet(m) || !estId(m.id) || !estQid(m.qid) || typeof m.n !== 'string' || !NONCE.test(m.n)) return null;
+    if (cles(m, ['id', 'qid', 'c', 'n']) && 'c' in m) return entier(m.c, 0, 3) ? { id: m.id, qid: m.qid, c: m.c, n: m.n } : null;
+    if (cles(m, ['id', 'qid', 'r', 'n']) && 'r' in m) { const r = formeReponse(m.r); return r === undefined ? null : { id: m.id, qid: m.qid, r, n: m.n }; }
+    return null;
   }
 
   /* Une entrée de présence. Les élèves : { id, pseudo, role: 'eleve' } ; l'hôte : { id, role: 'hote' }.
@@ -108,6 +129,6 @@
     return { id: p.id, role: 'eleve', pseudo: f.ok ? f.pseudo : null };
   }
 
-  Q.messages = { versEleve, versHote, reponse, presence, estId, estQid, estCours };
+  Q.messages = { versEleve, versHote, reponse, formeReponse, presence, estId, estQid, estCours };
   if (typeof module !== 'undefined' && module.exports) module.exports = Q.messages;
 })(typeof window !== 'undefined' ? window : globalThis);

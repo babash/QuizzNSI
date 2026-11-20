@@ -27,6 +27,7 @@ const VERS_ELEVE = {
   correction: { t: 'correction', cours: 'piles-files', qid: 'q02', precedente: 'q01', bonne: 3, rep: [1, 2, 0, 0],
     bareme: { participation: 10, juste: 100, rapidite: 20, rebond: 30 }, duree: 45, podium: [{ pseudo: 'Kobalt', total: 400, place: 1 }] },
   fin: { t: 'fin', cours: 'piles-files', podium: [{ pseudo: 'Ixo', total: 500, place: 1 }] },
+  corrige: { t: 'corrige', cours: 'revision-conditions-boucles', qid: 'a02', precedente: 'q05', duree: 0, nb: 3, justes: 1, podium: [{ pseudo: 'Kobalt', total: 400, place: 1 }] },
 };
 const VERS_HOTE = { bonjour: { t: 'bonjour', id: MOI }, rep: { t: 'rep', de: CLE, iv: 'abcdefghijklmnop', donnees: 'QUJDRA' } };
 
@@ -79,6 +80,16 @@ assert.equal(M.versEleve(Object.assign(copie(VERS_ELEVE.recus), { ids: [MOI] }),
 // le contenu déchiffré d'une réponse
 assert.deepEqual(M.reponse({ id: MOI, qid: 'q01', c: 2, n: '00112233aabbccdd' }), { id: MOI, qid: 'q01', c: 2, n: '00112233aabbccdd' });
 for (const f of FORGES) for (const k of ['id', 'qid', 'c', 'n']) { assert.equal(M.reponse(Object.assign({ id: MOI, qid: 'q01', c: 2, n: '00112233aabbccdd' }, { [k]: f })), null); n++; }
+n += 3;
+// les autres types : r est un mot (nuage), un entier (ligne), une liste d'entiers (relier) ou de paires (puzzle)
+const R = { id: MOI, qid: 'a02', n: '00112233aabbccdd' };
+for (const r of ['boucle', 2, [0, 1, -1], [[0, 0], [1, 1]]]) assert.deepEqual(M.reponse(Object.assign({}, R, { r })), Object.assign({}, R, { r }), JSON.stringify(r));
+for (const r of [1e300, -1, 2.5, 200, {}, { a: '<b>' }, 'x'.repeat(65), '', true, null, [], ['<b>'], [[0, 0, 0]], [[0, 9]], [1, [0, 0]], Array(17).fill(0), [16], [{}]]) {
+  assert.equal(M.reponse(Object.assign({}, R, { r })), null, JSON.stringify(r)); n++;
+}
+assert.equal(M.reponse(Object.assign({}, R, { r: 1, c: 1 })), null); // jamais les deux
+assert.equal(M.versEleve(Object.assign(copie(VERS_ELEVE.corrige), { justes: 4 }), MOI), null); // plus de justes que de réponses
+assert.equal(M.versEleve(Object.assign(copie(VERS_ELEVE.corrige), { mots: ['boucle'] }), MOI), null); // aucun mot du nuage
 n += 3;
 // types inconnus, prototypes, valeurs non objets
 for (const v of [null, 3, 'attente', [], { t: 'inconnu' }, { t: { toString: () => 'attente' } }, JSON.parse('{"t":"attente","__proto__":{"x":1}}')]) {

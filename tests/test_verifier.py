@@ -17,6 +17,14 @@ with open(os.path.join(RACINE, "cours", "piles-files.json"), encoding="utf-8") a
     MODELE = json.load(f)
 
 
+with open(os.path.join(RACINE, "cours", "revision-conditions-boucles.json"), encoding="utf-8") as f:
+    REVISION = json.load(f)
+
+
+def autre(c, t):
+    return next(d for d in c["diapositives"] if d["type"] == t)
+
+
 def questions(c):
     return [d for d in c["diapositives"] if d["type"] == "question"]
 
@@ -37,6 +45,64 @@ class TestVerifier(unittest.TestCase):
 
     def test_le_cours_livre_est_conforme_avec_execution(self):
         self.assertEqual(self.verifier(copy.deepcopy(MODELE), executer=True), [])
+
+    # ── les autres types de questions ──
+    def rev(self, f, executer=False):
+        c = copy.deepcopy(REVISION)
+        f(c)
+        return self.verifier(c, executer)
+
+    def test_revision_avec_les_autres_types_conforme_avec_execution(self):
+        self.assertEqual(self.verifier(copy.deepcopy(REVISION), executer=True), [])
+
+    def test_le_melange_est_celui_du_navigateur(self):
+        # les mêmes valeurs que js/commun.js (tests/test_moteur.js) : la page et le vérificateur voient le même ordre
+        self.assertEqual(V.graine("a02"), 3771486418)
+        self.assertEqual(V.melanger(range(10), V.graine("a02")), [8, 5, 1, 3, 4, 7, 0, 6, 9, 2])
+
+    def test_relier_une_seule_paire(self):
+        e = self.rev(lambda c: autre(c, "relier").update(paires=autre(c, "relier")["paires"][:1]))
+        self.assertTrue(any("paires" in x for x in e))
+
+    def test_relier_deux_reponses_identiques(self):
+        e = self.rev(lambda c: autre(c, "relier")["paires"][1].update(droite=autre(c, "relier")["paires"][0]["droite"]))
+        self.assertTrue(any("identiques" in x for x in e))
+
+    def test_relier_verification_fausse(self):
+        e = self.rev(lambda c: autre(c, "relier")["paires"][0]["verification"].update(sortie="16"), executer=True)
+        self.assertTrue(any("sortie attendue" in x for x in e))
+
+    def test_puzzle_solution_executee(self):
+        e = self.rev(lambda c: autre(c, "puzzle")["verifications"][0].update(sortie="25"), executer=True)
+        self.assertTrue(any("sortie attendue '25'" in x for x in e))
+
+    def test_puzzle_indentation_irreguliere(self):
+        e = self.rev(lambda c: autre(c, "puzzle")["lignes"].__setitem__(2, "  if i % 2 == 0:"))
+        self.assertTrue(any("indentation" in x for x in e))
+
+    def test_puzzle_sans_verification(self):
+        e = self.rev(lambda c: autre(c, "puzzle").pop("verifications"))
+        self.assertTrue(any("vérification" in x for x in e))
+
+    def test_ligne_fautive_hors_du_code(self):
+        e = self.rev(lambda c: autre(c, "ligne").update(ligne=99))
+        self.assertTrue(any("numéro" in x for x in e))
+
+    def test_ligne_correction_qui_ne_corrige_pas(self):
+        e = self.rev(lambda c: autre(c, "ligne").update(correction="    for i in range(1, n + 2):"), executer=True)
+        self.assertTrue(any("code corrigé" in x for x in e))
+
+    def test_ligne_piege_sur_la_bonne_ligne(self):
+        e = self.rev(lambda c: autre(c, "ligne")["pieges"].update({"3": "Ce feedback vise la bonne ligne, ce n'est pas un piège du tout."}))
+        self.assertTrue(any("pieges" in x for x in e))
+
+    def test_autre_type_champ_inconnu(self):
+        e = self.rev(lambda c: autre(c, "nuage").update(html="<b>x</b>"))
+        self.assertTrue(any("champ inconnu" in x for x in e))
+
+    def test_toujours_20_questions_a_choix(self):
+        e = self.rev(lambda c: c["diapositives"].remove(questions(c)[0]))
+        self.assertTrue(any("19 questions" in x for x in e))
 
     def test_trois_options(self):
         e = self.modifie(lambda c: questions(c)[0]["options"].pop())

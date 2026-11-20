@@ -8,13 +8,18 @@
      (réfléchir rapporte toujours plus que se presser : 100 contre 20 au plus) ;
    - rebond : +30 pour une bonne réponse juste après une erreur à la question précédente
      (on valorise la progression, pas seulement les meilleur·e·s).
-   Une question rapporte donc de 10 à 150 points. */
+   Une question rapporte donc de 10 à 150 points.
+   Les autres types de questions (js/activites.js) :
+   - relier, puzzle de code : la bonne réponse est notée en proportion de ce qui est juste (3 paires bien
+     reliées sur 4 : 75 points sur 100) ; rapidité et rebond seulement si tout est juste ;
+   - ligne fautive : comme une question à choix (juste ou faux) ;
+   - nuage de mots : non noté (aucune bonne réponse), il ne compte ni pour les points ni pour les rebonds. */
 (function (racine) {
   'use strict';
   const BAREME = { participation: 10, juste: 100, rapidite: 20, rebond: 30 };
 
   /* Points d'une réponse.
-     r : { juste: booléen, ms: temps de réponse en millisecondes }
+     r : { juste: booléen, ms: temps de réponse en millisecondes, part: de 0 à 1 (facultatif, ce qui est juste) }
      ctx : { duree: durée de la minuterie en secondes (0 ou absente : sans minuterie),
              precedente: 'juste' | 'faux' | null (la réponse de l'élève à la question jouée juste avant) } */
   function points(r, ctx, b) {
@@ -29,6 +34,8 @@
         detail.rapidite = Math.round(b.rapidite * part);
       }
       if (ctx.precedente === 'faux') detail.rebond = b.rebond;
+    } else if (Number.isFinite(r.part) && r.part > 0) {
+      detail.juste = Math.round(b.juste * Math.min(1, r.part));
     }
     return { total: detail.participation + detail.juste + detail.rapidite + detail.rebond, detail };
   }

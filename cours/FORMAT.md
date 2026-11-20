@@ -39,6 +39,7 @@ Chaque diapositive a un `type` :
 
 **Les apparitions progressives.** Sur la page projetée et en révision, « Suite » montre l'élément suivant de la diapositive avant de passer à la suivante ; les téléphones suivent l'écran projeté (le message de séance porte le nombre d'éléments montrés, `f`). En revenant en arrière, tout est montré.
 - **`question`** : voir plus bas.
+- **`nuage`**, **`relier`**, **`puzzle`**, **`ligne`** : les autres types de questions, voir plus bas.
 - **`partie`** : un titre de partie, en grand. Champs : `numero` (facultatif), `titre`, `sous_titre`.
 - **`classe`** : une question ouverte à la classe, sans réponse à cocher (« Et si on programmait… ? »). Champs : `question`, `texte` (facultatif), `pistes` (des pistes qui apparaissent une à une), `schema`, `code`.
 - **`humour`** : la diapositive qui dramatise (« Bon, si on continue… »). Champs : `titre`, `lignes` (elles apparaissent une à une), `chute` (la dernière phrase, « Il nous faut agir ! »).
@@ -68,6 +69,32 @@ Les règles que le vérificateur contrôle :
 - 20 questions par cours.
 
 Ce qu'il faut relire à la main : les distracteurs viennent d'erreurs typiques d'élèves ; les énoncés sont impersonnels et courts ; le vocabulaire anglais est traduit ; le langage inclusif ; les contextes de Mayotte, sans cliché.
+
+## Les autres types de questions
+
+En plus des 20 questions à choix unique (la règle 22 ne change pas : le vérificateur compte toujours 20 questions `question`), un cours peut contenir des diapositives d'autres types. Chacune a les champs `id` (unique, comme `a01`), `nom`, `objectif`, `enonce`, `explication` (sauf le nuage) et, au besoin, `code`. Elles s'affichent sur la page projetée, sur le téléphone, en révision (essais illimités) et sur la feuille imprimée (avec la place pour répondre, et leur correction dans le corrigé).
+
+| `type` | Champs | Ce que fait l'élève | Comment c'est noté |
+|---|---|---|---|
+| `nuage` | `exemples` (facultatif : des mots possibles, montrés après) | envoie un mot ou deux ; la page projetée affiche le nuage de la classe | **non noté** : pas de bonne réponse, aucun point, ne compte pas pour le rebond |
+| `relier` | `paires` : 2 à 6 `{ "gauche", "droite", "feedback"?, "verification"? }` | relie chaque élément de gauche à une réponse de droite (une liste déroulante par élément) | en proportion : 3 paires bien reliées sur 5 donnent 60 points sur 100 ; rapidité et rebond seulement si tout est juste |
+| `puzzle` | `lignes` : la solution (3 à 12 lignes, indentées de 4 espaces) ; `indentation` (`true` par défaut : l'élève doit aussi indenter) ; `verifications` (obligatoires) | remet les lignes dans l'ordre et les indente (boutons « Monter », « Descendre », « Indenter », « Désindenter », ou Alt + flèches) | en proportion des lignes à leur place (et à la bonne indentation quand elle compte) |
+| `ligne` | `code` ; `ligne` (le numéro de la ligne fautive, à partir de 1) ; `correction` (la ligne corrigée) ; `feedback` (pour la bonne ligne) ; `feedback_autre` (pour une autre ligne) ; `pieges` (facultatif : `{ "2": "feedback de la ligne 2" }`) ; `verifications` et `verifications_corrigees` (obligatoires) | touche la ligne qui contient l'erreur | comme une question à choix : juste ou faux |
+
+L'ordre des réponses à relier et des lignes du puzzle est mélangé à partir de l'`id` : la page projetée et tous les téléphones voient le même ordre (on peut dire « 1 avec C » à la classe), et le puzzle ne commence jamais dans l'ordre de la solution. Le vérificateur refuse un `relier` dont le mélange laisserait toutes les paires face à face (il suffit de changer l'`id`).
+
+**Ce que le vérificateur exécute** : la solution du puzzle (`lignes`, puis chaque vérification) ; pour la ligne fautive, le code tel quel (`verifications`, qui montrent l'erreur) puis le code où la ligne est remplacée par `correction` (`verifications_corrigees`, qui montrent que la correction marche) ; pour `relier`, la `verification` de chaque paire « code et sortie » (et les `verifications` de la diapositive s'il y en a).
+
+```json
+{ "type": "ligne", "id": "a04", "nom": "[Fonctions] Une somme qui s'arrête trop tôt", "objectif": "…", "enonce": ["…"],
+  "code": ["def somme(n):", "    total = 0", "    for i in range(1, n):", "        total = total + i", "    return total", "print(somme(4))"],
+  "ligne": 3, "correction": "    for i in range(1, n + 1):", "feedback": "…", "feedback_autre": "…", "pieges": { "5": "…" },
+  "verifications": [{ "code": [], "sortie": "6" }], "verifications_corrigees": [{ "code": [], "sortie": "10" }], "explication": "…" }
+```
+
+**Le nuage de mots, en classe** : chaque mot est filtré sur le téléphone puis de nouveau sur la page projetée (2 à 24 caractères, un ou deux mots, lettres d'une seule écriture, chiffres, espace, `-` et `'`) et affiché comme du texte. Le nuage reste caché tant que l'enseignant·e n'a pas cliqué sur « Montrer le nuage » ; « Relire les mots » les montre en liste avant (en coupant d'abord la projection) ; un clic masque un mot ; « les mots donnés par 2 élèves au moins » écarte les mots isolés. Les mots ne sont jamais envoyés aux téléphones.
+
+Le modèle : les 4 diapositives `a01` à `a04` de [`revision-conditions-boucles.json`](revision-conditions-boucles.json).
 
 ## Le texte
 

@@ -11,6 +11,7 @@
   const LETTRES = ['A', 'B', 'C', 'D'];
   const NOMS_FORMES = ['triangle', 'losange', 'cercle', 'carré'];
   Q.LETTRES = LETTRES;
+  Q.LETTRES_LONGUES = 'ABCDEFGHIJKLMNOP'.split('');
   Q.NOMS_FORMES = NOMS_FORMES;
 
   /* ── Texte ───────────────────────────────── */
@@ -60,12 +61,14 @@
   // Un bloc de code numéroté, avec des guides d'indentation (lecture seule).
   Q.blocCode = function (lignes, opts) {
     opts = opts || {};
-    const num = opts.numeros !== false && lignes.length > 2;
+    const num = opts.numeros === true || (opts.numeros !== false && lignes.length > 2);
     const corps = lignes.map((l, i) => {
       const ind = (l.match(/^ */) || [''])[0].length;
       const guides = Array.from({ length: Math.floor(ind / 4) }, () => '<span class="guide">    </span>').join('');
       const reste = l.slice(Math.floor(ind / 4) * 4);
-      return '<span class="ligne">' + (num ? '<span class="num" aria-hidden="true">' + (i + 1) + '</span>' : '') + guides + colorerLigne(reste) + '</span>';
+      // opts.marques : { indice: 'fautive' | 'choisie' | 'corrigee' } (ligne fautive, réponse choisie, ligne corrigée)
+      const mq = opts.marques && opts.marques[i] ? ' ' + opts.marques[i] : '';
+      return '<span class="ligne' + mq + '">' + (num ? '<span class="num" aria-hidden="true">' + (i + 1) + '</span>' : '') + guides + colorerLigne(reste) + '</span>';
     }).join('');
     return '<pre class="code' + (num ? ' numerote' : '') + '"><code>' + corps + '</code></pre>';
   };
@@ -174,14 +177,18 @@
     if (pb.length) throw new Error('Le fichier du cours n\'est pas conforme : ' + pb.join(' ; ') + '. Lance outils/verifier_cours.py.');
     cours.questions = cours.diapositives.filter(d => d.type === 'question');
     cours.questions.forEach((q, i) => { q.numero = i + 1; q.bonne = q.options.findIndex(o => o.juste === true); });
+    // les autres types de questions (nuage de mots, relier, puzzle de code, ligne fautive) : js/activites.js
+    cours.interactifs = cours.diapositives.filter(d => Q.INTERACTIFS.includes(d.type));
     return cours;
   };
   // Contrôle léger, dans le navigateur ; le contrôle complet est outils/verifier_cours.py.
+  Q.INTERACTIFS = ['question', 'nuage', 'relier', 'puzzle', 'ligne'];
   Q.controlerCours = function (c) {
     const pb = [];
     if (!c || c.format !== 'quizz-nsi/1') pb.push('format inconnu');
     if (!c || !Array.isArray(c.diapositives)) { pb.push('aucune diapositive'); return pb; }
     c.diapositives.forEach((d, i) => {
+      if (d && d.type !== 'question' && Q.INTERACTIFS.includes(d.type) && Q.activites) { const p = Q.activites.controler(d); if (p) pb.push('diapositive ' + (i + 1) + ' : ' + p); return; }
       if (d.type !== 'question') return;
       if (!Array.isArray(d.options) || d.options.length !== 4) pb.push('diapositive ' + (i + 1) + ' : 4 options attendues');
       else if (d.options.filter(o => o.juste === true).length !== 1) pb.push('diapositive ' + (i + 1) + ' : une seule option juste');
@@ -218,6 +225,7 @@
     if ([...vues].every(v => ['Han', 'Hiragana', 'Katakana'].includes(v)) && vues.size > 1) return new Set(['japonais']);
     return vues;
   }
+  Q.ecritures = ecritures;
   // La clé de comparaison de deux pseudos : sans accents, sans casse, sans ponctuation, en gardant les
   // lettres de toutes les écritures ; les lettres cyrilliques et grecques qui ressemblent à une lettre
   // latine sont ramenées à cette lettre (« АВС » cyrillique et « ABC » latin ont la même clé).

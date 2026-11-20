@@ -11,6 +11,8 @@
 | `js/messages.js` | la validation stricte de chaque message reçu |
 | `js/chiffre.js` | le chiffrement des réponses pour la page projetée |
 | `js/bareme.js` | le barème, le classement, la progression |
+| `js/activites.js` | les autres types de questions (nuage de mots, relier, puzzle de code, ligne fautive) : contrôle d'une réponse, note, ordre d'affichage (fonctions pures) |
+| `js/activites-ui.js` | y répondre au téléphone et en révision (clavier et lecteur d'écran compris) |
 | `cours/` | les cours-quiz (un fichier JSON par cours) et le catalogue de l'accueil |
 | `outils/` | le vérificateur des cours et le contrôle des caractères |
 | `vendor/` | le client temps réel de Supabase et le générateur de QR codes (MIT) |
