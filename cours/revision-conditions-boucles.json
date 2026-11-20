@@ -468,35 +468,35 @@
    ],
    "code": [
     "nb = 0",
-    "for lettre in \"Mayotte\":",
-    "    if lettre == \"t\":",
+    "for heure in range(6, 13):",
+    "    if heure >= 10:",
     "        nb = nb + 1",
     "print(nb)"
    ],
    "options": [
     {
-     "texte": "2",
+     "texte": "3",
      "juste": true,
-     "feedback": "Exact. La boucle regarde chaque lettre de « Mayotte » ; `nb` augmente seulement pour les deux « t »."
+     "feedback": "Exact. `heure` prend les valeurs 6 à 12 ; `nb` augmente seulement pour 10, 11 et 12, soit trois fois."
     },
     {
      "texte": "7",
-     "feedback": "7 est le nombre de lettres. Mais `nb` n'augmente que si la lettre est un « t » : le `if` filtre."
+     "feedback": "7 est le nombre de tours de la boucle (de 6 à 12). Mais `nb` n'augmente que si `heure >= 10` : le `if` filtre."
     },
     {
-     "texte": "1",
-     "feedback": "Il y a deux « t » dans « Mayotte » : le compteur augmente deux fois."
+     "texte": "4",
+     "feedback": "`range(6, 13)` s'arrête juste avant 13 : la dernière valeur est 12. On compte donc 10, 11 et 12, pas 13."
     },
     {
-     "texte": "0",
-     "feedback": "`nb` démarre à 0, mais il augmente de 1 à chaque « t » rencontré. Il y en a deux."
+     "texte": "2",
+     "feedback": "`>=` veut dire « supérieur ou égal » : 10 compte aussi. Avec 10, 11 et 12, le compteur augmente trois fois."
     }
    ],
-   "explication": "`for lettre in mot` parcourt les lettres une à une ; le `if` choisit celles que l'on compte.",
+   "explication": "La boucle `for` fait tous les tours ; le `if` choisit ceux où l'on compte.",
    "verifications": [
     {
      "code": [],
-     "sortie": "2"
+     "sortie": "3"
     }
    ]
   },
@@ -720,40 +720,40 @@
    "nom": "[Boucle while] Traduire un programme du robot",
    "objectif": "Dire en français ce que fait une boucle `while` suivie d'une instruction.",
    "enonce": [
-    "Le robot avance d'une case avec `est()` ou `nord()`. `obstacleEst()` vaut `True` s'il y a un obstacle ou le bord juste à l'est.",
+    "Le robot avance d'une case avec `nord()` ou `est()`. `obstacleNord()` vaut `True` s'il y a un obstacle ou le bord juste au nord.",
     "Que fait ce programme ?"
    ],
    "code": [
-    "while not obstacleEst():",
-    "    est()",
-    "nord()"
+    "while not obstacleNord():",
+    "    nord()",
+    "est()"
    ],
    "options": [
     {
-     "texte": "Il avance d'une case vers l'est, puis d'une case vers le nord.",
-     "feedback": "Le `while` répète `est()` : le robot peut avancer de plusieurs cases, pas d'une seule."
+     "texte": "Il monte d'une case vers le nord, puis avance d'une case vers l'est.",
+     "feedback": "Le `while` répète `nord()` : le robot peut monter de plusieurs cases, pas d'une seule."
     },
     {
-     "texte": "Il avance vers l'est tant qu'il y a un obstacle à l'est.",
-     "feedback": "Attention au `not` : le robot avance tant qu'il n'y a pas d'obstacle. S'il y en a un, il s'arrête."
+     "texte": "Il monte tant qu'il y a un obstacle au nord.",
+     "feedback": "Attention au `not` : le robot monte tant qu'il n'y a pas d'obstacle. Dès qu'il y en a un (ou le bord), il s'arrête."
     },
     {
-     "texte": "Il avance vers l'est jusqu'à l'obstacle, puis il monte d'une case.",
+     "texte": "Il monte jusqu'au bord ou à l'obstacle, puis avance d'une case à l'est.",
      "juste": true,
-     "feedback": "Exact. Tant que la voie est libre à l'est, il avance. `nord()` n'est pas indenté : il s'exécute une fois, après la boucle."
+     "feedback": "Exact. Tant que la voie est libre au nord, il monte. `est()` n'est pas indenté : il s'exécute une fois, après la boucle."
     },
     {
-     "texte": "À chaque case vers l'est, il monte aussi d'une case.",
-     "feedback": "`nord()` n'est pas indenté : il n'est pas dans la boucle. Il s'exécute une seule fois, à la fin."
+     "texte": "À chaque case vers le nord, il avance aussi d'une case vers l'est.",
+     "feedback": "`est()` n'est pas indenté : il n'est pas dans la boucle. Il s'exécute une seule fois, à la fin."
     }
    ],
-   "explication": "`while not obstacleEst():` se lit « tant qu'il n'y a pas d'obstacle à l'est ».",
+   "explication": "`while not obstacleNord():` se lit « tant qu'il n'y a pas d'obstacle au nord ».",
    "verifications": [
     {
      "code": [
       "print(position())"
      ],
-     "sortie": "D4"
+     "sortie": "B1"
     }
    ]
   },
