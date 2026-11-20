@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "abr",
  "titre": "Arbres binaires de recherche",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Algorithmique : algorithmes sur les arbres binaires de recherche (rechercher une clé, insérer une clé ; coût logarithmique de la recherche dans un arbre équilibré)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/abr/",
@@ -84,7 +84,7 @@
    "type": "titre",
    "titre": "Les arbres binaires de recherche",
    "texte": [
-    "Thème Algorithmique · l'essentiel en 15 minutes."
+    "Thème Algorithmique · l'essentiel en 15 minutes."
    ]
   },
   {
@@ -664,7 +664,7 @@
     },
     {
      "texte": "`[12, 5, 18]`",
-     "feedback": "L'ordre d'insertion n'est jamais celui du parcours infixe. Et surtout, `abr` n'est jamais modifié : il vaut toujours `None`."
+     "feedback": "C'est l'ordre d'insertion ; ici, le parcours infixe donnerait les clés triées, `[5, 12, 18]`. Et surtout, `abr` n'est jamais modifié : il vaut toujours `None`."
     },
     {
      "texte": "Une erreur, car `abr` vaut `None`.",

@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "tris",
  "titre": "Tris par sélection et insertion",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : tris par insertion, par sélection (écrire un algorithme de tri ; décrire un invariant de boucle qui prouve la correction des tris par insertion, par sélection ; coût quadratique dans le pire cas)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/tris/",
@@ -93,7 +93,7 @@
    "titre": "Tris par sélection et par insertion",
    "conventions": false,
    "texte": [
-    "Algorithmique · l'essentiel en 15 minutes."
+    "Algorithmique · l'essentiel en 15 minutes."
    ]
   },
   {

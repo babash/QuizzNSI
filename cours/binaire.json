@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "binaire",
  "titre": "Binaire et hexadécimal",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Représentation des données : types et valeurs de base ; écriture d'un entier positif dans une base b ≥ 2 (passer de la représentation d'une base dans une autre ; les bases 2, 10 et 16 sont privilégiées)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/binaire/",
@@ -30,7 +30,7 @@
    "titre": "Écrire en binaire et en hexadécimal",
    "conventions": false,
    "texte": [
-    "Représentation des données · l'essentiel en 15 minutes."
+    "Représentation des données · l'essentiel en 15 minutes."
    ]
   },
   {

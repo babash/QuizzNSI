@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "arbres-binaires",
  "titre": "Arbres binaires",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Structures de données : arbres binaires (nœuds, racines, feuilles, sous-arbres gauches et droits ; taille, hauteur) ; algorithmique : calculer la taille et la hauteur d'un arbre, le parcourir (préfixe, infixe, suffixe, en largeur)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/arbres/",
@@ -41,7 +41,7 @@
    "type": "titre",
    "titre": "Les arbres binaires",
    "texte": [
-    "Thème Structures de données · l'essentiel en 15 minutes."
+    "Thème Structures de données · l'essentiel en 15 minutes."
    ]
   },
   {

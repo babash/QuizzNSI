@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "poo",
  "titre": "Programmation objet",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Structures de données : vocabulaire de la programmation objet (classes, attributs, méthodes, objets) ; écrire la définition d'une classe ; accéder aux attributs et méthodes d'une classe",
  "fiche": "https://babash.github.io/FichesNSI/fiches/poo/",
@@ -29,14 +29,14 @@
    "titre": "La programmation orientée objet",
    "conventions": false,
    "texte": [
-    "Thème Structures de données · l'essentiel en 15 minutes."
+    "Thème Structures de données · l'essentiel en 15 minutes."
    ]
   },
   {
    "type": "classe",
    "question": "Qu'ont en commun toutes les barges ?",
    "texte": [
-    "Chaque barge a une capacité et un nombre de passagers."
+    "Chaque barge a une capacité et un nombre de personnes à bord."
    ],
    "pistes": [
     "Un même plan, des valeurs différentes pour chaque barge."
@@ -58,7 +58,7 @@
     },
     {
      "texte": "Chaque barge est une méthode de la classe.",
-     "feedback": "Une méthode est une action, comme embarquer des passagers. Chaque barge, elle, est un objet fabriqué avec la classe."
+     "feedback": "Une méthode est une action, comme embarquer des passager·ère·s. Chaque barge, elle, est un objet fabriqué avec la classe."
     },
     {
      "texte": "Le plan commun est la classe ; chaque barge est un objet.",
@@ -129,7 +129,7 @@
     },
     {
      "texte": "0, puis 120",
-     "feedback": "Tu as inversé : c'est l'attribut de `b1` qui reçoit 120. `b2`, créé avec 0 passager, n'a pas changé."
+     "feedback": "Tu as inversé : c'est l'attribut de `b1` qui reçoit 120. `b2`, créé avec 0 personne à bord, n'a pas changé."
     }
    ],
    "explication": "Chaque objet a ses propres valeurs d'attributs.",
@@ -221,7 +221,7 @@
    "objectif": "Appeler une méthode avec la notation pointée, sans donner `self`.",
    "enonce": [
     "On reprend la classe `Barge` avec sa méthode `embarquer`, et `b1 = Barge(300)`.",
-    "Quelle instruction ajoute 50 passagers à `b1` ?"
+    "Quelle instruction fait monter 50 personnes à bord de `b1` ?"
    ],
    "code": [
     "class Barge:",
@@ -318,7 +318,7 @@
     {
      "texte": "90, puis 50",
      "juste": true,
-     "feedback": "Exact. `b1` reçoit 120 passagers puis en perd 30 : 90. `b2` en reçoit 50. Chaque objet garde ses propres valeurs."
+     "feedback": "Exact. `b1` embarque 120 personnes, puis 30 descendent : 90. `b2` en reçoit 50. Chaque objet garde ses propres valeurs."
     },
     {
      "texte": "120, puis 50",
@@ -326,11 +326,11 @@
     },
     {
      "texte": "140, puis 140",
-     "feedback": "Tu as additionné tous les mouvements, comme si les barges partageaient leurs passagers. `b1` et `b2` sont deux objets distincts."
+     "feedback": "Tu as additionné tous les mouvements, comme si les barges partageaient leurs passager·ère·s. `b1` et `b2` sont deux objets distincts."
     },
     {
      "texte": "90, puis 0",
-     "feedback": "`b2.embarquer(50)` modifie `b2` : ses passagers passent de 0 à 50."
+     "feedback": "`b2.embarquer(50)` modifie `b2` : `b2.passagers` passe de 0 à 50."
     }
    ],
    "explication": "Une méthode modifie les attributs de l'objet sur lequel on l'appelle, et de lui seul.",
@@ -386,11 +386,11 @@
    "options": [
     {
      "texte": "300",
-     "feedback": "300, c'est la capacité. `libres` lui retire les passagers déjà embarqués."
+     "feedback": "300, c'est la capacité. `libres` lui retire les personnes déjà à bord."
     },
     {
      "texte": "120",
-     "feedback": "120, ce sont les passagers embarqués. La méthode renvoie la capacité moins ces passagers."
+     "feedback": "120, ce sont les personnes déjà à bord. La méthode renvoie la capacité moins ce nombre."
     },
     {
      "texte": "180",
@@ -541,7 +541,7 @@
    "objectif": "Distinguer l'attribut d'un objet et la classe elle-même.",
    "enonce": [
     "Après `b1 = Barge(300)`, on écrit `print(Barge.passagers)`.",
-    "Python répond `AttributeError: type object 'Barge' has no attribute 'passagers'` (« la classe Barge n'a pas d'attribut passagers »). Pourquoi ?"
+    "Python répond `AttributeError: type object 'Barge' has no attribute 'passagers'` (« la classe Barge n'a pas d'attribut `passagers` »). Pourquoi ?"
    ],
    "code": [
     "class Barge:",
@@ -559,7 +559,7 @@
     {
      "texte": "`passagers` est un attribut de chaque objet : il faut écrire `b1.passagers`.",
      "juste": true,
-     "feedback": "Oui. `__init__` crée `self.passagers` dans chaque objet, pas dans la classe. On demande les passagers d'une barge précise."
+     "feedback": "Oui. `__init__` crée `self.passagers` dans chaque objet, pas dans la classe. On demande le nombre de personnes à bord d'une barge précise."
     },
     {
      "texte": "`print` ne sait pas afficher un attribut.",
@@ -567,7 +567,7 @@
     },
     {
      "texte": "La classe `Barge` doit être définie après la création de `b1`.",
-     "feedback": "Une classe se définit avant de s'en servir, comme ici. Le problème est qu'on demande les passagers à la classe, pas à une barge."
+     "feedback": "Une classe se définit avant de s'en servir, comme ici. Le problème est qu'on demande `passagers` à la classe, pas à une barge."
     }
    ],
    "explication": "La classe est le plan ; les valeurs des attributs sont dans chaque objet.",
@@ -621,11 +621,11 @@
     {
      "texte": "10",
      "juste": true,
-     "feedback": "Exact. `b1` et `b3` désignent le même objet : les 10 passagers embarqués par `b3` sont dans `b1`."
+     "feedback": "Exact. `b1` et `b3` désignent le même objet : les 10 personnes embarquées par `b3` sont dans `b1`."
     },
     {
      "texte": "20",
-     "feedback": "Il n'y a eu qu'un seul embarquement de 10 passagers. Les deux noms voient la même valeur, sans l'additionner."
+     "feedback": "Il n'y a eu qu'un seul embarquement de 10 personnes. Les deux noms voient la même valeur, sans l'additionner."
     }
    ],
    "explication": "`b3 = b1` donne un second nom au même objet ; seul `Barge(...)` en crée un nouveau.",

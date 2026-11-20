@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "tri-fusion",
  "titre": "Tri fusion",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Algorithmique : méthode « diviser pour régner » (écrire un algorithme utilisant la méthode « diviser pour régner » ; le tri fusion, de coût en n log₂ n)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/diviser-pour-regner/",
@@ -50,7 +50,7 @@
    "titre": "Diviser pour régner : le tri fusion",
    "conventions": false,
    "texte": [
-    "Thème Algorithmique · l'essentiel en 15 minutes."
+    "Thème Algorithmique · l'essentiel en 15 minutes."
    ]
   },
   {

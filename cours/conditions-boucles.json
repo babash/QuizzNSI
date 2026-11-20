@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "conditions-boucles",
  "titre": "Conditions et boucles",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Langages et programmation : constructions élémentaires (conditionnelles, boucles bornées, boucles non bornées) (SNT : instructions conditionnelles, boucles bornées et non bornées)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/ficheSNT/",
@@ -28,7 +28,7 @@
    "titre": "Conditions et boucles",
    "conventions": false,
    "texte": [
-    "Les bases de Python · l'essentiel en 15 minutes."
+    "Les bases de Python · l'essentiel en 15 minutes."
    ]
   },
   {

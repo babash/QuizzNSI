@@ -6,7 +6,7 @@
   --accent: #0E7490; --accent-fond: #E0F4F8; --focus: #0A64E8; --bouton: #0B5F75; --bouton-ink: #FFFFFF;
   --ok: #166534; --ok-fond: #E8F6EC; --ko: #B91C1C; --ko-fond: #FDECEC; --neutre-fond: #EEF1F7;
   --f0: #DC2626; --f1: #2563EB; --f2: #B45309; --f3: #15803D;
-  --code-bg: #F5F7FB; --c-mot: #5B21B6; --c-ch: #035C44; --c-nb: #8A3B05; --c-com: #4B5563; --c-fn: #0B5A70; --c-nat: #86143F; --c-def: #1E40AF; --c-self: #7C2D12; --c-err: #9F1239; --guide: #C5CEDD;
+  --code-bg: #F5F7FB; --c-mot: #5B21B6; --c-ch: #02553F; --c-nb: #7A3304; --c-com: #414A57; --c-fn: #084E62; --c-nat: #86143F; --c-def: #1E40AF; --c-self: #7C2D12; --c-err: #921035; --guide: #C5CEDD;
   --display: "Chakra Petch", "Bahnschrift", "Arial Narrow", system-ui, sans-serif;
   --text: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;

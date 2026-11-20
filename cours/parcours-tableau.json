@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "parcours-tableau",
  "titre": "Parcours d'un tableau",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : parcours séquentiel d'un tableau (écrire un algorithme de recherche d'une occurrence, de recherche d'un extremum, de calcul d'une moyenne ; coût linéaire)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/fonction-usuelles/",
@@ -28,7 +28,7 @@
    "titre": "Le parcours séquentiel d'un tableau",
    "conventions": false,
    "texte": [
-    "Algorithmique · l'essentiel en 15 minutes."
+    "Algorithmique · l'essentiel en 15 minutes."
    ]
   },
   {

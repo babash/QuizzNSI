@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "dichotomie",
  "titre": "Recherche dichotomique",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : recherche dichotomique dans un tableau trié (montrer la terminaison de la recherche dichotomique à l'aide d'un variant de boucle ; coût logarithmique)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/dichotomie/",
@@ -57,7 +57,7 @@
    "titre": "La recherche dichotomique",
    "conventions": false,
    "texte": [
-    "Algorithmique · l'essentiel en 15 minutes."
+    "Algorithmique · l'essentiel en 15 minutes."
    ]
   },
   {

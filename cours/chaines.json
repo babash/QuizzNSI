@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "chaines",
  "titre": "Chaînes de caractères",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Langages et programmation : constructions élémentaires (séquences, boucles bornées) ; types construits : accès par indice et parcours d'une séquence, appliqués aux chaînes de caractères",
  "fiche": "https://babash.github.io/FichesNSI/fiches/chaines-de-caracteres/",
@@ -28,7 +28,7 @@
    "titre": "Chaînes de caractères",
    "conventions": false,
    "texte": [
-    "Les bases de Python · l'essentiel en 15 minutes."
+    "Les bases de Python · l'essentiel en 15 minutes."
    ]
   },
   {

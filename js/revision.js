@@ -11,9 +11,11 @@
   let cours, diapos = [], index = 0, etat;
   const cle = () => (REJOUER ? 'rejouer:' : 'revision:') + cours.id;
   // La signature du cours : une progression gardée pour une autre version du cours (questions renumérotées,
-  // ajoutées ou retirées) est ignorée. Sur l'appareil, la progression est datée et gardée un jour au plus (Q.menage).
+  // ajoutées ou retirées, options, paires ou lignes changées ou dans un autre ordre, code modifié) est ignorée.
+  // Sur l'appareil, la progression est datée et gardée un jour au plus (Q.menage).
   let signature = 0;
-  const signer = c => Q.graine((c.interactifs || []).map(q => q.id + ':' + q.nom).join('|'));
+  const signer = c => Q.graine((c.interactifs || []).map(q =>
+    JSON.stringify([q.id, q.nom, q.type, q.options || null, q.paires || null, q.lignes || null, q.code || null, q.ligne || null])).join('|'));
   const sauver = () => REJOUER ? Q.session.ecrire(cle(), etat) : Q.stock.ecrire(cle(), Object.assign({}, etat, { t: Date.now(), sig: signature }));
   const nouvelleGraine = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0]; };
 

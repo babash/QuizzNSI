@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "processus",
  "titre": "Processus et ordonnancement",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Architectures matérielles, systèmes d'exploitation et réseaux : gestion des processus et des ressources par un système d'exploitation (décrire la création d'un processus, l'ordonnancement de plusieurs processus par le système ; mettre en évidence le risque de l'interblocage)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/processus/",
@@ -45,7 +45,7 @@
    "titre": "Processus et ordonnancement",
    "conventions": false,
    "texte": [
-    "Thème 4 · Systèmes d'exploitation · l'essentiel en 15 minutes."
+    "Thème 4 · Systèmes d'exploitation · l'essentiel en 15 minutes."
    ]
   },
   {
@@ -82,17 +82,17 @@
      "feedback": "Le programme est le même fichier, mais il est exécuté deux fois. Chaque exécution est un processus, avec sa propre mémoire."
     },
     {
-     "texte": "Deux processus, avec deux PID différents.",
-     "juste": true,
-     "feedback": "Oui : un seul programme (un fichier), mais deux exécutions. Chacune a sa mémoire et son numéro, le PID."
+     "texte": "Aucun : un processus n'existe que pendant un calcul.",
+     "feedback": "Un processus existe de son lancement à sa fin, même quand il attend : une fenêtre ouverte, c'est un processus en cours."
     },
     {
      "texte": "Deux processus, avec le même PID.",
      "feedback": "Il y a bien deux processus, mais le PID sert justement à les distinguer : deux processus en cours n'ont jamais le même numéro."
     },
     {
-     "texte": "Aucun : un processus n'existe que pendant un calcul.",
-     "feedback": "Un processus existe de son lancement à sa fin, même quand il attend : une fenêtre ouverte, c'est un processus en cours."
+     "texte": "Deux processus, avec deux PID différents.",
+     "juste": true,
+     "feedback": "Oui : un seul programme (un fichier), mais deux exécutions. Chacune a sa mémoire et son numéro, le PID."
     }
    ],
    "explication": "Un programme est un fichier ; un processus est une exécution de ce programme.",
@@ -193,17 +193,17 @@
    ],
    "options": [
     {
-     "texte": "Bloqué",
-     "juste": true,
-     "feedback": "Oui : il attend une ressource, la saisie au clavier. Tant qu'elle n'arrive pas, lui donner le processeur ne servirait à rien."
+     "texte": "Élu",
+     "feedback": "Un processus élu s'exécute. Celui-ci ne peut pas avancer sans la saisie : il laisse le processeur aux autres."
     },
     {
      "texte": "Prêt",
      "feedback": "Un processus prêt n'attend que le processeur : il pourrait s'exécuter tout de suite. Celui-ci attend autre chose, la saisie."
     },
     {
-     "texte": "Élu",
-     "feedback": "Un processus élu s'exécute. Celui-ci ne peut pas avancer sans la saisie : il laisse le processeur aux autres."
+     "texte": "Bloqué",
+     "juste": true,
+     "feedback": "Oui : il attend une ressource, la saisie au clavier. Tant qu'elle n'arrive pas, lui donner le processeur ne servirait à rien."
     },
     {
      "texte": "Terminé",

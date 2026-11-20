@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "graphes",
  "titre": "Graphes",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Structures de données : graphes, structures relationnelles (sommets, arcs, arêtes, graphes orientés ou non orientés ; matrice d'adjacence, liste de successeurs) ; algorithmique : parcours en largeur d'abord",
  "fiche": "https://babash.github.io/FichesNSI/fiches/graphes/",
@@ -64,7 +64,7 @@
    "titre": "Les graphes",
    "conventions": false,
    "texte": [
-    "Thème 1 · Structures de données · l'essentiel en 15 minutes."
+    "Thème 1 · Structures de données · l'essentiel en 15 minutes."
    ]
   },
   {

@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "dictionnaires",
  "titre": "Dictionnaires",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : dictionnaires par clés et valeurs (construire une entrée de dictionnaire ; itérer sur les éléments d'un dictionnaire)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/dict/",
@@ -28,17 +28,17 @@
    "titre": "Les dictionnaires",
    "conventions": false,
    "texte": [
-    "Types construits · l'essentiel en 15 minutes."
+    "Types construits · l'essentiel en 15 minutes."
    ]
   },
   {
    "type": "classe",
    "question": "Combien coûtent les mangues ?",
    "texte": [
-    "Au marché, une ardoise : chaque fruit, et son prix à côté."
+    "Au marché, une ardoise : chaque produit, et son prix à côté."
    ],
    "pistes": [
-    "On cherche par le nom du fruit, pas par sa place !"
+    "On cherche par le nom du produit, pas par sa place !"
    ]
   },
   {
@@ -50,8 +50,8 @@
    ],
    "code": [
     "prix = {\"mangue\": 1,",
-    "        \"coco\": 2}",
-    "print(prix[\"coco\"])  # 2",
+    "        \"pain\": 2}",
+    "print(prix[\"pain\"])  # 2",
     "print(len(prix))     # 2"
    ],
    "vocabulaire": "dictionnaire = dictionary ; clé = key ; valeur = value"
@@ -109,7 +109,7 @@
    ],
    "code": [
     "prix = {\"mangue\": 1,",
-    "        \"coco\": 2}",
+    "        \"pain\": 2}",
     "print(prix[0])"
    ],
    "options": [
@@ -148,7 +148,7 @@
    ],
    "code": [
     "s = {\"mangue\": 10}",
-    "s[\"coco\"] = 4    # ajoute",
+    "s[\"pain\"] = 4    # ajoute",
     "s[\"mangue\"] = 8  # remplace",
     "print(len(s))     # 2"
    ]
@@ -290,9 +290,9 @@
    ],
    "code": [
     "p = {\"mangue\": 1}",
-    "print(\"coco\" in p)  # False",
+    "print(\"pain\" in p)  # False",
     "print(1 in p)       # False",
-    "n = p.get(\"coco\", 0)  # 0"
+    "n = p.get(\"pain\", 0)  # 0"
    ]
   },
   {
@@ -402,7 +402,7 @@
    ],
    "code": [
     "s = {\"mangue\": 8,",
-    "     \"coco\": 4}",
+    "     \"pain\": 4}",
     "for f in s:",
     "    print(f)     # mangue…",
     "for f, n in s.items():",
@@ -463,7 +463,7 @@
    ],
    "code": [
     "prix = {\"mangue\": 1,",
-    "        \"coco\": 2}"
+    "        \"pain\": 2}"
    ],
    "options": [
     {
@@ -471,14 +471,14 @@
       "for x in prix:",
       "    print(x)"
      ],
-     "feedback": "Cette boucle parcourt les clés : elle affiche mangue, puis coco."
+     "feedback": "Cette boucle parcourt les clés : elle affiche mangue, puis pain."
     },
     {
      "code": [
       "for x in prix.keys():",
       "    print(x)"
      ],
-     "feedback": "`keys()` donne les clés : elle affiche mangue, puis coco. Les valeurs sont données par `values()`."
+     "feedback": "`keys()` donne les clés : elle affiche mangue, puis pain. Les valeurs sont données par `values()`."
     },
     {
      "code": [
@@ -503,7 +503,7 @@
       "for x in prix:",
       "    print(x)"
      ],
-     "sortie": "mangue\ncoco",
+     "sortie": "mangue\npain",
      "option": 0
     },
     {
@@ -511,7 +511,7 @@
       "for x in prix.keys():",
       "    print(x)"
      ],
-     "sortie": "mangue\ncoco",
+     "sortie": "mangue\npain",
      "option": 1
     },
     {
@@ -542,8 +542,8 @@
    ],
    "code": [
     "stock = {\"mangue\": 8,",
-    "         \"coco\": 4,",
-    "         \"banane\": 6}",
+    "         \"papaye\": 4,",
+    "         \"orange\": 6}",
     "total = 0",
     "for f, n in stock.items():",
     "    total = total + n",
@@ -590,7 +590,8 @@
     "        n[m] = n[m] + 1",
     "    else:",
     "        n[m] = 1",
-    "print(n)  # taxi 2, bus 1"
+    "print(n)",
+    "# {'taxi': 2, 'bus': 1}"
    ]
   },
   {

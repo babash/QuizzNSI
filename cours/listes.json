@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "listes",
  "titre": "Tableaux (listes)",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : tableau indexé, tableau donné en compréhension (lire et modifier les éléments d'un tableau grâce à leurs index ; construire un tableau par compréhension ; utiliser des tableaux de tableaux pour représenter des matrices ; itérer sur les éléments d'un tableau)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/liste/",
@@ -28,7 +28,7 @@
    "titre": "Les tableaux (listes)",
    "conventions": false,
    "texte": [
-    "Types construits · l'essentiel en 15 minutes."
+    "Types construits · l'essentiel en 15 minutes."
    ]
   },
   {
@@ -271,13 +271,13 @@
    "code": [
     "p = []",
     "p.append(\"mangue\")",
-    "p.append(\"banane\")",
-    "p.append(\"coco\")",
+    "p.append(\"orange\")",
+    "p.append(\"papaye\")",
     "print(len(p), p[0])"
    ],
    "options": [
     {
-     "texte": "`3 coco`",
+     "texte": "`3 papaye`",
      "feedback": "`append` ajoute à la fin, pas au début : \"mangue\", ajoutée la première, reste à l'indice 0."
     },
     {

@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "tuples",
  "titre": "P-uplets (tuples)",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : p-uplets, p-uplets nommés (écrire une fonction renvoyant un p-uplet de valeurs)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/tuple/",
@@ -28,7 +28,7 @@
    "titre": "Les p-uplets (tuples)",
    "conventions": false,
    "texte": [
-    "Types construits · l'essentiel en 15 minutes."
+    "Types construits · l'essentiel en 15 minutes."
    ]
   },
   {

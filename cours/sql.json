@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "sql",
  "titre": "Bases de données et SQL",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Bases de données : modèle relationnel (relation, attribut, domaine, clé primaire, clé étrangère, schéma relationnel) ; système de gestion de bases de données ; langage SQL : requêtes d'interrogation et de mise à jour d'une base de données",
  "fiche": "https://babash.github.io/FichesNSI/fiches/sql/",
@@ -48,7 +48,7 @@
    "titre": "Bases de données et SQL",
    "conventions": false,
    "texte": [
-    "Thème 2 · Bases de données · l'essentiel en 15 minutes."
+    "Thème 2 · Bases de données · l'essentiel en 15 minutes."
    ]
   },
   {

@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "routage",
  "titre": "Routage : RIP et OSPF",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Architectures matérielles, systèmes d'exploitation et réseaux : protocoles de routage (identifier, suivant le protocole de routage utilisé, RIP ou OSPF, la route empruntée par un paquet)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/routage/",
@@ -56,7 +56,7 @@
    "titre": "Le routage : RIP et OSPF",
    "conventions": false,
    "texte": [
-    "Thème 4 · Réseaux · l'essentiel en 15 minutes."
+    "Thème 4 · Réseaux · l'essentiel en 15 minutes."
    ]
   },
   {

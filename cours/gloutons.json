@@ -2,7 +2,7 @@
  "format": "quizz-nsi/1",
  "id": "gloutons",
  "titre": "Algorithmes gloutons",
- "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : algorithmes gloutons (résoudre un problème grâce à un algorithme glouton ; exemples du rendu de monnaie et du sac à dos ; un algorithme glouton ne donne pas toujours une solution optimale)",
  "fiche": "https://babash.github.io/FichesNSI/fiches/gloutons/",
@@ -36,7 +36,7 @@
   "        essais = [mini[s - p] for p in pieces if p <= s and mini[s - p] is not None]",
   "        mini[s] = min(essais) + 1 if essais else None",
   "    return mini[somme]",
-  "PRODUITS = [(\"mangues\", 6, 30), (\"bananes\", 5, 20), (\"ananas\", 5, 20)]",
+  "PRODUITS = [(\"mangues\", 6, 30), (\"papayes\", 5, 20), (\"ananas\", 5, 20)]",
   "def sac_glouton(objets, capacite):",
   "    tries = sorted(objets, key=lambda o: o[2] / o[1], reverse=True)",
   "    pris, masse = [], 0",
@@ -60,7 +60,7 @@
    "titre": "Les algorithmes gloutons",
    "conventions": false,
    "texte": [
-    "Algorithmique · l'essentiel en 15 minutes."
+    "Algorithmique · l'essentiel en 15 minutes."
    ]
   },
   {
@@ -412,7 +412,7 @@
    ],
    "schema": {
     "type": "svg",
-    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 330 150\" width=\"330\" height=\"150\" role=\"img\" aria-label=\"Trois produits pour un panier de 10 kg au plus : mangues, 6 kg, 30 euros, 5 euros le kilo ; bananes, 5 kg, 20 euros, 4 euros le kilo ; ananas, 5 kg, 20 euros, 4 euros le kilo.\"><title>Trois produits, un panier de 10 kg au plus</title><text x=\"10\" y=\"22\" class=\"muet petit\">produit</text><text x=\"130\" y=\"22\" class=\"muet petit\">masse</text><text x=\"200\" y=\"22\" class=\"muet petit\">valeur</text><text x=\"262\" y=\"22\" class=\"muet petit\">par kg</text><line x1=\"6\" y1=\"30\" x2=\"324\" y2=\"30\" class=\"trait\"/><rect x=\"4\" y=\"36\" width=\"322\" height=\"32\" rx=\"4\" class=\"case sommet\"/><text x=\"10\" y=\"58\" class=\"val\">mangues</text><text x=\"130\" y=\"58\" class=\"val\">6 kg</text><text x=\"200\" y=\"58\" class=\"val\">30 €</text><text x=\"262\" y=\"58\" class=\"etiq\">5 €</text><rect x=\"4\" y=\"72\" width=\"322\" height=\"32\" rx=\"4\" class=\"case\"/><text x=\"10\" y=\"94\" class=\"val\">bananes</text><text x=\"130\" y=\"94\" class=\"val\">5 kg</text><text x=\"200\" y=\"94\" class=\"val\">20 €</text><text x=\"262\" y=\"94\" class=\"val\">4 €</text><rect x=\"4\" y=\"108\" width=\"322\" height=\"32\" rx=\"4\" class=\"case\"/><text x=\"10\" y=\"130\" class=\"val\">ananas</text><text x=\"130\" y=\"130\" class=\"val\">5 kg</text><text x=\"200\" y=\"130\" class=\"val\">20 €</text><text x=\"262\" y=\"130\" class=\"val\">4 €</text></svg>"
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 330 150\" width=\"330\" height=\"150\" role=\"img\" aria-label=\"Trois produits pour un panier de 10 kg au plus : mangues, 6 kg, 30 euros, 5 euros le kilo ; papayes, 5 kg, 20 euros, 4 euros le kilo ; ananas, 5 kg, 20 euros, 4 euros le kilo.\"><title>Trois produits, un panier de 10 kg au plus</title><text x=\"10\" y=\"22\" class=\"muet petit\">produit</text><text x=\"130\" y=\"22\" class=\"muet petit\">masse</text><text x=\"200\" y=\"22\" class=\"muet petit\">valeur</text><text x=\"262\" y=\"22\" class=\"muet petit\">par kg</text><line x1=\"6\" y1=\"30\" x2=\"324\" y2=\"30\" class=\"trait\"/><rect x=\"4\" y=\"36\" width=\"322\" height=\"32\" rx=\"4\" class=\"case sommet\"/><text x=\"10\" y=\"58\" class=\"val\">mangues</text><text x=\"130\" y=\"58\" class=\"val\">6 kg</text><text x=\"200\" y=\"58\" class=\"val\">30 €</text><text x=\"262\" y=\"58\" class=\"etiq\">5 €</text><rect x=\"4\" y=\"72\" width=\"322\" height=\"32\" rx=\"4\" class=\"case\"/><text x=\"10\" y=\"94\" class=\"val\">papayes</text><text x=\"130\" y=\"94\" class=\"val\">5 kg</text><text x=\"200\" y=\"94\" class=\"val\">20 €</text><text x=\"262\" y=\"94\" class=\"val\">4 €</text><rect x=\"4\" y=\"108\" width=\"322\" height=\"32\" rx=\"4\" class=\"case\"/><text x=\"10\" y=\"130\" class=\"val\">ananas</text><text x=\"130\" y=\"130\" class=\"val\">5 kg</text><text x=\"200\" y=\"130\" class=\"val\">20 €</text><text x=\"262\" y=\"130\" class=\"val\">4 €</text></svg>"
    },
    "vocabulaire": "problème du sac à dos = knapsack problem"
   },
@@ -427,21 +427,21 @@
    ],
    "options": [
     {
-     "texte": "Les bananes et les ananas : 40 €.",
-     "feedback": "C'est la meilleure solution, mais pas celle du glouton : il prend d'abord les mangues, et après, ni les bananes ni les ananas ne rentrent."
+     "texte": "Les papayes et les ananas : 40 €.",
+     "feedback": "C'est la meilleure solution, mais pas celle du glouton : il prend d'abord les mangues, et après, ni les papayes ni les ananas ne rentrent."
     },
     {
-     "texte": "Les mangues et les bananes : 50 €.",
+     "texte": "Les mangues et les papayes : 50 €.",
      "feedback": "6 + 5 = 11 kg : c'est trop lourd. Le glouton ne prend un produit que s'il rentre encore dans les 10 kg."
     },
     {
-     "texte": "Les mangues et 4 kg de bananes : 46 €.",
-     "feedback": "Ici, on ne coupe pas un produit : on le prend en entier, ou pas du tout. Après les mangues, il reste 4 kg : les bananes, 5 kg, ne rentrent pas."
+     "texte": "Les mangues et 4 kg de papayes : 46 €.",
+     "feedback": "Ici, on ne coupe pas un produit : on le prend en entier, ou pas du tout. Après les mangues, il reste 4 kg : les papayes, 5 kg, ne rentrent pas."
     },
     {
      "texte": "Les mangues seulement : 30 €.",
      "juste": true,
-     "feedback": "Oui. Les mangues d'abord (5 € le kilo) : 6 kg. Les bananes feraient 11 kg, les ananas aussi : ils ne rentrent plus."
+     "feedback": "Oui. Les mangues d'abord (5 € le kilo) : 6 kg. Les papayes feraient 11 kg, les ananas aussi : ils ne rentrent plus."
     }
    ],
    "explication": "Glouton « valeur par kilo » : les mangues seulement, 30 €.",
@@ -465,16 +465,16 @@
    "options": [
     {
      "texte": "30 €",
-     "feedback": "C'est ce que trouve le glouton, avec les mangues seules. Mais bananes et ananas rentrent ensemble, 10 kg, et rapportent 40 €."
+     "feedback": "C'est ce que trouve le glouton, avec les mangues seules. Mais papayes et ananas rentrent ensemble, 10 kg, et rapportent 40 €."
     },
     {
      "texte": "40 €",
      "juste": true,
-     "feedback": "Oui : les bananes et les ananas, 5 + 5 = 10 kg, 20 + 20 = 40 €. Le glouton n'en trouve que 30 : il n'est pas optimal ici."
+     "feedback": "Oui : les papayes et les ananas, 5 + 5 = 10 kg, 20 + 20 = 40 €. Le glouton n'en trouve que 30 : il n'est pas optimal ici."
     },
     {
      "texte": "50 €",
-     "feedback": "Mangues et bananes rapportent 50 €, mais pèsent 11 kg : le panier ne les supporte pas."
+     "feedback": "Mangues et papayes rapportent 50 €, mais pèsent 11 kg : le panier ne les supporte pas."
     },
     {
      "texte": "70 €",
