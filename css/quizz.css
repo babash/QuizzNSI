@@ -289,3 +289,16 @@ pre.code .ligne.corrigee { background: var(--ok-fond); }
 .nuage-tel .voix { font-size: .85em; color: var(--ink-soft); }
 .nuage-tel .bouton { min-height: 36px; flex: none; }
 .nuage-miens { overflow-wrap: anywhere; }
+
+/* ── Le code à 320 px (T114) : aucune ligne de 27 caractères coupée ni débordante ──
+   Option en code : la lettre au-dessus, le code sur toute la largeur, marges réduites.
+   Écrans et lignes fautives : marges réduites, police un peu plus petite, jamais sous 13 px. */
+@media (max-width: 760px) {
+  :root .option:has(.opt-texte pre.code) { flex-direction: column; align-items: stretch; gap: .35em; padding: 10px 6px 10px 8px; }
+  :root .opt-texte pre.code { font-size: 13px; padding: 6px; }
+  :root body pre.code { font-size: 13.5px; padding: 8px 6px; }
+  :root body pre.code .num { margin-right: .6ch; }
+  :root .p-ligne, :root .c-ligne { font-size: 13.5px; padding: 6px; }
+  :root .p-ligne .num, :root .c-ligne .num { margin-right: .6ch; }
+  :root .tableau th, :root .tableau td, :root .trace th, :root .trace td { padding: 6px; overflow-wrap: anywhere; }
+}
