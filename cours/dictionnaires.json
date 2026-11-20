@@ -1,0 +1,723 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "dictionnaires",
+ "titre": "Les dictionnaires",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Types construits : dictionnaires par clés et valeurs (construire une entrée de dictionnaire ; itérer sur les éléments d'un dictionnaire)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/dict/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les dictionnaires en Python » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je lis la valeur associée à une clé, et j'ajoute ou je modifie une paire.",
+  "Niveau 2 : je teste si une clé existe et je parcours les clés, les valeurs ou les paires.",
+  "Niveau 3 : je compte des occurrences avec un dictionnaire et je trouve l'erreur d'un petit programme."
+ ],
+ "conventions": [
+  "Un dictionnaire s'affiche comme Python l'écrit : `{'Sada': 3}`, les paires dans l'ordre où elles ont été ajoutées.",
+  "Tous les codes sont en Python 3. « Qu'affiche ce code ? » : les valeurs sont données dans l'ordre d'affichage."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Les dictionnaires",
+   "conventions": false,
+   "texte": [
+    "Types construits · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Combien coûtent les mangues ?",
+   "texte": [
+    "Au marché, une ardoise : chaque fruit, et son prix à côté."
+   ],
+   "pistes": [
+    "On cherche par le nom du fruit, pas par sa place !"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le dictionnaire",
+   "texte": [
+    "Il associe des ==clés== à des ==valeurs== : on lit une valeur par sa clé, pas par un indice.",
+    "Il s'écrit entre accolades : `{clé: valeur}`."
+   ],
+   "code": [
+    "prix = {\"mangue\": 1,",
+    "        \"coco\": 2}",
+    "print(prix[\"coco\"])  # 2",
+    "print(len(prix))     # 2"
+   ],
+   "vocabulaire": "dictionnaire = dictionary ; clé = key ; valeur = value"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Lire] La valeur d'une clé",
+   "objectif": "Lire la valeur associée à une clé.",
+   "enonce": [
+    "Le dictionnaire `ages` associe des prénoms à des âges.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "ages = {\"Anli\": 16,",
+    "        \"Inès\": 15,",
+    "        \"Kamal\": 17}",
+    "print(ages[\"Inès\"])"
+   ],
+   "options": [
+    {
+     "texte": "`Inès`",
+     "feedback": "\"Inès\" est la clé qu'on donne entre crochets. Python renvoie la valeur associée à cette clé, l'âge."
+    },
+    {
+     "texte": "`('Inès', 15)`",
+     "feedback": "`ages[\"Inès\"]` ne renvoie pas la paire : seulement la valeur associée à la clé."
+    },
+    {
+     "texte": "Une erreur : un dictionnaire se lit par indice.",
+     "feedback": "Un dictionnaire se lit par clé, justement : `ages[\"Inès\"]` est la bonne écriture."
+    },
+    {
+     "texte": "`15`",
+     "juste": true,
+     "feedback": "Oui. La clé \"Inès\" donne accès à sa valeur, 15."
+    }
+   ],
+   "explication": "`d[cle]` renvoie la valeur associée à `cle`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "15"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Lire] Pas d'indice dans un dictionnaire",
+   "objectif": "Savoir qu'un dictionnaire se lit par clé, jamais par position.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "prix = {\"mangue\": 1,",
+    "        \"coco\": 2}",
+    "print(prix[0])"
+   ],
+   "options": [
+    {
+     "texte": "Le programme affiche `1`.",
+     "feedback": "Tu as lu `prix[0]` comme dans un tableau : la première valeur. Dans un dictionnaire, 0 est cherché comme une clé."
+    },
+    {
+     "texte": "Une erreur : 0 n'est pas une clé.",
+     "juste": true,
+     "feedback": "Exact. Python cherche la clé 0, qui n'existe pas, et s'arrête sur `KeyError: 0`."
+    },
+    {
+     "texte": "Le programme affiche `mangue`.",
+     "feedback": "\"mangue\" est la première clé, mais un dictionnaire ne se lit pas par position : 0 est cherché comme une clé."
+    },
+    {
+     "texte": "Le programme affiche `('mangue', 1)`.",
+     "feedback": "Un dictionnaire n'a pas de « première paire » qu'on lirait par `[0]` : 0 est cherché comme une clé."
+    }
+   ],
+   "explication": "Dans `d[x]`, `x` est toujours une clé ; `d[0]` cherche la clé 0.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "KeyError"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Ajouter, modifier",
+   "texte": [
+    "`d[cle] = v` ==ajoute== la paire si la clé est nouvelle.",
+    "Si la clé existe, il ==remplace== sa valeur : une clé est unique."
+   ],
+   "code": [
+    "s = {\"mangue\": 10}",
+    "s[\"coco\"] = 4    # ajoute",
+    "s[\"mangue\"] = 8  # remplace",
+    "print(len(s))     # 2"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Modifier] Ajouter ou remplacer",
+   "objectif": "Distinguer l'ajout d'une paire et la modification d'une valeur.",
+   "enonce": [
+    "Le dictionnaire `d` associe des prénoms à des notes.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "d = {\"Anli\": 12,",
+    "     \"Faïza\": 15}",
+    "d[\"Anli\"] = d[\"Anli\"] + 3",
+    "d[\"Zaïna\"] = 9",
+    "print(len(d), d[\"Anli\"])"
+   ],
+   "options": [
+    {
+     "texte": "`2 15`",
+     "feedback": "La clé \"Zaïna\" n'existait pas : `d[\"Zaïna\"] = 9` ajoute une troisième paire."
+    },
+    {
+     "texte": "`3 12`",
+     "feedback": "`d[\"Anli\"] = d[\"Anli\"] + 3` remplace la valeur d'Anli : 12 + 3, soit 15."
+    },
+    {
+     "texte": "`3 15`",
+     "juste": true,
+     "feedback": "Oui. La note d'Anli passe de 12 à 15, et la paire de Zaïna est ajoutée : 3 paires."
+    },
+    {
+     "texte": "Une erreur : la clé \"Zaïna\" n'existe pas.",
+     "feedback": "Lire une clé absente provoque une erreur, mais écrire `d[\"Zaïna\"] = 9`, avec une clé nouvelle, ajoute la paire."
+    }
+   ],
+   "explication": "`d[cle] = v` ajoute si la clé est nouvelle, remplace sinon.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3 15"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Clés] Une clé est unique",
+   "objectif": "Savoir qu'une clé apparaît une seule fois dans un dictionnaire.",
+   "enonce": [
+    "Le dictionnaire `taxis` compte les taxis qui attendent à chaque arrêt.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "taxis = {\"Sada\": 3}",
+    "taxis[\"Sada\"] = 5",
+    "print(taxis)"
+   ],
+   "options": [
+    {
+     "texte": "`{'Sada': 5}`",
+     "juste": true,
+     "feedback": "Exact. La clé \"Sada\" existe déjà : sa valeur est remplacée, 3 devient 5."
+    },
+    {
+     "texte": "`{'Sada': 3, 'Sada': 5}`",
+     "feedback": "Une clé est unique : on ne peut pas avoir deux paires pour \"Sada\". La nouvelle valeur remplace l'ancienne."
+    },
+    {
+     "texte": "`{'Sada': 8}`",
+     "feedback": "`taxis[\"Sada\"] = 5` ne fait pas d'addition : il range 5 à la place de l'ancienne valeur. Pour ajouter, on écrirait `taxis[\"Sada\"] + 5`."
+    },
+    {
+     "texte": "`{'Sada': [3, 5]}`",
+     "feedback": "Python ne garde pas l'ancienne valeur dans un tableau : il la remplace par la nouvelle."
+    }
+   ],
+   "explication": "Une clé est unique : `d[cle] = v` remplace l'ancienne valeur.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "{'Sada': 5}"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Construire] Remplir un dictionnaire",
+   "objectif": "Construire un dictionnaire entrée par entrée.",
+   "enonce": [
+    "On associe chaque prénom à son âge.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "noms = [\"Anli\", \"Inès\"]",
+    "ages = [16, 15]",
+    "d = {}",
+    "for i in range(len(noms)):",
+    "    d[noms[i]] = ages[i]",
+    "print(d)"
+   ],
+   "options": [
+    {
+     "texte": "`{16: 'Anli', 15: 'Inès'}`",
+     "feedback": "Tu as inversé : la clé est entre crochets, à gauche du `=`. Ici, la clé est `noms[i]`, la valeur `ages[i]`."
+    },
+    {
+     "texte": "`{0: 'Anli', 1: 'Inès'}`",
+     "feedback": "La clé n'est pas l'indice `i` : c'est `noms[i]`, le prénom rangé à cet indice."
+    },
+    {
+     "texte": "`{'Anli': 0, 'Inès': 1}`",
+     "feedback": "La valeur n'est pas l'indice `i` : c'est `ages[i]`, l'âge rangé à cet indice."
+    },
+    {
+     "texte": "`{'Anli': 16, 'Inès': 15}`",
+     "juste": true,
+     "feedback": "Oui. À chaque tour, `d[noms[i]] = ages[i]` ajoute la paire prénom et âge."
+    }
+   ],
+   "explication": "`d[cle] = valeur` construit le dictionnaire, une entrée à la fois.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "{'Anli': 16, 'Inès': 15}"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Une clé absente ?",
+   "texte": [
+    "Lire une clé absente provoque `KeyError`.",
+    "On teste avec `cle in d`, ou on lit avec `d.get(cle, 0)`."
+   ],
+   "code": [
+    "p = {\"mangue\": 1}",
+    "print(\"coco\" in p)  # False",
+    "print(1 in p)       # False",
+    "n = p.get(\"coco\", 0)  # 0"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Présence] Que teste `in` ?",
+   "objectif": "Savoir que `in` cherche parmi les clés d'un dictionnaire.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "a = {\"Anli\": 16,",
+    "     \"Inès\": 15}",
+    "print(16 in a, \"Anli\" in a)"
+   ],
+   "options": [
+    {
+     "texte": "`False True`",
+     "juste": true,
+     "feedback": "Oui. `in` cherche parmi les clés : 16 est une valeur, pas une clé ; \"Anli\" est une clé."
+    },
+    {
+     "texte": "`True True`",
+     "feedback": "16 est bien dans le dictionnaire, mais comme valeur. `in` ne cherche que parmi les clés."
+    },
+    {
+     "texte": "`True False`",
+     "feedback": "C'est l'inverse : `in` cherche parmi les clés, et \"Anli\" est une clé."
+    },
+    {
+     "texte": "`False False`",
+     "feedback": "\"Anli\" est une clé : `\"Anli\" in a` vaut `True`. Seul 16, qui est une valeur, donne `False`."
+    }
+   ],
+   "explication": "`cle in d` cherche parmi les clés, jamais parmi les valeurs.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "False True"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Présence] Lire sans erreur avec `get`",
+   "objectif": "Lire une clé qui peut être absente avec `get` et une valeur par défaut.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "n = {\"Anli\": 12}",
+    "r = n.get(\"Zaïna\",",
+    "          \"absente\")",
+    "print(r)"
+   ],
+   "options": [
+    {
+     "texte": "Une erreur `KeyError: 'Zaïna'`",
+     "feedback": "C'est `n[\"Zaïna\"]` qui s'arrêterait sur `KeyError: 'Zaïna'`. `get` ne provoque pas d'erreur : il renvoie la valeur par défaut."
+    },
+    {
+     "texte": "`None`",
+     "feedback": "`get` renvoie `None` quand on ne donne pas de valeur par défaut. Ici, on en donne une : \"absente\"."
+    },
+    {
+     "texte": "`absente`",
+     "juste": true,
+     "feedback": "Exact. La clé \"Zaïna\" n'existe pas : `get` renvoie la valeur par défaut, \"absente\"."
+    },
+    {
+     "texte": "`Zaïna`",
+     "feedback": "`get` ne renvoie jamais la clé : il renvoie la valeur associée, ou la valeur par défaut si la clé est absente."
+    }
+   ],
+   "explication": "`d.get(cle, defaut)` renvoie la valeur, ou `defaut` si la clé est absente.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "absente"
+    },
+    {
+     "code": [
+      "print(n.get(\"Zaïna\"))"
+     ],
+     "sortie": "absente\nNone",
+     "option": 1
+    },
+    {
+     "code": [
+      "print(n[\"Zaïna\"])"
+     ],
+     "sortie": "absente",
+     "erreur": "KeyError",
+     "option": 0
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Parcourir",
+   "texte": [
+    "`for cle in d` parcourt les ==clés== ; `d.values()` donne les valeurs.",
+    "`for cle, v in d.items()` parcourt les ==paires==."
+   ],
+   "code": [
+    "s = {\"mangue\": 8,",
+    "     \"coco\": 4}",
+    "for f in s:",
+    "    print(f)     # mangue…",
+    "for f, n in s.items():",
+    "    print(f, n) # mangue 8…"
+   ],
+   "vocabulaire": "clés = keys ; valeurs = values ; paires = items"
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Parcours] Ce que donne `for x in d`",
+   "objectif": "Savoir qu'une boucle `for` sur un dictionnaire parcourt ses clés.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "notes = {\"Anli\": 12,",
+    "         \"Faïza\": 15}",
+    "for x in notes:",
+    "    print(x)"
+   ],
+   "options": [
+    {
+     "texte": "12, puis 15",
+     "feedback": "Ce sont les valeurs : on les aurait avec `for x in notes.values()`. Sans rien de plus, la boucle parcourt les clés."
+    },
+    {
+     "texte": "Anli, puis Faïza",
+     "juste": true,
+     "feedback": "Oui. `for x in notes` donne les clés, dans l'ordre où elles ont été ajoutées."
+    },
+    {
+     "texte": "('Anli', 12), puis ('Faïza', 15)",
+     "feedback": "Ce sont les paires : on les aurait avec `notes.items()`. Sans rien de plus, la boucle parcourt les clés."
+    },
+    {
+     "texte": "0, puis 1",
+     "feedback": "Un dictionnaire n'a pas d'indices : la boucle parcourt ses clés, ici les prénoms."
+    }
+   ],
+   "explication": "`for cle in d` parcourt les clés.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "Anli\nFaïza"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Parcours] Afficher les valeurs",
+   "objectif": "Choisir le parcours qui donne les valeurs d'un dictionnaire.",
+   "enonce": [
+    "On veut afficher seulement les prix : 1, puis 2.",
+    "Quelle boucle convient ?"
+   ],
+   "code": [
+    "prix = {\"mangue\": 1,",
+    "        \"coco\": 2}"
+   ],
+   "options": [
+    {
+     "code": [
+      "for x in prix:",
+      "    print(x)"
+     ],
+     "feedback": "Cette boucle parcourt les clés : elle affiche mangue, puis coco."
+    },
+    {
+     "code": [
+      "for x in prix.keys():",
+      "    print(x)"
+     ],
+     "feedback": "`keys()` donne les clés : elle affiche mangue, puis coco. Les valeurs sont données par `values()`."
+    },
+    {
+     "code": [
+      "for i in range(len(prix)):",
+      "    print(prix[i])"
+     ],
+     "feedback": "Un dictionnaire ne se lit pas par indice : `prix[0]` cherche la clé 0 et provoque `KeyError: 0`."
+    },
+    {
+     "code": [
+      "for x in prix.values():",
+      "    print(x)"
+     ],
+     "juste": true,
+     "feedback": "Oui. `values()` donne les valeurs, dans l'ordre des paires : 1, puis 2."
+    }
+   ],
+   "explication": "`d.values()` donne les valeurs ; `d.keys()` et `for cle in d`, les clés.",
+   "verifications": [
+    {
+     "code": [
+      "for x in prix:",
+      "    print(x)"
+     ],
+     "sortie": "mangue\ncoco",
+     "option": 0
+    },
+    {
+     "code": [
+      "for x in prix.keys():",
+      "    print(x)"
+     ],
+     "sortie": "mangue\ncoco",
+     "option": 1
+    },
+    {
+     "code": [
+      "for i in range(len(prix)):",
+      "    print(prix[i])"
+     ],
+     "erreur": "KeyError",
+     "option": 2
+    },
+    {
+     "code": [
+      "for x in prix.values():",
+      "    print(x)"
+     ],
+     "sortie": "1\n2"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Parcours] Les paires avec `items()`",
+   "objectif": "Parcourir les paires d'un dictionnaire pour calculer un total.",
+   "enonce": [
+    "Le dictionnaire `stock` donne le nombre de fruits de chaque sorte, sur un étal.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "stock = {\"mangue\": 8,",
+    "         \"coco\": 4,",
+    "         \"banane\": 6}",
+    "total = 0",
+    "for f, n in stock.items():",
+    "    total = total + n",
+    "print(total)"
+   ],
+   "options": [
+    {
+     "texte": "`18`",
+     "juste": true,
+     "feedback": "Oui. `items()` donne chaque paire ; `n` prend 8, puis 4, puis 6 : le total vaut 18."
+    },
+    {
+     "texte": "`3`",
+     "feedback": "3 est le nombre de paires, `len(stock)`. Ici, on additionne les valeurs `n`."
+    },
+    {
+     "texte": "`6`",
+     "feedback": "6 est la dernière valeur. `total = total + n` ajoute chaque valeur au total : rien ne se perd d'un tour à l'autre."
+    },
+    {
+     "texte": "Une erreur : `items()` ne donne pas deux valeurs.",
+     "feedback": "`items()` donne des paires (clé, valeur), des p-uplets de deux valeurs, déballés dans `f` et `n`."
+    }
+   ],
+   "explication": "`for cle, v in d.items()` parcourt les paires ; `v` est la valeur.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "18"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Compter",
+   "texte": [
+    "Clé absente : on la crée à 1. Clé présente : on ajoute 1."
+   ],
+   "code": [
+    "t = [\"taxi\", \"bus\", \"taxi\"]",
+    "n = {}",
+    "for m in t:",
+    "    if m in n:",
+    "        n[m] = n[m] + 1",
+    "    else:",
+    "        n[m] = 1",
+    "print(n)  # taxi 2, bus 1"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Compter] Les communes des élèves",
+   "objectif": "Lire un comptage d'occurrences fait avec un dictionnaire.",
+   "enonce": [
+    "On compte les élèves de chaque commune.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "t = [\"Sada\", \"Ouangani\",",
+    "     \"Sada\", \"Bandrélé\",",
+    "     \"Sada\"]",
+    "n = {}",
+    "for c in t:",
+    "    if c in n:",
+    "        n[c] = n[c] + 1",
+    "    else:",
+    "        n[c] = 1",
+    "print(n[\"Sada\"], len(n))"
+   ],
+   "options": [
+    {
+     "texte": "`3 5`",
+     "feedback": "`len(n)` compte les paires du dictionnaire, une par commune différente : 3, pas les 5 élèves."
+    },
+    {
+     "texte": "`3 3`",
+     "juste": true,
+     "feedback": "Exact. \"Sada\" apparaît 3 fois, et il y a 3 communes différentes, donc 3 paires."
+    },
+    {
+     "texte": "`1 3`",
+     "feedback": "Le `else` ne sert que la première fois : ensuite, la clé \"Sada\" existe et on ajoute 1 à chaque fois."
+    },
+    {
+     "texte": "`5 3`",
+     "feedback": "`n[\"Sada\"]` compte seulement les \"Sada\" : 3. Le total de 5 serait la somme de toutes les valeurs."
+    }
+   ],
+   "explication": "Le motif « si la clé existe, ajouter 1 ; sinon, mettre 1 » compte les occurrences.",
+   "verifications": [
+    {
+     "code": [
+      "print(n)"
+     ],
+     "sortie": "3 3\n{'Sada': 3, 'Ouangani': 1, 'Bandrélé': 1}"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Compter sans tester la clé",
+   "objectif": "Lire le message `KeyError` et compter sans lire une clé absente.",
+   "enonce": [
+    "Ce programme compte les élèves de chaque commune.",
+    "Il s'arrête sur l'erreur `KeyError: 'Sada'` (« la clé 'Sada' n'existe pas »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "t = [\"Sada\", \"Chiconi\",",
+    "     \"Sada\"]",
+    "n = {}",
+    "for c in t:",
+    "    n[c] = n[c] + 1",
+    "print(n)"
+   ],
+   "ligne": 5,
+   "correction": "    n[c] = n.get(c, 0) + 1",
+   "feedback": "Bien vu. Au premier tour, \"Sada\" n'est pas encore une clé : `n[c]` la lit et échoue. Avec `n.get(c, 0)`, une clé absente vaut 0 ; le programme affiche alors {'Sada': 2, 'Chiconi': 1}.",
+   "feedback_autre": "Cette ligne est correcte. Le message `KeyError` dit qu'on lit une clé absente : cherche la ligne qui lit `n[c]`.",
+   "pieges": {
+    "3": "`n = {}` crée un dictionnaire vide : c'est juste, on le remplit dans la boucle.",
+    "6": "Le programme s'arrête avant cette ligne, dès le premier tour de boucle. Cherche où l'on lit une clé qui n'existe pas encore."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "KeyError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "{'Sada': 2, 'Chiconi': 1}"
+    }
+   ],
+   "explication": "Avant de lire `d[cle]`, on s'assure que la clé existe : `cle in d`, ou `d.get(cle, 0)`."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "Écriture",
+     "Effet"
+    ],
+    "lignes": [
+     [
+      "`d[cle]`",
+      "la valeur associée à `cle` (`KeyError` si la clé est absente)"
+     ],
+     [
+      "`d[cle] = v`",
+      "ajoute la paire, ou remplace la valeur"
+     ],
+     [
+      "`cle in d`, `d.get(cle, 0)`",
+      "teste une clé ; lit sans erreur"
+     ],
+     [
+      "`for cle in d`, `d.values()`",
+      "parcourt les clés ; donne les valeurs"
+     ],
+     [
+      "`for cle, v in d.items()`",
+      "parcourt les paires"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade la différence entre une clé et un indice ?"
+   ]
+  }
+ ]
+}

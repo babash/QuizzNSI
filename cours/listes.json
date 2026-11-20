@@ -1,0 +1,726 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "listes",
+ "titre": "Les tableaux (listes)",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Types construits : tableau indexé, tableau donné en compréhension (lire et modifier les éléments d'un tableau grâce à leurs index ; construire un tableau par compréhension ; utiliser des tableaux de tableaux pour représenter des matrices ; itérer sur les éléments d'un tableau)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/liste/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les tableaux (listes) en Python » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je lis et je modifie un élément d'un tableau grâce à son indice.",
+  "Niveau 2 : j'ajoute un élément, je parcours un tableau, je le construis en compréhension.",
+  "Niveau 3 : je lis une case d'un tableau de tableaux et je trouve l'erreur d'un petit programme."
+ ],
+ "conventions": [
+  "Les indices commencent à 0 : le dernier élément d'un tableau `t` a l'indice `len(t) - 1`.",
+  "Tous les codes sont en Python 3. « Qu'affiche ce code ? » : les valeurs sont données dans l'ordre d'affichage."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Les tableaux (listes)",
+   "conventions": false,
+   "texte": [
+    "Types construits · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Une variable par jour ?",
+   "texte": [
+    "On note la hauteur de la marée haute, chaque jour de la semaine, à Mamoudzou."
+   ],
+   "pistes": [
+    "Une seule variable, avec des cases numérotées !"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Un tableau",
+   "texte": [
+    "Des valeurs dans l'ordre, repérées par leur ==indice== : de `0` à `len(t) - 1`.",
+    "En Python : le type `list`, entre crochets."
+   ],
+   "schema": {
+    "type": "liste",
+    "variable": "t",
+    "code": [
+     "t = [28, 31, 30, 33, 29]"
+    ],
+    "elements": [
+     28,
+     31,
+     30,
+     33,
+     29
+    ],
+    "legende": "`t[0]` vaut 28, `t[4]` vaut 29."
+   },
+   "vocabulaire": "tableau = array ; liste = list ; indice = index"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Indices] Lire un élément",
+   "objectif": "Lire un élément d'un tableau grâce à son indice, en comptant à partir de 0.",
+   "enonce": [
+    "Le tableau `marees` contient les hauteurs de marée haute de cinq jours, en mètres.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "marees = [2.9, 3.4, 3.8,",
+    "          3.6, 3.1]",
+    "print(marees[2])"
+   ],
+   "options": [
+    {
+     "texte": "`3.4`",
+     "feedback": "Tu as compté à partir de 1 : 3.4 est le deuxième élément, d'indice 1. En Python, le premier élément a l'indice 0."
+    },
+    {
+     "texte": "`[2.9, 3.4, 3.8]`",
+     "feedback": "`marees[2]` ne donne pas les trois premiers éléments : il donne un seul élément, celui d'indice 2."
+    },
+    {
+     "texte": "`3.8`",
+     "juste": true,
+     "feedback": "Oui : on compte à partir de 0. `marees[0]` vaut 2.9, `marees[1]` vaut 3.4, `marees[2]` vaut 3.8."
+    },
+    {
+     "texte": "`2`",
+     "feedback": "2 est l'indice, pas la valeur. Entre crochets, on donne l'indice ; Python renvoie la valeur rangée à cette place."
+    }
+   ],
+   "explication": "`t[i]` est la valeur rangée à l'indice `i` ; le premier indice est 0.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3.8"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Indices] Le dernier élément",
+   "objectif": "Accéder au dernier élément d'un tableau.",
+   "enonce": [
+    "Le tableau `arrets` contient les arrêts d'un taxi, dans l'ordre.",
+    "Quelle expression vaut `\"Mamoudzou\"` ?"
+   ],
+   "code": [
+    "arrets = [\"Sada\",",
+    "  \"Chiconi\", \"Ouangani\",",
+    "  \"Mamoudzou\"]"
+   ],
+   "options": [
+    {
+     "texte": "`arrets[-1]`",
+     "juste": true,
+     "feedback": "Oui. L'indice -1 désigne le dernier élément, quelle que soit la taille du tableau. Ici, c'est aussi `arrets[3]`."
+    },
+    {
+     "texte": "`arrets[4]`",
+     "feedback": "Il y a 4 éléments, d'indices 0 à 3 : `arrets[4]` n'existe pas et provoque `IndexError: list index out of range`."
+    },
+    {
+     "texte": "`arrets[-0]`",
+     "feedback": "-0 vaut 0 : `arrets[-0]` est le premier élément, \"Sada\". On compte depuis la fin à partir de -1."
+    },
+    {
+     "texte": "`arrets[\"Mamoudzou\"]`",
+     "feedback": "Un indice est un entier. Avec une chaîne, Python répond `TypeError: list indices must be integers or slices, not str`."
+    }
+   ],
+   "explication": "`t[-1]` est le dernier élément, comme `t[len(t) - 1]`.",
+   "verifications": [
+    {
+     "code": [
+      "print(arrets[-1], arrets[3], arrets[-0])"
+     ],
+     "sortie": "Mamoudzou Mamoudzou Sada"
+    },
+    {
+     "code": [
+      "print(arrets[4])"
+     ],
+     "erreur": "IndexError",
+     "option": 1
+    },
+    {
+     "code": [
+      "print(arrets[\"Mamoudzou\"])"
+     ],
+     "erreur": "TypeError",
+     "option": 3
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Erreur] Un indice de trop",
+   "objectif": "Prévoir l'erreur provoquée par un indice qui n'existe pas.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "t = [12, 15, 9]",
+    "print(t[len(t)])"
+   ],
+   "options": [
+    {
+     "texte": "Le programme affiche 9, le dernier élément.",
+     "feedback": "Le dernier élément a l'indice `len(t) - 1`, ici 2. `len(t)` vaut 3 : il n'y a pas de case d'indice 3."
+    },
+    {
+     "texte": "Une erreur : il n'y a pas d'élément d'indice 3.",
+     "juste": true,
+     "feedback": "Exact. Les indices vont de 0 à 2. Python s'arrête sur `IndexError: list index out of range` (« indice hors du tableau »)."
+    },
+    {
+     "texte": "Le programme affiche 3, la taille du tableau.",
+     "feedback": "`len(t)` vaut bien 3, mais `t[len(t)]` demande l'élément d'indice 3, qui n'existe pas : c'est une erreur."
+    },
+    {
+     "texte": "Le programme affiche `None` : la case est vide.",
+     "feedback": "Python ne fabrique pas de case vide après la fin du tableau : il s'arrête sur une erreur, `IndexError`."
+    }
+   ],
+   "explication": "Le dernier indice est `len(t) - 1` ; `t[len(t)]` provoque `IndexError`.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "IndexError"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Modifier, ajouter",
+   "texte": [
+    "`t[i] = v` ==remplace== la valeur d'indice `i`.",
+    "`t.append(v)` ==ajoute== `v` à la fin : il modifie `t` et ne renvoie rien."
+   ],
+   "code": [
+    "t = [5, 8, 2]",
+    "t[0] = 7      # [7, 8, 2]",
+    "t.append(4)  # 4 à la fin",
+    "print(len(t)) # 4"
+   ],
+   "vocabulaire": "ajouter à la fin = append"
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Modifier] Remplacer un élément",
+   "objectif": "Modifier un élément d'un tableau grâce à son indice.",
+   "enonce": [
+    "Au marché, `prix` contient le prix de trois tas de mangues, en euros.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "prix = [2, 3, 5]",
+    "prix[1] = 4",
+    "print(prix)"
+   ],
+   "options": [
+    {
+     "texte": "`[4, 3, 5]`",
+     "feedback": "Tu as compté à partir de 1 : l'indice 1 désigne le deuxième élément, pas le premier."
+    },
+    {
+     "texte": "`[2, 4, 3, 5]`",
+     "feedback": "`prix[1] = 4` n'insère pas une case : il remplace la valeur d'indice 1. Le tableau garde 3 éléments."
+    },
+    {
+     "texte": "`[2, 3, 5, 4]`",
+     "feedback": "C'est ce que ferait `prix.append(4)`. Ici, `prix[1] = 4` remplace l'élément d'indice 1."
+    },
+    {
+     "texte": "`[2, 4, 5]`",
+     "juste": true,
+     "feedback": "Oui. L'élément d'indice 1, le deuxième, passe de 3 à 4. Les autres ne bougent pas."
+    }
+   ],
+   "explication": "`t[i] = v` remplace l'élément d'indice `i` ; la taille ne change pas.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "[2, 4, 5]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Ajouter] Remplir un tableau vide",
+   "objectif": "Ajouter des éléments à la fin d'un tableau avec `append`.",
+   "enonce": [
+    "On remplit un panier `p`, vide au départ.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "p = []",
+    "p.append(\"mangue\")",
+    "p.append(\"banane\")",
+    "p.append(\"coco\")",
+    "print(len(p), p[0])"
+   ],
+   "options": [
+    {
+     "texte": "`3 coco`",
+     "feedback": "`append` ajoute à la fin, pas au début : \"mangue\", ajoutée la première, reste à l'indice 0."
+    },
+    {
+     "texte": "`3 mangue`",
+     "juste": true,
+     "feedback": "Exact. Trois `append` : trois éléments. Le premier ajouté, \"mangue\", est à l'indice 0."
+    },
+    {
+     "texte": "`2 mangue`",
+     "feedback": "2 est le dernier indice. `len` compte les éléments : il y en a 3, d'indices 0, 1 et 2."
+    },
+    {
+     "texte": "Une erreur : on ne peut rien ajouter à un tableau vide.",
+     "feedback": "Un tableau vide, `[]`, est un tableau comme un autre : `append` lui ajoute des éléments."
+    }
+   ],
+   "explication": "`append` ajoute à la fin ; `len(t)` compte les éléments.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3 mangue"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Ajouter une note",
+   "objectif": "Lire un message d'erreur et savoir que `append` modifie le tableau sans rien renvoyer.",
+   "enonce": [
+    "Ce programme ajoute la note 14 au tableau `notes`, puis affiche le nombre de notes.",
+    "Il s'arrête sur l'erreur `TypeError: object of type 'NoneType' has no len()` (« `None` n'a pas de longueur »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "notes = [12, 15, 9]",
+    "notes[0] = 13",
+    "notes = notes.append(14)",
+    "print(len(notes))"
+   ],
+   "ligne": 3,
+   "correction": "notes.append(14)",
+   "feedback": "Bien vu. `notes.append(14)` modifie `notes` et renvoie `None` : `notes = ...` range ce `None` dans `notes`. Corrigé, le programme affiche 4.",
+   "feedback_autre": "Cette ligne est correcte. Le message dit que `notes` vaut `None` (NoneType) : cherche la ligne où `notes` reçoit `None`.",
+   "pieges": {
+    "2": "`notes[0] = 13` remplace la première note : c'est juste, et `notes` reste un tableau.",
+    "4": "`len(notes)` est juste si `notes` est un tableau. L'erreur vient d'avant : à cette ligne, `notes` vaut déjà `None`."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [
+      "print(notes)"
+     ],
+     "sortie": "4\n[13, 15, 9, 14]"
+    }
+   ],
+   "explication": "On écrit `t.append(v)` seul sur sa ligne, jamais `t = t.append(v)`."
+  },
+  {
+   "type": "notion",
+   "titre": "Parcourir",
+   "texte": [
+    "`for x in t` parcourt les ==valeurs==.",
+    "`for i in range(len(t))` parcourt les ==indices== : `t[i]` est la valeur."
+   ],
+   "code": [
+    "t = [5, 8, 2]",
+    "for x in t:",
+    "    print(x)     # 5, 8, 2",
+    "for i in range(len(t)):",
+    "    print(i, t[i])  # 0 5…"
+   ],
+   "vocabulaire": "parcourir = iterate"
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Parcours] Les indices ou les valeurs ?",
+   "objectif": "Distinguer l'indice `i` et la valeur `t[i]` dans un parcours.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "t = [8, 5, 9]",
+    "for i in range(len(t)):",
+    "    print(i)"
+   ],
+   "options": [
+    {
+     "texte": "0, puis 1, puis 2",
+     "juste": true,
+     "feedback": "Oui. `range(len(t))` donne les indices 0, 1 et 2, et on affiche `i`, l'indice."
+    },
+    {
+     "texte": "8, puis 5, puis 9",
+     "feedback": "Ce sont les valeurs : on les obtiendrait avec `print(t[i])` ou avec `for x in t`. Ici, on affiche l'indice `i`."
+    },
+    {
+     "texte": "1, puis 2, puis 3",
+     "feedback": "Les indices commencent à 0, et `range(3)` aussi : il donne 0, 1 et 2."
+    },
+    {
+     "texte": "0, puis 1, puis 2, puis 3",
+     "feedback": "`range(3)` s'arrête avant 3 : 0, 1 et 2. C'est juste ce qu'il faut pour les trois indices du tableau."
+    }
+   ],
+   "explication": "`range(len(t))` donne les indices de 0 à `len(t) - 1`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "0\n1\n2"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Parcours] Doubler chaque élément",
+   "objectif": "Modifier tous les éléments d'un tableau grâce à leurs indices.",
+   "enonce": [
+    "Le tableau `t` vaut `[1, 2, 3]`. On veut qu'il devienne `[2, 4, 6]`.",
+    "Quelle boucle convient ?"
+   ],
+   "options": [
+    {
+     "code": [
+      "for x in t:",
+      "    x = 2 * x"
+     ],
+     "feedback": "`x` est une copie de la valeur : changer `x` ne change pas le tableau. `t` reste `[1, 2, 3]`."
+    },
+    {
+     "code": [
+      "for i in t:",
+      "    t[i] = 2 * t[i]"
+     ],
+     "feedback": "Ici `i` prend les valeurs 1, 2, 3, pas les indices. Le tableau devient `[1, 4, 3]`, puis `t[4]` provoque `IndexError: list index out of range`."
+    },
+    {
+     "code": [
+      "for i in range(len(t)):",
+      "    t[i] = 2 * t[i]"
+     ],
+     "juste": true,
+     "feedback": "Oui. `i` parcourt les indices 0, 1, 2, et `t[i] = ...` remplace chaque case par son double."
+    },
+    {
+     "code": [
+      "for i in range(len(t)):",
+      "    i = 2 * t[i]"
+     ],
+     "feedback": "On calcule bien le double, mais on le range dans `i`, pas dans le tableau : `t` ne change pas."
+    }
+   ],
+   "explication": "Pour modifier un tableau, on passe par les indices : `t[i] = ...`.",
+   "verifications": [
+    {
+     "code": [
+      "t = [1, 2, 3]",
+      "for x in t:",
+      "    x = 2 * x",
+      "print(t)"
+     ],
+     "sortie": "[1, 2, 3]",
+     "reprendre_code": false,
+     "option": 0
+    },
+    {
+     "code": [
+      "t = [1, 2, 3]",
+      "for i in t:",
+      "    t[i] = 2 * t[i]"
+     ],
+     "erreur": "IndexError",
+     "reprendre_code": false,
+     "option": 1
+    },
+    {
+     "code": [
+      "t = [1, 2, 3]",
+      "for i in range(len(t)):",
+      "    t[i] = 2 * t[i]",
+      "print(t)"
+     ],
+     "sortie": "[2, 4, 6]",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "t = [1, 2, 3]",
+      "for i in range(len(t)):",
+      "    i = 2 * t[i]",
+      "print(t)"
+     ],
+     "sortie": "[1, 2, 3]",
+     "reprendre_code": false,
+     "option": 3
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "En compréhension",
+   "texte": [
+    "On construit un tableau d'un coup : `[expression for x in t]`.",
+    "On peut filtrer : `[x for x in t if condition]`."
+   ],
+   "code": [
+    "t = [1, 2, 3, 4]",
+    "c = [x * x for x in t]",
+    "print(c)  # [1, 4, 9, 16]",
+    "p = [x for x in t if x > 2]",
+    "print(p)  # [3, 4]"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Compréhension] Les carrés",
+   "objectif": "Lire un tableau construit en compréhension avec `range`.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "carres = [i * i",
+    "  for i in range(4)]",
+    "print(carres)"
+   ],
+   "options": [
+    {
+     "texte": "`[1, 4, 9, 16]`",
+     "feedback": "`range(4)` commence à 0, pas à 1 : `i` prend les valeurs 0, 1, 2, 3."
+    },
+    {
+     "texte": "`[0, 1, 4, 9, 16]`",
+     "feedback": "`range(4)` s'arrête avant 4 : il donne 4 valeurs, 0, 1, 2 et 3, donc 4 carrés."
+    },
+    {
+     "texte": "`9`",
+     "feedback": "Une compréhension garde toutes les valeurs calculées, dans un tableau, pas seulement la dernière."
+    },
+    {
+     "texte": "`[0, 1, 4, 9]`",
+     "juste": true,
+     "feedback": "Exact. Pour chaque `i` de 0 à 3, on range `i * i` dans le tableau."
+    }
+   ],
+   "explication": "`[f(x) for x in ...]` range dans un tableau la valeur calculée pour chaque `x`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "[0, 1, 4, 9]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Compréhension] Filtrer les notes",
+   "objectif": "Lire un tableau construit en compréhension avec une condition.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que contient `ok` ?"
+   ],
+   "code": [
+    "notes = [12, 8, 15, 9, 10]",
+    "ok = [n for n in notes",
+    "      if n >= 10]"
+   ],
+   "options": [
+    {
+     "texte": "`[12, 15, 10]`",
+     "juste": true,
+     "feedback": "Oui. On garde, dans l'ordre, les notes `n` pour lesquelles `n >= 10` est vrai. 10 est gardée : `>=` veut dire « supérieur ou égal »."
+    },
+    {
+     "texte": "`[8, 9]`",
+     "feedback": "Ce sont les notes écartées. Le `if` dit ce qu'on garde : les notes supérieures ou égales à 10."
+    },
+    {
+     "texte": "`[True, False, True, False, True]`",
+     "feedback": "La condition choisit les éléments, elle n'est pas rangée dans le tableau. C'est `n`, avant le `for`, qu'on range."
+    },
+    {
+     "texte": "`3`",
+     "feedback": "C'est le nombre de notes gardées, `len(ok)`. Une compréhension construit un tableau, pas un nombre."
+    }
+   ],
+   "explication": "`[x for x in t if condition]` garde les éléments pour lesquels la condition est vraie.",
+   "verifications": [
+    {
+     "code": [
+      "print(ok, len(ok))"
+     ],
+     "sortie": "[12, 15, 10] 3"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Tableau de tableaux",
+   "texte": [
+    "Chaque élément est un tableau : c'est une ==matrice==.",
+    "`m[i][j]` : la ligne `i`, puis la colonne `j`."
+   ],
+   "code": [
+    "m = [[1, 2, 3],",
+    "     [4, 5, 6]]",
+    "print(m[1][2])    # 6",
+    "print(len(m))     # 2",
+    "print(len(m[0]))  # 3"
+   ],
+   "vocabulaire": "matrice = matrix ; ligne = row ; colonne = column"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Matrice] Lire une case",
+   "objectif": "Lire un élément d'un tableau de tableaux : la ligne, puis la colonne.",
+   "enonce": [
+    "Le plan de deux rangées de sièges est rangé dans `places`.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "places = [",
+    " [\"Anli\", \"Inès\", \"Lucas\"],",
+    " [\"Mia\", \"Kamal\", \"Chloé\"]]",
+    "print(places[1][2])"
+   ],
+   "options": [
+    {
+     "texte": "Inès",
+     "feedback": "Tu as compté les lignes et les colonnes à partir de 1. On compte à partir de 0 : la ligne 1 est la deuxième rangée."
+    },
+    {
+     "texte": "Une erreur `IndexError: list index out of range`",
+     "feedback": "Il n'y a pas d'erreur : la ligne 1 existe (la deuxième rangée) et elle a une colonne 2. Tu as peut-être lu la colonne d'abord."
+    },
+    {
+     "texte": "Chloé",
+     "juste": true,
+     "feedback": "Exact. `places[1]` est la deuxième rangée, `[\"Mia\", \"Kamal\", \"Chloé\"]`, et son élément d'indice 2 est \"Chloé\"."
+    },
+    {
+     "texte": "Lucas",
+     "feedback": "\"Lucas\" est dans la première rangée, `places[0]`. `places[1]` est la deuxième rangée : on compte à partir de 0."
+    }
+   ],
+   "explication": "`m[i][j]` : d'abord la ligne `i`, puis la colonne `j`, toutes deux à partir de 0.",
+   "verifications": [
+    {
+     "code": [
+      "print(places[0][1], places[0][2])"
+     ],
+     "sortie": "Chloé\nInès Lucas"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Matrice] Les dimensions",
+   "objectif": "Trouver le nombre de lignes et de colonnes d'une matrice avec `len`.",
+   "enonce": [
+    "La matrice `m` représente une grille de jeu.",
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "m = [[0, 0, 0, 0],",
+    "     [0, 0, 0, 0],",
+    "     [0, 0, 0, 0]]",
+    "print(len(m), len(m[0]))"
+   ],
+   "options": [
+    {
+     "texte": "`4 3`",
+     "feedback": "Tu as inversé : `len(m)` compte les éléments de `m`, c'est-à-dire les lignes (3). `len(m[0])` compte les cases de la première ligne (4)."
+    },
+    {
+     "texte": "`3 4`",
+     "juste": true,
+     "feedback": "Oui : 3 lignes, et 4 colonnes dans la ligne `m[0]`."
+    },
+    {
+     "texte": "`12 4`",
+     "feedback": "`len(m)` ne compte pas toutes les cases : il compte les éléments de `m`, qui sont 3 tableaux, les lignes."
+    },
+    {
+     "texte": "`2 3`",
+     "feedback": "Ce sont les derniers indices des lignes et des colonnes. `len` donne le nombre d'éléments, un de plus."
+    }
+   ],
+   "explication": "`len(m)` : le nombre de lignes ; `len(m[0])` : le nombre de colonnes.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3 4"
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "Écriture",
+     "Effet"
+    ],
+    "lignes": [
+     [
+      "`t[i]`, `t[-1]`",
+      "l'élément d'indice `i` (de 0 à `len(t) - 1`), le dernier"
+     ],
+     [
+      "`t[i] = v`, `t.append(v)`",
+      "remplace l'élément d'indice `i` ; ajoute `v` à la fin"
+     ],
+     [
+      "`for x in t`, `for i in range(len(t))`",
+      "parcourt les valeurs ; parcourt les indices"
+     ],
+     [
+      "`[x * 2 for x in t if x > 0]`",
+      "construit un tableau en compréhension"
+     ],
+     [
+      "`m[i][j]`",
+      "la ligne `i`, puis la colonne `j`"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade la différence entre `i` et `t[i]` ?"
+   ]
+  }
+ ]
+}
