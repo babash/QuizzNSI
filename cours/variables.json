@@ -377,7 +377,9 @@
    "code": [
     "eleves = 23",
     "places = 4",
-    "print(eleves // places, eleves % places)"
+    "taxis = eleves // places",
+    "reste = eleves % places",
+    "print(taxis, reste)"
    ],
    "options": [
     {
@@ -386,7 +388,7 @@
     },
     {
      "texte": "`3 5`",
-     "feedback": "Tu as inversé : `//` donne le quotient, 5, et `%` le reste, 3. Le premier nombre affiché est `eleves // places`."
+     "feedback": "Tu as inversé : `//` donne le quotient, 5, et `%` le reste, 3. Le premier nombre affiché est `taxis`, le quotient."
     },
     {
      "texte": "`5 0.75`",
