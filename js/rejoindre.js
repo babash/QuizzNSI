@@ -123,7 +123,11 @@
     hoteVu = true; clearTimeout(attenteHote);
     if (m.t === 'retire') { if (m.pourMoi) { Q.stock.oublier('eleve'); Q.session.oublier('eleve'); Q.stock.oublier('hist:' + moi.id); afficherEntree('L\'enseignant·e a retiré ce pseudo. Choisis-en un autre : ton prénom ou un pseudo, jamais ton nom de famille.'); } return; }
     if (m.t === 'refus') { if (m.pourMoi) { Q.session.oublier('eleve'); afficherEntree(m.raison === 'pris' ? 'Ce pseudo est déjà pris dans la séance : choisis-en un autre.' : 'Ce pseudo n\'est pas accepté : choisis-en un autre.'); } return; }
-    if (m.t === 'recus') { if (question && m.qid === question.qid && question.n && m.n.includes(question.n)) { question.recu = true; clearInterval(renvoi); majEnvoyee(); } return; }
+    if (m.t === 'recus') {
+      if (nuage && m.qid === nuage.qid) { for (const x of m.n) if (nuage.envois.has(x)) { nuage.envois.get(x).fait(); nuage.envois.delete(x); } majNuageTel(); }
+      if (question && m.qid === question.qid && question.n && m.n.includes(question.n)) { question.recu = true; clearInterval(renvoi); majEnvoyee(); }
+      return;
+    }
     if (m.t === 'attente') { phase = 'attente'; question = null; ecran(attente('Regarde l\'écran : la suite arrive.')); return; }
     if (m.t === 'fermee') { if (question && m.qid === question.qid) { question.ferme = true; clearInterval(chrono); if (question.choix == null) ecran(attente('Temps écoulé : la correction arrive à l\'écran.')); } return; }
     const n = ++numero; // seul le dernier message reçu s'affiche, même si son cours arrive plus tard
@@ -133,11 +137,14 @@
       else if (m.t === 'question') afficherQuestion(cours, m);
       else if (m.t === 'correction') afficherCorrection(cours, m);
       else if (m.t === 'corrige') afficherCorrige(cours, m);
+      else if (m.t === 'nuage') afficherNuage(cours, trouverQuestion(cours, m.qid), m.mots);
       else if (m.t === 'fin') afficherFin(cours, m);
     });
   }
 
-  function ecran(noeud) { const z = $('ecran'); z.textContent = ''; delete z.dataset.n; z.appendChild(noeud); }
+  function ecran(noeud) {
+    if (nuage && phase !== 'nuage') nuage = null; // on quitte le nuage : ses envois en cours s'arrêtent
+    const z = $('ecran'); z.textContent = ''; delete z.dataset.n; z.appendChild(noeud); }
   const attente = texte => el('div', { class: 'attente' }, el('p', { class: 'grand' }, moi.pseudo + ', tu es dans la séance.'), el('p', {}, texte));
   function majPoints() { $('points').textContent = total + ' pts'; }
   const trouverQuestion = (cours, qid) => cours.interactifs.find(q => q.id === qid) || null;
@@ -159,6 +166,7 @@
   function afficherQuestion(cours, m) {
     const q = trouverQuestion(cours, m.qid);
     if (!q) return;
+    if (q.type === 'nuage') { afficherNuage(cours, q, null); return; }
     if (question && question.qid === q.id && phase === 'question') { if (m.ferme) question.ferme = true; return; } // déjà affichée
     phase = 'question';
     const ancienne = historique().reps[q.id] || null; // la page rouverte retrouve la réponse déjà donnée
@@ -371,6 +379,78 @@
     ecran(s);
     $('ecran').focus({ preventScroll: true }); window.scrollTo(0, 0);
     Q.annoncer(reponse == null ? 'Correction : pas de réponse.' : r.juste ? 'Tout est juste.' : 'Pas tout à fait. Lis la correction.');
+  }
+
+  /* ── Le nuage de mots, au téléphone ─────────
+     Proposer autant de mots qu'on veut (un toutes les 3 secondes au plus), puis, une fois le nuage montré au
+     tableau, voter pour les mots des camarades (une voix par mot ; pas pour ses propres mots). Les mots reçus sont
+     ceux du tableau, sans auteur·rice ; ils passent le filtre (js/messages.js) et s'affichent par textContent.
+     Rien n'est gardé sur le téléphone : ni ses mots, ni ses voix. */
+  let nuage = null;
+  const ATTENTE_MOT = 3000;
+  function envoyerNuage(r, quoi) {
+    const n = Q.nouvelId(), clair = { id: moi.id, qid: nuage.qid, r, n }, ici = nuage;
+    let essais = 0;
+    const envoi = async () => {
+      if (nuage !== ici || !ici.envois.has(n)) { clearInterval(t); return; }
+      if (++essais > 8) { clearInterval(t); ici.envois.delete(n); ici.erreur = 'Un envoi n\'est pas arrivé à la page projetée : vérifie le réseau, puis réessaie.'; majNuageTel(); return; }
+      if (!chiffreur || !clesHote.length) return;
+      for (const k of clesHote) { try { const env = await chiffreur.chiffrer(clair, k); if (seance) seance.envoyer(Object.assign({ t: 'rep' }, env)); } catch (e) { /* clé illisible */ } }
+    };
+    ici.envois.set(n, { fait: quoi });
+    const t = setInterval(envoi, 2200); envoi();
+  }
+  function afficherNuage(cours, q, mots) {
+    if (!q || q.type !== 'nuage') return;
+    clearInterval(renvoi); clearInterval(chrono);
+    if (!nuage || nuage.qid !== q.id || phase !== 'nuage') {
+      phase = 'nuage'; question = null;
+      nuage = { qid: q.id, q, mots: null, miens: new Map(), votes: new Set(), envois: new Map(), pret: 0, erreur: '' };
+      const s = el('section', { class: 'd-question d-activite d-nuage' });
+      s.appendChild(Q.fragmentCours(Q.rendreEnonceActivite(q)));
+      const champ = el('input', { type: 'text', id: 'motNuage', maxlength: String(Q.activites.MOT_MAX + 6), autocomplete: 'off', spellcheck: 'false', autocapitalize: 'none', 'aria-describedby': 'motAide motErreur' });
+      const f = el('form', { class: 'nuage-form', novalidate: '' }, el('label', { for: 'motNuage' }, 'Un mot (ou deux)'), champ,
+        el('p', { class: 'aide', id: 'motAide' }, 'Autant de mots que tu veux, un à la fois. Ils s\'affichent au tableau et sur les téléphones de la classe, sans ton pseudo.'),
+        el('p', { class: 'erreur-champ', id: 'motErreur', role: 'alert' }), el('button', { type: 'submit', class: 'bouton fort', id: 'motEnvoyer' }, 'Envoyer'));
+      f.addEventListener('submit', ev => {
+        ev.preventDefault();
+        const r = Q.activites.filtrerMot(champ.value);
+        nuage.erreur = r.ok ? '' : r.raison;
+        if (r.ok && Date.now() < nuage.pret) nuage.erreur = 'Attends un peu avant le mot suivant.';
+        if (nuage.erreur) { majNuageTel(); champ.focus(); return; }
+        const cle = Q.clePseudo(r.mot);
+        nuage.miens.set(cle, { m: r.mot, recu: false });
+        nuage.pret = Date.now() + ATTENTE_MOT;
+        envoyerNuage(r.mot, () => { const x = nuage.miens.get(cle); if (x) x.recu = true; });
+        champ.value = ''; champ.focus();
+        Q.annoncer('Mot envoyé.');
+        majNuageTel();
+        setTimeout(majNuageTel, ATTENTE_MOT + 50);
+      });
+      s.append(f, el('div', { id: 'nuageMiens', class: 'nuage-miens', 'aria-live': 'polite' }), el('div', { id: 'nuageClasse' }));
+      ecran(s);
+    }
+    if (mots) nuage.mots = mots;
+    majNuageTel();
+  }
+  function majNuageTel() {
+    if (!nuage || phase !== 'nuage' || !$('nuageClasse')) return;
+    $('motErreur').textContent = nuage.erreur;
+    const attente = nuage.pret - Date.now();
+    $('motEnvoyer').disabled = attente > 0;
+    $('motEnvoyer').textContent = attente > 0 ? 'Mot suivant dans un instant…' : 'Envoyer';
+    const miens = [...nuage.miens.values()];
+    $('nuageMiens').replaceChildren(...(miens.length ? [el('p', {}, 'Tes mots : ', ...miens.flatMap((w, i) => [i ? ', ' : '', el('strong', {}, w.m), w.recu ? '' : ' (envoi…)']))] : []));
+    if (!nuage.mots) { $('nuageClasse').replaceChildren(el('p', { class: 'aide' }, 'Le nuage de la classe s\'affichera ici quand l\'enseignant·e le montrera au tableau ; tu pourras alors voter pour les mots de tes camarades.')); return; }
+    const max = nuage.mots.reduce((a, w) => Math.max(a, w.n), 1);
+    const ul = el('ul', { class: 'nuage nuage-tel', 'aria-label': 'Le nuage de la classe : vote pour les mots de tes camarades' }, nuage.mots.map(w => {
+      const mien = nuage.miens.has(Q.clePseudo(w.m)), vote = nuage.votes.has(w.k);
+      const b = el('button', { type: 'button', class: 'bouton petit', 'aria-pressed': String(vote), 'aria-label': (mien ? 'Ton mot ' : vote ? 'Tu as voté pour ' : 'Voter pour ') + w.m + ' (' + w.n + ' voix)' }, mien ? 'à toi' : vote ? '✓ voté' : '+1');
+      if (mien || vote) b.disabled = true;
+      b.addEventListener('click', () => { nuage.votes.add(w.k); envoyerNuage({ vote: w.k }, () => {}); Q.annoncer('Voix envoyée pour ' + w.m + '.'); majNuageTel(); });
+      return el('li', {}, el('span', { class: 'mot t' + Math.max(1, Math.round(w.n / max * 5)) }, w.m), el('small', { class: 'voix' }, String(w.n)), b);
+    }));
+    $('nuageClasse').replaceChildren(el('h3', {}, 'Le nuage de la classe'), nuage.mots.length ? ul : el('p', { class: 'aide' }, 'Aucun mot pour l\'instant.'));
   }
 
   function afficherFin(cours, m) {

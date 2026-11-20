@@ -20,6 +20,7 @@ Le modèle complet est [`piles-files.json`](piles-files.json).
 | `fiche` | non | le lien de la fiche de cours correspondante (FichesNSI) |
 | `auteur`, `licence` | oui | `"Babash - NSI Tani Malandi"`, `"CC BY-SA 4.0"` |
 | `duree_minutes` | non | 45 au plus |
+| `demonstration` | non | `true` pour un cours de démonstration (pas un cours de classe) : moins de 20 questions à choix, ou aucune ; marqué « démonstration » dans le catalogue et sur l'accueil |
 | `sources` | non | les supports dont le cours s'inspire (contrôles, sujets de bac cités) |
 | `criteres` | oui | les critères de réussite, par niveau (apprentissage visible) |
 | `conventions` | oui | les conventions rappelées au début et sur la feuille imprimée (sens d'écriture d'une pile, hauteur d'un arbre réduit à un nœud…) |
@@ -76,7 +77,7 @@ En plus des 20 questions à choix unique (la règle 22 ne change pas : le vérif
 
 | `type` | Champs | Ce que fait l'élève | Comment c'est noté |
 |---|---|---|---|
-| `nuage` | `exemples` (facultatif : des mots possibles, montrés après) | envoie un mot ou deux ; la page projetée affiche le nuage de la classe | **non noté** : pas de bonne réponse, aucun point, ne compte pas pour le rebond |
+| `nuage` | `exemples` (facultatif : des mots possibles, montrés après) | propose autant de mots qu'il ou elle veut (un ou deux mots à la fois) ; une fois le nuage montré, vote pour les mots des camarades | **non noté** : pas de bonne réponse, aucun point, ne compte pas pour le rebond |
 | `relier` | `paires` : 2 à 6 `{ "gauche", "droite", "feedback"?, "verification"? }` | relie chaque élément de gauche à une réponse de droite (une liste déroulante par élément) | en proportion : 3 paires bien reliées sur 5 donnent 60 points sur 100 ; rapidité et rebond seulement si tout est juste |
 | `puzzle` | `lignes` : la solution (3 à 12 lignes, indentées de 4 espaces) ; `indentation` (`true` par défaut : l'élève doit aussi indenter) ; `verifications` (obligatoires) | remet les lignes dans l'ordre et les indente (boutons « Monter », « Descendre », « Indenter », « Désindenter », ou Alt + flèches) | en proportion des lignes à leur place (et à la bonne indentation quand elle compte) |
 | `ligne` | `code` ; `ligne` (le numéro de la ligne fautive, à partir de 1) ; `correction` (la ligne corrigée) ; `feedback` (pour la bonne ligne) ; `feedback_autre` (pour une autre ligne) ; `pieges` (facultatif : `{ "2": "feedback de la ligne 2" }`) ; `verifications` et `verifications_corrigees` (obligatoires) | touche la ligne qui contient l'erreur | comme une question à choix : juste ou faux |
@@ -92,9 +93,9 @@ L'ordre des réponses à relier et des lignes du puzzle est mélangé à partir 
   "verifications": [{ "code": [], "sortie": "6" }], "verifications_corrigees": [{ "code": [], "sortie": "10" }], "explication": "…" }
 ```
 
-**Le nuage de mots, en classe** : chaque mot est filtré sur le téléphone puis de nouveau sur la page projetée (2 à 24 caractères, un ou deux mots, lettres d'une seule écriture, chiffres, espace, `-` et `'`) et affiché comme du texte. Le nuage reste caché tant que l'enseignant·e n'a pas cliqué sur « Montrer le nuage » ; « Relire les mots » les montre en liste avant (en coupant d'abord la projection) ; un clic masque un mot ; « les mots donnés par 2 élèves au moins » écarte les mots isolés. Les mots ne sont jamais envoyés aux téléphones.
+**Le nuage de mots, en classe** : chaque mot est filtré sur le téléphone puis de nouveau sur la page projetée (2 à 24 caractères, un ou deux mots, lettres d'une seule écriture, chiffres, espace, `-` et `'`) et affiché comme du texte. Frein contre l'inondation : un mot toutes les 3 secondes sur le téléphone, un toutes les 2 secondes et 100 au plus par élève sur la page projetée. Le nuage reste caché, et les téléphones ne reçoivent aucun mot, tant que l'enseignant·e n'a pas cliqué sur « Montrer le nuage » ; ensuite les mots du tableau (sans leur auteur·rice) arrivent sur les téléphones, où l'on vote (une voix par mot, pas pour ses propres mots) ; la taille d'un mot suit son nombre de voix. « Relire et supprimer » et un clic sur un mot le suppriment, au tableau et sur les téléphones, sans retour possible. Le réglage « 2 voix au moins » est désactivé par défaut.
 
-Le modèle : les 4 diapositives `a01` à `a04` de [`revision-conditions-boucles.json`](revision-conditions-boucles.json).
+Le modèle : le cours de démonstration [`demo-types-de-questions.json`](demo-types-de-questions.json), avec `"demonstration": true` : il n'a pas les 20 questions à choix d'un cours de classe, et l'accueil le présente comme une démonstration.
 
 ## Le texte
 

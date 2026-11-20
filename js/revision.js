@@ -177,8 +177,8 @@
     const qs = cours.questions, faites = qs.filter(q => q.id in etat.premiers);
     const justes = faites.filter(q => etat.premiers[q.id] === q.bonne);
     const arevoir = qs.filter(q => q.id in etat.premiers && etat.premiers[q.id] !== q.bonne);
-    let h = '<div class="cadre" style="margin-top:14px"><h3>Ton bilan</h3><p><strong>' + justes.length + ' sur ' + qs.length + '</strong> du premier coup'
-      + (faites.length < qs.length ? ' (' + (qs.length - faites.length) + ' question' + (qs.length - faites.length > 1 ? 's' : '') + ' sans réponse)' : '') + '.</p>';
+    let h = '<div class="cadre" style="margin-top:14px"><h3>Ton bilan</h3>' + (qs.length ? '<p><strong>' + justes.length + ' sur ' + qs.length + '</strong> du premier coup'
+      + (faites.length < qs.length ? ' (' + (qs.length - faites.length) + ' question' + (qs.length - faites.length > 1 ? 's' : '') + ' sans réponse)' : '') + '.</p>' : '');
     const autres = (cours.interactifs || []).filter(d => d.type !== 'question' && d.type !== 'nuage');
     if (autres.length) {
       const faits = autres.filter(d => etat.act[d.id] && etat.act[d.id].premier !== null);

@@ -149,11 +149,26 @@ essai('nuage : un mot ou deux, filtrés', () => {
   for (const m of ['un deux trois', 'x'.repeat(25), '<b>x</b>', 'a&b', 'http://x.fr', 'javascript:x', '"x"', '😀😀', 'répé' + String.fromCharCode(0x200B) + 'ter', 'Nаdia' /* а cyrillique */, 42, null, {}, ['x']])
     assert.equal(A.filtrerMot(m).ok, false, String(m));
 });
-essai('nuage : mots regroupés (casse, accents, sosies), masqués, seuil', () => {
-  const g = A.nuage(['Répéter', 'repeter', 'boucle', '<img>', 'RÉPÉTER', 'compter'], [], 1);
-  assert.deepEqual(g.map(x => [x.mot, x.n]), [['répéter', 3], ['boucle', 1], ['compter', 1]]);
-  assert.deepEqual(A.nuage(['Répéter', 'repeter', 'boucle'], [Q.clePseudo('repeter')], 1).map(x => x.mot), ['boucle']);
-  assert.deepEqual(A.nuage(['Répéter', 'repeter', 'boucle'], [], 2).map(x => x.mot), ['répéter']);
+essai('nuage : proposer sans limite de nombre, les doublons deviennent des voix, un mot supprimé ne revient pas', () => {
+  const n = A.nuageVide(), K = '0123456789abcdef', I = 'fedcba9876543210', Z = '00112233aabbccdd';
+  assert.equal(A.proposer(n, K, 'Répéter'), 'ajoute');
+  assert.equal(A.proposer(n, I, 'REPETER'), 'voix'); // même clé : une voix de plus, pas un doublon
+  assert.equal(A.proposer(n, K, 'boucle'), 'ajoute');
+  assert.equal(A.proposer(n, K, '<b>'), 'refuse');
+  assert.deepEqual(A.affiches(n, 1), [{ k: 0, m: 'répéter', n: 2 }, { k: 1, m: 'boucle', n: 1 }]);
+  assert.equal(A.voter(n, K, 1), false, 'pas de voix pour son propre mot');
+  assert.equal(A.voter(n, I, 1), true); assert.equal(A.voter(n, I, 1), false, 'une voix par élève et par mot');
+  assert.equal(A.voter(n, Z, 99), false, 'mot inconnu');
+  assert.deepEqual(A.affiches(n, 2).map(w => w.m), ['répéter', 'boucle']);
+  assert.equal(A.supprimer(n, 0), true);
+  assert.deepEqual(A.affiches(n, 1).map(w => w.m), ['boucle']);
+  assert.equal(A.proposer(n, Z, 'répéter'), 'supprime'); assert.equal(A.voter(n, Z, 0), false);
+  assert.ok(n.supprimes.every(Number.isInteger), 'seule une empreinte du mot supprimé reste');
+  for (let i = 0; i < 150; i++) A.proposer(n, Z, 'mot' + String.fromCharCode(97 + (i % 26)) + String.fromCharCode(97 + Math.floor(i / 26)));
+  assert.equal(n.mots.filter(w => w.de.includes(Z)).length, A.PAR_ELEVE_MAX, 'frein : 100 mots au plus par élève');
+  assert.ok(A.affiches(n, 1).length <= A.AFFICHES_MAX);
+  assert.deepEqual(A.valider({ type: 'nuage' }, { vote: 3 }), { vote: 3 });
+  for (const r of [{ vote: -1 }, { vote: 3, x: 1 }, { vote: '3' }, {}]) assert.equal(A.valider({ type: 'nuage' }, r), null);
 });
 essai('autres types : réponses forgées refusées', () => {
   for (const r of [null, undefined, 1, 'x', [0, 1, 2], [0, 1, 2, 3, 4], [0, 0, 1, 2], [0, 1, 2, 9], [0, 1, 2, 1.5], [0, 1, 2, '3'], [-2, 1, 2, 3], { 0: 0 }])

@@ -274,3 +274,11 @@ pre.code .ligne.corrigee { background: var(--ok-fond); }
 .mots-liste li.masque span { text-decoration: line-through; color: var(--ink-soft); }
 .reussite li.bonne .rep-barre > span { background: var(--ok); }
 @media (max-width: 760px) { .relier-fixe { grid-template-columns: minmax(0, 1fr); } }
+.nuage .voix { font-family: var(--text); font-size: .4em; font-weight: 400; color: var(--ink-soft); margin-left: .15em; vertical-align: super; }
+.nuage-tel { min-height: 0; padding: 10px; justify-content: flex-start; gap: 8px; }
+.nuage-tel li { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 99px; padding: 2px 4px 2px 12px; max-width: 100%; }
+.nuage-tel .mot { font-family: var(--display); font-weight: 700; overflow-wrap: anywhere; min-width: 0; }
+.nuage-tel .t1 { font-size: 1em; } .nuage-tel .t2 { font-size: 1.15em; } .nuage-tel .t3 { font-size: 1.3em; } .nuage-tel .t4 { font-size: 1.45em; } .nuage-tel .t5 { font-size: 1.6em; }
+.nuage-tel .voix { font-size: .85em; color: var(--ink-soft); }
+.nuage-tel .bouton { min-height: 36px; flex: none; }
+.nuage-miens { overflow-wrap: anywhere; }

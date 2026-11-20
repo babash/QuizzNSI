@@ -17,6 +17,8 @@ with open(os.path.join(RACINE, "cours", "piles-files.json"), encoding="utf-8") a
     MODELE = json.load(f)
 
 
+with open(os.path.join(RACINE, "cours", "demo-types-de-questions.json"), encoding="utf-8") as f:
+    DEMO = json.load(f)
 with open(os.path.join(RACINE, "cours", "revision-conditions-boucles.json"), encoding="utf-8") as f:
     REVISION = json.load(f)
 
@@ -48,12 +50,23 @@ class TestVerifier(unittest.TestCase):
 
     # ── les autres types de questions ──
     def rev(self, f, executer=False):
-        c = copy.deepcopy(REVISION)
+        c = copy.deepcopy(DEMO)
         f(c)
         return self.verifier(c, executer)
 
-    def test_revision_avec_les_autres_types_conforme_avec_execution(self):
+    def test_demonstration_conforme_avec_execution(self):
+        self.assertEqual(self.verifier(copy.deepcopy(DEMO), executer=True), [])
+
+    def test_revision_conforme_avec_execution(self):
         self.assertEqual(self.verifier(copy.deepcopy(REVISION), executer=True), [])
+
+    def test_sans_demonstration_il_faut_20_questions(self):
+        e = self.rev(lambda c: c.pop("demonstration"))
+        self.assertTrue(any("0 questions au lieu de 20" in x for x in e))
+
+    def test_demonstration_vide(self):
+        e = self.rev(lambda c: c.update(diapositives=c["diapositives"][:1]))
+        self.assertTrue(any("au moins une question" in x for x in e))
 
     def test_le_melange_est_celui_du_navigateur(self):
         # les mêmes valeurs que js/commun.js (tests/test_moteur.js) : la page et le vérificateur voient le même ordre
@@ -101,7 +114,9 @@ class TestVerifier(unittest.TestCase):
         self.assertTrue(any("champ inconnu" in x for x in e))
 
     def test_toujours_20_questions_a_choix(self):
-        e = self.rev(lambda c: c["diapositives"].remove(questions(c)[0]))
+        c = copy.deepcopy(REVISION)
+        c["diapositives"].remove(questions(c)[0])
+        e = self.verifier(c)
         self.assertTrue(any("19 questions" in x for x in e))
 
     def test_trois_options(self):

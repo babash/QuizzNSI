@@ -8,7 +8,7 @@ Lancement, depuis la racine de QuizzNSI :
 
 Ce qu'il contrôle (le détail est dans cours/FORMAT.md) :
 - la forme : champs obligatoires, types de diapositives, schémas connus ;
-- les questions (règle 22) : 20 questions, 4 options, une seule juste, un feedback
+- les questions (règle 22) : 20 questions (moins dans un cours de démonstration, « demonstration »: true), 4 options, une seule juste, un feedback
   pour chaque option, l'objectif, le nom, aucune mise en avant (gras) ;
 - la répartition des bonnes réponses entre A, B, C et D, sans série ni motif évident,
   et la bonne réponse qui n'est pas trop souvent la plus longue ;
@@ -548,7 +548,14 @@ def verifier_cours(chemin, executer_code=True, n_questions=20):
                 r.erreur(ou, "« consigne » : une liste de consignes d'observation")
     if diapos and diapos[0].get("type") != "titre":
         r.avert("diapositive 1", "un cours commence d'habitude par une diapositive « titre »")
-    if n_questions and len(questions) != n_questions:
+    demo = cours.get("demonstration") is True
+    if "demonstration" in cours and not demo:
+        r.erreur("cours", "« demonstration » vaut true, ou n'est pas écrit")
+    if demo and len(questions) > n_questions:
+        r.erreur("cours", f"un cours de démonstration a au plus {n_questions} questions à choix")
+    if demo and not questions and not autres:
+        r.erreur("cours", "un cours de démonstration a au moins une question")
+    if n_questions and not demo and len(questions) != n_questions:
         r.erreur("cours", f"{len(questions)} questions au lieu de {n_questions}")
     positions, longues = [], 0
     for n, q in enumerate(questions, 1):

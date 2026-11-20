@@ -28,8 +28,8 @@
 
   function sujet(cours) {
     const n = autres(cours).length;
-    let h = entete(cours, 'cours-quiz, ' + cours.questions.length + ' questions' + (n ? ' et ' + n + ' activité' + (n > 1 ? 's' : '') : ''));
-    h += '<div class="f-consignes"><p><strong>Consigne :</strong> pour chaque question, cocher la seule bonne réponse.</p>'
+    let h = entete(cours, cours.demonstration === true ? 'démonstration, ' + n + ' activité' + (n > 1 ? 's' : '') : 'cours-quiz, ' + cours.questions.length + ' questions' + (n ? ' et ' + n + ' activité' + (n > 1 ? 's' : '') : ''));
+    h += '<div class="f-consignes">' + (cours.questions.length ? '<p><strong>Consigne :</strong> pour chaque question à choix, cocher la seule bonne réponse.</p>' : '')
       + '<p><strong>Conventions</strong></p><ul>' + (cours.conventions || []).map(c => '<li>' + t(c) + '</li>').join('') + '</ul></div>';
     h += cours.interactifs.map(q => q.type !== 'question' ? sujetAutre(q) : '<section class="f-question"><h2><span class="f-num">' + q.numero + '.</span> ' + t(q.nom) + '</h2>'
       + '<p class="f-objectif">Objectif : ' + t(q.objectif) + '</p>'
@@ -41,7 +41,7 @@
 
   function correction(cours) {
     let h = entete(cours, 'corrigé');
-    h += '<table class="f-grille"><caption>Les bonnes réponses</caption><tr><th scope="row">Question</th>' + cours.questions.map(q => '<td>' + q.numero + '</td>').join('') + '</tr>'
+    if (cours.questions.length) h += '<table class="f-grille"><caption>Les bonnes réponses</caption><tr><th scope="row">Question</th>' + cours.questions.map(q => '<td>' + q.numero + '</td>').join('') + '</tr>'
       + '<tr><th scope="row">Réponse</th>' + cours.questions.map(q => '<td><strong>' + Q.LETTRES[q.bonne] + '</strong></td>').join('') + '</tr></table>';
     h += cours.interactifs.map(q => {
       if (q.type !== 'question') return corrigeAutre(q);

@@ -469,7 +469,7 @@ def puzzle_resoudre(page, lignes, indentation=True):
 def autres_types(nav, base):
     """Les autres types de questions en séance : nuage de mots, relier, puzzle de code, ligne fautive.
     Deux téléphones (320 px, clair et obscur) et la page projetée ; un espion écoute le canal."""
-    with open(os.path.join(RACINE, "cours", "revision-conditions-boucles.json"), encoding="utf-8") as f:
+    with open(os.path.join(RACINE, "cours", "demo-types-de-questions.json"), encoding="utf-8") as f:
         cours = json.load(f)
     diapos = cours["diapositives"]
     ou = {d["type"]: i for i, d in enumerate(diapos) if d["type"] in ("nuage", "relier", "puzzle", "ligne")}
@@ -479,7 +479,7 @@ def autres_types(nav, base):
     prof = ctx.new_page()
     prof.set_viewport_size({"width": 1440, "height": 900})
     surveiller(prof, "autres types : enseignant·e")
-    prof.goto(base + "animer.html?cours=revision-conditions-boucles")
+    prof.goto(base + "animer.html?cours=demo-types-de-questions")
     attendre_texte(prof, "#etatConnexion", "Séance ouverte")
     code = prof.inner_text("#code").strip()
     espion = ctx.new_page()
@@ -500,20 +500,26 @@ def autres_types(nav, base):
     prof.click("#commencer")
     k, i = tel
 
-    # ── le nuage de mots ──
+    # ── le nuage de mots : autant de mots qu'on veut, des voix, des mots supprimés ──
     suivante(prof, "#action", "#compteur", ou["nuage"])
-    for e, mot in ((k, "Répéter"), (i, "  motpiege   Répéter ")):
-        e.wait_for_selector(".nuage-form input")
-        e.fill(".nuage-form input", "<b>x</b>")
-        e.click(".nuage-form button")
-        attendre_texte(e, ".nuage-form .erreur-champ", "Seulement")  # filtré avant l'envoi
-        e.fill(".nuage-form input", mot)
-        e.click(".nuage-form button")
-        attendre_texte(e, "#envoyee", "reçue")
+    def proposer(e, mot):
+        e.wait_for_selector("#motEnvoyer:not([disabled])", timeout=8000)
+        e.fill("#motNuage", mot)
+        e.click("#motEnvoyer")
+    k.wait_for_selector("#motNuage")
+    proposer(k, "<b>x</b>")
+    attendre_texte(k, "#motErreur", "Seulement")  # filtré avant l'envoi
+    proposer(k, "Répéter")
+    assert k.is_disabled("#motEnvoyer"), "frein : un mot toutes les 3 secondes"
+    proposer(k, "boucle")  # attend la fin du frein
+    proposer(i, "  motpiege   Répéter ")
+    proposer(i, "REPETER")  # le même mot : une voix de plus, pas un doublon
+    attendre_texte(k, "#nuageMiens", "boucle")
+    k.wait_for_function("() => !document.querySelector('#nuageMiens').innerText.includes('envoi…')", timeout=12000)
+    attendre_texte(prof, ".zone-nuage", "3 mots reçus", delai=12000)
+    assert "motpiege" not in prof.inner_text("#scene") and "boucle" not in prof.inner_text(".zone-nuage"), "le nuage reste caché avant « Montrer le nuage »"
+    assert k.locator("#nuageClasse .nuage").count() == 0, "les téléphones ne reçoivent aucun mot avant « Montrer le nuage »"
     k.screenshot(path=os.path.join(SORTIE, "autres-nuage-320.png"), full_page=True)
-    attendre_texte(prof, "#statutQ", "Tout le monde a répondu")
-    attendre_texte(prof, ".zone-nuage", "2 mots reçus")
-    assert "répéter" not in prof.inner_text("#scene").lower() and "motpiege" not in prof.inner_text("#scene"), "le nuage ne s'affiche qu'après « Montrer le nuage »"
     prof.click(".nuage-reglages button")
     prof.wait_for_selector("#motsBoite[open]")
     attendre_texte(prof, "#motsListe", "motpiege répéter")
@@ -521,17 +527,32 @@ def autres_types(nav, base):
     assert prof.inner_text("#action").startswith("Montrer le nuage")
     prof.click("#action")
     prof.wait_for_selector(".nuage .mot")
-    assert sorted(prof.eval_on_selector_all(".nuage .mot", "l => l.map(b => b.textContent)")) == ["motpiege répéter", "répéter"], "deux mots, en minuscules, espaces réduits"
+    mots_prof = lambda: sorted(prof.eval_on_selector_all(".nuage .mot", "l => l.map(b => b.firstChild.textContent)"))
+    assert mots_prof() == ["boucle", "motpiege répéter", "répéter"], mots_prof()
+    # les téléphones reçoivent le nuage : on vote pour les mots des autres, pas pour les siens
+    k.wait_for_selector("#nuageClasse .nuage li")
+    attendre_texte(k, "#nuageClasse", "motpiege répéter")
+    assert k.is_disabled("#nuageClasse li:has(.mot:text-is('boucle')) button"), "pas de voix pour son propre mot"
+    i.wait_for_selector("#nuageClasse li:has(.mot:text-is('boucle')) button:not([disabled])")
+    i.click("#nuageClasse li:has(.mot:text-is('boucle')) button")
+    prof.wait_for_function("() => [...document.querySelectorAll('.nuage .mot')].some(b => b.firstChild.textContent === 'boucle' && b.querySelector('.voix').textContent === '2')", timeout=12000)
+    attendre_texte(i, "#nuageClasse", "✓ voté")
+    i.screenshot(path=os.path.join(SORTIE, "autres-nuage-vote-320-obscur.png"), full_page=True)
     for theme in ("light", "dark"):
         prof.emulate_media(color_scheme=theme)
         prof.screenshot(path=os.path.join(SORTIE, f"autres-nuage-1440-{theme}.png"))
     prof.emulate_media(color_scheme="light")
-    prof.click(".nuage .mot:text-is('motpiege répéter')")  # l'enseignant·e masque un mot d'un clic
-    prof.wait_for_function("() => document.querySelectorAll('.nuage .mot').length === 1")
-    prof.select_option("#seuilNuage", "2")  # seulement les mots donnés par 2 élèves au moins
-    attendre_texte(prof, ".zone-nuage", "Aucun mot donné par 2 élèves")
-    attendre_texte(k, "#ecran", "Ton mot")
-    attendre_texte(k, "#points", "0 pts")
+    # l'enseignant·e supprime un mot : il disparaît du tableau et des téléphones, et ne revient pas
+    prof.click(".nuage .mot:has-text('motpiege')")
+    prof.wait_for_function("() => document.querySelectorAll('.nuage .mot').length === 2")
+    k.wait_for_function("() => !document.querySelector('#nuageClasse').innerText.includes('motpiege')", timeout=8000)
+    proposer(i, "motpiege répéter")
+    prof.wait_for_timeout(3000)
+    assert mots_prof() == ["boucle", "répéter"], "un mot supprimé ne revient pas"
+    prof.select_option("#seuilNuage", "2")  # le réglage « 2 voix au moins » (désactivé par défaut)
+    prof.wait_for_timeout(300)
+    assert mots_prof() == ["boucle", "répéter"]
+    attendre_texte(k, "#points", "0 pts")  # non noté
 
     # ── relier ──
     rel = diapos[ou["relier"]]
@@ -587,13 +608,20 @@ def autres_types(nav, base):
         assert not pg.evaluate("window.__piege"), f"un mot du nuage est passé par du HTML : {pg.evaluate('window.__piege')[:3]}"
     # ce que l'espion a vu : aucun mot du nuage, aucune réponse en clair
     vus = espion.evaluate("window.__vus")
+    nuages = [m for m in vus if m.get("t") == "nuage"]
+    assert nuages, "le nuage montré part vers les téléphones"
     for m in vus:
         t = json.dumps(m, ensure_ascii=False).lower()
-        assert "répéter" not in t and "motpiege" not in t, f"un mot du nuage est passé en clair : {t[:120]}"
+        if m.get("t") != "nuage":
+            assert "répéter" not in t and "motpiege" not in t and "boucle" not in t, f"un mot du nuage est passé hors du message « nuage » : {t[:120]}"
+        else:
+            assert all(set(w) == {"k", "m", "n"} for w in m["mots"]), "un mot part avec autre chose que son numéro et ses voix"
+            assert "kobalt" not in t and "ixo" not in t, "un pseudo est parti avec le nuage"
         if m.get("t") == "rep":
             assert set(m) == {"t", "de", "iv", "donnees"}
+    assert "motpiege" not in json.dumps(nuages[-1]), "le mot supprimé a disparu du dernier nuage envoyé"
     assert any(m.get("t") == "corrige" for m in vus)
-    print(f"  autres types : nuage (filtré, caché puis montré, mot masqué), relier (60 points pour 3 paires sur 5), puzzle, ligne fautive ; {len(vus)} messages écoutés, aucun mot ni réponse en clair")
+    print(f"  autres types : nuage (filtré, frein, caché puis montré, voix, mot supprimé partout), relier (60 points pour 3 paires sur 5), puzzle, ligne fautive ; {len(vus)} messages écoutés, mots seulement dans « nuage », sans pseudo, aucune réponse en clair")
     ctx.close()
 
 
@@ -738,14 +766,14 @@ def rejouer(nav, base):
 
 def autonome_autres(nav, base):
     """Les autres types en révision : essais illimités, ce qui est juste est marqué, le bilan les compte."""
-    with open(os.path.join(RACINE, "cours", "revision-conditions-boucles.json"), encoding="utf-8") as f:
+    with open(os.path.join(RACINE, "cours", "demo-types-de-questions.json"), encoding="utf-8") as f:
         diapos = json.load(f)["diapositives"]
     ou = {d["type"]: i + 1 for i, d in enumerate(diapos) if d["type"] in ("nuage", "relier", "puzzle", "ligne")}
     ctx = contexte(nav, base)
     p = ctx.new_page()
     p.set_viewport_size({"width": 320, "height": 740})
     surveiller(p, "autonome, autres types")
-    url = base + "revision.html?cours=revision-conditions-boucles#"
+    url = base + "revision.html?cours=demo-types-de-questions#"
     p.goto(url + str(ou["nuage"]))
     p.wait_for_selector(".nuage-form input")
     p.fill(".nuage-form input", "répéter")
@@ -773,6 +801,7 @@ def autonome_autres(nav, base):
     p.locator(".c-ligne").nth(diapos[ou["ligne"] - 1]["ligne"] - 1).click(); p.click(".lignes-zone button.bouton.fort")
     attendre_texte(p, ".zone-correction", "Bien vu")
     p.goto(url + str(len(diapos))); p.reload()
+    p.wait_for_selector("section.d-bilan")
     attendre_texte(p, "#scene", "Les autres questions : 1 sur 3")
     print("  autonome, autres types : nuage, relier (2 essais), puzzle, ligne fautive (2 essais) ; bilan 1 sur 3 du premier coup")
     ctx.close()
@@ -782,7 +811,7 @@ def impression(nav, base):
     ctx = contexte(nav, base)
     p = ctx.new_page()
     surveiller(p, "impression")
-    for nom, q in (("sujet", "piles-files"), ("corrige", "piles-files&corrige"), ("sujet-revision", "revision-conditions-boucles"), ("corrige-revision", "revision-conditions-boucles&corrige")):
+    for nom, q in (("sujet", "piles-files"), ("corrige", "piles-files&corrige"), ("sujet-demo", "demo-types-de-questions"), ("corrige-demo", "demo-types-de-questions&corrige")):
         p.goto(base + "imprimer.html?cours=" + q)
         p.wait_for_selector(".f-question")
         p.emulate_media(media="print")
@@ -798,8 +827,8 @@ def impression(nav, base):
 
 
 def rendus(nav, base):
-    pages = ["index.html", "revision.html#7", "revision.html#30", "revision.html?rejouer", "revision.html?cours=revision-conditions-boucles#10",
-             "revision.html?cours=revision-conditions-boucles#18", "revision.html?cours=revision-conditions-boucles#33", "revision.html?cours=revision-conditions-boucles&rejouer", "animer.html", "rejoindre.html", "imprimer.html", "imprimer.html?corrige"]
+    pages = ["index.html", "revision.html#7", "revision.html#30", "revision.html?rejouer", "revision.html?cours=demo-types-de-questions#3",
+             "revision.html?cours=demo-types-de-questions#4", "revision.html?cours=demo-types-de-questions#5", "revision.html?cours=demo-types-de-questions&rejouer", "animer.html", "rejoindre.html", "imprimer.html", "imprimer.html?corrige"]
     for theme in ("light", "dark"):
         for largeur in (320, 768, 1440):
             ctx = contexte(nav, base, color_scheme=theme, viewport={"width": largeur, "height": 900})

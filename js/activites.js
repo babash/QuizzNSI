@@ -1,5 +1,6 @@
 /* QuizzNSI : les autres types de questions (MIT, Babash - NSI Tani Malandi).
-   - « nuage » : chaque élève envoie un mot ou deux, la page projetée affiche le nuage ; non noté ;
+   - « nuage » : chaque élève propose autant de mots qu'il ou elle veut (un ou deux mots à chaque fois) et vote
+     pour les mots de ses camarades ; la page projetée affiche le nuage ; non noté ;
    - « relier » : associer deux à deux (terme et définition, code et sortie) ;
    - « puzzle » : remettre des lignes de code dans l'ordre, et à la bonne indentation ;
    - « ligne » : toucher la ligne qui contient l'erreur.
@@ -31,18 +32,38 @@
     return { ok: true, mot: m.toLocaleLowerCase('fr') };
   }
 
-  /* Le nuage : les mots regroupés (sans casse, sans accents, sosies compris), sans les mots masqués par
-     l'enseignant·e, avec le seuil choisi (1 : tous les mots ; 2 : les mots donnés par 2 élèves au moins).
-     Renvoie [{ cle, mot, n }] trié par nombre décroissant puis par ordre alphabétique. */
-  function nuage(mots, masques, seuil) {
-    const g = new Map(), m = new Set(masques || []);
-    for (const brut of mots) {
-      const f = filtrerMot(brut); if (!f.ok) continue;
-      const cle = Q.clePseudo ? Q.clePseudo(f.mot) : f.mot;
-      if (!cle || m.has(cle)) continue;
-      const e = g.get(cle) || { cle, mot: f.mot, n: 0 }; e.n++; g.set(cle, e);
-    }
-    return [...g.values()].filter(e => e.n >= (seuil || 1)).sort((a, b) => b.n - a.n || a.mot.localeCompare(b.mot, 'fr'));
+  /* Le nuage de la classe, tenu par la page projetée (fonctions pures, l'état est un objet simple) :
+     { suivant, mots: [{ k, m, cle, de: [identifiants], votes: [identifiants] }], supprimes: [empreintes] }.
+     - proposer : autant de mots qu'on veut ; un mot déjà proposé (même clé : sans casse, sans accents, sosies
+       compris) ajoute une voix au lieu d'un doublon ; un mot supprimé ne revient pas ;
+     - voter : une voix par élève et par mot, jamais pour un mot qu'on a soi-même proposé ;
+     - supprimer : le mot disparaît (et ses voix) ; seule son empreinte (un nombre) reste, pour le refuser ensuite ;
+     - affiches : les mots montrés, avec leur nombre de voix (élèves qui l'ont proposé ou qui ont voté pour). */
+  const PAR_ELEVE_MAX = 100, AFFICHES_MAX = 200;
+  const nuageVide = () => ({ suivant: 0, mots: [], supprimes: [] });
+  const voix = w => new Set(w.de.concat(w.votes)).size;
+  function proposer(n, id, brut) {
+    const f = filtrerMot(brut); if (!f.ok) return 'refuse';
+    const cle = Q.clePseudo ? Q.clePseudo(f.mot) : f.mot;
+    if (!cle || n.supprimes.includes(Q.graine(cle))) return 'supprime';
+    if (n.mots.filter(w => w.de.includes(id)).length >= PAR_ELEVE_MAX) return 'refuse';
+    const w = n.mots.find(x => x.cle === cle);
+    if (w) { if (!w.de.includes(id)) { w.de.push(id); w.votes = w.votes.filter(x => x !== id); } return 'voix'; }
+    n.mots.push({ k: n.suivant++, m: f.mot, cle, de: [id], votes: [] });
+    return 'ajoute';
+  }
+  function voter(n, id, k) {
+    const w = n.mots.find(x => x.k === k);
+    if (!w || w.de.includes(id) || w.votes.includes(id)) return false;
+    w.votes.push(id); return true;
+  }
+  function supprimer(n, k) {
+    const i = n.mots.findIndex(x => x.k === k); if (i < 0) return false;
+    n.supprimes.push(Q.graine(n.mots[i].cle)); n.mots.splice(i, 1); return true;
+  }
+  function affiches(n, seuil) {
+    return n.mots.map(w => ({ k: w.k, m: w.m, n: voix(w) })).filter(w => w.n >= (seuil || 1))
+      .sort((a, b) => b.n - a.n || a.k - b.k).slice(0, AFFICHES_MAX);
   }
 
   /* ── L'ordre d'affichage, le même sur tous les appareils ── */
@@ -65,7 +86,11 @@
      Renvoie la réponse normalisée, ou null si elle n'est pas conforme. */
   function valider(d, r) {
     if (!d) return null;
-    if (d.type === 'nuage') { const f = filtrerMot(r); return f.ok ? f.mot : null; }
+    if (d.type === 'nuage') {
+      // un mot proposé, ou une voix pour le mot numéro k : { vote: k }
+      if (r !== null && typeof r === 'object' && !Array.isArray(r)) return Object.keys(r).length === 1 && entier(r.vote, 0, 99999) ? { vote: r.vote } : null;
+      const f = filtrerMot(r); return f.ok ? f.mot : null;
+    }
     if (d.type === 'ligne') return entier(r, 0, d.code.length - 1) ? r : null;
     if (d.type === 'relier') {
       const n = d.paires.length;
@@ -119,6 +144,6 @@
   const brut = t => String(t == null ? '' : t).replace(/`/g, '').replace(/==|\*\*/g, '').replace(/\*/g, '');
   const NOMS = { question: 'Question', nuage: 'Nuage de mots', relier: 'Relier', puzzle: 'Puzzle de code', ligne: 'Trouver la ligne fautive' };
 
-  Q.activites = { MOT_MAX, RELIER_MAX, PUZZLE_MAX, INDENT_MAX, filtrerMot, nuage, ordreDroite, ordrePuzzle, indentDe, avecIndent, valider, noter, controler, brut, NOMS };
+  Q.activites = { MOT_MAX, RELIER_MAX, PUZZLE_MAX, INDENT_MAX, PAR_ELEVE_MAX, AFFICHES_MAX, filtrerMot, nuageVide, proposer, voter, supprimer, affiches, voix, ordreDroite, ordrePuzzle, indentDe, avecIndent, valider, noter, controler, brut, NOMS };
   if (typeof module !== 'undefined' && module.exports) module.exports = Q.activites;
 })(typeof window !== 'undefined' ? window : globalThis);
