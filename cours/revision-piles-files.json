@@ -359,7 +359,8 @@
     "def inverser(p):",
     "    q = Pile()",
     "    while not p.est_vide():",
-    "        q.empiler(p.depiler())",
+    "        e = p.depiler()",
+    "        q.empiler(e)",
     "    return q"
    ],
    "options": [
@@ -406,37 +407,38 @@
    ],
    "code": [
     "def compter(p, x):",
-    "    aux = Pile()",
+    "    a = Pile()   # aide",
     "    n = 0",
     "    while not p.est_vide():",
     "        e = p.depiler()",
     "        if e == x:",
     "            n = n + 1",
-    "        aux.empiler(e)",
-    "    while not aux.est_vide():",
-    "        p.empiler(aux.depiler())",
+    "        a.empiler(e)",
+    "    while not a.est_vide():",
+    "        e = a.depiler()",
+    "        p.empiler(e)",
     "    return n"
    ],
    "options": [
     {
      "texte": "`n` vaut 2 et `p` est vide.",
-     "feedback": "La première boucle vide bien `p`, mais regarde la seconde : elle rempile tous les éléments de `aux` dans `p`."
+     "feedback": "La première boucle vide bien `p`, mais regarde la seconde : elle rempile tous les éléments de `a` dans `p`."
     },
     {
      "texte": "`n` vaut 2 et `p` contient 7, 2, 5, 2.",
-     "feedback": "Un seul passage dans une autre pile inverse l'ordre, mais ici il y en a deux : de `p` vers `aux`, puis de `aux` vers `p`. Deux inversions redonnent l'ordre de départ."
+     "feedback": "Un seul passage dans une autre pile inverse l'ordre, mais ici il y en a deux : de `p` vers `a`, puis de `a` vers `p`. Deux inversions redonnent l'ordre de départ."
     },
     {
      "texte": "`n` vaut 2 et `p` contient 2, 5, 2, 7.",
      "juste": true,
-     "feedback": "Exact. Deux 2 sont comptés. Le passage par `aux` inverse l'ordre, le retour l'inverse encore : `p` est comme au départ."
+     "feedback": "Exact. Deux 2 sont comptés. Le passage par `a` inverse l'ordre, le retour l'inverse encore : `p` est comme au départ."
     },
     {
      "texte": "`n` vaut 1 et `p` contient 2, 5, 2, 7.",
      "feedback": "La boucle ne s'arrête pas au premier 2 trouvé : elle dépile jusqu'à ce que `p` soit vide, et compte chaque 2."
     }
    ],
-   "explication": "Dépiler dans `aux`, puis rempiler : on lit tout, et la pile est intacte.",
+   "explication": "Dépiler dans `a`, puis rempiler : on lit tout, et la pile est intacte.",
    "verifications": [
     {
      "code": [
@@ -514,7 +516,8 @@
     "def fond(p):",
     "    aux = Pile()",
     "    while not p.est_vide():",
-    "        aux.empiler(p.depiler())",
+    "        e = p.depiler()",
+    "        aux.empiler(e)",
     "    resultat = aux.sommet()",
     "    return resultat"
    ],
@@ -744,36 +747,38 @@
    "nom": "[File à deux piles] Transvaser seulement si la sortie est vide",
    "objectif": "Comprendre pourquoi on ne transvase que lorsque la pile de sortie est vide.",
    "enonce": [
-    "Une file est implémentée avec deux piles, `entree` et `sortie` ; voici sa méthode `defiler`. On enfile 1 et 2, on défile une fois (cela renvoie 1), on enfile 3, puis on défile deux fois.",
+    "Une file est implémentée avec deux piles, `e` (l'entrée) et `s` (la sortie) ; voici sa fonction `defiler(e, s)`. On enfile 1 et 2, on défile une fois (cela renvoie 1), on enfile 3, puis on défile deux fois.",
     "Quelles valeurs renvoient ces deux derniers défilements, dans l'ordre ?"
    ],
    "code": [
-    "def defiler(self):",
-    "    if self.sortie.est_vide():",
-    "        while not self.entree.est_vide():",
-    "            self.sortie.empiler(self.entree.depiler())",
-    "    return self.sortie.depiler()"
+    "def defiler(e, s):",
+    "    if not s.est_vide():",
+    "        return s.depiler()",
+    "    while not e.est_vide():",
+    "        x = e.depiler()",
+    "        s.empiler(x)",
+    "    return s.depiler()"
    ],
    "options": [
     {
      "texte": "3, puis 2",
-     "feedback": "C'est ce qu'on obtiendrait en transvasant à chaque défilement : 3 passerait par-dessus 2. Grâce au `if`, on ne transvase que si `sortie` est vide."
+     "feedback": "C'est ce qu'on obtiendrait en transvasant à chaque défilement : 3 passerait par-dessus 2. Grâce au `if`, on ne transvase que si `s` est vide."
     },
     {
      "texte": "2, puis une erreur",
-     "feedback": "Après le défilement de 2, `sortie` est vide, mais le `if` déclenche le transvasement : 3 passe de `entree` à `sortie`. Il n'y a pas d'erreur."
+     "feedback": "Après le défilement de 2, `s` est vide, mais alors la boucle `while` transvase : 3 passe de `e` à `s`. Il n'y a pas d'erreur."
     },
     {
      "texte": "2, puis 3",
      "juste": true,
-     "feedback": "Oui. `sortie` contient encore 2 : on le défile sans transvaser. Ensuite `sortie` est vide, on transvase 3 et on le défile. L'ordre d'arrivée est respecté."
+     "feedback": "Oui. `s` contient encore 2 : on le défile sans transvaser. Ensuite `s` est vide, on transvase 3 et on le défile. L'ordre d'arrivée est respecté."
     },
     {
      "texte": "2, puis 2",
      "feedback": "`depiler()` retire l'élément : 2 ne peut pas sortir deux fois. Le second défilement renvoie l'élément suivant, 3."
     }
    ],
-   "explication": "On ne transvase que si `sortie` est vide : l'ordre d'arrivée est gardé.",
+   "explication": "On ne transvase que si `s` est vide : l'ordre d'arrivée est gardé.",
    "trace": {
     "colonnes": [
      "Opération",
@@ -817,19 +822,12 @@
    "verifications": [
     {
      "code": [
-      "class FileDeuxPiles:",
-      "    def __init__(self):",
-      "        self.entree = Pile()",
-      "        self.sortie = Pile()",
-      "    def enfiler(self, e):",
-      "        self.entree.empiler(e)",
-      "f = FileDeuxPiles()",
-      "FileDeuxPiles.defiler = defiler",
-      "f.enfiler(1)",
-      "f.enfiler(2)",
-      "print(f.defiler())",
-      "f.enfiler(3)",
-      "print(f.defiler(), f.defiler())"
+      "e, s = Pile(), Pile()",
+      "e.empiler(1)",
+      "e.empiler(2)",
+      "print(defiler(e, s))",
+      "e.empiler(3)",
+      "print(defiler(e, s), defiler(e, s))"
      ],
      "sortie": "1\n2 3"
     }
@@ -904,8 +902,9 @@
    ],
    "code": [
     "f = File()",
-    "for nom in [\"Anli\", \"Mia\", \"Zaïd\"]:",
-    "    f.enfiler(nom)",
+    "for n in [\"Anli\", \"Mia\",",
+    "          \"Zaïd\"]:",
+    "    f.enfiler(n)",
     "for i in range(4):",
     "    joueur = f.defiler()",
     "    f.enfiler(joueur)",
@@ -987,7 +986,7 @@
    "nom": "[Analyse de code] Le vérificateur de parenthèses",
    "objectif": "Exécuter à la main un algorithme qui utilise une pile.",
    "enonce": [
-    "On considère la fonction suivante.",
+    "On considère la fonction suivante. Le texte ne contient que des parenthèses.",
     "Que renvoie `bien_parenthese(\"(()))(\")`, et pourquoi ?"
    ],
    "code": [
@@ -996,9 +995,9 @@
     "    for c in texte:",
     "        if c == \"(\":",
     "            p.empiler(c)",
-    "        elif c == \")\":",
-    "            if p.est_vide():",
-    "                return False",
+    "        elif p.est_vide():",
+    "            return False",
+    "        else:",
     "            p.depiler()",
     "    return p.est_vide()"
    ],
@@ -1018,7 +1017,7 @@
     },
     {
      "texte": "Une erreur `IndexError`, car on dépile une pile vide.",
-     "feedback": "Le test `if p.est_vide():` protège le `depiler()` : on renvoie `False` avant de dépiler. Il n'y a pas d'erreur."
+     "feedback": "Le test `elif p.est_vide():` protège le `depiler()` : on renvoie `False` avant de dépiler. Il n'y a pas d'erreur."
     }
    ],
    "explication": "La 3e `)` n'a plus d'ouvrante : `False`, dès le 5e caractère.",
