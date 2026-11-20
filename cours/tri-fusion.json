@@ -1,0 +1,709 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "tri-fusion",
+ "titre": "Diviser pour régner : le tri fusion",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Terminale NSI",
+ "programme": "Algorithmique : méthode « diviser pour régner » (écrire un algorithme utilisant la méthode « diviser pour régner » ; le tri fusion, de coût en n log₂ n)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/diviser-pour-regner/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Diviser pour régner : le tri fusion » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je nomme les trois étapes de diviser pour régner.",
+  "Niveau 2 : je fusionne deux listes triées et je suis les étapes du tri fusion.",
+  "Niveau 3 : je compare le coût du tri fusion (n log₂ n) à celui d'un tri par sélection (n²)."
+ ],
+ "conventions": [
+  "Les fonctions `fusion(a, b)` et `tri_fusion(t)` sont celles des écrans du cours.",
+  "log₂(n) est le nombre de fois qu'on peut couper n en deux : log₂(1 000 000) vaut environ 20."
+ ],
+ "prelude_python": [
+  "def fusion(a, b):",
+  "    r, i, j = [], 0, 0",
+  "    n, m = len(a), len(b)",
+  "    while i < n and j < m:",
+  "        if a[i] <= b[j]:",
+  "            r.append(a[i])",
+  "            i = i + 1",
+  "        else:",
+  "            r.append(b[j])",
+  "            j = j + 1",
+  "    r = r + a[i:] + b[j:]",
+  "    return r",
+  "",
+  "def tri_fusion(t):",
+  "    if len(t) <= 1:",
+  "        return t",
+  "    m = len(t) // 2",
+  "    g = tri_fusion(t[:m])",
+  "    d = tri_fusion(t[m:])",
+  "    return fusion(g, d)"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Diviser pour régner : le tri fusion",
+   "conventions": false,
+   "texte": [
+    "Thème Algorithmique · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment faire une seule rangée triée ?",
+   "texte": [
+    "Au marché, deux rangées de mangues vont de la plus légère à la plus lourde."
+   ],
+   "pistes": [
+    "Comparer les deux premières, prendre la plus légère, recommencer."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 272 116\" width=\"272\" height=\"116\" role=\"img\" aria-label=\"Deux rangées de mangues triées de la plus légère à la plus lourde : rangée a, 180, 250, 400 grammes ; rangée b, 210, 300 grammes.\"><title>Deux rangées de mangues triées de la plus légère à la plus lourde : rangée a, 180, 250, 400 grammes ; rangée b, 210, 300 grammes.</title><text x=\"6\" y=\"36\" class=\"muet petit\" text-anchor=\"start\">rangée a</text><rect x=\"76\" y=\"14\" width=\"58\" height=\"34\" rx=\"16\" class=\"case\"/><text x=\"105.0\" y=\"36\" text-anchor=\"middle\" class=\"val\">180 g</text><rect x=\"140\" y=\"14\" width=\"58\" height=\"34\" rx=\"16\" class=\"case\"/><text x=\"169.0\" y=\"36\" text-anchor=\"middle\" class=\"val\">250 g</text><rect x=\"204\" y=\"14\" width=\"58\" height=\"34\" rx=\"16\" class=\"case\"/><text x=\"233.0\" y=\"36\" text-anchor=\"middle\" class=\"val\">400 g</text><text x=\"6\" y=\"90\" class=\"muet petit\" text-anchor=\"start\">rangée b</text><rect x=\"76\" y=\"68\" width=\"58\" height=\"34\" rx=\"16\" class=\"case\"/><text x=\"105.0\" y=\"90\" text-anchor=\"middle\" class=\"val\">210 g</text><rect x=\"140\" y=\"68\" width=\"58\" height=\"34\" rx=\"16\" class=\"case\"/><text x=\"169.0\" y=\"90\" text-anchor=\"middle\" class=\"val\">300 g</text></svg>"
+   }
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Fusion] Les deux premières mangues",
+   "objectif": "Comprendre le principe de la fusion de deux suites triées.",
+   "enonce": [
+    "Rangée a : 180 g, 250 g, 400 g. Rangée b : 210 g, 300 g. Chaque rangée est triée.",
+    "Pour faire une seule rangée triée, on compare les premières mangues restantes et on prend la plus légère. Quelles mangues pose-t-on en premier, puis en deuxième ?"
+   ],
+   "options": [
+    {
+     "texte": "180 g, puis 210 g",
+     "juste": true,
+     "feedback": "Oui. 180 contre 210 : on prend 180. Puis 250 contre 210 : on prend 210. On compare toujours les deux premières restantes."
+    },
+    {
+     "texte": "180 g, puis 250 g",
+     "feedback": "Tu as continué dans la rangée a. Après 180, il faut comparer de nouveau : 250 contre 210, et 210 est plus légère."
+    },
+    {
+     "texte": "400 g, puis 300 g",
+     "feedback": "Ce sont les plus lourdes de chaque rangée. On construit la rangée triée en commençant par la plus légère."
+    },
+    {
+     "texte": "210 g, puis 180 g",
+     "feedback": "Ce sont bien les deux plus légères, mais dans le mauvais ordre : 180 est plus légère que 210, elle passe avant."
+    }
+   ],
+   "explication": "Fusionner : comparer les deux premiers restants et prendre le plus petit, jusqu'au bout.",
+   "verifications": [
+    {
+     "code": [
+      "print(fusion([180, 250, 400], [210, 300])[:2])"
+     ],
+     "sortie": "[180, 210]"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Fusionner deux listes triées",
+   "texte": [
+    "On compare les deux premiers éléments restants, on prend le ==plus petit==.",
+    "À la fin, on ajoute ce qui reste."
+   ],
+   "schema": {
+    "type": "liste",
+    "code": [
+     "liste = fusion([2, 5], [1, 3, 8])"
+    ],
+    "elements": [
+     1,
+     2,
+     3,
+     5,
+     8
+    ],
+    "legende": "`fusion([2, 5], [1, 3, 8])`"
+   },
+   "vocabulaire": "fusionner = merge"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Fusion] Le résultat d'une fusion",
+   "objectif": "Appliquer l'algorithme de fusion à deux listes triées.",
+   "enonce": [
+    "On considère la fonction `fusion` ci-dessous (r est le résultat).",
+    "Que renvoie `fusion([1, 4, 9], [2, 3, 10])` ?"
+   ],
+   "code": [
+    "def fusion(a, b):",
+    "    r, i, j = [], 0, 0",
+    "    n, m = len(a), len(b)",
+    "    while i < n and j < m:",
+    "        if a[i] <= b[j]:",
+    "            r.append(a[i])",
+    "            i = i + 1",
+    "        else:",
+    "            r.append(b[j])",
+    "            j = j + 1",
+    "    r = r + a[i:] + b[j:]",
+    "    return r",
+    "",
+    "a = [1, 4, 9]",
+    "b = [2, 3, 10]",
+    "print(fusion(a, b))"
+   ],
+   "options": [
+    {
+     "texte": "`[1, 4, 9, 2, 3, 10]`",
+     "feedback": "C'est la première liste suivie de la seconde : `a + b`. La fusion intercale les éléments pour que le résultat soit trié."
+    },
+    {
+     "texte": "`[1, 2, 4, 3, 9, 10]`",
+     "feedback": "Tu as comparé les éléments de même rang, deux à deux. La fusion compare toujours les deux premiers restants : après 2, c'est 4 contre 3."
+    },
+    {
+     "texte": "`[1, 2, 3, 4, 9, 10]`",
+     "juste": true,
+     "feedback": "Exact. 1, 2, 3, 4, 9 sortent par comparaison ; quand `a` est vide, `b[j:]` ajoute 10."
+    },
+    {
+     "texte": "`[1, 2, 3, 4, 9]`",
+     "feedback": "Tu as oublié la fin : quand `a` est épuisée, la boucle s'arrête, et `a[i:] + b[j:]` ajoute ce qui reste, ici 10."
+    }
+   ],
+   "explication": "La fusion de deux listes triées donne une liste triée.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "[1, 2, 3, 4, 9, 10]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Fusion] Compter les comparaisons",
+   "objectif": "Mesurer le travail de la fusion : un seul parcours.",
+   "enonce": [
+    "On fusionne encore `[1, 4, 9]` et `[2, 3, 10]`.",
+    "Le programme ci-dessous compte dans `nb` les comparaisons `a[i] <= b[j]`. Que vaut `nb` à la fin ?"
+   ],
+   "code": [
+    "a = [1, 4, 9]",
+    "b = [2, 3, 10]",
+    "r, i, j = [], 0, 0",
+    "nb = 0",
+    "while i < 3 and j < 3:",
+    "    nb = nb + 1",
+    "    if a[i] <= b[j]:",
+    "        r.append(a[i])",
+    "        i = i + 1",
+    "    else:",
+    "        r.append(b[j])",
+    "        j = j + 1"
+   ],
+   "options": [
+    {
+     "texte": "6",
+     "feedback": "Le 10 n'est pas comparé : quand `a` est vide, la boucle s'arrête et 10 est ajouté par `b[j:]`."
+    },
+    {
+     "texte": "5",
+     "juste": true,
+     "feedback": "Oui : une comparaison pour 1, 2, 3, 4 et 9. Le 10 est ajouté à la fin sans comparaison."
+    },
+    {
+     "texte": "9",
+     "feedback": "Chaque élément de `a` n'est pas comparé à chaque élément de `b` : une comparaison place un élément, et on avance."
+    },
+    {
+     "texte": "3",
+     "feedback": "Il y a une comparaison par élément placé tant que les deux listes ont des éléments : 1, 2, 3, 4, 9."
+    }
+   ],
+   "explication": "Une comparaison place un élément : fusionner n éléments coûte au plus n comparaisons.",
+   "verifications": [
+    {
+     "code": [
+      "print(nb, r + a[i:] + b[j:])"
+     ],
+     "sortie": "5 [1, 2, 3, 4, 9, 10]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Fusion] Oublier ce qui reste",
+   "objectif": "Repérer l'erreur classique : perdre les éléments qui restent après la boucle.",
+   "enonce": [
+    "Dans cette version, la ligne `r = r + a[i:] + b[j:]` a été oubliée.",
+    "Que renvoie `fusion_courte([5, 8], [1, 2, 3])` ?"
+   ],
+   "code": [
+    "def fusion_courte(a, b):",
+    "    r, i, j = [], 0, 0",
+    "    n, m = len(a), len(b)",
+    "    while i < n and j < m:",
+    "        if a[i] <= b[j]:",
+    "            r.append(a[i])",
+    "            i = i + 1",
+    "        else:",
+    "            r.append(b[j])",
+    "            j = j + 1",
+    "    return r"
+   ],
+   "options": [
+    {
+     "texte": "`[1, 2, 3, 5, 8]`",
+     "feedback": "C'est ce que renverrait la vraie fusion. Ici, quand `b` est épuisée, la boucle s'arrête et 5 et 8 ne sont jamais ajoutés."
+    },
+    {
+     "texte": "`[1, 2, 3, 5]`",
+     "feedback": "5 n'est pas ajouté non plus : il n'a été comparé qu'à des éléments plus petits. La boucle s'arrête dès que `b` est vide."
+    },
+    {
+     "texte": "`[5, 8]`",
+     "feedback": "5 et 8 sont justement les éléments qui restent dans `a`. Ce sont 1, 2 et 3, plus petits, qui ont été ajoutés."
+    },
+    {
+     "texte": "`[1, 2, 3]`",
+     "juste": true,
+     "feedback": "Oui. 1, 2 et 3 sont plus petits que 5 : ils sortent, puis `b` est vide et la boucle s'arrête. 5 et 8 sont perdus."
+    }
+   ],
+   "explication": "Après la boucle, une des deux listes a encore des éléments : `a[i:] + b[j:]` les ajoute.",
+   "verifications": [
+    {
+     "code": [
+      "print(fusion_courte([5, 8], [1, 2, 3]))"
+     ],
+     "sortie": "[1, 2, 3]"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Diviser pour régner",
+   "texte": [
+    "Trois étapes : ==diviser== en problèmes plus petits, ==régner== (les résoudre), ==combiner== les solutions.",
+    "Le ==tri fusion== coupe en deux, trie chaque moitié, puis fusionne."
+   ],
+   "vocabulaire": "diviser pour régner = divide and conquer ; tri fusion = merge sort"
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Méthode] L'étape « combiner »",
+   "objectif": "Reconnaître les trois étapes de diviser pour régner dans le tri fusion.",
+   "enonce": [
+    "Dans le tri fusion, quelle action correspond à l'étape « combiner » ?"
+   ],
+   "options": [
+    {
+     "texte": "Couper le tableau en deux moitiés.",
+     "feedback": "Couper en deux, c'est l'étape « diviser » : on obtient deux problèmes plus petits."
+    },
+    {
+     "texte": "Trier chaque moitié par un appel récursif.",
+     "feedback": "Résoudre chaque moitié, c'est l'étape « régner ». Il reste ensuite à assembler les deux moitiés triées."
+    },
+    {
+     "texte": "S'arrêter quand le tableau a un seul élément.",
+     "feedback": "C'est le cas de base de la récursion : un tableau d'un élément est déjà trié. Ce n'est pas une étape de la méthode."
+    },
+    {
+     "texte": "Fusionner les deux moitiés triées.",
+     "juste": true,
+     "feedback": "Oui. La fusion assemble les deux solutions en une seule : c'est l'étape « combiner »."
+    }
+   ],
+   "explication": "Tri fusion : diviser (couper), régner (trier les moitiés), combiner (fusionner).",
+   "note_verification": "Question de vocabulaire : les trois étapes de la fiche FichesNSI « Diviser pour régner : le tri fusion »."
+  },
+  {
+   "type": "notion",
+   "titre": "Le tri fusion",
+   "texte": [
+    "Un tableau de 0 ou 1 élément est déjà trié : c'est le ==cas de base==."
+   ],
+   "code": [
+    "def tri_fusion(t):",
+    "    if len(t) <= 1:",
+    "        return t",
+    "    m = len(t) // 2",
+    "    g = tri_fusion(t[:m])",
+    "    d = tri_fusion(t[m:])",
+    "    return fusion(g, d)"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Tri fusion] Les moitiés avant la fusion",
+   "objectif": "Comprendre que les appels récursifs trient chaque moitié avant la fusion.",
+   "enonce": [
+    "On appelle `tri_fusion([38, 27, 43, 3])`.",
+    "Que valent `g` et `d` juste avant la dernière ligne, `return fusion(g, d)` ?"
+   ],
+   "code": [
+    "t = [38, 27, 43, 3]",
+    "m = len(t) // 2",
+    "g = tri_fusion(t[:m])",
+    "d = tri_fusion(t[m:])"
+   ],
+   "options": [
+    {
+     "texte": "`g` vaut [38, 27] et `d` vaut [43, 3].",
+     "feedback": "Ce sont les moitiés coupées, `t[:m]` et `t[m:]`. Mais elles passent par `tri_fusion` : elles sont triées avant la fusion."
+    },
+    {
+     "texte": "`g` vaut [27, 38] et `d` vaut [3, 43].",
+     "juste": true,
+     "feedback": "Exact. m = 2 ; chaque moitié est triée par un appel récursif. Il ne reste qu'à fusionner deux listes triées."
+    },
+    {
+     "texte": "`g` vaut [3, 27] et `d` vaut [38, 43].",
+     "feedback": "C'est le résultat final coupé en deux. Or on coupe d'abord le tableau de départ, puis on trie chaque moitié séparément."
+    },
+    {
+     "texte": "`g` vaut [38] et `d` vaut [27, 43, 3].",
+     "feedback": "m = 4 // 2 = 2 : les deux moitiés ont deux éléments chacune."
+    }
+   ],
+   "explication": "La fusion reçoit deux moitiés déjà triées par les appels récursifs.",
+   "verifications": [
+    {
+     "code": [
+      "print(g, d)"
+     ],
+     "sortie": "[27, 38] [3, 43]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Trace] La dernière fusion",
+   "objectif": "Suivre l'ordre des appels du tri fusion.",
+   "enonce": [
+    "On trie `[5, 2, 4, 1]` avec `tri_fusion`.",
+    "Quelle est la dernière fusion effectuée ?"
+   ],
+   "options": [
+    {
+     "texte": "`fusion([2, 5], [1, 4])`",
+     "juste": true,
+     "feedback": "Oui. On trie [5, 2] en [2, 5] et [4, 1] en [1, 4], puis la dernière fusion donne [1, 2, 4, 5]."
+    },
+    {
+     "texte": "`fusion([5], [2])`",
+     "feedback": "C'est la toute première fusion, au fond de la récursion. Les fusions remontent ensuite jusqu'au tableau entier."
+    },
+    {
+     "texte": "`fusion([5, 2], [4, 1])`",
+     "feedback": "Les moitiés ne sont jamais fusionnées sans être triées : [5, 2] devient [2, 5] avant la dernière fusion."
+    },
+    {
+     "texte": "`fusion([1, 2], [4, 5])`",
+     "feedback": "Ce sont les moitiés du résultat. Mais on coupe le tableau de départ : [5, 2] d'un côté, [4, 1] de l'autre."
+    }
+   ],
+   "explication": "La dernière fusion assemble les deux moitiés du tableau de départ, chacune triée.",
+   "trace": {
+    "colonnes": [
+     "Étape",
+     "Tableaux"
+    ],
+    "lignes": [
+     [
+      "diviser",
+      "[5, 2] · [4, 1]"
+     ],
+     [
+      "diviser",
+      "[5] · [2] · [4] · [1]"
+     ],
+     [
+      "fusionner",
+      "[2, 5] · [1, 4]"
+     ],
+     [
+      "fusionner",
+      "[1, 2, 4, 5]"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [
+      "traces = []",
+      "def fusion_notee(a, b):",
+      "    traces.append((a, b))",
+      "    return fusion(a, b)",
+      "def tri(t):",
+      "    if len(t) <= 1:",
+      "        return t",
+      "    m = len(t) // 2",
+      "    return fusion_notee(tri(t[:m]), tri(t[m:]))",
+      "print(tri([5, 2, 4, 1]), traces[0], traces[-1])"
+     ],
+     "sortie": "[1, 2, 4, 5] ([5], [2]) ([2, 5], [1, 4])"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Couper en deux",
+   "objectif": "Lire un message d'erreur et retrouver la division entière.",
+   "enonce": [
+    "On reprend la fonction `fusion`. Ce programme s'arrête sur l'erreur `TypeError: slice indices must be integers or None or have an __index__ method` (« les indices d'une tranche doivent être des entiers »)."
+   ],
+   "code": [
+    "def tri_fusion(t):",
+    "    if len(t) <= 1:",
+    "        return t",
+    "    m = len(t) / 2",
+    "    g = tri_fusion(t[:m])",
+    "    d = tri_fusion(t[m:])",
+    "    return fusion(g, d)",
+    "",
+    "t = [30, 15, 45]",
+    "print(tri_fusion(t))"
+   ],
+   "ligne": 4,
+   "correction": "    m = len(t) // 2",
+   "feedback": "Bien vu : `len(t) / 2` donne un flottant (1.5), qui ne peut pas servir d'indice. La division entière `//` donne 1, et le programme affiche [15, 30, 45].",
+   "feedback_autre": "Cette ligne est correcte. Le message parle des indices d'une tranche : cherche la ligne qui calcule l'indice `m`.",
+   "pieges": {
+    "5": "L'erreur se produit bien ici, avec `t[:m]`. Mais la tranche est juste : c'est la valeur de `m`, calculée avant, qui n'est pas un entier.",
+    "2": "Le cas de base est juste : un tableau de 0 ou 1 élément est déjà trié. Le message parle d'un indice qui n'est pas entier."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "[15, 30, 45]"
+    }
+   ],
+   "explication": "Un indice est un entier : on coupe avec la division entière, `len(t) // 2`."
+  },
+  {
+   "type": "notion",
+   "titre": "Le coût",
+   "texte": [
+    "Environ log₂(n) niveaux de coupes, chacun coûte environ n : le tri fusion coûte ==n log₂(n)==.",
+    "Un tri par sélection coûte ==n²==."
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Coût] Un million de noms",
+   "objectif": "Estimer le coût du tri fusion pour un grand tableau.",
+   "enonce": [
+    "On trie un million de noms. On donne : un million vaut environ 2²⁰, donc log₂(1 000 000) vaut environ 20.",
+    "Combien d'opérations le tri fusion fait-il, environ ?"
+   ],
+   "options": [
+    {
+     "texte": "20",
+     "feedback": "20, c'est log₂(n) : le nombre de niveaux de coupes. À chaque niveau, les fusions traitent tous les éléments : n opérations."
+    },
+    {
+     "texte": "1 million",
+     "feedback": "Un million, c'est le travail d'un seul niveau de fusions. Il y a environ 20 niveaux."
+    },
+    {
+     "texte": "20 millions",
+     "juste": true,
+     "feedback": "Oui : n × log₂(n), soit 1 000 000 × 20. C'est une fraction de seconde pour un ordinateur."
+    },
+    {
+     "texte": "500 milliards",
+     "feedback": "C'est l'ordre de grandeur du tri par sélection, n²/2 comparaisons. Le tri fusion fait bien moins."
+    }
+   ],
+   "explication": "Tri fusion : n log₂(n) ; pour un million d'éléments, environ 20 millions d'opérations.",
+   "verifications": [
+    {
+     "code": [
+      "from math import log2",
+      "n = 1_000_000",
+      "print(round(n * log2(n) / 1_000_000), n * n // 2 // 10**9)"
+     ],
+     "sortie": "20 500"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Coût] Deux fois plus de données",
+   "objectif": "Comparer l'évolution de deux coûts quand la taille double.",
+   "enonce": [
+    "Un tableau passe de 1 million à 2 millions d'éléments.",
+    "Par combien le temps de chaque tri est-il multiplié, environ ?"
+   ],
+   "options": [
+    {
+     "texte": "Par 2 pour la sélection et par 4 pour la fusion.",
+     "feedback": "C'est l'inverse : n² est multiplié par 4 quand n double. n log₂(n) l'est à peine plus de 2."
+    },
+    {
+     "texte": "Par 2 pour les deux tris.",
+     "feedback": "C'est vrai d'un coût en n. Pour la sélection, en n², doubler n multiplie le coût par 2² = 4."
+    },
+    {
+     "texte": "Par 4 pour les deux tris.",
+     "feedback": "Le tri fusion n'est pas en n² : doubler n ajoute un seul niveau de coupes, environ 21 au lieu de 20."
+    },
+    {
+     "texte": "Par 4 pour la sélection et par un peu plus de 2 pour la fusion.",
+     "juste": true,
+     "feedback": "Oui. (2n)² = 4n² ; et 2n log₂(2n) vaut environ 2,1 fois n log₂(n). L'écart se creuse quand n grandit."
+    }
+   ],
+   "explication": "Quand n double : n² est multiplié par 4, n log₂(n) par un peu plus de 2.",
+   "verifications": [
+    {
+     "code": [
+      "from math import log2",
+      "n = 1_000_000",
+      "print((2 * n) ** 2 // n ** 2, round(2 * n * log2(2 * n) / (n * log2(n)), 1))"
+     ],
+     "sortie": "4 2.1"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Ailleurs",
+   "texte": [
+    "La ==recherche dichotomique== divise aussi : on coupe en deux et on ne garde qu'une moitié."
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Méthode] Reconnaître diviser pour régner",
+   "objectif": "Reconnaître un algorithme de type diviser pour régner.",
+   "enonce": [
+    "Lequel de ces algorithmes utilise la méthode diviser pour régner ?"
+   ],
+   "options": [
+    {
+     "texte": "La recherche dichotomique dans un tableau trié.",
+     "juste": true,
+     "feedback": "Oui. On compare au milieu et on ne garde qu'une moitié : on divise le problème, puis on résout la moitié choisie."
+    },
+    {
+     "texte": "La recherche séquentielle, élément par élément.",
+     "feedback": "Elle regarde les éléments un par un, sans jamais couper le problème en sous-problèmes."
+    },
+    {
+     "texte": "La recherche du maximum en parcourant le tableau une fois.",
+     "feedback": "Un seul parcours, sans découpage : ce n'est pas diviser pour régner, même si c'est efficace."
+    },
+    {
+     "texte": "Le tri par sélection.",
+     "feedback": "Il cherche le minimum puis recommence sur le reste : le problème ne diminue que d'un élément à la fois, il n'est pas coupé en deux."
+    }
+   ],
+   "explication": "Diviser pour régner : couper en sous-problèmes nettement plus petits, souvent de moitié.",
+   "note_verification": "Question de reconnaissance : la dichotomie est citée comme diviser pour régner par la fiche FichesNSI."
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Analyse de code] Les marées",
+   "objectif": "Analyser une fonction qui applique diviser pour régner.",
+   "enonce": [
+    "Cette fonction cherche la plus haute marée relevée (en mètres).",
+    "Pour l'appel `maximum([2.9, 3.8, 3.1, 3.4])`, que valent `g` et `d` au premier appel ?"
+   ],
+   "code": [
+    "def maximum(t):",
+    "    if len(t) == 1:",
+    "        return t[0]",
+    "    m = len(t) // 2",
+    "    g = maximum(t[:m])",
+    "    d = maximum(t[m:])",
+    "    if g > d:",
+    "        return g",
+    "    return d"
+   ],
+   "options": [
+    {
+     "texte": "`g` vaut 2.9 et `d` vaut 3.1.",
+     "feedback": "Ce sont les premiers éléments de chaque moitié. `g` est le maximum de toute la moitié gauche, [2.9, 3.8]."
+    },
+    {
+     "texte": "`g` vaut [2.9, 3.8] et `d` vaut [3.1, 3.4].",
+     "feedback": "Ce sont les moitiés. Mais `maximum` renvoie un nombre, le maximum de chaque moitié, pas la moitié elle-même."
+    },
+    {
+     "texte": "`g` vaut 3.8 et `d` vaut 3.4.",
+     "juste": true,
+     "feedback": "Exact : chaque moitié a son maximum, calculé par un appel récursif. Puis on combine : le plus grand des deux, 3.8."
+    },
+    {
+     "texte": "`g` vaut 3.8 et `d` vaut 3.8.",
+     "feedback": "`d` est le maximum de la moitié droite seulement, [3.1, 3.4] : 3.4. Chaque appel ne voit que sa moitié."
+    }
+   ],
+   "explication": "Diviser (deux moitiés), régner (leur maximum), combiner (le plus grand des deux).",
+   "verifications": [
+    {
+     "code": [
+      "t = [2.9, 3.8, 3.1, 3.4]",
+      "m = len(t) // 2",
+      "print(maximum(t[:m]), maximum(t[m:]), maximum(t))"
+     ],
+     "sortie": "3.8 3.4 3.8"
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "À retenir"
+    ],
+    "lignes": [
+     [
+      "Diviser pour régner",
+      "diviser, régner (souvent récursivement), combiner"
+     ],
+     [
+      "Fusion",
+      "comparer les deux premiers restants, puis ajouter ce qui reste"
+     ],
+     [
+      "Tri fusion",
+      "couper en deux (`//`), trier chaque moitié, fusionner"
+     ],
+     [
+      "Coût",
+      "n log₂(n), contre n² pour le tri par sélection"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade comment on fusionne deux listes triées ?"
+   ]
+  }
+ ]
+}

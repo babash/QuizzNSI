@@ -1,0 +1,815 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "recursivite",
+ "titre": "La récursivité",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Terminale NSI",
+ "programme": "Langages et programmation : récursivité (écrire un programme récursif ; analyser le fonctionnement d'un programme récursif)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/recursivite/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « La récursivité » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je repère le cas de base et l'appel récursif d'une fonction.",
+  "Niveau 2 : je calcule le résultat d'un petit appel en faisant la trace.",
+  "Niveau 3 : je trouve pourquoi une fonction récursive ne s'arrête pas ou renvoie `None`."
+ ],
+ "conventions": [
+  "Python arrête une récursion vers 1 000 appels en attente, avec l'erreur `RecursionError: maximum recursion depth exceeded`.",
+  "n! (factorielle de n) vaut 1 × 2 × … × n, et 0! = 1."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "La récursivité",
+   "conventions": false,
+   "texte": [
+    "Thème Langages et programmation · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment descendre un escalier de 10 marches jusqu'au lagon ?",
+   "texte": [
+    "Je descends une marche : il reste un escalier de 9 marches."
+   ],
+   "pistes": [
+    "Je recommence, avec un escalier plus petit, jusqu'à 0 marche."
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Cas de base] Quand s'arrête-t-on ?",
+   "objectif": "Repérer le cas de base dans une description récursive.",
+   "enonce": [
+    "Pour descendre un escalier de n marches : si n vaut 0, on est en bas ; sinon, on descend une marche, puis un escalier de n − 1 marches.",
+    "Le ==cas de base== est le cas simple, réglé sans recommencer. Quel est-il ici ?"
+   ],
+   "options": [
+    {
+     "texte": "Descendre une seule marche.",
+     "feedback": "C'est le travail fait à chaque étape, pas l'arrêt. Après une marche, on recommence avec l'escalier qui reste."
+    },
+    {
+     "texte": "Un escalier de 0 marche : on est en bas.",
+     "juste": true,
+     "feedback": "Oui. Avec 0 marche, il n'y a plus rien à faire : on s'arrête sans recommencer. C'est le cas de base."
+    },
+    {
+     "texte": "Un escalier de n − 1 marches.",
+     "feedback": "C'est le problème plus petit sur lequel on recommence : on l'appellera l'appel récursif. Le cas de base, lui, ne recommence pas."
+    },
+    {
+     "texte": "Un escalier de 10 marches.",
+     "feedback": "C'est le problème de départ, le plus gros. Le cas de base est au contraire le plus petit, celui qu'on règle tout de suite."
+    }
+   ],
+   "explication": "Le cas de base est le cas le plus simple, réglé sans appel : il arrête la récursion.",
+   "note_verification": "Question de vocabulaire, sans code : définition de la fiche FichesNSI « La récursivité »."
+  },
+  {
+   "type": "notion",
+   "titre": "Une fonction récursive",
+   "texte": [
+    "Une fonction ==récursive== s'appelle elle-même, sur un problème ==plus petit==.",
+    "Le ==cas de base== l'arrête : il ne fait aucun appel."
+   ],
+   "code": [
+    "def descendre(n):",
+    "    if n == 0:",
+    "        print(\"lagon !\")",
+    "    else:",
+    "        print(n)",
+    "        descendre(n - 1)"
+   ],
+   "vocabulaire": "récursif = recursive ; cas de base = base case ; appel récursif = recursive call"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Trace] Descendre l'escalier",
+   "objectif": "Prévoir l'affichage d'une fonction récursive simple.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il, ligne après ligne ?"
+   ],
+   "code": [
+    "def descendre(n):",
+    "    if n == 0:",
+    "        print(\"lagon !\")",
+    "    else:",
+    "        print(n)",
+    "        descendre(n - 1)",
+    "",
+    "descendre(3)"
+   ],
+   "options": [
+    {
+     "texte": "3, 2, 1, 0, lagon !",
+     "feedback": "Quand n vaut 0, c'est le cas de base : la fonction affiche \"lagon !\" à la place de 0. Le 0 n'est jamais affiché."
+    },
+    {
+     "texte": "lagon !, 1, 2, 3",
+     "feedback": "Ici, `print(n)` est écrit avant l'appel récursif : on affiche en descendant, donc 3 d'abord. Le cas de base arrive en dernier."
+    },
+    {
+     "texte": "3, lagon !",
+     "feedback": "La fonction ne saute pas directement au cas de base : chaque appel retire une seule marche, `descendre(n - 1)`."
+    },
+    {
+     "texte": "3, 2, 1, lagon !",
+     "juste": true,
+     "feedback": "Exact. Chaque appel affiche son n, puis appelle avec n − 1. À 0, le cas de base affiche \"lagon !\" et tout s'arrête."
+    }
+   ],
+   "explication": "Chaque appel fait une petite partie du travail, puis confie le reste à l'appel suivant.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3\n2\n1\nlagon !"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Cas de base] Repérer les deux parties",
+   "objectif": "Distinguer le cas de base et l'appel récursif, puis calculer un petit appel.",
+   "enonce": [
+    "On considère la fonction suivante.",
+    "Quel est le cas de base, et que renvoie `somme(4)` ?"
+   ],
+   "code": [
+    "def somme(n):",
+    "    if n == 1:",
+    "        return 1",
+    "    return n + somme(n - 1)"
+   ],
+   "options": [
+    {
+     "texte": "Lignes 2 et 3 ; `somme(4)` vaut 10.",
+     "juste": true,
+     "feedback": "Oui. Le cas de base est n == 1, sans appel. Puis 4 + 3 + 2 + 1 = 10 : chaque appel ajoute son n au résultat du suivant."
+    },
+    {
+     "texte": "Ligne 4 ; `somme(4)` vaut 10.",
+     "feedback": "Le résultat est juste, mais la ligne 4 contient un appel à `somme` : c'est l'appel récursif. Le cas de base, sans appel, est aux lignes 2 et 3."
+    },
+    {
+     "texte": "Lignes 2 et 3 ; `somme(4)` vaut 4.",
+     "feedback": "Le cas de base est bien repéré. Mais `somme(4)` ne renvoie pas seulement 4 : il renvoie 4 + somme(3), et ainsi de suite jusqu'à 1."
+    },
+    {
+     "texte": "Lignes 2 et 3 ; `somme(4)` vaut 24.",
+     "feedback": "24, c'est 4 × 3 × 2 × 1 : tu as multiplié. Cette fonction additionne : 4 + 3 + 2 + 1 = 10."
+    }
+   ],
+   "explication": "Cas de base : sans appel. Appel récursif : sur un problème plus petit.",
+   "verifications": [
+    {
+     "code": [
+      "print(somme(4))"
+     ],
+     "sortie": "10"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "La factorielle",
+   "texte": [
+    "4! = 4 × 3 × 2 × 1. Donc ==n! = n × (n − 1)!==, avec 0! = 1 ; en Python, `fact(n)`."
+   ],
+   "code": [
+    "def fact(n):",
+    "    if n == 0:",
+    "        return 1",
+    "    return n * fact(n - 1)"
+   ],
+   "vocabulaire": "factorielle = factorial"
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Trace] Calculer une factorielle",
+   "objectif": "Calculer le résultat d'un appel récursif en remontant les appels.",
+   "enonce": [
+    "On utilise la fonction `fact` de l'écran précédent.",
+    "Que renvoie `fact(5)` ?"
+   ],
+   "code": [
+    "def fact(n):",
+    "    if n == 0:",
+    "        return 1",
+    "    return n * fact(n - 1)"
+   ],
+   "options": [
+    {
+     "texte": "24",
+     "feedback": "24, c'est fact(4). fact(5) multiplie encore ce résultat par 5 : 5 × 24."
+    },
+    {
+     "texte": "15",
+     "feedback": "15, c'est 5 + 4 + 3 + 2 + 1 : tu as additionné. La factorielle multiplie : 5 × 4 × 3 × 2 × 1."
+    },
+    {
+     "texte": "120",
+     "juste": true,
+     "feedback": "Bravo : 5 × 4 × 3 × 2 × 1 × 1 = 120. Le dernier 1 est celui du cas de base, fact(0)."
+    },
+    {
+     "texte": "0",
+     "feedback": "Le produit vaudrait 0 si le cas de base renvoyait 0. Ici il renvoie 1, et 1 ne change pas un produit."
+    }
+   ],
+   "explication": "fact(5) = 5 × fact(4) = 5 × 24 = 120.",
+   "verifications": [
+    {
+     "code": [
+      "print(fact(5), fact(4))"
+     ],
+     "sortie": "120 24"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "La pile d'appels",
+   "texte": [
+    "Chaque appel ==attend== le résultat du suivant.",
+    "On descend jusqu'au cas de base, puis on remonte."
+   ],
+   "schema": {
+    "type": "pile",
+    "elements": [
+     "fact(3)",
+     "fact(2)",
+     "fact(1)",
+     "fact(0) → 1"
+    ],
+    "legende": "Dernier appelé, premier fini."
+   }
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Pile d'appels] Compter les appels",
+   "objectif": "Compter les appels qui s'empilent avant le cas de base.",
+   "enonce": [
+    "On exécute `fact(3)`.",
+    "Combien d'appels de `fact` sont faits en tout, en comptant le premier ?"
+   ],
+   "code": [
+    "def fact(n):",
+    "    if n == 0:",
+    "        return 1",
+    "    return n * fact(n - 1)"
+   ],
+   "options": [
+    {
+     "texte": "4",
+     "juste": true,
+     "feedback": "Oui : fact(3), (2), (1) et (0). Le cas de base est un appel lui aussi : c'est lui qui renvoie 1 et lance la remontée."
+    },
+    {
+     "texte": "3",
+     "feedback": "Tu as oublié fact(0) : le cas de base est aussi un appel. Il y en a un pour 3, 2, 1 et 0."
+    },
+    {
+     "texte": "1",
+     "feedback": "On n'écrit `fact` qu'une fois, mais chaque exécution de la ligne 4 lance un nouvel appel, avec n − 1."
+    },
+    {
+     "texte": "6",
+     "feedback": "6, c'est le résultat : 3! = 6. La question porte sur le nombre d'appels : un pour 3, 2, 1 et 0."
+    }
+   ],
+   "explication": "fact(n) fait n + 1 appels : n, n − 1, … jusqu'à 0.",
+   "verifications": [
+    {
+     "code": [
+      "appels = 0",
+      "def fact(n):",
+      "    global appels",
+      "    appels = appels + 1",
+      "    if n == 0:",
+      "        return 1",
+      "    return n * fact(n - 1)",
+      "fact(3)",
+      "print(appels)"
+     ],
+     "sortie": "4",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Pile d'appels] Afficher en remontant",
+   "objectif": "Prévoir l'affichage quand le `print` est après l'appel récursif.",
+   "enonce": [
+    "Cette fois, `print` est écrit après l'appel récursif.",
+    "Qu'affiche `compte(3)` ?"
+   ],
+   "code": [
+    "def compte(n):",
+    "    if n > 0:",
+    "        compte(n - 1)",
+    "        print(n)",
+    "",
+    "compte(3)"
+   ],
+   "options": [
+    {
+     "texte": "3, 2, 1",
+     "feedback": "Ce serait le cas si `print(n)` était avant l'appel. Ici, chaque appel attend que le suivant finisse avant d'afficher : rien ne s'affiche en descendant."
+    },
+    {
+     "texte": "0, 1, 2, 3",
+     "feedback": "`compte(0)` ne fait rien : le test n > 0 est faux. Le 0 n'est pas affiché."
+    },
+    {
+     "texte": "Rien : la fonction n'a pas de `return`.",
+     "feedback": "`print` affiche même sans `return`. Un `return` sert à renvoyer une valeur, pas à afficher."
+    },
+    {
+     "texte": "1, 2, 3",
+     "juste": true,
+     "feedback": "Exact. On descend jusqu'à `compte(0)` sans rien afficher. En remontant, `compte(1)` affiche 1 en premier, puis 2, puis 3."
+    }
+   ],
+   "explication": "Ce qui est après l'appel récursif s'exécute à la remontée, dans l'ordre inverse.",
+   "trace": {
+    "colonnes": [
+     "Moment",
+     "Ce qui se passe"
+    ],
+    "lignes": [
+     [
+      "descente",
+      "compte(3) appelle compte(2), qui appelle compte(1), qui appelle compte(0)"
+     ],
+     [
+      "cas de base",
+      "compte(0) ne fait rien"
+     ],
+     [
+      "remontée",
+      "compte(1) affiche 1, puis compte(2) affiche 2, puis compte(3) affiche 3"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "1\n2\n3"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Une récursion sans fin",
+   "texte": [
+    "Si les appels ne se rapprochent pas du cas de base, ils s'empilent sans fin.",
+    "Python s'arrête : `RecursionError: maximum recursion depth exceeded`."
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Terminaison] Un appel qui ne s'arrête pas",
+   "objectif": "Repérer un appel qui n'atteint jamais le cas de base.",
+   "enonce": [
+    "On utilise `fact`, dont le cas de base est n == 0.",
+    "Un de ces appels provoque `RecursionError: maximum recursion depth exceeded` (« profondeur maximale de récursion dépassée »). Lequel ?"
+   ],
+   "code": [
+    "def fact(n):",
+    "    if n == 0:",
+    "        return 1",
+    "    return n * fact(n - 1)"
+   ],
+   "options": [
+    {
+     "texte": "`fact(0)`",
+     "feedback": "fact(0) est le cas de base : il renvoie 1 tout de suite, sans aucun appel."
+    },
+    {
+     "texte": "`fact(-1)`",
+     "juste": true,
+     "feedback": "Oui. −1, puis −2, −3… : on s'éloigne de 0, on ne l'atteint jamais. Python arrête vers 1 000 appels en attente."
+    },
+    {
+     "texte": "`fact(1)`",
+     "feedback": "fact(1) appelle fact(0), le cas de base : deux appels, et le résultat 1."
+    },
+    {
+     "texte": "`fact(10)`",
+     "feedback": "10 est grand, mais on descend 10, 9, … jusqu'à 0 : onze appels seulement, bien moins que la limite d'environ 1 000."
+    }
+   ],
+   "explication": "Un appel récursif doit toujours se rapprocher du cas de base.",
+   "verifications": [
+    {
+     "code": [
+      "print(fact(-1))"
+     ],
+     "erreur": "RecursionError"
+    },
+    {
+     "code": [
+      "print(fact(0), fact(1), fact(10))"
+     ],
+     "sortie": "1 1 3628800"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Une somme qui ne s'arrête pas",
+   "objectif": "Lire `RecursionError` et trouver l'appel qui ne se rapproche pas du cas de base.",
+   "enonce": [
+    "Cette fonction doit calculer 3 + 2 + 1 + 0.",
+    "Le programme s'arrête sur l'erreur `RecursionError: maximum recursion depth exceeded`."
+   ],
+   "code": [
+    "def somme(n):",
+    "    if n == 0:",
+    "        return 0",
+    "    return n + somme(n)",
+    "",
+    "print(somme(3))"
+   ],
+   "ligne": 4,
+   "correction": "    return n + somme(n - 1)",
+   "feedback": "Bien vu : `somme(n)` rappelle la fonction avec le même n, qui ne se rapproche jamais de 0. Avec `somme(n - 1)`, le programme affiche 6.",
+   "feedback_autre": "Cette ligne est correcte. Le message dit que les appels s'empilent sans fin : cherche l'appel récursif qui ne rapproche pas du cas de base.",
+   "pieges": {
+    "2": "Le cas de base est juste : somme(0) vaut 0. Le problème est qu'on ne l'atteint jamais : regarde l'argument de l'appel récursif.",
+    "6": "L'appel `somme(3)` est correct : 3 est un entier positif. C'est dans la fonction que l'argument ne diminue pas."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "RecursionError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "6"
+    }
+   ],
+   "explication": "Chaque appel récursif doit rapprocher du cas de base : ici, n − 1."
+  },
+  {
+   "type": "notion",
+   "titre": "Le `return` oublié",
+   "texte": [
+    "Une fonction qui se termine sans `return` renvoie `None`.",
+    "Il faut écrire `return` devant l'appel récursif."
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Erreur] Lire un message d'erreur",
+   "objectif": "Relier un message d'erreur à un `return` oublié.",
+   "enonce": [
+    "Le programme suivant s'arrête sur l'erreur `TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'` (« on ne peut pas multiplier un entier par None »).",
+    "Quelle est la cause ?"
+   ],
+   "code": [
+    "def fact(n):",
+    "    if n == 0:",
+    "        return 1",
+    "    n * fact(n - 1)",
+    "",
+    "print(fact(3))"
+   ],
+   "options": [
+    {
+     "texte": "Le cas de base est faux : il faudrait `if n == 1:`.",
+     "feedback": "Avec n == 1, le même problème resterait : la ligne 4 calcule le produit mais ne le renvoie pas."
+    },
+    {
+     "texte": "On n'a pas le droit d'appeler une fonction dans elle-même.",
+     "feedback": "C'est justement la récursivité : c'est permis. L'erreur vient de la valeur renvoyée par l'appel."
+    },
+    {
+     "texte": "Il manque `return` à la ligne 4 : l'appel renvoie `None`.",
+     "juste": true,
+     "feedback": "Oui. fact(1) calcule 1 × 1 mais ne renvoie rien, donc `None`. Puis fact(2) essaie 2 × None : erreur."
+    },
+    {
+     "texte": "`fact(3)` fait trop d'appels : la pile déborde.",
+     "feedback": "Une pile qui déborde donne `RecursionError: maximum recursion depth exceeded`, pas une `TypeError`. Ici, il n'y a que quatre appels."
+    }
+   ],
+   "explication": "Sans `return`, la fonction renvoie `None` : le résultat est perdu.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    },
+    {
+     "code": [
+      "def f(n):",
+      "    if n == 0:",
+      "        return 1",
+      "    n * f(n - 1)",
+      "print(f(1))"
+     ],
+     "sortie": "None",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Sur une liste",
+   "texte": [
+    "On traite le premier élément ; la récursion fait le reste, `t[1:]`.",
+    "Cas de base : la liste vide."
+   ],
+   "code": [
+    "def somme(t):",
+    "    if len(t) == 0:",
+    "        return 0",
+    "    reste = somme(t[1:])",
+    "    return t[0] + reste",
+    "",
+    "print(somme([3, 8, 1]))"
+   ],
+   "vocabulaire": "t[1:] = t sans son premier élément"
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Listes] Une fonction mystère sur une liste",
+   "objectif": "Analyser une fonction récursive sur une liste.",
+   "enonce": [
+    "On considère la fonction suivante.",
+    "Que renvoie `mystere([4, 1, 7])` ?"
+   ],
+   "code": [
+    "def mystere(t):",
+    "    if len(t) == 0:",
+    "        return 0",
+    "    n = mystere(t[1:])",
+    "    return 1 + n"
+   ],
+   "options": [
+    {
+     "texte": "3",
+     "juste": true,
+     "feedback": "Exact. Chaque appel ajoute 1 et retire un élément : 1 + 1 + 1 + 0. La fonction compte les éléments, comme `len`."
+    },
+    {
+     "texte": "12",
+     "feedback": "12, c'est 4 + 1 + 7 : tu as additionné les éléments. Ici chaque appel ajoute 1, pas `t[0]`."
+    },
+    {
+     "texte": "0",
+     "feedback": "Le cas de base renvoie bien 0, mais ce n'est pas la fin : en remontant, chaque appel ajoute 1 à ce 0."
+    },
+    {
+     "texte": "4",
+     "feedback": "Tu as compté aussi l'appel sur la liste vide. Lui renvoie 0 : il n'ajoute rien. Trois éléments, trois fois 1."
+    }
+   ],
+   "explication": "`1 + mystere(t[1:])` compte un élément par appel : c'est la longueur.",
+   "verifications": [
+    {
+     "code": [
+      "print(mystere([4, 1, 7]))"
+     ],
+     "sortie": "3"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Analyse de code] Le code postal de Mamoudzou",
+   "objectif": "Analyser une fonction récursive sur un entier.",
+   "enonce": [
+    "Le code postal de Mamoudzou est 97600. On rappelle que `n // 10` retire le dernier chiffre : 976 // 10 vaut 97.",
+    "Que renvoie `mystere(97600)` ?"
+   ],
+   "code": [
+    "def mystere(n):",
+    "    if n < 10:",
+    "        return 1",
+    "    r = mystere(n // 10)",
+    "    return 1 + r"
+   ],
+   "options": [
+    {
+     "texte": "22",
+     "feedback": "22, c'est 9 + 7 + 6 + 0 + 0 : la somme des chiffres. Ici chaque appel ajoute 1, quel que soit le chiffre retiré."
+    },
+    {
+     "texte": "4",
+     "feedback": "Tu n'as pas compté le cas de base. mystere(9) renvoie 1, pas 0 : le dernier chiffre compte aussi."
+    },
+    {
+     "texte": "3",
+     "feedback": "Les zéros comptent : 97600 // 10 vaut 9760, puis 976. Chaque division retire un chiffre, même un 0."
+    },
+    {
+     "texte": "5",
+     "juste": true,
+     "feedback": "Bravo : 97600, 9760, 976, 97, puis 9, le cas de base. Cinq appels qui comptent chacun 1 : la fonction compte les chiffres."
+    }
+   ],
+   "explication": "mystere compte les chiffres d'un entier positif : un chiffre retiré par appel.",
+   "trace": {
+    "colonnes": [
+     "Appel",
+     "renvoie"
+    ],
+    "lignes": [
+     [
+      "mystere(97600)",
+      "1 + 4 = 5"
+     ],
+     [
+      "mystere(9760)",
+      "1 + 3 = 4"
+     ],
+     [
+      "mystere(976)",
+      "1 + 2 = 3"
+     ],
+     [
+      "mystere(97)",
+      "1 + 1 = 2"
+     ],
+     [
+      "mystere(9)",
+      "1 (cas de base)"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [
+      "print(mystere(97600))"
+     ],
+     "sortie": "5"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Écrire] Une puissance récursive",
+   "objectif": "Choisir une fonction récursive correcte : cas de base juste et appel qui s'en rapproche.",
+   "enonce": [
+    "On veut calculer x puissance n, avec x⁰ = 1 et xⁿ = x × xⁿ⁻¹. Par exemple, `puissance(2, 10)` doit valoir 1024.",
+    "Quelle fonction convient ?"
+   ],
+   "options": [
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 0",
+      "    r = puissance(x, n - 1)",
+      "    return x * r"
+     ],
+     "feedback": "Le cas de base renvoie 0 : tous les produits valent alors 0. Il faut x⁰ = 1."
+    },
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 1",
+      "    r = puissance(x, n - 1)",
+      "    return x * r"
+     ],
+     "juste": true,
+     "feedback": "Oui : le cas de base x⁰ = 1, et chaque appel diminue n de 1. puissance(2, 10) vaut 1024."
+    },
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 1",
+      "    r = puissance(x, n)",
+      "    return x * r"
+     ],
+     "feedback": "n ne diminue jamais : les appels s'empilent sans fin, jusqu'à `RecursionError: maximum recursion depth exceeded`."
+    },
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 1",
+      "    r = puissance(x, n - 1)",
+      "    return r"
+     ],
+     "feedback": "Cette fonction ne multiplie jamais par x : elle renvoie toujours 1, la valeur du cas de base."
+    }
+   ],
+   "explication": "Une fonction récursive juste : un cas de base exact, et un appel plus petit dans le calcul.",
+   "verifications": [
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 1",
+      "    r = puissance(x, n - 1)",
+      "    return x * r",
+      "print(puissance(2, 10))"
+     ],
+     "sortie": "1024",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 0",
+      "    r = puissance(x, n - 1)",
+      "    return x * r",
+      "print(puissance(2, 10))"
+     ],
+     "sortie": "0",
+     "reprendre_code": false,
+     "option": 0
+    },
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 1",
+      "    r = puissance(x, n)",
+      "    return x * r",
+      "print(puissance(2, 10))"
+     ],
+     "erreur": "RecursionError",
+     "reprendre_code": false,
+     "option": 2
+    },
+    {
+     "code": [
+      "def puissance(x, n):",
+      "    if n == 0:",
+      "        return 1",
+      "    r = puissance(x, n - 1)",
+      "    return r",
+      "print(puissance(2, 10))"
+     ],
+     "sortie": "1",
+     "reprendre_code": false,
+     "option": 3
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "À retenir"
+    ],
+    "lignes": [
+     [
+      "Cas de base",
+      "le cas simple, réglé sans appel ; on l'écrit en premier"
+     ],
+     [
+      "Appel récursif",
+      "sur un problème plus petit, qui se rapproche du cas de base"
+     ],
+     [
+      "Pile d'appels",
+      "on descend jusqu'au cas de base, puis on remonte"
+     ],
+     [
+      "`RecursionError`",
+      "le cas de base n'est jamais atteint"
+     ],
+     [
+      "`return`",
+      "devant l'appel récursif, sinon la fonction renvoie `None`"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade le rôle du cas de base ?"
+   ]
+  }
+ ]
+}

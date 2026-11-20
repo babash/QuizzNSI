@@ -1,0 +1,829 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "arbres-binaires",
+ "titre": "Les arbres binaires",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Terminale NSI",
+ "programme": "Structures de données : arbres binaires (nœuds, racines, feuilles, sous-arbres gauches et droits ; taille, hauteur) ; algorithmique : calculer la taille et la hauteur d'un arbre, le parcourir (préfixe, infixe, suffixe, en largeur)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/arbres/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les arbres binaires » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je nomme la racine, les feuilles et les sous-arbres d'un arbre binaire.",
+  "Niveau 2 : je calcule la taille et la hauteur, et je donne les parcours d'un petit arbre.",
+  "Niveau 3 : je lis et je complète une fonction récursive sur un arbre."
+ ],
+ "conventions": [
+  "La hauteur compte les arêtes : un arbre réduit à un nœud a une hauteur 0, l'arbre vide −1. D'autres sujets comptent les nœuds : lire la convention de l'énoncé.",
+  "Sur un dessin, l'enfant gauche est toujours à gauche, même s'il est seul."
+ ],
+ "prelude_python": [
+  "class Noeud:",
+  "    def __init__(self, v,",
+  "                 g=None,",
+  "                 d=None):",
+  "        self.valeur = v",
+  "        self.gauche = g",
+  "        self.droit = d",
+  "",
+  "def structure(a):",
+  "    if a is None:",
+  "        return None",
+  "    return (a.valeur, structure(a.gauche), structure(a.droit))"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Les arbres binaires",
+   "texte": [
+    "Thème Structures de données · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment ranger ces lieux de Mayotte ?",
+   "texte": [
+    "Chaque lieu est dans un seul lieu plus grand."
+   ],
+   "pistes": [
+    "Une ==hiérarchie== : on la dessine comme un ==arbre==, la racine en haut."
+   ],
+   "schema": {
+    "type": "svg",
+    "legende": "Quelques communes seulement.",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 168 232\" width=\"168\" height=\"232\" role=\"img\" aria-label=\"Arbre des lieux : Mayotte en haut ; en dessous Petite-Terre, avec Dzaoudzi et Pamandzi, et Grande-Terre, avec Mamoudzou et Sada.\"><title>Arbre des lieux : Mayotte en haut ; en dessous Petite-Terre, avec Dzaoudzi et Pamandzi, et Grande-Terre, avec Mamoudzou et Sada.</title><path d=\"M22 34 V54 H36\" class=\"trait\" fill=\"none\"/><path d=\"M48 66 V86 H62\" class=\"trait\" fill=\"none\"/><path d=\"M48 66 V118 H62\" class=\"trait\" fill=\"none\"/><path d=\"M22 34 V150 H36\" class=\"trait\" fill=\"none\"/><path d=\"M48 162 V182 H62\" class=\"trait\" fill=\"none\"/><path d=\"M48 162 V214 H62\" class=\"trait\" fill=\"none\"/><rect x=\"10\" y=\"8\" width=\"83\" height=\"26\" rx=\"6\" class=\"case sommet\"/><text x=\"20\" y=\"27\" text-anchor=\"start\">Mayotte</text><rect x=\"36\" y=\"40\" width=\"128\" height=\"26\" rx=\"6\" class=\"case\"/><text x=\"46\" y=\"59\" text-anchor=\"start\">Petite-Terre</text><rect x=\"62\" y=\"72\" width=\"92\" height=\"26\" rx=\"6\" class=\"case\"/><text x=\"72\" y=\"91\" text-anchor=\"start\">Dzaoudzi</text><rect x=\"62\" y=\"104\" width=\"92\" height=\"26\" rx=\"6\" class=\"case\"/><text x=\"72\" y=\"123\" text-anchor=\"start\">Pamandzi</text><rect x=\"36\" y=\"136\" width=\"128\" height=\"26\" rx=\"6\" class=\"case\"/><text x=\"46\" y=\"155\" text-anchor=\"start\">Grande-Terre</text><rect x=\"62\" y=\"168\" width=\"101\" height=\"26\" rx=\"6\" class=\"case\"/><text x=\"72\" y=\"187\" text-anchor=\"start\">Mamoudzou</text><rect x=\"62\" y=\"200\" width=\"56\" height=\"26\" rx=\"6\" class=\"case\"/><text x=\"72\" y=\"219\" text-anchor=\"start\">Sada</text></svg>"
+   }
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Arbres] Reconnaître une structure hiérarchique",
+   "objectif": "Identifier une situation qui demande une structure arborescente.",
+   "enonce": [
+    "Laquelle de ces situations se représente naturellement par un arbre ?"
+   ],
+   "options": [
+    {
+     "texte": "La file d'attente au guichet de la barge.",
+     "feedback": "On y sert dans l'ordre d'arrivée, les uns après les autres : c'est une file, une structure linéaire."
+    },
+    {
+     "texte": "Les dossiers et sous-dossiers d'un ordinateur.",
+     "juste": true,
+     "feedback": "Oui. Chaque dossier est rangé dans un seul dossier parent, et peut en contenir d'autres : c'est une hiérarchie, donc un arbre."
+    },
+    {
+     "texte": "L'historique du bouton Précédent d'un navigateur.",
+     "feedback": "La dernière page visitée ressort en premier : c'est une pile, une structure linéaire."
+    },
+    {
+     "texte": "La liste des notes d'un trimestre.",
+     "feedback": "Les notes se suivent, sans que l'une contienne les autres : une liste suffit."
+    }
+   ],
+   "explication": "Une hiérarchie (un élément contient d'autres éléments) se représente par un arbre.",
+   "note_verification": "Question de reconnaissance, sans code : situations de la fiche FichesNSI « Les arbres binaires » et du cours sur les piles et files."
+  },
+  {
+   "type": "notion",
+   "titre": "Le vocabulaire",
+   "texte": [
+    "En haut, la ==racine== ; un nœud sans enfant est une ==feuille==.",
+    "==Binaire== : au plus deux enfants, gauche et droit."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 200 158\" width=\"200\" height=\"158\" role=\"img\" aria-label=\"Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.\"><title>Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.</title><line x1=\"100\" y1=\"22\" x2=\"52\" y2=\"76\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"28\" y2=\"130\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"76\" y2=\"130\" class=\"trait\"/><line x1=\"100\" y1=\"22\" x2=\"148\" y2=\"76\" class=\"trait\"/><line x1=\"148\" y1=\"76\" x2=\"172\" y2=\"130\" class=\"trait\"/><circle cx=\"100\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"100\" y=\"27\" text-anchor=\"middle\" class=\"val\">A</text><circle cx=\"52\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"52\" y=\"81\" text-anchor=\"middle\" class=\"val\">B</text><circle cx=\"28\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"28\" y=\"135\" text-anchor=\"middle\" class=\"val\">D</text><circle cx=\"76\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"76\" y=\"135\" text-anchor=\"middle\" class=\"val\">E</text><circle cx=\"148\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"148\" y=\"81\" text-anchor=\"middle\" class=\"val\">C</text><circle cx=\"172\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"172\" y=\"135\" text-anchor=\"middle\" class=\"val\">F</text></svg>"
+   },
+   "vocabulaire": "arbre = tree ; nœud = node ; racine = root ; feuille = leaf ; sous-arbre = subtree"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Vocabulaire] Trouver les feuilles",
+   "objectif": "Repérer les feuilles d'un arbre binaire.",
+   "enonce": [
+    "On considère l'arbre ci-dessous, celui de l'écran « Le vocabulaire ».",
+    "Quelles sont ses feuilles ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 200 158\" width=\"200\" height=\"158\" role=\"img\" aria-label=\"Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.\"><title>Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.</title><line x1=\"100\" y1=\"22\" x2=\"52\" y2=\"76\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"28\" y2=\"130\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"76\" y2=\"130\" class=\"trait\"/><line x1=\"100\" y1=\"22\" x2=\"148\" y2=\"76\" class=\"trait\"/><line x1=\"148\" y1=\"76\" x2=\"172\" y2=\"130\" class=\"trait\"/><circle cx=\"100\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"100\" y=\"27\" text-anchor=\"middle\" class=\"val\">A</text><circle cx=\"52\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"52\" y=\"81\" text-anchor=\"middle\" class=\"val\">B</text><circle cx=\"28\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"28\" y=\"135\" text-anchor=\"middle\" class=\"val\">D</text><circle cx=\"76\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"76\" y=\"135\" text-anchor=\"middle\" class=\"val\">E</text><circle cx=\"148\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"148\" y=\"81\" text-anchor=\"middle\" class=\"val\">C</text><circle cx=\"172\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"172\" y=\"135\" text-anchor=\"middle\" class=\"val\">F</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "A",
+     "feedback": "A est tout en haut : c'est la racine. Les feuilles sont en bas des branches, sans enfant."
+    },
+    {
+     "texte": "B et C",
+     "feedback": "B et C ont des enfants : ce ne sont pas des feuilles. Une feuille n'a aucun enfant."
+    },
+    {
+     "texte": "D et E",
+     "feedback": "D et E sont bien des feuilles, mais il en manque une : F n'a pas d'enfant non plus, même s'il est seul sous C."
+    },
+    {
+     "texte": "D, E et F",
+     "juste": true,
+     "feedback": "Exact : D, E et F n'ont aucun enfant. C n'a qu'un enfant, F : c'est un nœud, pas une feuille."
+    }
+   ],
+   "explication": "Une feuille est un nœud sans enfant.",
+   "verifications": [
+    {
+     "code": [
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
+      "arbre = Noeud(\"A\", b, c)",
+      "def feuilles(a):",
+      "    if a is None:",
+      "        return []",
+      "    if a.gauche is None and a.droit is None:",
+      "        return [a.valeur]",
+      "    return feuilles(a.gauche) + feuilles(a.droit)",
+      "print(feuilles(arbre))"
+     ],
+     "sortie": "['D', 'E', 'F']"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Taille et hauteur",
+   "texte": [
+    "==Taille== : le nombre de nœuds.",
+    "==Hauteur== : le nombre d'arêtes du plus long chemin de la racine à une feuille."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 200 158\" width=\"200\" height=\"158\" role=\"img\" aria-label=\"Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.\"><title>Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.</title><line x1=\"100\" y1=\"22\" x2=\"52\" y2=\"76\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"28\" y2=\"130\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"76\" y2=\"130\" class=\"trait\"/><line x1=\"100\" y1=\"22\" x2=\"148\" y2=\"76\" class=\"trait\"/><line x1=\"148\" y1=\"76\" x2=\"172\" y2=\"130\" class=\"trait\"/><circle cx=\"100\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"100\" y=\"27\" text-anchor=\"middle\" class=\"val\">A</text><circle cx=\"52\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"52\" y=\"81\" text-anchor=\"middle\" class=\"val\">B</text><circle cx=\"28\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"28\" y=\"135\" text-anchor=\"middle\" class=\"val\">D</text><circle cx=\"76\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"76\" y=\"135\" text-anchor=\"middle\" class=\"val\">E</text><circle cx=\"148\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"148\" y=\"81\" text-anchor=\"middle\" class=\"val\">C</text><circle cx=\"172\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"172\" y=\"135\" text-anchor=\"middle\" class=\"val\">F</text></svg>",
+    "legende": "Taille 6, hauteur 2."
+   }
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Mesures] Taille et hauteur",
+   "objectif": "Calculer la taille et la hauteur d'un arbre binaire.",
+   "enonce": [
+    "On considère l'arbre ci-dessous. Convention : un arbre réduit à un nœud a une hauteur 0.",
+    "Quelles sont sa taille et sa hauteur ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 312 212\" width=\"312\" height=\"212\" role=\"img\" aria-label=\"Arbre binaire de racine 7 : 7 a pour enfant gauche 3 et pour enfant droit 9; 3 a pour enfant gauche 1 et pour enfant droit 5; 5 a seulement un enfant gauche, 4.\"><title>Arbre binaire de racine 7 : 7 a pour enfant gauche 3 et pour enfant droit 9; 3 a pour enfant gauche 1 et pour enfant droit 5; 5 a seulement un enfant gauche, 4.</title><line x1=\"156\" y1=\"22\" x2=\"80\" y2=\"76\" class=\"trait\"/><line x1=\"80\" y1=\"76\" x2=\"42\" y2=\"130\" class=\"trait\"/><line x1=\"80\" y1=\"76\" x2=\"118\" y2=\"130\" class=\"trait\"/><line x1=\"118\" y1=\"130\" x2=\"99\" y2=\"184\" class=\"trait\"/><line x1=\"156\" y1=\"22\" x2=\"232\" y2=\"76\" class=\"trait\"/><circle cx=\"156\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"156\" y=\"27\" text-anchor=\"middle\" class=\"val\">7</text><circle cx=\"80\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"80\" y=\"81\" text-anchor=\"middle\" class=\"val\">3</text><circle cx=\"42\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"42\" y=\"135\" text-anchor=\"middle\" class=\"val\">1</text><circle cx=\"118\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"118\" y=\"135\" text-anchor=\"middle\" class=\"val\">5</text><circle cx=\"99\" cy=\"184\" r=\"16\" class=\"case\"/><text x=\"99\" y=\"189\" text-anchor=\"middle\" class=\"val\">4</text><circle cx=\"232\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"232\" y=\"81\" text-anchor=\"middle\" class=\"val\">9</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Taille 6, hauteur 3.",
+     "juste": true,
+     "feedback": "Oui : 6 nœuds ; le plus long chemin, 7 → 3 → 5 → 4, a 3 arêtes."
+    },
+    {
+     "texte": "Taille 6, hauteur 4.",
+     "feedback": "Tu as compté les nœuds du chemin 7 → 3 → 5 → 4. Avec la convention de l'énoncé, on compte les arêtes : 3."
+    },
+    {
+     "texte": "Taille 3, hauteur 6.",
+     "feedback": "Tu as inversé : la taille compte tous les nœuds (6), la hauteur mesure le plus long chemin (3 arêtes)."
+    },
+    {
+     "texte": "Taille 5, hauteur 3.",
+     "feedback": "La racine compte aussi dans la taille : 7, 3, 9, 1, 5 et 4 font 6 nœuds."
+    }
+   ],
+   "explication": "Taille : on compte les nœuds. Hauteur : on compte les arêtes du plus long chemin.",
+   "verifications": [
+    {
+     "code": [
+      "n5 = Noeud(5, Noeud(4))",
+      "n3 = Noeud(3, Noeud(1), n5)",
+      "t2 = Noeud(7, n3, Noeud(9))",
+      "def taille(a):",
+      "    if a is None:",
+      "        return 0",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
+      "def hauteur(a):",
+      "    if a is None:",
+      "        return -1",
+      "    g = hauteur(a.gauche)",
+      "    d = hauteur(a.droit)",
+      "    return 1 + max(g, d)",
+      "print(taille(t2), hauteur(t2))"
+     ],
+     "sortie": "6 3"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Mesures] Le plus grand arbre de hauteur 2",
+   "objectif": "Encadrer le nombre de nœuds d'un arbre binaire à partir de sa hauteur.",
+   "enonce": [
+    "Avec la même convention, combien de nœuds un arbre binaire de hauteur 2 a-t-il au plus ?"
+   ],
+   "options": [
+    {
+     "texte": "4",
+     "feedback": "4, c'est le nombre de feuilles au dernier niveau. Il faut ajouter les nœuds au-dessus : 1 racine et 2 enfants."
+    },
+    {
+     "texte": "3",
+     "feedback": "3 nœuds, c'est le nombre de niveaux (profondeurs 0, 1 et 2). Chaque niveau double : 1, puis 2, puis 4."
+    },
+    {
+     "texte": "7",
+     "juste": true,
+     "feedback": "Exact : 1 + 2 + 4 = 7, quand chaque nœud a deux enfants. En général, 2ʰ⁺¹ − 1 nœuds au plus."
+    },
+    {
+     "texte": "8",
+     "feedback": "8 = 2³ : c'est un de trop. Le maximum est 1 + 2 + 4 = 7, soit 2³ − 1."
+    }
+   ],
+   "explication": "Un arbre binaire de hauteur h a au plus 2ʰ⁺¹ − 1 nœuds.",
+   "verifications": [
+    {
+     "code": [
+      "def taille(a):",
+      "    if a is None:",
+      "        return 0",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
+      "def hauteur(a):",
+      "    if a is None:",
+      "        return -1",
+      "    g = hauteur(a.gauche)",
+      "    d = hauteur(a.droit)",
+      "    return 1 + max(g, d)",
+      "a = Noeud(1, Noeud(2, Noeud(4), Noeud(5)), Noeud(3, Noeud(6), Noeud(7)))",
+      "print(hauteur(a), taille(a), 2 ** (2 + 1) - 1)"
+     ],
+     "sortie": "2 7 7"
+    }
+   ]
+  },
+  {
+   "type": "relier",
+   "id": "a01",
+   "nom": "[Vocabulaire] Relier chaque mot à sa définition",
+   "objectif": "Fixer le vocabulaire des arbres binaires.",
+   "enonce": [
+    "Relier chaque mot à sa définition."
+   ],
+   "paires": [
+    {
+     "gauche": "racine",
+     "droite": "le nœud tout en haut, sans parent",
+     "feedback": "La racine est le seul nœud sans parent : tout l'arbre part d'elle."
+    },
+    {
+     "gauche": "feuille",
+     "droite": "un nœud sans enfant",
+     "feedback": "Une feuille est au bout d'une branche : elle n'a ni enfant gauche ni enfant droit."
+    },
+    {
+     "gauche": "taille",
+     "droite": "le nombre de nœuds",
+     "feedback": "La taille compte tous les nœuds, la racine et les feuilles comprises."
+    },
+    {
+     "gauche": "hauteur",
+     "droite": "le nombre d'arêtes du plus long chemin de la racine à une feuille",
+     "feedback": "La hauteur mesure la plus longue branche : ici, on compte ses arêtes."
+    },
+    {
+     "gauche": "sous-arbre gauche",
+     "droite": "l'arbre qui part de l'enfant gauche",
+     "feedback": "Chaque nœud a un sous-arbre gauche et un droit, qui sont eux-mêmes des arbres, peut-être vides."
+    }
+   ],
+   "explication": "Racine en haut, feuilles en bas ; taille = nœuds, hauteur = arêtes du plus long chemin."
+  },
+  {
+   "type": "notion",
+   "titre": "En Python",
+   "texte": [
+    "Un nœud a une valeur et deux sous-arbres ; `None` est l'==arbre vide==."
+   ],
+   "code": [
+    "class Noeud:",
+    "    def __init__(self, v,",
+    "                 g=None,",
+    "                 d=None):",
+    "        self.valeur = v",
+    "        self.gauche = g",
+    "        self.droit = d",
+    "",
+    "f = Noeud(\"F\")",
+    "c = Noeud(\"C\", None, f)"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Python] Construire un arbre",
+   "objectif": "Écrire en Python un arbre binaire dessiné.",
+   "enonce": [
+    "On utilise la classe `Noeud` de l'écran précédent.",
+    "Quelle expression construit l'arbre dessiné ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 200 158\" width=\"200\" height=\"158\" role=\"img\" aria-label=\"Arbre binaire de racine 5 : 5 a pour enfant gauche 3 et pour enfant droit 8; 3 a seulement un enfant gauche, 1.\"><title>Arbre binaire de racine 5 : 5 a pour enfant gauche 3 et pour enfant droit 8; 3 a seulement un enfant gauche, 1.</title><line x1=\"100\" y1=\"22\" x2=\"52\" y2=\"76\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"28\" y2=\"130\" class=\"trait\"/><line x1=\"100\" y1=\"22\" x2=\"148\" y2=\"76\" class=\"trait\"/><circle cx=\"100\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"100\" y=\"27\" text-anchor=\"middle\" class=\"val\">5</text><circle cx=\"52\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"52\" y=\"81\" text-anchor=\"middle\" class=\"val\">3</text><circle cx=\"28\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"28\" y=\"135\" text-anchor=\"middle\" class=\"val\">1</text><circle cx=\"148\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"148\" y=\"81\" text-anchor=\"middle\" class=\"val\">8</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "`Noeud(5, Noeud(3, Noeud(1)), Noeud(8))`",
+     "juste": true,
+     "feedback": "Oui : 5 a pour enfant gauche 3 et pour enfant droit 8 ; 1 est l'enfant gauche de 3."
+    },
+    {
+     "texte": "`Noeud(5, Noeud(3, None, Noeud(1)), Noeud(8))`",
+     "feedback": "Ici, 1 est l'enfant droit de 3, à cause du `None` placé en premier. Sur le dessin, 1 est à gauche de 3."
+    },
+    {
+     "texte": "`Noeud(5, Noeud(8), Noeud(3, Noeud(1)))`",
+     "feedback": "Tu as échangé les deux côtés : le premier sous-arbre donné est le gauche. Sur le dessin, 3 est à gauche."
+    },
+    {
+     "texte": "`Noeud(1, Noeud(3), Noeud(5, Noeud(8)))`",
+     "feedback": "La racine est le nœud du haut, 5, et elle s'écrit en premier. Ici, l'arbre a été écrit en partant d'une feuille."
+    }
+   ],
+   "explication": "`Noeud(valeur, gauche, droit)` : la valeur, puis le sous-arbre gauche, puis le droit.",
+   "verifications": [
+    {
+     "code": [
+      "print(structure(Noeud(5, Noeud(3, Noeud(1)), Noeud(8))))"
+     ],
+     "sortie": "(5, (3, (1, None, None), None), (8, None, None))"
+    },
+    {
+     "code": [
+      "print(structure(Noeud(5, Noeud(3, None, Noeud(1)), Noeud(8))) == (5, (3, (1, None, None), None), (8, None, None)))"
+     ],
+     "sortie": "False",
+     "option": 1
+    },
+    {
+     "code": [
+      "print(structure(Noeud(5, Noeud(8), Noeud(3, Noeud(1)))) == (5, (3, (1, None, None), None), (8, None, None)))"
+     ],
+     "sortie": "False",
+     "option": 2
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Des fonctions récursives",
+   "texte": [
+    "Cas de base : l'arbre vide. Sinon, on traite la racine et ses ==deux sous-arbres==."
+   ],
+   "code": [
+    "def taille(a):",
+    "    if a is None:",
+    "        return 0",
+    "    g = taille(a.gauche)",
+    "    d = taille(a.droit)",
+    "    return 1 + g + d"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Python] Calculer une hauteur",
+   "objectif": "Calculer le résultat de la fonction récursive `hauteur`.",
+   "enonce": [
+    "On considère la fonction `hauteur` ci-dessous et l'arbre `arbre` (A, B, C, D, E, F) de l'écran « Le vocabulaire ».",
+    "Que renvoie `hauteur(arbre)` ?"
+   ],
+   "code": [
+    "def hauteur(a):",
+    "    if a is None:",
+    "        return -1",
+    "    g = hauteur(a.gauche)",
+    "    d = hauteur(a.droit)",
+    "    return 1 + max(g, d)",
+    "",
+    "b = Noeud(\"B\", Noeud(\"D\"),",
+    "          Noeud(\"E\"))",
+    "c = Noeud(\"C\", None,",
+    "          Noeud(\"F\"))",
+    "arbre = Noeud(\"A\", b, c)"
+   ],
+   "options": [
+    {
+     "texte": "3",
+     "feedback": "Ce serait vrai si l'arbre vide valait 0. Ici, il vaut −1 : une feuille a une hauteur 1 + max(−1, −1) = 0."
+    },
+    {
+     "texte": "2",
+     "juste": true,
+     "feedback": "Exact. Une feuille a une hauteur 0 ; B et C, 1 ; A, 1 + max(1, 1) = 2."
+    },
+    {
+     "texte": "6",
+     "feedback": "6, c'est la taille, le nombre de nœuds. La hauteur suit seulement le plus long chemin."
+    },
+    {
+     "texte": "1",
+     "feedback": "Tu t'es arrêté·e au niveau de B et C. La fonction ajoute 1 à chaque niveau, jusqu'à la racine : 2."
+    }
+   ],
+   "explication": "hauteur = 1 + max(hauteur gauche, hauteur droite), avec −1 pour l'arbre vide.",
+   "verifications": [
+    {
+     "code": [
+      "def taille(a):",
+      "    if a is None:",
+      "        return 0",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
+      "print(hauteur(arbre), taille(arbre))"
+     ],
+     "sortie": "2 6"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Erreur] Oublier l'arbre vide",
+   "objectif": "Relier l'erreur `AttributeError` à un cas de base oublié.",
+   "enonce": [
+    "Le programme suivant s'arrête sur l'erreur `AttributeError: 'NoneType' object has no attribute 'gauche'` (« None n'a pas d'attribut gauche »).",
+    "Quelle est la cause ?"
+   ],
+   "code": [
+    "def taille(a):",
+    "    g = taille(a.gauche)",
+    "    d = taille(a.droit)",
+    "    return 1 + g + d",
+    "",
+    "a = Noeud(\"A\", Noeud(\"B\"))",
+    "print(taille(a))"
+   ],
+   "options": [
+    {
+     "texte": "La classe `Noeud` n'a pas d'attribut `gauche`.",
+     "feedback": "Elle en a un, `self.gauche`. Le message parle de `'NoneType'`, c'est-à-dire de `None` : on a appelé `taille(None)`."
+    },
+    {
+     "texte": "Les appels sont trop nombreux : la pile d'appels déborde.",
+     "feedback": "Une pile qui déborde donne `RecursionError: maximum recursion depth exceeded`. Ici, l'erreur arrive après trois appels seulement."
+    },
+    {
+     "texte": "Il faudrait mettre `0` et pas `None` pour les sous-arbres vides.",
+     "feedback": "`None` est bien la convention de l'arbre vide. Avec 0, Python répondrait `AttributeError: 'int' object has no attribute 'gauche'`."
+    },
+    {
+     "texte": "Il manque le cas de base : `if a is None: return 0`.",
+     "juste": true,
+     "feedback": "Oui. Sous la feuille B, `taille(a.gauche)` est appelé avec `None`, puis `None.gauche` provoque l'erreur. Le cas de base arrête avant."
+    }
+   ],
+   "explication": "Une fonction sur un arbre commence toujours par le cas de l'arbre vide.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "AttributeError"
+    },
+    {
+     "code": [
+      "def taille(a):",
+      "    if a is None:",
+      "        return 0",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
+      "a = Noeud(\"A\", Noeud(\"B\"))",
+      "print(taille(a))"
+     ],
+     "sortie": "2",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Trois parcours en profondeur",
+   "texte": [
+    "Le nom dit quand on lit la racine : ==préfixe== avant ses sous-arbres, ==infixe== entre les deux, ==suffixe== après."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 200 158\" width=\"200\" height=\"158\" role=\"img\" aria-label=\"Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.\"><title>Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.</title><line x1=\"100\" y1=\"22\" x2=\"52\" y2=\"76\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"28\" y2=\"130\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"76\" y2=\"130\" class=\"trait\"/><line x1=\"100\" y1=\"22\" x2=\"148\" y2=\"76\" class=\"trait\"/><line x1=\"148\" y1=\"76\" x2=\"172\" y2=\"130\" class=\"trait\"/><circle cx=\"100\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"100\" y=\"27\" text-anchor=\"middle\" class=\"val\">A</text><circle cx=\"52\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"52\" y=\"81\" text-anchor=\"middle\" class=\"val\">B</text><circle cx=\"28\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"28\" y=\"135\" text-anchor=\"middle\" class=\"val\">D</text><circle cx=\"76\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"76\" y=\"135\" text-anchor=\"middle\" class=\"val\">E</text><circle cx=\"148\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"148\" y=\"81\" text-anchor=\"middle\" class=\"val\">C</text><circle cx=\"172\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"172\" y=\"135\" text-anchor=\"middle\" class=\"val\">F</text></svg>",
+    "legende": "Préfixe : A B D E C F."
+   },
+   "vocabulaire": "parcours = traversal ; préfixe = preorder ; infixe = inorder ; suffixe = postorder"
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Parcours] Le parcours infixe",
+   "objectif": "Appliquer la règle du parcours infixe : gauche, racine, droit.",
+   "enonce": [
+    "On reprend l'arbre A, B, C, D, E, F.",
+    "Quel est son parcours infixe ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 200 158\" width=\"200\" height=\"158\" role=\"img\" aria-label=\"Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.\"><title>Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.</title><line x1=\"100\" y1=\"22\" x2=\"52\" y2=\"76\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"28\" y2=\"130\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"76\" y2=\"130\" class=\"trait\"/><line x1=\"100\" y1=\"22\" x2=\"148\" y2=\"76\" class=\"trait\"/><line x1=\"148\" y1=\"76\" x2=\"172\" y2=\"130\" class=\"trait\"/><circle cx=\"100\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"100\" y=\"27\" text-anchor=\"middle\" class=\"val\">A</text><circle cx=\"52\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"52\" y=\"81\" text-anchor=\"middle\" class=\"val\">B</text><circle cx=\"28\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"28\" y=\"135\" text-anchor=\"middle\" class=\"val\">D</text><circle cx=\"76\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"76\" y=\"135\" text-anchor=\"middle\" class=\"val\">E</text><circle cx=\"148\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"148\" y=\"81\" text-anchor=\"middle\" class=\"val\">C</text><circle cx=\"172\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"172\" y=\"135\" text-anchor=\"middle\" class=\"val\">F</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "A B D E C F",
+     "feedback": "C'est le parcours préfixe : la racine avant ses sous-arbres. En infixe, la racine vient entre ses deux sous-arbres."
+    },
+    {
+     "texte": "D E B F C A",
+     "feedback": "C'est le parcours suffixe : la racine après ses sous-arbres. En infixe, B vient entre D et E."
+    },
+    {
+     "texte": "D B E A C F",
+     "juste": true,
+     "feedback": "Exact : à gauche D B E, puis la racine A, puis à droite C F. C n'a pas d'enfant gauche : on le lit avant F."
+    },
+    {
+     "texte": "D B E A F C",
+     "feedback": "C n'a pas de sous-arbre gauche : on lit d'abord C, puis son sous-arbre droit F."
+    }
+   ],
+   "explication": "Infixe : sous-arbre gauche, racine, sous-arbre droit, à chaque nœud.",
+   "verifications": [
+    {
+     "code": [
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
+      "arbre = Noeud(\"A\", b, c)",
+      "def parcours(a):",
+      "    if a is None:",
+      "        return []",
+      "    g = parcours(a.gauche)",
+      "    d = parcours(a.droit)",
+      "    return g + [a.valeur] + d",
+      "print(' '.join(parcours(arbre)))"
+     ],
+     "sortie": "D B E A C F"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Parcours] Le parcours suffixe",
+   "objectif": "Appliquer la règle du parcours suffixe : gauche, droit, racine.",
+   "enonce": [
+    "On considère l'arbre ci-dessous.",
+    "Quel est son parcours suffixe ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 312 212\" width=\"312\" height=\"212\" role=\"img\" aria-label=\"Arbre binaire de racine 7 : 7 a pour enfant gauche 3 et pour enfant droit 9; 3 a pour enfant gauche 1 et pour enfant droit 5; 5 a seulement un enfant gauche, 4.\"><title>Arbre binaire de racine 7 : 7 a pour enfant gauche 3 et pour enfant droit 9; 3 a pour enfant gauche 1 et pour enfant droit 5; 5 a seulement un enfant gauche, 4.</title><line x1=\"156\" y1=\"22\" x2=\"80\" y2=\"76\" class=\"trait\"/><line x1=\"80\" y1=\"76\" x2=\"42\" y2=\"130\" class=\"trait\"/><line x1=\"80\" y1=\"76\" x2=\"118\" y2=\"130\" class=\"trait\"/><line x1=\"118\" y1=\"130\" x2=\"99\" y2=\"184\" class=\"trait\"/><line x1=\"156\" y1=\"22\" x2=\"232\" y2=\"76\" class=\"trait\"/><circle cx=\"156\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"156\" y=\"27\" text-anchor=\"middle\" class=\"val\">7</text><circle cx=\"80\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"80\" y=\"81\" text-anchor=\"middle\" class=\"val\">3</text><circle cx=\"42\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"42\" y=\"135\" text-anchor=\"middle\" class=\"val\">1</text><circle cx=\"118\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"118\" y=\"135\" text-anchor=\"middle\" class=\"val\">5</text><circle cx=\"99\" cy=\"184\" r=\"16\" class=\"case\"/><text x=\"99\" y=\"189\" text-anchor=\"middle\" class=\"val\">4</text><circle cx=\"232\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"232\" y=\"81\" text-anchor=\"middle\" class=\"val\">9</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "1 4 5 3 9 7",
+     "juste": true,
+     "feedback": "Oui : à gauche, 1 puis 4 5 puis 3 ; à droite, 9 ; la racine 7 en dernier."
+    },
+    {
+     "texte": "7 3 1 5 4 9",
+     "feedback": "C'est le parcours préfixe : la racine d'abord. En suffixe, la racine 7 vient en dernier."
+    },
+    {
+     "texte": "1 3 4 5 7 9",
+     "feedback": "C'est le parcours infixe : la racine entre ses sous-arbres. En suffixe, chaque racine vient après ses deux sous-arbres."
+    },
+    {
+     "texte": "1 5 4 3 9 7",
+     "feedback": "Presque : sous 5, 4 est un enfant, donc lu avant lui. Le sous-arbre de 5 donne 4 5."
+    }
+   ],
+   "explication": "Suffixe : sous-arbre gauche, sous-arbre droit, puis la racine.",
+   "verifications": [
+    {
+     "code": [
+      "n5 = Noeud(5, Noeud(4))",
+      "n3 = Noeud(3, Noeud(1), n5)",
+      "t2 = Noeud(7, n3, Noeud(9))",
+      "def parcours(a):",
+      "    if a is None:",
+      "        return []",
+      "    g = parcours(a.gauche)",
+      "    d = parcours(a.droit)",
+      "    return g + d + [a.valeur]",
+      "print(*parcours(t2))"
+     ],
+     "sortie": "1 4 5 3 9 7"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le parcours en largeur",
+   "texte": [
+    "Niveau par niveau, de gauche à droite.",
+    "On le programme avec une ==file==."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 200 158\" width=\"200\" height=\"158\" role=\"img\" aria-label=\"Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.\"><title>Arbre binaire de racine A : A a pour enfant gauche B et pour enfant droit C; B a pour enfant gauche D et pour enfant droit E; C a seulement un enfant droit, F.</title><line x1=\"100\" y1=\"22\" x2=\"52\" y2=\"76\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"28\" y2=\"130\" class=\"trait\"/><line x1=\"52\" y1=\"76\" x2=\"76\" y2=\"130\" class=\"trait\"/><line x1=\"100\" y1=\"22\" x2=\"148\" y2=\"76\" class=\"trait\"/><line x1=\"148\" y1=\"76\" x2=\"172\" y2=\"130\" class=\"trait\"/><circle cx=\"100\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"100\" y=\"27\" text-anchor=\"middle\" class=\"val\">A</text><circle cx=\"52\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"52\" y=\"81\" text-anchor=\"middle\" class=\"val\">B</text><circle cx=\"28\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"28\" y=\"135\" text-anchor=\"middle\" class=\"val\">D</text><circle cx=\"76\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"76\" y=\"135\" text-anchor=\"middle\" class=\"val\">E</text><circle cx=\"148\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"148\" y=\"81\" text-anchor=\"middle\" class=\"val\">C</text><circle cx=\"172\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"172\" y=\"135\" text-anchor=\"middle\" class=\"val\">F</text></svg>",
+    "legende": "Largeur : A B C D E F."
+   },
+   "vocabulaire": "en largeur = breadth-first"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Parcours] Le parcours en largeur",
+   "objectif": "Appliquer le parcours en largeur, niveau par niveau.",
+   "enonce": [
+    "On reprend l'arbre de racine 7.",
+    "Quel est son parcours en largeur ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 312 212\" width=\"312\" height=\"212\" role=\"img\" aria-label=\"Arbre binaire de racine 7 : 7 a pour enfant gauche 3 et pour enfant droit 9; 3 a pour enfant gauche 1 et pour enfant droit 5; 5 a seulement un enfant gauche, 4.\"><title>Arbre binaire de racine 7 : 7 a pour enfant gauche 3 et pour enfant droit 9; 3 a pour enfant gauche 1 et pour enfant droit 5; 5 a seulement un enfant gauche, 4.</title><line x1=\"156\" y1=\"22\" x2=\"80\" y2=\"76\" class=\"trait\"/><line x1=\"80\" y1=\"76\" x2=\"42\" y2=\"130\" class=\"trait\"/><line x1=\"80\" y1=\"76\" x2=\"118\" y2=\"130\" class=\"trait\"/><line x1=\"118\" y1=\"130\" x2=\"99\" y2=\"184\" class=\"trait\"/><line x1=\"156\" y1=\"22\" x2=\"232\" y2=\"76\" class=\"trait\"/><circle cx=\"156\" cy=\"22\" r=\"16\" class=\"case\"/><text x=\"156\" y=\"27\" text-anchor=\"middle\" class=\"val\">7</text><circle cx=\"80\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"80\" y=\"81\" text-anchor=\"middle\" class=\"val\">3</text><circle cx=\"42\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"42\" y=\"135\" text-anchor=\"middle\" class=\"val\">1</text><circle cx=\"118\" cy=\"130\" r=\"16\" class=\"case\"/><text x=\"118\" y=\"135\" text-anchor=\"middle\" class=\"val\">5</text><circle cx=\"99\" cy=\"184\" r=\"16\" class=\"case\"/><text x=\"99\" y=\"189\" text-anchor=\"middle\" class=\"val\">4</text><circle cx=\"232\" cy=\"76\" r=\"16\" class=\"case\"/><text x=\"232\" y=\"81\" text-anchor=\"middle\" class=\"val\">9</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "7 3 1 5 4 9",
+     "feedback": "C'est le parcours préfixe : il descend au fond d'une branche avant de passer à la suivante. La largeur lit tout un niveau d'abord."
+    },
+    {
+     "texte": "7 9 3 5 1 4",
+     "feedback": "Les niveaux sont justes, mais lus de droite à gauche. Chaque niveau se lit de gauche à droite : 3 avant 9."
+    },
+    {
+     "texte": "4 1 5 3 9 7",
+     "feedback": "On part de la racine, en haut, pas du bas de l'arbre : 7 d'abord."
+    },
+    {
+     "texte": "7 3 9 1 5 4",
+     "juste": true,
+     "feedback": "Exact : niveau 0, 7 ; niveau 1, 3 9 ; niveau 2, 1 5 ; niveau 3, 4."
+    }
+   ],
+   "explication": "En largeur : niveau par niveau, de gauche à droite, à l'aide d'une file.",
+   "verifications": [
+    {
+     "code": [
+      "n5 = Noeud(5, Noeud(4))",
+      "n3 = Noeud(3, Noeud(1), n5)",
+      "t2 = Noeud(7, n3, Noeud(9))",
+      "def largeur(a):",
+      "    file, res = [a], []",
+      "    while file:",
+      "        n = file.pop(0)",
+      "        if n is not None:",
+      "            res.append(n.valeur)",
+      "            file.append(n.gauche)",
+      "            file.append(n.droit)",
+      "    return res",
+      "print(*largeur(t2))"
+     ],
+     "sortie": "7 3 9 1 5 4"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Python] Programmer le parcours infixe",
+   "objectif": "Écrire la dernière ligne d'un parcours en profondeur.",
+   "enonce": [
+    "Il manque la dernière ligne de cette fonction.",
+    "Laquelle donne le parcours infixe ?"
+   ],
+   "code": [
+    "def parcours(a):",
+    "    if a is None:",
+    "        return []",
+    "    g = parcours(a.gauche)",
+    "    d = parcours(a.droit)"
+   ],
+   "options": [
+    {
+     "code": [
+      "return [a.valeur] + g + d"
+     ],
+     "feedback": "La racine est placée avant ses sous-arbres : c'est le parcours préfixe."
+    },
+    {
+     "code": [
+      "return g + [a.valeur] + d"
+     ],
+     "juste": true,
+     "feedback": "Oui : le sous-arbre gauche, la racine, puis le sous-arbre droit. Sur l'arbre A, B, C, D, E, F : D B E A C F."
+    },
+    {
+     "code": [
+      "return g + d + [a.valeur]"
+     ],
+     "feedback": "La racine est placée après ses sous-arbres : c'est le parcours suffixe."
+    },
+    {
+     "code": [
+      "return [a.valeur] + d + g"
+     ],
+     "feedback": "La racine d'abord, puis la droite avant la gauche : c'est un parcours préfixe de l'arbre vu dans un miroir."
+    }
+   ],
+   "explication": "Où l'on place `[a.valeur]` décide du parcours : avant, entre ou après.",
+   "verifications": [
+    {
+     "code": [
+      "    return g + [a.valeur] + d",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
+      "arbre = Noeud(\"A\", b, c)",
+      "print(*parcours(arbre))"
+     ],
+     "sortie": "D B E A C F"
+    },
+    {
+     "code": [
+      "    return [a.valeur] + g + d",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
+      "arbre = Noeud(\"A\", b, c)",
+      "print(*parcours(arbre))"
+     ],
+     "sortie": "A B D E C F",
+     "option": 0
+    },
+    {
+     "code": [
+      "    return g + d + [a.valeur]",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
+      "arbre = Noeud(\"A\", b, c)",
+      "print(*parcours(arbre))"
+     ],
+     "sortie": "D E B F C A",
+     "option": 2
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "À retenir"
+    ],
+    "lignes": [
+     [
+      "Vocabulaire",
+      "racine en haut ; feuille : sans enfant ; au plus deux enfants"
+     ],
+     [
+      "Mesures",
+      "taille : les nœuds ; hauteur : les arêtes du plus long chemin"
+     ],
+     [
+      "En Python",
+      "`Noeud(valeur, gauche, droit)` ; `None` est l'arbre vide"
+     ],
+     [
+      "Fonctions",
+      "récursives : cas de base l'arbre vide, puis les deux sous-arbres"
+     ],
+     [
+      "Parcours",
+      "préfixe (R G D), infixe (G R D), suffixe (G D R), largeur (niveaux)"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu donner à un·e camarade la taille et la hauteur d'un arbre ?"
+   ]
+  }
+ ]
+}
