@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "binaire",
- "titre": "Écrire en binaire et en hexadécimal",
+ "titre": "Binaire et hexadécimal",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Représentation des données : types et valeurs de base ; écriture d'un entier positif dans une base b ≥ 2 (passer de la représentation d'une base dans une autre ; les bases 2, 10 et 16 sont privilégiées)",
@@ -530,7 +530,7 @@
    "nom": "[Python] Les préfixes `0b` et `0x`",
    "objectif": "Lire ce qu'affichent `bin` et un entier écrit en base 2 dans le code.",
    "enonce": [
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "print(bin(45), 0b101101)"
@@ -569,13 +569,15 @@
    "objectif": "Lire un message d'erreur de `int` et savoir ce qu'il attend.",
    "enonce": [
     "Ce programme doit afficher la valeur en base 10 de l'octet `10110110`.",
-    "Il s'arrête à la ligne 2 sur l'erreur `TypeError: int() can't convert non-string with explicit base` (« `int()` ne peut pas convertir autre chose qu'un texte quand on donne la base »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête à la ligne 2 sur l'erreur affichée sous le code (« `int()` ne peut pas convertir autre chose qu'un texte quand on donne la base »)."
    ],
    "code": [
     "octet = 10110110",
     "valeur = int(octet, 2)",
     "print(valeur)"
+   ],
+   "console": [
+    "TypeError: int() can't convert non-string with explicit base"
    ],
    "ligne": 1,
    "correction": "octet = \"10110110\"",

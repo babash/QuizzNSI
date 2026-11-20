@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "dichotomie",
- "titre": "La recherche dichotomique",
+ "titre": "Recherche dichotomique",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : recherche dichotomique dans un tableau trié (montrer la terminaison de la recherche dichotomique à l'aide d'un variant de boucle ; coût logarithmique)",
@@ -346,9 +346,8 @@
    "nom": "[Erreur] Un milieu qui n'est pas entier",
    "objectif": "Lire un message d'erreur et retrouver le calcul du milieu.",
    "enonce": [
-    "Ce programme cherche le départ de 14 h dans la liste `h` des horaires de la barge, rangés dans l'ordre.",
-    "Il s'arrête à la ligne 5 sur l'erreur `TypeError: list indices must be integers or slices, not float` (« les indices d'une liste sont des entiers, pas des flottants »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Ce programme cherche le départ de 14 h dans la liste `h` des horaires de la barge, rangés dans l'ordre.",
+    "Il s'arrête à la ligne 5 sur l'erreur affichée sous le code (« les indices d'une liste sont des entiers, pas des flottants »)."
    ],
    "code": [
     "def dichotomie(t, v):",
@@ -364,6 +363,9 @@
     "    return -1",
     "h = [6, 8, 11, 14, 17, 20]",
     "print(dichotomie(h, 14))"
+   ],
+   "console": [
+    "TypeError: list indices must be integers or slices, not float"
    ],
    "ligne": 4,
    "correction": "        m = (g + d) // 2",

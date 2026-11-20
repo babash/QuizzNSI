@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "gloutons",
- "titre": "Les algorithmes gloutons",
+ "titre": "Algorithmes gloutons",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : algorithmes gloutons (résoudre un problème grâce à un algorithme glouton ; exemples du rendu de monnaie et du sac à dos ; un algorithme glouton ne donne pas toujours une solution optimale)",
@@ -65,9 +65,9 @@
   },
   {
    "type": "classe",
-   "question": "Comment rendre 37 € avec le moins de billets et de pièces ?",
+   "question": "Comment rendre 37 € avec le moins de billets et de pièces ?",
    "texte": [
-    "Au doukabé, la caisse a des billets de 20, 10 et 5 €, des pièces de 2 et 1 €."
+    "Au doukabé, la caisse a des billets de 20, 10 et 5 €, des pièces de 2 et 1 €."
    ],
    "pistes": [
     "On commence par le plus gros ?"
@@ -76,10 +76,10 @@
   {
    "type": "question",
    "id": "q01",
-   "nom": "[Rendu de monnaie] Rendre 37 €",
+   "nom": "[Rendu de monnaie] Rendre 37 €",
    "objectif": "Appliquer la méthode « la plus grande valeur d'abord » pour rendre la monnaie.",
    "enonce": [
-    "Au doukabé, il faut rendre 37 € avec des billets de 20, 10 et 5 € et des pièces de 2 et 1 €.",
+    "Au doukabé, il faut rendre 37 € avec des billets de 20, 10 et 5 € et des pièces de 2 et 1 €.",
     "On prend à chaque fois la plus grande valeur qui ne dépasse pas ce qui reste à rendre. Que rend-on ?"
    ],
    "options": [
@@ -90,15 +90,15 @@
     },
     {
      "texte": "20, 10, 5, 1, 1",
-     "feedback": "Le total est juste, mais il restait 2 € après le billet de 5 : la pièce de 2 € ne dépasse pas 2. Une pièce au lieu de deux."
+     "feedback": "Le total est juste, mais il restait 2 € après le billet de 5 : la pièce de 2 € ne dépasse pas 2. Une pièce au lieu de deux."
     },
     {
      "texte": "10, 10, 10, 5, 2",
-     "feedback": "Le total est juste, mais on a sauté le billet de 20 €, qui ne dépassait pas 37. Le plus gros d'abord : 20, puis 10."
+     "feedback": "Le total est juste, mais on a sauté le billet de 20 €, qui ne dépassait pas 37. Le plus gros d'abord : 20, puis 10."
     },
     {
      "texte": "20, 10, 2, 2, 2, 1",
-     "feedback": "Le total est juste, mais il restait 7 € après 20 et 10 : le billet de 5 € ne dépasse pas 7. On aurait 4 billets et pièces au lieu de 6."
+     "feedback": "Le total est juste, mais il restait 7 € après 20 et 10 : le billet de 5 € ne dépasse pas 7. On aurait 4 billets et pièces au lieu de 6."
     }
    ],
    "explication": "À chaque étape, la plus grande valeur qui ne dépasse pas le reste.",
@@ -123,29 +123,29 @@
   {
    "type": "question",
    "id": "q02",
-   "nom": "[Choix glouton] Il reste 8 € à rendre",
+   "nom": "[Choix glouton] Il reste 8 € à rendre",
    "objectif": "Identifier le choix glouton à une étape.",
    "enonce": [
-    "Avec des billets de 20, 10 et 5 € et des pièces de 2 et 1 €, il reste 8 € à rendre.",
+    "Avec des billets de 20, 10 et 5 € et des pièces de 2 et 1 €, il reste 8 € à rendre.",
     "Quel est le choix glouton pour cette étape ?"
    ],
    "options": [
     {
-     "texte": "Un billet de 10 €, la plus grande valeur de la caisse.",
-     "feedback": "10 € dépasse les 8 € à rendre : on rendrait trop. Le glouton prend la plus grande valeur qui ne dépasse pas le reste."
+     "texte": "Un billet de 10 €, la plus grande valeur de la caisse.",
+     "feedback": "10 € dépasse les 8 € à rendre : on rendrait trop. Le glouton prend la plus grande valeur qui ne dépasse pas le reste."
     },
     {
-     "texte": "Quatre pièces de 2 €, qui font exactement 8 €.",
+     "texte": "Quatre pièces de 2 €, qui font exactement 8 €.",
      "feedback": "4 × 2 = 8, mais c'est 4 pièces d'un coup. Le glouton choisit une seule valeur par étape, la plus grande possible : 5, puis 2, puis 1."
     },
     {
-     "texte": "Un billet de 5 €, le plus grand qui ne dépasse pas 8.",
+     "texte": "Un billet de 5 €, le plus grand qui ne dépasse pas 8.",
      "juste": true,
      "feedback": "Oui. 10 et 20 dépassent 8 ; 5 est la plus grande valeur possible. Ensuite, il restera 3 : une pièce de 2, puis une de 1."
     },
     {
-     "texte": "Une pièce de 1 €, pour être sûr de ne pas dépasser.",
-     "feedback": "On ne dépasse pas, mais on rendrait beaucoup de pièces. Le meilleur choix du moment est la plus grande valeur possible : 5 €."
+     "texte": "Une pièce de 1 €, pour être sûr de ne pas dépasser.",
+     "feedback": "On ne dépasse pas, mais on rendrait beaucoup de pièces. Le meilleur choix du moment est la plus grande valeur possible : 5 €."
     }
    ],
    "explication": "Le choix glouton : la plus grande valeur qui ne dépasse pas le reste.",
@@ -178,12 +178,11 @@
   {
    "type": "ligne",
    "id": "a01",
-   "nom": "[Erreur] Un rendu qui oublie 2 €",
+   "nom": "[Erreur] Un rendu qui oublie 2 €",
    "objectif": "Distinguer `if` et `while` en lisant ce qu'affiche un programme.",
    "enonce": [
-    "Ce programme doit rendre 40 € : `[20, 20]`.",
-    "Il affiche `[20, 10, 5, 2, 1]` : chaque valeur est prise une fois, et 38 € seulement sont rendus.",
-    "Toucher la ligne qui contient l'erreur."
+    "Ce programme doit rendre 40 € : `[20, 20]`.",
+    "Il affiche la sortie sous le code : chaque valeur est prise une fois, et 38 € seulement sont rendus."
    ],
    "code": [
     "def rendu(s, pieces):",
@@ -195,6 +194,9 @@
     "    return pris",
     "euros = [20, 10, 5, 2, 1]",
     "print(rendu(40, euros))"
+   ],
+   "console": [
+    "[20, 10, 5, 2, 1]"
    ],
    "ligne": 4,
    "correction": "        while s >= p:",
@@ -224,7 +226,7 @@
    "objectif": "Comprendre pourquoi on range les pièces de la plus grande à la plus petite.",
    "enonce": [
     "On appelle la fonction `rendu` de l'écran précédent avec les pièces rangées dans l'ordre croissant.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "print(rendu(8, [1, 2, 5]))"
@@ -263,7 +265,7 @@
    "objectif": "Dérouler le glouton sur un autre système de pièces.",
    "enonce": [
     "Dans un jeu, les pièces valent 4, 3 et 1.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "print(rendu(6, [4, 3, 1]))"
@@ -365,7 +367,7 @@
     {
      "texte": "Avec les euros, il rend toujours le moins de pièces et de billets possible.",
      "juste": true,
-     "feedback": "Oui. Avec 1, 2, 5, 10, 20, 50… le glouton est optimal : c'est démontré, et vérifié pour toutes les sommes de 1 à 200 €."
+     "feedback": "Oui. Avec 1, 2, 5, 10, 20, 50… le glouton est optimal : c'est démontré, et vérifié pour toutes les sommes de 1 à 200 €."
     },
     {
      "texte": "Il rend toujours le moins de pièces possible, quelles que soient les pièces.",
@@ -373,7 +375,7 @@
     },
     {
      "texte": "Il ne rend jamais le moins de pièces possible.",
-     "feedback": "Il trouve souvent la meilleure solution : pour 37 € en euros, 20, 10, 5, 2 est optimal. Il n'est simplement pas garanti partout."
+     "feedback": "Il trouve souvent la meilleure solution : pour 37 € en euros, 20, 10, 5, 2 est optimal. Il n'est simplement pas garanti partout."
     },
     {
      "texte": "Un exemple où il marche suffit à prouver qu'il est optimal.",
@@ -395,7 +397,7 @@
    "type": "classe",
    "question": "Quels produits emporter au marché ?",
    "texte": [
-    "Le panier supporte 10 kg au plus. On veut la plus grande valeur."
+    "Le panier supporte 10 kg au plus. On veut la plus grande valeur."
    ],
    "pistes": [
     "Le plus cher d'abord ?",
@@ -420,29 +422,29 @@
    "nom": "[Sac à dos] Le choix glouton",
    "objectif": "Appliquer le glouton « valeur par kilo » au problème du sac à dos.",
    "enonce": [
-    "Le panier supporte 10 kg au plus. On prend les produits de l'écran précédent par valeur par kilo décroissante, s'ils rentrent encore.",
+    "Le panier supporte 10 kg au plus. On prend les produits de l'écran précédent par valeur par kilo décroissante, s'ils rentrent encore.",
     "Que contient le panier ?"
    ],
    "options": [
     {
-     "texte": "Les bananes et les ananas : 40 €.",
+     "texte": "Les bananes et les ananas : 40 €.",
      "feedback": "C'est la meilleure solution, mais pas celle du glouton : il prend d'abord les mangues, et après, ni les bananes ni les ananas ne rentrent."
     },
     {
-     "texte": "Les mangues et les bananes : 50 €.",
-     "feedback": "6 + 5 = 11 kg : c'est trop lourd. Le glouton ne prend un produit que s'il rentre encore dans les 10 kg."
+     "texte": "Les mangues et les bananes : 50 €.",
+     "feedback": "6 + 5 = 11 kg : c'est trop lourd. Le glouton ne prend un produit que s'il rentre encore dans les 10 kg."
     },
     {
-     "texte": "Les mangues et 4 kg de bananes : 46 €.",
-     "feedback": "Ici, on ne coupe pas un produit : on le prend en entier, ou pas du tout. Après les mangues, il reste 4 kg : les bananes, 5 kg, ne rentrent pas."
+     "texte": "Les mangues et 4 kg de bananes : 46 €.",
+     "feedback": "Ici, on ne coupe pas un produit : on le prend en entier, ou pas du tout. Après les mangues, il reste 4 kg : les bananes, 5 kg, ne rentrent pas."
     },
     {
-     "texte": "Les mangues seulement : 30 €.",
+     "texte": "Les mangues seulement : 30 €.",
      "juste": true,
-     "feedback": "Oui. Les mangues d'abord (5 € le kilo) : 6 kg. Les bananes feraient 11 kg, les ananas aussi : ils ne rentrent plus."
+     "feedback": "Oui. Les mangues d'abord (5 € le kilo) : 6 kg. Les bananes feraient 11 kg, les ananas aussi : ils ne rentrent plus."
     }
    ],
-   "explication": "Glouton « valeur par kilo » : les mangues seulement, 30 €.",
+   "explication": "Glouton « valeur par kilo » : les mangues seulement, 30 €.",
    "verifications": [
     {
      "code": [
@@ -458,28 +460,28 @@
    "nom": "[Sac à dos] La meilleure solution",
    "objectif": "Trouver la solution optimale et la comparer au glouton.",
    "enonce": [
-    "Avec les mêmes produits et le même panier de 10 kg, quelle est la plus grande valeur possible ?"
+    "Avec les mêmes produits et le même panier de 10 kg, quelle est la plus grande valeur possible ?"
    ],
    "options": [
     {
-     "texte": "30 €",
-     "feedback": "C'est ce que trouve le glouton, avec les mangues seules. Mais bananes et ananas rentrent ensemble, 10 kg, et rapportent 40 €."
+     "texte": "30 €",
+     "feedback": "C'est ce que trouve le glouton, avec les mangues seules. Mais bananes et ananas rentrent ensemble, 10 kg, et rapportent 40 €."
     },
     {
-     "texte": "40 €",
+     "texte": "40 €",
      "juste": true,
-     "feedback": "Oui : les bananes et les ananas, 5 + 5 = 10 kg, 20 + 20 = 40 €. Le glouton n'en trouve que 30 : il n'est pas optimal ici."
+     "feedback": "Oui : les bananes et les ananas, 5 + 5 = 10 kg, 20 + 20 = 40 €. Le glouton n'en trouve que 30 : il n'est pas optimal ici."
     },
     {
-     "texte": "50 €",
-     "feedback": "Mangues et bananes rapportent 50 €, mais pèsent 11 kg : le panier ne les supporte pas."
+     "texte": "50 €",
+     "feedback": "Mangues et bananes rapportent 50 €, mais pèsent 11 kg : le panier ne les supporte pas."
     },
     {
-     "texte": "70 €",
-     "feedback": "C'est la valeur des trois produits, mais ils pèsent 16 kg en tout : bien plus que les 10 kg du panier."
+     "texte": "70 €",
+     "feedback": "C'est la valeur des trois produits, mais ils pèsent 16 kg en tout : bien plus que les 10 kg du panier."
     }
    ],
-   "explication": "Optimal : 40 € ; glouton : 30 €. Encore un contre-exemple.",
+   "explication": "Optimal : 40 € ; glouton : 30 €. Encore un contre-exemple.",
    "verifications": [
     {
      "code": [
@@ -554,7 +556,7 @@
    "nom": "[Vocabulaire] Les mots des gloutons",
    "objectif": "Associer chaque mot du chapitre à son sens.",
    "enonce": [
-    "Relier chaque mot à ce qu'il veut dire."
+    "Relier chaque mot à sa définition."
    ],
    "paires": [
     {

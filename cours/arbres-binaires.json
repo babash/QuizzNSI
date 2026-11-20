@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "arbres-binaires",
- "titre": "Les arbres binaires",
+ "titre": "Arbres binaires",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Structures de données : arbres binaires (nœuds, racines, feuilles, sous-arbres gauches et droits ; taille, hauteur) ; algorithmique : calculer la taille et la hauteur d'un arbre, le parcourir (préfixe, infixe, suffixe, en largeur)",
@@ -466,7 +466,7 @@
    "nom": "[Erreur] Oublier l'arbre vide",
    "objectif": "Relier l'erreur `AttributeError` à un cas de base oublié.",
    "enonce": [
-    "Le programme suivant s'arrête sur l'erreur `AttributeError: 'NoneType' object has no attribute 'gauche'` (« None n'a pas d'attribut gauche »).",
+    "Le programme suivant s'arrête sur l'erreur affichée sous le code (« None n'a pas d'attribut gauche »).",
     "Quelle est la cause ?"
    ],
    "code": [
@@ -477,6 +477,9 @@
     "",
     "a = Noeud(\"A\", Noeud(\"B\"))",
     "print(taille(a))"
+   ],
+   "console": [
+    "AttributeError: 'NoneType' object has no attribute 'gauche'"
    ],
    "options": [
     {
@@ -515,6 +518,28 @@
       "print(taille(a))"
      ],
      "sortie": "2",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "def f(n):",
+      "    return f(n + 1)",
+      "f(0)"
+     ],
+     "erreur": "RecursionError",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "def taille(a):",
+      "    if a is None:",
+      "        return 0",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
+      "print(taille(Noeud(\"A\", 0)))"
+     ],
+     "erreur": "AttributeError",
      "reprendre_code": false
     }
    ]

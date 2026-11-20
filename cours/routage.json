@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "routage",
- "titre": "Le routage : RIP et OSPF",
+ "titre": "Routage : RIP et OSPF",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Architectures matérielles, systèmes d'exploitation et réseaux : protocoles de routage (identifier, suivant le protocole de routage utilisé, RIP ou OSPF, la route empruntée par un paquet)",
@@ -21,7 +21,7 @@
  "conventions": [
   "RIP : la métrique est le nombre de sauts, c'est-à-dire de liens entre routeurs ; un voisin direct est à 1 saut.",
   "OSPF : le coût d'un lien vaut 10⁸ / débit, le débit en bit/s ; le coût d'une route est la somme des coûts de ses liens.",
-  "1 Mbit/s = 10⁶ bit/s ; 1 Gbit/s = 10⁹ bit/s."
+  "1 Mbit/s = 10⁶ bit/s ; 1 Gbit/s = 10⁹ bit/s."
  ],
  "prelude_python": [
   "liens = {('A', 'B'): 10**7, ('B', 'E'): 10**7, ('A', 'C'): 10**8, ('C', 'D'): 10**8, ('D', 'E'): 10**8}",
@@ -271,10 +271,10 @@
   {
    "type": "question",
    "id": "q05",
-   "nom": "[OSPF] Le coût d'un lien à 1 Gbit/s",
+   "nom": "[OSPF] Le coût d'un lien à 1 Gbit/s",
    "objectif": "Calculer le coût OSPF d'un lien à partir de son débit.",
    "enonce": [
-    "Un lien a un débit de 1 Gbit/s, c'est-à-dire 10⁹ bit/s.",
+    "Un lien a un débit de 1 Gbit/s, c'est-à-dire 10⁹ bit/s.",
     "Quel est son coût OSPF ?"
    ],
    "code": [
@@ -294,11 +294,11 @@
     },
     {
      "texte": "10⁸",
-     "feedback": "Tu as divisé par 1, le nombre de Gbit/s. Le débit s'écrit en bit/s : 1 Gbit/s = 10⁹ bit/s."
+     "feedback": "Tu as divisé par 1, le nombre de Gbit/s. Le débit s'écrit en bit/s : 1 Gbit/s = 10⁹ bit/s."
     },
     {
      "texte": "100 000",
-     "feedback": "Tu as divisé par 1 000, comme si le débit était en Mbit/s. En bit/s, 1 Gbit/s = 10⁹ bit/s : le coût vaut 0,1."
+     "feedback": "Tu as divisé par 1 000, comme si le débit était en Mbit/s. En bit/s, 1 Gbit/s = 10⁹ bit/s : le coût vaut 0,1."
     }
    ],
    "explication": "Coût OSPF = 10⁸ / débit en bit/s.",
@@ -335,12 +335,12 @@
     },
     {
      "texte": "A-C-D-E, coût 300",
-     "feedback": "Tu as additionné les débits (en Mbit/s). OSPF additionne les coûts, 10⁸ / débit : 1 par lien à 100 Mbit/s."
+     "feedback": "Tu as additionné les débits (en Mbit/s). OSPF additionne les coûts, 10⁸ / débit : 1 par lien à 100 Mbit/s."
     },
     {
      "texte": "A-C-D-E, coût 3",
      "juste": true,
-     "feedback": "Oui : trois liens à 100 Mbit/s, de coût 1 chacun : 1 + 1 + 1 = 3. Par B, deux liens à 10 Mbit/s coûtent 10 + 10 = 20."
+     "feedback": "Oui : trois liens à 100 Mbit/s, de coût 1 chacun : 1 + 1 + 1 = 3. Par B, deux liens à 10 Mbit/s coûtent 10 + 10 = 20."
     }
    ],
    "explication": "OSPF : la route de plus petit coût total, même si elle a plus de sauts.",
@@ -567,8 +567,7 @@
    "objectif": "Lire un message d'erreur dans un calcul de coût OSPF.",
    "enonce": [
     "Ce programme doit calculer le coût OSPF de la route A-C-D-E. Le dictionnaire `d` donne le débit de chaque lien.",
-    "Il s'arrête sur l'erreur `TypeError: unsupported operand type(s) for /: 'int' and 'str'` (« on ne peut pas diviser un entier par une chaîne »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« on ne peut pas diviser un entier par une chaîne »)."
    ],
    "code": [
     "d = {\"A-C\": 10**8,",
@@ -580,6 +579,9 @@
     "for lien in d:",
     "    total += cout(lien)",
     "print(total)"
+   ],
+   "console": [
+    "TypeError: unsupported operand type(s) for /: 'int' and 'str'"
    ],
    "ligne": 8,
    "correction": "    total += cout(d[lien])",

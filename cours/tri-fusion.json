@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "tri-fusion",
- "titre": "Diviser pour régner : le tri fusion",
+ "titre": "Tri fusion",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Algorithmique : méthode « diviser pour régner » (écrire un algorithme utilisant la méthode « diviser pour régner » ; le tri fusion, de coût en n log₂ n)",
@@ -73,25 +73,25 @@
    "nom": "[Fusion] Les deux premières mangues",
    "objectif": "Comprendre le principe de la fusion de deux suites triées.",
    "enonce": [
-    "Rangée a : 180 g, 250 g, 400 g. Rangée b : 210 g, 300 g. Chaque rangée est triée.",
+    "Rangée a : 180 g, 250 g, 400 g. Rangée b : 210 g, 300 g. Chaque rangée est triée.",
     "Pour faire une seule rangée triée, on compare les premières mangues restantes et on prend la plus légère. Quelles mangues pose-t-on en premier, puis en deuxième ?"
    ],
    "options": [
     {
-     "texte": "180 g, puis 210 g",
+     "texte": "180 g, puis 210 g",
      "juste": true,
      "feedback": "Oui. 180 contre 210 : on prend 180. Puis 250 contre 210 : on prend 210. On compare toujours les deux premières restantes."
     },
     {
-     "texte": "180 g, puis 250 g",
+     "texte": "180 g, puis 250 g",
      "feedback": "Tu as continué dans la rangée a. Après 180, il faut comparer de nouveau : 250 contre 210, et 210 est plus légère."
     },
     {
-     "texte": "400 g, puis 300 g",
+     "texte": "400 g, puis 300 g",
      "feedback": "Ce sont les plus lourdes de chaque rangée. On construit la rangée triée en commençant par la plus légère."
     },
     {
-     "texte": "210 g, puis 180 g",
+     "texte": "210 g, puis 180 g",
      "feedback": "Ce sont bien les deux plus légères, mais dans le mauvais ordre : 180 est plus légère que 210, elle passe avant."
     }
    ],
@@ -461,7 +461,7 @@
    "nom": "[Erreur] Couper en deux",
    "objectif": "Lire un message d'erreur et retrouver la division entière.",
    "enonce": [
-    "On reprend la fonction `fusion`. Ce programme s'arrête sur l'erreur `TypeError: slice indices must be integers or None or have an __index__ method` (« les indices d'une tranche doivent être des entiers »)."
+    "On reprend la fonction `fusion`. Ce programme s'arrête sur l'erreur affichée sous le code (« les indices d'une tranche doivent être des entiers »)."
    ],
    "code": [
     "def tri_fusion(t):",
@@ -474,6 +474,9 @@
     "",
     "t = [30, 15, 45]",
     "print(tri_fusion(t))"
+   ],
+   "console": [
+    "TypeError: slice indices must be integers or None or have an __index__ method"
    ],
    "ligne": 4,
    "correction": "    m = len(t) // 2",

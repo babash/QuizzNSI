@@ -20,7 +20,7 @@
  ],
  "conventions": [
   "Tous les codes sont en Python 3. Quand un code affiche plusieurs lignes, les réponses les donnent dans l'ordre, séparées par « puis ».",
-  "Le prix des mangues dans les exemples est inventé : 3 € le kilo."
+  "Le prix des mangues dans les exemples est inventé : 3 € le kilo."
  ],
  "diapositives": [
   {
@@ -104,7 +104,7 @@
    "objectif": "Savoir que le bloc d'une fonction ne s'exécute qu'à l'appel.",
    "enonce": [
     "Ce programme contient seulement les deux lignes suivantes.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def bonjour():",
@@ -305,7 +305,7 @@
    "nom": "[return] La fonction qui permet de calculer",
    "objectif": "Choisir la définition qui renvoie une valeur réutilisable.",
    "enonce": [
-    "On veut écrire `total = prix(2) + prix(3)`, avec 3 € le kilo.",
+    "On veut écrire `total = prix(2) + prix(3)`, avec 3 € le kilo.",
     "Quelle définition de `prix` le permet ?"
    ],
    "options": [
@@ -632,7 +632,7 @@
    "objectif": "Calculer avec deux appels d'une fonction qui contient une condition.",
    "enonce": [
     "Une fonction donne un tarif selon l'âge (tarifs inventés). On exécute le code suivant.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def tarif(age):",
@@ -676,13 +676,15 @@
    "objectif": "Lire un message `SyntaxError` et retrouver le symbole qui manque.",
    "enonce": [
     "Ce programme calcule le prix de 4 kilos de mangues.",
-    "Il ne démarre pas : `SyntaxError: expected ':'` (« deux-points attendus »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il ne démarre pas : l'erreur est affichée sous le code (« deux-points attendus »)."
    ],
    "code": [
     "def prix(kilos)",
     "    return kilos * 3",
     "print(prix(4))"
+   ],
+   "console": [
+    "SyntaxError: expected ':'"
    ],
    "ligne": 1,
    "correction": "def prix(kilos):",

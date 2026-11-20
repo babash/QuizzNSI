@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "poo",
- "titre": "La programmation orientée objet",
+ "titre": "Programmation objet",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Structures de données : vocabulaire de la programmation objet (classes, attributs, méthodes, objets) ; écrire la définition d'une classe ; accéder aux attributs et méthodes d'une classe",
@@ -424,7 +424,7 @@
    "nom": "[Erreur] Un attribut sans `self`",
    "objectif": "Relier une erreur `NameError` à un `self.` oublié.",
    "enonce": [
-    "Le programme s'arrête sur l'erreur `NameError: name 'capacite' is not defined. Did you mean: 'self.capacite'?` (« le nom capacite n'est pas défini ; voulais-tu dire self.capacite ? »).",
+    "Le programme s'arrête sur l'erreur affichée sous le code (« le nom capacite n'est pas défini ; voulais-tu dire self.capacite ? »).",
     "Quelle est la cause ?"
    ],
    "code": [
@@ -440,6 +440,9 @@
     "",
     "b1 = Barge(300)",
     "print(b1.libres())"
+   ],
+   "console": [
+    "NameError: name 'capacite' is not defined. Did you mean: 'self.capacite'?"
    ],
    "options": [
     {
@@ -490,7 +493,7 @@
    "nom": "[Erreur] Le paramètre `self` oublié",
    "objectif": "Lire un message d'erreur et retrouver le paramètre `self` oublié.",
    "enonce": [
-    "Le programme s'arrête sur l'erreur `TypeError: Barge.libres() takes 0 positional arguments but 1 was given` (« la méthode n'attend aucun argument, mais en a reçu un »)."
+    "Le programme s'arrête sur l'erreur affichée sous le code (« la méthode n'attend aucun argument, mais en a reçu un »)."
    ],
    "code": [
     "class Barge:",
@@ -505,6 +508,9 @@
     "",
     "b1 = Barge(300)",
     "print(b1.libres())"
+   ],
+   "console": [
+    "TypeError: Barge.libres() takes 0 positional arguments but 1 was given"
    ],
    "ligne": 6,
    "correction": "    def libres(self):",

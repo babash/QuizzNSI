@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "tuples",
- "titre": "Les p-uplets (tuples)",
+ "titre": "P-uplets (tuples)",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : p-uplets, p-uplets nommés (écrire une fonction renvoyant un p-uplet de valeurs)",
@@ -65,7 +65,7 @@
    "objectif": "Lire un élément d'un p-uplet grâce à son indice.",
    "enonce": [
     "Le p-uplet `rdv` donne le lieu, l'heure et les minutes d'un rendez-vous.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "rdv = (\"Sada\", 7, 30)",
@@ -105,7 +105,7 @@
    "objectif": "Utiliser `len` et l'indice -1 sur un p-uplet.",
    "enonce": [
     "Le p-uplet `t` donne le départ, l'arrivée et la durée d'un trajet en taxi, en minutes.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "t = (\"Sada\",",
@@ -294,8 +294,8 @@
    "nom": "[Déballer] Ranger un p-uplet dans deux variables",
    "objectif": "Ranger les valeurs d'un p-uplet dans des variables, dans l'ordre.",
    "enonce": [
-    "La barge part à 17 h 45 : l'heure est rangée dans le p-uplet `depart`.",
-    "Qu'affiche ce code ?"
+    "La barge part à 17 h 45 : l'heure est rangée dans le p-uplet `depart`.",
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "depart = (17, 45)",
@@ -392,7 +392,7 @@
    "objectif": "Savoir qu'une fonction qui renvoie deux valeurs renvoie un p-uplet.",
    "enonce": [
     "On range 17 mangues dans des sacs de 5 : la fonction renvoie le nombre de sacs pleins et le reste.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def partage(n, k):",
@@ -528,8 +528,7 @@
    "objectif": "Lire un message d'erreur de déballage et compter les valeurs d'un p-uplet.",
    "enonce": [
     "Ce programme affiche la plus petite et la plus grande note.",
-    "Il s'arrête sur l'erreur `ValueError: not enough values to unpack (expected 3, got 2)` (« pas assez de valeurs à déballer : 3 attendues, 2 reçues »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« pas assez de valeurs à déballer : 3 attendues, 2 reçues »)."
    ],
    "code": [
     "def extremes(t):",
@@ -538,6 +537,9 @@
     "notes = [12, 8, 15]",
     "b, m, h = extremes(notes)",
     "print(b, h)"
+   ],
+   "console": [
+    "ValueError: not enough values to unpack (expected 3, got 2)"
    ],
    "ligne": 5,
    "correction": "b, h = extremes(notes)",

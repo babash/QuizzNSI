@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "recursivite",
- "titre": "La récursivité",
+ "titre": "Récursivité",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Langages et programmation : récursivité (écrire un programme récursif ; analyser le fonctionnement d'un programme récursif)",
@@ -437,7 +437,7 @@
    "objectif": "Lire `RecursionError` et trouver l'appel qui ne se rapproche pas du cas de base.",
    "enonce": [
     "Cette fonction doit calculer 3 + 2 + 1 + 0.",
-    "Le programme s'arrête sur l'erreur `RecursionError: maximum recursion depth exceeded`."
+    "Le programme s'arrête sur l'erreur affichée sous le code (« profondeur maximale de récursion dépassée »)."
    ],
    "code": [
     "def somme(n):",
@@ -446,6 +446,9 @@
     "    return n + somme(n)",
     "",
     "print(somme(3))"
+   ],
+   "console": [
+    "RecursionError: maximum recursion depth exceeded"
    ],
    "ligne": 4,
    "correction": "    return n + somme(n - 1)",
@@ -483,7 +486,7 @@
    "nom": "[Erreur] Lire un message d'erreur",
    "objectif": "Relier un message d'erreur à un `return` oublié.",
    "enonce": [
-    "Le programme suivant s'arrête sur l'erreur `TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'` (« on ne peut pas multiplier un entier par None »).",
+    "Le programme suivant s'arrête sur l'erreur affichée sous le code (« on ne peut pas multiplier un entier par None »).",
     "Quelle est la cause ?"
    ],
    "code": [
@@ -493,6 +496,9 @@
     "    n * fact(n - 1)",
     "",
     "print(fact(3))"
+   ],
+   "console": [
+    "TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'"
    ],
    "options": [
     {

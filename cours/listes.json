@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "listes",
- "titre": "Les tableaux (listes)",
+ "titre": "Tableaux (listes)",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : tableau indexé, tableau donné en compréhension (lire et modifier les éléments d'un tableau grâce à leurs index ; construire un tableau par compréhension ; utiliser des tableaux de tableaux pour représenter des matrices ; itérer sur les éléments d'un tableau)",
@@ -72,7 +72,7 @@
    "objectif": "Lire un élément d'un tableau grâce à son indice, en comptant à partir de 0.",
    "enonce": [
     "Le tableau `marees` contient les hauteurs de marée haute de cinq jours, en mètres.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "marees = [2.9, 3.4, 3.8,",
@@ -225,7 +225,7 @@
    "objectif": "Modifier un élément d'un tableau grâce à son indice.",
    "enonce": [
     "Au marché, `prix` contient le prix de trois tas de mangues, en euros.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "prix = [2, 3, 5]",
@@ -266,7 +266,7 @@
    "objectif": "Ajouter des éléments à la fin d'un tableau avec `append`.",
    "enonce": [
     "On remplit un panier `p`, vide au départ.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "p = []",
@@ -309,14 +309,16 @@
    "objectif": "Lire un message d'erreur et savoir que `append` modifie le tableau sans rien renvoyer.",
    "enonce": [
     "Ce programme ajoute la note 14 au tableau `notes`, puis affiche le nombre de notes.",
-    "Il s'arrête sur l'erreur `TypeError: object of type 'NoneType' has no len()` (« `None` n'a pas de longueur »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« `None` n'a pas de longueur »)."
    ],
    "code": [
     "notes = [12, 15, 9]",
     "notes[0] = 13",
     "notes = notes.append(14)",
     "print(len(notes))"
+   ],
+   "console": [
+    "TypeError: object of type 'NoneType' has no len()"
    ],
    "ligne": 3,
    "correction": "notes.append(14)",
@@ -607,7 +609,7 @@
    "objectif": "Lire un élément d'un tableau de tableaux : la ligne, puis la colonne.",
    "enonce": [
     "Le plan de deux rangées de sièges est rangé dans `places`.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "places = [",
@@ -651,7 +653,7 @@
    "objectif": "Trouver le nombre de lignes et de colonnes d'une matrice avec `len`.",
    "enonce": [
     "La matrice `m` représente une grille de jeu.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "m = [[0, 0, 0, 0],",

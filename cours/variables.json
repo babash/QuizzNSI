@@ -62,7 +62,7 @@
    "objectif": "Savoir qu'une variable ne garde que la dernière valeur reçue.",
    "enonce": [
     "Le prix d'un kilo de mangues change dans la journée. On exécute le code suivant.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "prix = 2",
@@ -187,7 +187,7 @@
    "objectif": "Suivre pas à pas des affectations qui se suivent.",
    "enonce": [
     "On veut échanger le contenu de `a` et de `b`. On exécute le code suivant.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "a = \"taxi\"",
@@ -372,7 +372,7 @@
    "objectif": "Utiliser le quotient `//` et le reste `%` dans une situation concrète.",
    "enonce": [
     "Une classe de 23 élèves part en sortie au lagon, en taxi. Un taxi a 4 places.",
-    "Qu'affiche le code suivant ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "eleves = 23",
@@ -484,7 +484,7 @@
    "objectif": "Évaluer une expression avec `or`.",
    "enonce": [
     "La hauteur d'eau du lagon est rangée dans `h`, en mètres.",
-    "Qu'affiche le code suivant ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "h = 2",
@@ -677,14 +677,16 @@
    "objectif": "Lire un message `NameError` et retrouver la variable mal écrite.",
    "enonce": [
     "Ce programme calcule le prix de 3 kilos de mangues.",
-    "Il s'arrête sur l'erreur `NameError: name 'Total' is not defined. Did you mean: 'total'?` (« le nom Total n'est pas défini. Vouliez-vous dire total ? »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« le nom Total n'est pas défini. Voulais-tu dire total ? »)."
    ],
    "code": [
     "prix = 2",
     "nombre = 3",
     "total = prix * nombre",
     "print(Total)"
+   ],
+   "console": [
+    "NameError: name 'Total' is not defined. Did you mean: 'total'?"
    ],
    "ligne": 4,
    "correction": "print(total)",

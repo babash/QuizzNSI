@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "parcours-tableau",
- "titre": "Le parcours séquentiel d'un tableau",
+ "titre": "Parcours d'un tableau",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : parcours séquentiel d'un tableau (écrire un algorithme de recherche d'une occurrence, de recherche d'un extremum, de calcul d'une moyenne ; coût linéaire)",
@@ -67,7 +67,7 @@
    "objectif": "Suivre à la main un parcours qui calcule une moyenne.",
    "enonce": [
     "Le tableau `pluie` contient la pluie de cinq jours, en millimètres.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def moyenne(t):",
@@ -113,7 +113,7 @@
    "objectif": "Savoir qu'un accumulateur s'initialise avant la boucle.",
    "enonce": [
     "Cette fonction devrait renvoyer la somme des éléments.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def somme(t):",
@@ -322,7 +322,7 @@
    "objectif": "Comprendre pourquoi le maximum part du premier élément.",
    "enonce": [
     "Le tableau donne les écarts de température d'une semaine par rapport à la normale, en °C.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def maxi(t):",
@@ -428,8 +428,7 @@
    "objectif": "Lire un message `IndexError` et distinguer la valeur `x` de l'indice.",
    "enonce": [
     "Ce programme cherche le plus fort relevé de pluie.",
-    "Il s'arrête sur l'erreur `IndexError: list index out of range` (« indice hors du tableau »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« indice hors du tableau »)."
    ],
    "code": [
     "def maximum(t):",
@@ -441,6 +440,9 @@
     "",
     "pluie = [12, 0, 35, 8]",
     "print(maximum(pluie))"
+   ],
+   "console": [
+    "IndexError: list index out of range"
    ],
    "ligne": 4,
    "correction": "        if x > m:",
@@ -486,7 +488,7 @@
    "objectif": "Savoir que la recherche renvoie l'indice de la première occurrence.",
    "enonce": [
     "On reprend `pluie = [12, 0, 35, 8, 35]`.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def indice(t, v):",
@@ -532,7 +534,7 @@
    "objectif": "Savoir ce que renvoie la recherche quand la valeur est absente.",
    "enonce": [
     "Avec la même fonction `indice`, on cherche 4, qui n'est pas dans le tableau.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "def indice(t, v):",
@@ -633,24 +635,24 @@
    "nom": "[Coût] Quatre fois plus grand",
    "objectif": "Prévoir l'effet de la taille du tableau sur un parcours de coût linéaire.",
    "enonce": [
-    "Chercher une valeur absente dans un tableau de 1 000 éléments prend environ 1 ms.",
+    "Chercher une valeur absente dans un tableau de 1 000 éléments prend environ 1 ms.",
     "Combien de temps, environ, pour un tableau de 4 000 éléments ?"
    ],
    "options": [
     {
-     "texte": "1 ms",
+     "texte": "1 ms",
      "feedback": "Le temps dépend de la taille : avec une valeur absente, on lit tous les éléments, donc 4 fois plus de tours."
     },
     {
-     "texte": "2 ms",
+     "texte": "2 ms",
      "feedback": "Le temps ne double pas quand la taille est multipliée par 4 : 4 fois plus d'éléments, 4 fois plus de tours."
     },
     {
-     "texte": "16 ms",
+     "texte": "16 ms",
      "feedback": "16, c'est 4 × 4 : ce serait un coût quadratique, une boucle dans une boucle. Ici, une seule boucle, un tour par élément."
     },
     {
-     "texte": "4 ms",
+     "texte": "4 ms",
      "juste": true,
      "feedback": "Oui. Le coût est linéaire : 4 fois plus d'éléments, 4 fois plus de tours, environ 4 fois plus de temps."
     }

@@ -472,8 +472,7 @@
    "objectif": "Lire un message d'erreur dans le programme du tourniquet.",
    "enonce": [
     "Ce programme simule le tourniquet de quantum `q` : chaque processus est un couple `(p, r)`, son nom et sa durée restante.",
-    "Il s'arrête sur l'erreur `TypeError: list.append() takes exactly one argument (2 given)` (« `append` prend un seul argument, 2 sont donnés »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« `append` prend un seul argument, 2 sont donnés »)."
    ],
    "code": [
     "f = [(\"P1\", 3), (\"P2\", 2)]",
@@ -487,6 +486,9 @@
     "    if r > 0:",
     "        f.append(p, r)",
     "print(frise)"
+   ],
+   "console": [
+    "TypeError: list.append() takes exactly one argument (2 given)"
    ],
    "ligne": 10,
    "correction": "        f.append((p, r))",
@@ -576,7 +578,7 @@
    "objectif": "Connaître un moyen d'éviter l'interblocage.",
    "enonce": [
     "Les processus P1 et P2 ont besoin tous les deux du scanner et de l'imprimante.",
-    "Quelle règle évite l'interblocage de la question 9 ?"
+    "Quelle règle évite l'interblocage de la question précédente ?"
    ],
    "options": [
     {

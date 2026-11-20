@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "tris",
- "titre": "Tris par sélection et par insertion",
+ "titre": "Tris par sélection et insertion",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Algorithmique : tris par insertion, par sélection (écrire un algorithme de tri ; décrire un invariant de boucle qui prouve la correction des tris par insertion, par sélection ; coût quadratique dans le pire cas)",
@@ -481,7 +481,7 @@
    "objectif": "Savoir qu'un tri en place modifie le tableau et renvoie `None`.",
    "enonce": [
     "On exécute le code suivant, avec la fonction `tri_selection` de l'écran précédent.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "notes = [12, 8, 15]",
@@ -522,13 +522,15 @@
    "objectif": "Lire un message d'erreur et retrouver la ligne qui l'a provoqué, même plus haut.",
    "enonce": [
     "Ce programme range le tableau `t` des tailles de mangues (en cm) et doit afficher la plus petite. La fonction `tri_selection` est celle de l'écran « Le code de la sélection ».",
-    "Il s'arrête à la ligne 3 sur l'erreur `TypeError: 'NoneType' object is not subscriptable` (« on ne peut pas prendre une case de `None` »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête à la ligne 3 sur l'erreur affichée sous le code (« on ne peut pas prendre une case de `None` »)."
    ],
    "code": [
     "t = [14, 9, 12, 11]",
     "t = tri_selection(t)",
     "print(t[0])"
+   ],
+   "console": [
+    "TypeError: 'NoneType' object is not subscriptable"
    ],
    "ligne": 2,
    "correction": "tri_selection(t)",

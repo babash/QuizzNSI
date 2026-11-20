@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "dictionnaires",
- "titre": "Les dictionnaires",
+ "titre": "Dictionnaires",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : dictionnaires par clés et valeurs (construire une entrée de dictionnaire ; itérer sur les éléments d'un dictionnaire)",
@@ -63,7 +63,7 @@
    "objectif": "Lire la valeur associée à une clé.",
    "enonce": [
     "Le dictionnaire `ages` associe des prénoms à des âges.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "ages = {\"Anli\": 16,",
@@ -160,7 +160,7 @@
    "objectif": "Distinguer l'ajout d'une paire et la modification d'une valeur.",
    "enonce": [
     "Le dictionnaire `d` associe des prénoms à des notes.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "d = {\"Anli\": 12,",
@@ -203,7 +203,7 @@
    "objectif": "Savoir qu'une clé apparaît une seule fois dans un dictionnaire.",
    "enonce": [
     "Le dictionnaire `taxis` compte les taxis qui attendent à chaque arrêt.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "taxis = {\"Sada\": 3}",
@@ -244,7 +244,7 @@
    "objectif": "Construire un dictionnaire entrée par entrée.",
    "enonce": [
     "On associe chaque prénom à son âge.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "noms = [\"Anli\", \"Inès\"]",
@@ -538,7 +538,7 @@
    "objectif": "Parcourir les paires d'un dictionnaire pour calculer un total.",
    "enonce": [
     "Le dictionnaire `stock` donne le nombre de fruits de chaque sorte, sur un étal.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "stock = {\"mangue\": 8,",
@@ -600,7 +600,7 @@
    "objectif": "Lire un comptage d'occurrences fait avec un dictionnaire.",
    "enonce": [
     "On compte les élèves de chaque commune.",
-    "Qu'affiche ce code ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "t = [\"Sada\", \"Ouangani\",",
@@ -650,8 +650,7 @@
    "objectif": "Lire le message `KeyError` et compter sans lire une clé absente.",
    "enonce": [
     "Ce programme compte les élèves de chaque commune.",
-    "Il s'arrête sur l'erreur `KeyError: 'Sada'` (« la clé 'Sada' n'existe pas »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« la clé 'Sada' n'existe pas »)."
    ],
    "code": [
     "t = [\"Sada\", \"Chiconi\",",
@@ -660,6 +659,9 @@
     "for c in t:",
     "    n[c] = n[c] + 1",
     "print(n)"
+   ],
+   "console": [
+    "KeyError: 'Sada'"
    ],
    "ligne": 5,
    "correction": "    n[c] = n.get(c, 0) + 1",

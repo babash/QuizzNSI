@@ -99,7 +99,7 @@
     },
     {
      "texte": "`prix`",
-     "feedback": "Trois trajets coûtent 2 € : le prix ne distingue pas les lignes. Une clé primaire identifie une seule ligne."
+     "feedback": "Trois trajets coûtent 2 € : le prix ne distingue pas les lignes. Une clé primaire identifie une seule ligne."
     },
     {
      "texte": "`id`",
@@ -380,7 +380,7 @@
   {
    "type": "question",
    "id": "q06",
-   "nom": "[COUNT] Combien de trajets à 2 € ?",
+   "nom": "[COUNT] Combien de trajets à 2 € ?",
    "objectif": "Utiliser une fonction d'agrégation : COUNT.",
    "enonce": [
     "On exécute cette requête sur la table `trajet`.",
@@ -406,7 +406,7 @@
     {
      "texte": "3",
      "juste": true,
-     "feedback": "Oui : trois trajets coûtent 2 € (les trajets 2, 3 et 5), et `COUNT(*)` compte les lignes gardées par `WHERE`."
+     "feedback": "Oui : trois trajets coûtent 2 € (les trajets 2, 3 et 5), et `COUNT(*)` compte les lignes gardées par `WHERE`."
     },
     {
      "texte": "Sada, Koungou, Mamoudzou",
@@ -570,7 +570,7 @@
    "nom": "[UPDATE] Un UPDATE sans WHERE",
    "objectif": "Prévoir l'effet d'une requête de mise à jour.",
    "enonce": [
-    "On voulait passer le prix du trajet 2 à 4 €. On exécute cette requête.",
+    "On voulait passer le prix du trajet 2 à 4 €. On exécute cette requête.",
     "Que se passe-t-il ?"
    ],
    "code": [
@@ -578,19 +578,19 @@
    ],
    "options": [
     {
-     "texte": "Seul le trajet 2 coûte 4 €.",
-     "feedback": "La requête ne dit nulle part « trajet 2 » : sans `WHERE`, rien ne limite les lignes modifiées. Toutes passent à 4 €."
+     "texte": "Seul le trajet 2 coûte 4 €.",
+     "feedback": "La requête ne dit nulle part « trajet 2 » : sans `WHERE`, rien ne limite les lignes modifiées. Toutes passent à 4 €."
     },
     {
      "texte": "Une erreur : il manque `WHERE`.",
      "feedback": "`WHERE` est facultatif : SQLite exécute la requête sans prévenir. C'est pour cela que l'oubli est dangereux."
     },
     {
-     "texte": "Un nouveau trajet à 4 € est ajouté.",
+     "texte": "Un nouveau trajet à 4 € est ajouté.",
      "feedback": "`UPDATE` modifie des lignes qui existent déjà ; c'est `INSERT INTO` qui ajoute une ligne. La table garde ses 5 lignes."
     },
     {
-     "texte": "Les 5 trajets coûtent maintenant 4 €.",
+     "texte": "Les 5 trajets coûtent maintenant 4 €.",
      "juste": true,
      "feedback": "Oui : sans `WHERE`, `UPDATE` modifie toutes les lignes. Il fallait écrire `UPDATE trajet SET prix = 4 WHERE id = 2;`."
     }

@@ -64,7 +64,7 @@
    "objectif": "Repérer les lignes d'un bloc grâce au décalage.",
    "enonce": [
     "La hauteur d'eau est rangée dans `maree`, en mètres. On exécute le code suivant.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "maree = 2",
@@ -171,7 +171,7 @@
    "objectif": "Distinguer deux `if` indépendants d'un `if` suivi d'un `elif`.",
    "enonce": [
     "La température à Mamoudzou est rangée dans `t`, en degrés. On exécute le code suivant.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "t = 31",
@@ -737,8 +737,7 @@
    "objectif": "Lire un message `SyntaxError` et distinguer `=` de `==` dans une condition.",
    "enonce": [
     "Ce programme compte les mangues de 4 sacs de 3 mangues, puis vérifie le compte.",
-    "Il ne démarre pas : `SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?` (« syntaxe invalide : vouliez-vous dire == au lieu de = ? »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il ne démarre pas : l'erreur est affichée sous le code (« syntaxe invalide : voulais-tu dire == ou := au lieu de = ? »)."
    ],
    "code": [
     "mangues = 0",
@@ -746,6 +745,9 @@
     "    mangues = mangues + 3",
     "if mangues = 12:",
     "    print(\"Compte juste\")"
+   ],
+   "console": [
+    "SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?"
    ],
    "ligne": 4,
    "correction": "if mangues == 12:",

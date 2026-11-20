@@ -1,7 +1,7 @@
 {
  "format": "quizz-nsi/1",
  "id": "abr",
- "titre": "Les arbres binaires de recherche",
+ "titre": "Arbres binaires de recherche",
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Algorithmique : algorithmes sur les arbres binaires de recherche (rechercher une clé, insérer une clé ; coût logarithmique de la recherche dans un arbre équilibré)",
@@ -336,7 +336,7 @@
    "nom": "[Erreur] Oublier l'arbre vide",
    "objectif": "Relier une erreur `AttributeError` au cas de l'arbre vide oublié.",
    "enonce": [
-    "`abr` est l'ABR (12, 5, 18, 2, 9, 15). Cette version de la recherche affiche `True` pour 9, puis s'arrête sur l'erreur `AttributeError: 'NoneType' object has no attribute 'valeur'` (« None n'a pas d'attribut valeur »).",
+    "`abr` est l'ABR (12, 5, 18, 2, 9, 15). Cette version de la recherche affiche `True` pour 9, puis s'arrête sur l'erreur affichée sous le code (« None n'a pas d'attribut valeur »).",
     "Quelle est la cause ?"
    ],
    "code": [
@@ -351,6 +351,10 @@
     "",
     "print(chercher(abr, 9))",
     "print(chercher(abr, 10))"
+   ],
+   "console": [
+    "True",
+    "AttributeError: 'NoneType' object has no attribute 'valeur'"
    ],
    "options": [
     {
@@ -639,7 +643,7 @@
    "nom": "[Erreur] Le résultat oublié",
    "objectif": "Comprendre pourquoi on écrit `abr = inserer(abr, v)`.",
    "enonce": [
-    "On exécute le programme suivant.",
+    "On exécute le code suivant.",
     "Qu'affiche-t-il ?"
    ],
    "code": [

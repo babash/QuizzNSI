@@ -263,7 +263,7 @@
    "objectif": "Combiner deux tranches avec `+`.",
    "enonce": [
     "L'heure de départ de la barge est rangée dans une chaîne. On exécute le code suivant.",
-    "Qu'affiche-t-il ?"
+    "Qu'affiche ce programme ?"
    ],
    "code": [
     "h = \"07h30\"",
@@ -645,13 +645,15 @@
    "objectif": "Lire un message `TypeError` et reconstruire une chaîne au lieu de la modifier.",
    "enonce": [
     "Ce programme veut mettre une majuscule au nom de la commune.",
-    "Il s'arrête sur l'erreur `TypeError: 'str' object does not support item assignment` (« une chaîne ne permet pas de changer un de ses éléments »).",
-    "Toucher la ligne qui contient l'erreur."
+    "Il s'arrête sur l'erreur affichée sous le code (« une chaîne ne permet pas de changer un de ses éléments »)."
    ],
    "code": [
     "ville = \"kani-kéli\"",
     "ville[0] = \"K\"",
     "print(ville)"
+   ],
+   "console": [
+    "TypeError: 'str' object does not support item assignment"
    ],
    "ligne": 2,
    "correction": "ville = \"K\" + ville[1:]",
