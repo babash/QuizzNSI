@@ -330,7 +330,8 @@
     "Quel est son résultat ?"
    ],
    "code": [
-    "SELECT depart, prix FROM trajet",
+    "SELECT depart, prix",
+    "FROM trajet",
     "WHERE arrivee = 'Mamoudzou'",
     "ORDER BY prix DESC;"
    ],
@@ -361,7 +362,7 @@
    "verifications": [
     {
      "code": [
-      "sql(*[\"SELECT depart, prix FROM trajet\", \"WHERE arrivee = 'Mamoudzou'\", \"ORDER BY prix DESC;\"])"
+      "sql(*[\"SELECT depart, prix\", \"FROM trajet\", \"WHERE arrivee = 'Mamoudzou'\", \"ORDER BY prix DESC;\"])"
      ],
      "sortie": "Sada | 5\nDembéni | 3\nKoungou | 2",
      "reprendre_code": false
@@ -379,7 +380,7 @@
   {
    "type": "question",
    "id": "q06",
-   "nom": "[COUNT] Combien de trajets vers Mamoudzou ?",
+   "nom": "[COUNT] Combien de trajets à 2 € ?",
    "objectif": "Utiliser une fonction d'agrégation : COUNT.",
    "enonce": [
     "On exécute cette requête sur la table `trajet`.",
@@ -387,7 +388,7 @@
    ],
    "code": [
     "SELECT COUNT(*) FROM trajet",
-    "WHERE arrivee = 'Mamoudzou';"
+    "WHERE prix = 2;"
    ],
    "schema": {
     "type": "svg",
@@ -399,16 +400,16 @@
      "feedback": "5 est le nombre de lignes de toute la table. `COUNT(*)` ne compte que les lignes qui vérifient la condition du `WHERE`."
     },
     {
-     "texte": "10",
-     "feedback": "10, c'est la somme des prix de ces trajets (3 + 2 + 5) : ce serait `SUM(prix)`. `COUNT(*)` compte les lignes."
+     "texte": "6",
+     "feedback": "6, c'est la somme des prix de ces trajets (2 + 2 + 2) : ce serait `SUM(prix)`. `COUNT(*)` compte les lignes."
     },
     {
      "texte": "3",
      "juste": true,
-     "feedback": "Oui : trois lignes ont pour arrivée Mamoudzou, et `COUNT(*)` compte les lignes gardées par `WHERE`."
+     "feedback": "Oui : trois trajets coûtent 2 € (les trajets 2, 3 et 5), et `COUNT(*)` compte les lignes gardées par `WHERE`."
     },
     {
-     "texte": "Dembéni, Koungou, Sada",
+     "texte": "Sada, Koungou, Mamoudzou",
      "feedback": "Ce sont les départs de ces trajets. `COUNT(*)` ne liste pas les lignes : il renvoie un seul nombre, combien il y en a."
     }
    ],
@@ -416,16 +417,16 @@
    "verifications": [
     {
      "code": [
-      "sql(*[\"SELECT COUNT(*) FROM trajet\", \"WHERE arrivee = 'Mamoudzou';\"])"
+      "sql(*[\"SELECT COUNT(*) FROM trajet\", \"WHERE prix = 2;\"])"
      ],
      "sortie": "3",
      "reprendre_code": false
     },
     {
      "code": [
-      "sql(*[\"SELECT SUM(prix) FROM trajet\", \"WHERE arrivee = 'Mamoudzou';\"])"
+      "sql(*[\"SELECT SUM(prix) FROM trajet\", \"WHERE prix = 2;\"])"
      ],
-     "sortie": "10",
+     "sortie": "6",
      "reprendre_code": false
     }
    ],
@@ -456,8 +457,9 @@
    "code": [
     "SELECT taxi.prenom",
     "FROM trajet",
-    "JOIN taxi ON trajet.id_taxi = taxi.id",
-    "WHERE trajet.arrivee = 'Mamoudzou'",
+    "JOIN taxi",
+    "ON trajet.id_taxi = taxi.id",
+    "WHERE arrivee = 'Mamoudzou'",
     "ORDER BY taxi.prenom;"
    ],
    "schema": {
@@ -487,7 +489,7 @@
    "verifications": [
     {
      "code": [
-      "sql(*[\"SELECT taxi.prenom\", \"FROM trajet\", \"JOIN taxi ON trajet.id_taxi = taxi.id\", \"WHERE trajet.arrivee = 'Mamoudzou'\", \"ORDER BY taxi.prenom;\"])"
+      "sql(*[\"SELECT taxi.prenom\", \"FROM trajet\", \"JOIN taxi\", \"ON trajet.id_taxi = taxi.id\", \"WHERE arrivee = 'Mamoudzou'\", \"ORDER BY taxi.prenom;\"])"
      ],
      "sortie": "Anli\nFaïza\nMoussa",
      "reprendre_code": false
@@ -505,7 +507,8 @@
     "Combien de lignes a le résultat ?"
    ],
    "code": [
-    "SELECT * FROM trajet JOIN taxi;"
+    "SELECT * FROM trajet",
+    "JOIN taxi;"
    ],
    "options": [
     {
@@ -544,7 +547,7 @@
     },
     {
      "code": [
-      "message(*[\"SELECT * FROM trajet JOIN taxi;\"])"
+      "message(*[\"SELECT * FROM trajet\", \"JOIN taxi;\"])"
      ],
      "sortie": "aucune erreur",
      "reprendre_code": false
@@ -615,9 +618,9 @@
     "Que veut dire ce message ?"
    ],
    "code": [
-    "INSERT INTO trajet",
-    "(id, depart, arrivee, prix, id_taxi)",
-    "VALUES (3, 'Chirongui', 'Sada', 2, 3);"
+    "INSERT INTO trajet VALUES",
+    "(3, 'Chirongui', 'Sada',",
+    " 2, 3);"
    ],
    "options": [
     {
@@ -635,14 +638,14 @@
     },
     {
      "texte": "Les valeurs ne sont pas dans le même ordre que les colonnes.",
-     "feedback": "Les valeurs suivent bien l'ordre de la liste des colonnes. Le message dit que la valeur de `trajet.id` existe déjà."
+     "feedback": "Les valeurs suivent bien l'ordre des colonnes de la table : `id`, `depart`, `arrivee`, `prix`, `id_taxi`. Le message dit que la valeur de `trajet.id` existe déjà."
     }
    ],
    "explication": "Le SGBD refuse une clé primaire déjà prise.",
    "verifications": [
     {
      "code": [
-      "message(*[\"INSERT INTO trajet\", \"(id, depart, arrivee, prix, id_taxi)\", \"VALUES (3, 'Chirongui', 'Sada', 2, 3);\"])"
+      "message(*[\"INSERT INTO trajet VALUES\", \"(3, 'Chirongui', 'Sada',\", \" 2, 3);\"])"
      ],
      "sortie": "IntegrityError: UNIQUE constraint failed: trajet.id",
      "reprendre_code": false

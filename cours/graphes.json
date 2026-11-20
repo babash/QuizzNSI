@@ -677,6 +677,17 @@
     {
      "code": [],
      "erreur": "IndexError"
+    },
+    {
+     "code": [
+      "m = [[0, 1, 1], [1, 0, 0], [1, 0, 0]]",
+      "try:",
+      "    m[3]",
+      "except IndexError as e:",
+      "    print('IndexError:', e)"
+     ],
+     "sortie": "IndexError: list index out of range",
+     "reprendre_code": false
     }
    ],
    "verifications_corrigees": [
