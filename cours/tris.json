@@ -557,7 +557,7 @@
    "type": "notion",
    "titre": "Le coût",
    "texte": [
-    "Pour ==n== éléments, environ ==n²== comparaisons : le coût est ==quadratique==.",
+    "Pour ==n== éléments, de l'ordre de ==n²== comparaisons : le coût est ==quadratique==.",
     "Un tableau 10 fois plus grand : environ 100 fois plus de temps."
    ],
    "vocabulaire": "coût = cost ; quadratique = quadratic"

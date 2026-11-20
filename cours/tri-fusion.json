@@ -607,7 +607,7 @@
     {
      "texte": "La recherche dichotomique dans un tableau trié.",
      "juste": true,
-     "feedback": "Oui. On compare au milieu et on ne garde qu'une moitié : on divise le problème, puis on résout la moitié choisie."
+     "feedback": "Oui. On compare au milieu et on ne garde qu'une moitié : on divise le problème en deux, et on ne résout qu'un seul sous-problème, la moitié choisie. Certains manuels disent « réduire pour régner »."
     },
     {
      "texte": "La recherche séquentielle, élément par élément.",

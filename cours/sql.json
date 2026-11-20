@@ -514,7 +514,7 @@
     {
      "texte": "20",
      "juste": true,
-     "feedback": "Oui : sans condition, chaque trajet est recollé à chaque taxi, 5 × 4 = 20 lignes, presque toutes fausses. La condition `ON` ne garde que les bonnes paires."
+     "feedback": "Oui, dans SQLite : sans condition, chaque trajet est recollé à chaque taxi, 5 × 4 = 20 lignes, presque toutes fausses. La condition `ON` ne garde que les bonnes paires."
     },
     {
      "texte": "5",
@@ -526,10 +526,10 @@
     },
     {
      "texte": "Aucune : SQLite refuse la requête, il manque `ON`.",
-     "feedback": "SQLite accepte une jointure sans condition, c'est bien le piège : il n'y a pas d'erreur, mais 20 lignes, chaque trajet avec chaque taxi."
+     "feedback": "SQLite accepte une jointure sans condition, c'est bien le piège : 20 lignes, chaque trajet avec chaque taxi. D'autres SGBD, comme PostgreSQL, refusent un `JOIN` sans `ON` : c'est une erreur."
     }
    ],
-   "explication": "Sans `ON`, une jointure associe chaque ligne de l'une à chaque ligne de l'autre.",
+   "explication": "Dans SQLite, une jointure sans `ON` associe chaque ligne de l'une à chaque ligne de l'autre ; ailleurs, c'est une erreur.",
    "verifications": [
     {
      "code": [
