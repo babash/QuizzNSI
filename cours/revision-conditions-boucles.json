@@ -1,0 +1,1035 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "revision-conditions-boucles",
+ "titre": "Conditions, boucles, fonctions",
+ "sous_titre": "Séance de révision : 4 blocs de 5 questions pour faire son bilan",
+ "niveau": "Première NSI",
+ "programme": "Langages et programmation : constructions élémentaires (séquences, affectation, conditionnelles, boucles bornées, boucles non bornées, appels de fonction)",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "duree_minutes": 25,
+ "sources": [
+  "TD « Bases python » de Première : conditions, boucle for, boucle while, TD récapitulatif",
+  "Lagon Arena (la première condition vraie gagne) et le robot des TD (nord(), est(), obstacleEst()…)"
+ ],
+ "criteres": [
+  "Niveau 1 : je suis à la main un code qui contient une seule structure (une condition, une boucle ou une fonction).",
+  "Niveau 2 : je repère l'erreur classique : `=` au lieu de `==`, `range` qui s'arrête avant la fin, boucle sans fin, `return` oublié.",
+  "Niveau 3 : je suis un code qui combine deux structures (un `if` dans un `for`, une boucle dans une fonction)."
+ ],
+ "conventions": [
+  "Tous les codes sont en Python 3. « Qu'affiche ce code ? » : les valeurs sont données dans l'ordre d'affichage.",
+  "Le robot : `est()` et `nord()` le déplacent d'une case ; `obstacleEst()` et `obstacleNord()` valent `True` s'il y a un obstacle ou le bord dans cette direction."
+ ],
+ "prelude_python": [
+  "# Un petit robot pour vérifier les programmes : grille de 8 colonnes (A à H) et 6 lignes, obstacle en E5.",
+  "_x, _y = 0, 4",
+  "_obstacles = {(4, 4)}",
+  "def _bloque(dx, dy):",
+  "    x, y = _x + dx, _y + dy",
+  "    return not (0 <= x < 8 and 0 <= y < 6) or (x, y) in _obstacles",
+  "def _avance(dx, dy):",
+  "    global _x, _y",
+  "    assert not _bloque(dx, dy), 'le robot s écrase'",
+  "    _x, _y = _x + dx, _y + dy",
+  "def est(): _avance(1, 0)",
+  "def nord(): _avance(0, -1)",
+  "def obstacleEst(): return _bloque(1, 0)",
+  "def obstacleNord(): return _bloque(0, -1)",
+  "def position(): return 'ABCDEFGH'[_x] + str(_y + 1)"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Conditions, boucles, fonctions",
+   "conventions": false,
+   "texte": [
+    "Séance de révision · 4 blocs de 5 questions · à la fin de chaque bloc, on note son score."
+   ]
+  },
+  {
+   "type": "partie",
+   "numero": "1",
+   "titre": "Les conditions",
+   "sous_titre": "if, elif, else, and, =="
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Conditions] Choisir entre deux branches",
+   "objectif": "Suivre un `if` / `else` avec une valeur donnée.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "age = 15",
+    "if age >= 18:",
+    "    print(\"majeur\")",
+    "else:",
+    "    print(\"mineur\")"
+   ],
+   "options": [
+    {
+     "texte": "`majeur`",
+     "feedback": "La condition `age >= 18` est fausse pour 15 : c'est la branche du `else` qui s'exécute."
+    },
+    {
+     "texte": "`mineur`",
+     "juste": true,
+     "feedback": "Exact. 15 n'est pas supérieur ou égal à 18 : la condition est fausse, on exécute le `else`."
+    },
+    {
+     "texte": "`majeur` puis `mineur`",
+     "feedback": "Un `if` / `else` n'exécute jamais les deux branches : c'est l'une ou l'autre, selon la condition."
+    },
+    {
+     "texte": "Rien du tout",
+     "feedback": "Avec un `else`, il y a toujours une branche exécutée : si la condition est fausse, c'est celle du `else`."
+    }
+   ],
+   "explication": "`if` / `else` : une seule des deux branches s'exécute, selon que la condition est vraie ou fausse.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "mineur"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Conditions] La première condition vraie gagne",
+   "objectif": "Repérer quelle branche d'un `if` / `elif` / `else` s'exécute.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "note = 17",
+    "if note >= 10:",
+    "    print(\"Admis\")",
+    "elif note >= 16:",
+    "    print(\"Très bien\")",
+    "else:",
+    "    print(\"Refusé\")"
+   ],
+   "options": [
+    {
+     "texte": "`Très bien`",
+     "feedback": "17 est bien supérieur à 16, mais Python s'arrête à la première condition vraie : `note >= 10`, tout en haut."
+    },
+    {
+     "texte": "`Admis` puis `Très bien`",
+     "feedback": "Dès qu'une condition est vraie, les `elif` suivants ne sont même pas regardés. Une seule branche s'exécute."
+    },
+    {
+     "texte": "`Refusé`",
+     "feedback": "Le `else` ne s'exécute que si toutes les conditions au-dessus sont fausses. Ici, la première est déjà vraie."
+    },
+    {
+     "texte": "`Admis`",
+     "juste": true,
+     "feedback": "Exact. `17 >= 10` est vrai : Python exécute cette branche et ignore la suite. C'est la règle de Lagon Arena : la première condition vraie gagne."
+    }
+   ],
+   "explication": "Dans un `if` / `elif` / `else`, seule la première condition vraie compte : on teste donc le cas le plus exigeant en premier.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "Admis"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Conditions] Comparer avec ==",
+   "objectif": "Distinguer `=` (ranger une valeur) et `==` (comparer).",
+   "enonce": [
+    "La variable `code` contient un nombre. Quelle ligne teste correctement si ce nombre vaut 976 ?"
+   ],
+   "options": [
+    {
+     "texte": "`if code == 976:`",
+     "juste": true,
+     "feedback": "Exact. `==` compare deux valeurs, et la ligne du `if` se termine par deux-points."
+    },
+    {
+     "texte": "`if code = 976:`",
+     "feedback": "Un seul `=` range une valeur dans une variable. Pour comparer, il en faut deux : `==`."
+    },
+    {
+     "texte": "`if code == 976`",
+     "feedback": "La comparaison est bonne, mais il manque les deux-points à la fin de la ligne du `if`."
+    },
+    {
+     "texte": "`if code equals 976:`",
+     "feedback": "`equals` n'existe pas en Python. Pour tester une égalité, on écrit `==`."
+    }
+   ],
+   "explication": "`=` range une valeur, `==` compare. Une ligne `if` se termine toujours par `:`.",
+   "verifications": [
+    {
+     "code": [
+      "code = 976",
+      "if code == 976:",
+      "    print(\"ok\")"
+     ],
+     "sortie": "ok"
+    },
+    {
+     "code": [
+      "code = 976",
+      "if code = 976:",
+      "    print(\"ok\")"
+     ],
+     "erreur": "SyntaxError"
+    },
+    {
+     "code": [
+      "code = 976",
+      "if code == 976",
+      "    print(\"ok\")"
+     ],
+     "erreur": "SyntaxError"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Conditions] Deux conditions avec and",
+   "objectif": "Trouver une valeur qui rend vraie une condition composée avec `and`.",
+   "enonce": [
+    "Pour quelle valeur de `age` ce code affiche-t-il « Tarif jeune » ?"
+   ],
+   "code": [
+    "if age >= 12 and age <= 25:",
+    "    print(\"Tarif jeune\")",
+    "else:",
+    "    print(\"Plein tarif\")"
+   ],
+   "options": [
+    {
+     "texte": "11",
+     "feedback": "Avec `and`, les deux conditions doivent être vraies. Or `11 >= 12` est faux : c'est « Plein tarif »."
+    },
+    {
+     "texte": "26",
+     "feedback": "`26 >= 12` est vrai, mais `26 <= 25` est faux. Avec `and`, il suffit d'une condition fausse pour tout rendre faux."
+    },
+    {
+     "texte": "12",
+     "juste": true,
+     "feedback": "Exact. `12 >= 12` est vrai (le signe `>=` accepte l'égalité) et `12 <= 25` aussi : les deux conditions sont vraies."
+    },
+    {
+     "texte": "30",
+     "feedback": "`30 <= 25` est faux. Avec `and`, les deux conditions doivent être vraies en même temps."
+    }
+   ],
+   "explication": "`a and b` est vrai seulement si `a` et `b` sont vrais tous les deux. `>=` et `<=` acceptent l'égalité.",
+   "verifications": [
+    {
+     "code": [
+      "for age in (11, 26, 12, 30):",
+      "    if age >= 12 and age <= 25:",
+      "        print(\"Tarif jeune\")",
+      "    else:",
+      "        print(\"Plein tarif\")"
+     ],
+     "sortie": "Plein tarif\nPlein tarif\nTarif jeune\nPlein tarif",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Conditions] Deux if qui se suivent",
+   "objectif": "Distinguer deux `if` indépendants d'un `if` / `elif`.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "x = 5",
+    "if x > 3:",
+    "    print(\"A\")",
+    "if x > 4:",
+    "    print(\"B\")",
+    "else:",
+    "    print(\"C\")"
+   ],
+   "options": [
+    {
+     "texte": "`A` seulement",
+     "feedback": "Le second `if` n'est pas un `elif` : il est testé lui aussi, même si le premier était vrai."
+    },
+    {
+     "texte": "`A` puis `C`",
+     "feedback": "Le `else` appartient au second `if`. Comme `5 > 4` est vrai, c'est `B` qui s'affiche, pas `C`."
+    },
+    {
+     "texte": "`A` puis `B`",
+     "juste": true,
+     "feedback": "Exact. Ce sont deux `if` indépendants : chacun est testé. `5 > 3` affiche A, puis `5 > 4` affiche B."
+    },
+    {
+     "texte": "`B` seulement",
+     "feedback": "Le premier `if` est testé aussi : `5 > 3` est vrai, donc `A` s'affiche d'abord."
+    }
+   ],
+   "explication": "Deux `if` à la suite sont testés tous les deux. Avec `elif`, le second n'est regardé que si le premier est faux.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "A\nB"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "surtitre": "Bloc 1 terminé",
+   "titre": "Note ton score sur ta feuille de route",
+   "texte": [
+    "Compte tes bonnes réponses du bloc « Conditions » : un nombre sur 5.",
+    "4 ou 5 : acquis. 3 : à consolider. 0, 1 ou 2 : ==à revoir en priorité=="
+   ]
+  },
+  {
+   "type": "partie",
+   "numero": "2",
+   "titre": "La boucle for",
+   "sous_titre": "range, indentation, total, compteur"
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Boucle for] Les valeurs de range",
+   "objectif": "Donner les valeurs produites par `range(n)`.",
+   "enonce": [
+    "Quelles valeurs prend `i` dans la boucle `for i in range(5):` ?"
+   ],
+   "options": [
+    {
+     "texte": "0, 1, 2, 3, 4",
+     "juste": true,
+     "feedback": "Exact. `range(5)` commence à 0 et s'arrête avant 5 : cela fait bien 5 valeurs."
+    },
+    {
+     "texte": "1, 2, 3, 4, 5",
+     "feedback": "`range(5)` commence à 0, pas à 1, et il s'arrête juste avant 5."
+    },
+    {
+     "texte": "0, 1, 2, 3, 4, 5",
+     "feedback": "`range(5)` s'arrête avant 5 : le 5 n'est jamais atteint. Il y a 5 valeurs, pas 6."
+    },
+    {
+     "texte": "1, 2, 3, 4",
+     "feedback": "`range(5)` commence à 0 : il faut ajouter le 0 au début. On obtient 5 valeurs."
+    }
+   ],
+   "explication": "`range(n)` va de 0 à n − 1 : n valeurs, et n n'est jamais atteint.",
+   "verifications": [
+    {
+     "code": [
+      "print(list(range(5)))"
+     ],
+     "sortie": "[0, 1, 2, 3, 4]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Boucle for] Compter les tours",
+   "objectif": "Compter les tours d'une boucle `for` écrite avec `range(a, b)`.",
+   "enonce": [
+    "Combien de fois ce code affiche-t-il « NSI » ?"
+   ],
+   "code": [
+    "for i in range(2, 7):",
+    "    print(\"NSI\")"
+   ],
+   "options": [
+    {
+     "texte": "7 fois",
+     "feedback": "7 est la borne de fin, et elle n'est pas atteinte. Les valeurs de `i` sont 2, 3, 4, 5 et 6."
+    },
+    {
+     "texte": "6 fois",
+     "feedback": "La boucle ne commence pas à 1 mais à 2, et elle s'arrête avant 7 : compte les valeurs 2, 3, 4, 5, 6."
+    },
+    {
+     "texte": "4 fois",
+     "feedback": "Il y a une valeur de plus : `i` vaut 2, 3, 4, 5 puis 6. La borne de départ est comprise."
+    },
+    {
+     "texte": "5 fois",
+     "juste": true,
+     "feedback": "Exact. `i` prend les valeurs 2, 3, 4, 5 et 6 : la fin, 7, n'est pas atteinte. Cela fait 7 − 2 = 5 tours."
+    }
+   ],
+   "explication": "`range(a, b)` va de a à b − 1 : cela fait b − a tours.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "NSI\nNSI\nNSI\nNSI\nNSI"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Boucle for] Dans la boucle ou après ?",
+   "objectif": "Utiliser l'indentation pour savoir ce qui est répété.",
+   "enonce": [
+    "Combien de lignes ce code affiche-t-il ?"
+   ],
+   "code": [
+    "for i in range(3):",
+    "    print(\"Hip\")",
+    "print(\"Hourra\")"
+   ],
+   "options": [
+    {
+     "texte": "6 lignes",
+     "feedback": "Seule la ligne indentée est répétée. `print(\"Hourra\")` est tout à gauche : il s'exécute une seule fois, après la boucle."
+    },
+    {
+     "texte": "4 lignes",
+     "juste": true,
+     "feedback": "Exact. « Hip » est dans la boucle : 3 fois. « Hourra » n'est pas indenté : une seule fois, à la fin."
+    },
+    {
+     "texte": "3 lignes",
+     "feedback": "Il manque la dernière ligne : après la boucle, `print(\"Hourra\")` s'exécute une fois."
+    },
+    {
+     "texte": "2 lignes",
+     "feedback": "La ligne indentée sous le `for` est répétée 3 fois, puis « Hourra » s'affiche une fois."
+    }
+   ],
+   "explication": "Ce qui est indenté sous le `for` est répété ; ce qui revient à gauche s'exécute une seule fois, après.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "Hip\nHip\nHip\nHourra"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Boucle for] Additionner dans une boucle",
+   "objectif": "Suivre une variable qui accumule un total dans une boucle.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "total = 0",
+    "for i in range(2, 5):",
+    "    total = total + i",
+    "print(total)"
+   ],
+   "options": [
+    {
+     "texte": "14",
+     "feedback": "Le 5 n'est pas atteint : `i` vaut 2, 3 puis 4. Le total est 2 + 3 + 4."
+    },
+    {
+     "texte": "10",
+     "feedback": "La boucle commence à 2, pas à 1 : on additionne 2 + 3 + 4."
+    },
+    {
+     "texte": "4",
+     "feedback": "4 est la dernière valeur de `i`, pas le total : `total` garde la somme de toutes les valeurs."
+    },
+    {
+     "texte": "9",
+     "juste": true,
+     "feedback": "Exact. `i` vaut 2, 3 puis 4 : `total` passe de 0 à 2, puis 5, puis 9."
+    }
+   ],
+   "explication": "Un total s'initialise avant la boucle (`total = 0`), puis grandit à chaque tour.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "9"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Boucle for] Un if dans un for",
+   "objectif": "Suivre un compteur placé dans un `if`, lui-même dans un `for`.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "nb = 0",
+    "for lettre in \"Mayotte\":",
+    "    if lettre == \"t\":",
+    "        nb = nb + 1",
+    "print(nb)"
+   ],
+   "options": [
+    {
+     "texte": "2",
+     "juste": true,
+     "feedback": "Exact. La boucle regarde chaque lettre de « Mayotte » ; `nb` augmente seulement pour les deux « t »."
+    },
+    {
+     "texte": "7",
+     "feedback": "7 est le nombre de lettres. Mais `nb` n'augmente que si la lettre est un « t » : le `if` filtre."
+    },
+    {
+     "texte": "1",
+     "feedback": "Il y a deux « t » dans « Mayotte » : le compteur augmente deux fois."
+    },
+    {
+     "texte": "0",
+     "feedback": "`nb` démarre à 0, mais il augmente de 1 à chaque « t » rencontré. Il y en a deux."
+    }
+   ],
+   "explication": "`for lettre in mot` parcourt les lettres une à une ; le `if` choisit celles que l'on compte.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "2"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "surtitre": "Bloc 2 terminé",
+   "titre": "Note ton score sur ta feuille de route",
+   "texte": [
+    "Compte tes bonnes réponses du bloc « Boucle for » : un nombre sur 5.",
+    "4 ou 5 : acquis. 3 : à consolider. 0, 1 ou 2 : ==à revoir en priorité=="
+   ]
+  },
+  {
+   "type": "partie",
+   "numero": "3",
+   "titre": "La boucle while",
+   "sous_titre": "tant que, nombre de tours, boucle sans fin"
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Boucle while] Suivre un compte à rebours",
+   "objectif": "Exécuter une boucle `while` à la main.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "n = 3",
+    "while n > 0:",
+    "    print(n)",
+    "    n = n - 1"
+   ],
+   "options": [
+    {
+     "texte": "3, 2, 1, 0",
+     "feedback": "Quand `n` vaut 0, la condition `n > 0` est fausse : la boucle s'arrête avant d'afficher 0."
+    },
+    {
+     "texte": "2, 1, 0",
+     "feedback": "`print(n)` est exécuté avant la soustraction : le premier nombre affiché est 3."
+    },
+    {
+     "texte": "3, 2, 1",
+     "juste": true,
+     "feedback": "Exact. On affiche 3, 2 puis 1 ; ensuite `n` vaut 0, la condition est fausse et la boucle s'arrête."
+    },
+    {
+     "texte": "3, sans jamais s'arrêter",
+     "feedback": "La ligne `n = n - 1` fait diminuer `n` à chaque tour : la condition finit par devenir fausse."
+    }
+   ],
+   "explication": "`while` teste la condition avant chaque tour ; dès qu'elle est fausse, la boucle s'arrête.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3\n2\n1"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q12",
+   "nom": "[Boucle while] Compter les tours",
+   "objectif": "Compter les tours d'une boucle `while` avec un tableau de suivi.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "x = 1",
+    "tours = 0",
+    "while x < 10:",
+    "    x = x * 2",
+    "    tours = tours + 1",
+    "print(tours)"
+   ],
+   "options": [
+    {
+     "texte": "3",
+     "feedback": "Après 3 tours, `x` vaut 8, et `8 < 10` est encore vrai : il y a un tour de plus."
+    },
+    {
+     "texte": "4",
+     "juste": true,
+     "feedback": "Exact. `x` vaut 2, 4, 8 puis 16 : au 4ᵉ tour, il dépasse 10 et la boucle s'arrête."
+    },
+    {
+     "texte": "5",
+     "feedback": "Fais le tableau de suivi : `x` vaut 2, 4, 8, 16. À 16, la condition `x < 10` est fausse."
+    },
+    {
+     "texte": "10",
+     "feedback": "10 est la limite de `x`, pas le nombre de tours. `x` double à chaque tour : 2, 4, 8, 16."
+    }
+   ],
+   "explication": "Avec `while`, on ne connaît pas le nombre de tours à l'avance : un tableau de suivi le donne.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "4"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q13",
+   "nom": "[Boucle while] Repérer une boucle sans fin",
+   "objectif": "Reconnaître une boucle `while` dont la condition ne devient jamais fausse.",
+   "enonce": [
+    "Lequel de ces programmes ne s'arrête jamais ?"
+   ],
+   "options": [
+    {
+     "code": [
+      "n = 0",
+      "while n < 5:",
+      "    n = n + 1"
+     ],
+     "feedback": "Ici, `n` augmente à chaque tour : il atteint 5, la condition devient fausse et la boucle s'arrête."
+    },
+    {
+     "code": [
+      "n = 10",
+      "while n < 5:",
+      "    n = n + 1"
+     ],
+     "feedback": "`10 < 5` est faux dès le départ : cette boucle ne fait aucun tour, elle s'arrête tout de suite."
+    },
+    {
+     "code": [
+      "n = 5",
+      "while n > 0:",
+      "    n = n - 1"
+     ],
+     "feedback": "Ici, `n` diminue à chaque tour : il atteint 0, la condition devient fausse et la boucle s'arrête."
+    },
+    {
+     "code": [
+      "n = 0",
+      "while n < 5:",
+      "    print(n)"
+     ],
+     "juste": true,
+     "feedback": "Exact. Rien ne modifie `n` dans la boucle : `n < 5` reste vrai pour toujours, et 0 s'affiche sans fin."
+    }
+   ],
+   "explication": "Dans un `while`, quelque chose doit changer à chaque tour pour que la condition finisse par être fausse.",
+   "verifications": [
+    {
+     "code": [
+      "n = 0",
+      "while n < 5:",
+      "    n = n + 1",
+      "print(n)"
+     ],
+     "sortie": "5"
+    },
+    {
+     "code": [
+      "n = 10",
+      "while n < 5:",
+      "    n = n + 1",
+      "print(n)"
+     ],
+     "sortie": "10"
+    },
+    {
+     "code": [
+      "n = 5",
+      "while n > 0:",
+      "    n = n - 1",
+      "print(n)"
+     ],
+     "sortie": "0"
+    },
+    {
+     "code": [
+      "n = 0",
+      "t = 0",
+      "while n < 5 and t < 1000:",
+      "    t = t + 1",
+      "print(n, t)"
+     ],
+     "sortie": "0 1000"
+    }
+   ],
+   "note_verification": "Le programme sans fin n'est pas exécuté tel quel : on vérifie qu'après 1 000 tours, n vaut toujours 0."
+  },
+  {
+   "type": "question",
+   "id": "q14",
+   "nom": "[Boucle while] for ou while ?",
+   "objectif": "Choisir la boucle adaptée à une situation.",
+   "enonce": [
+    "On lance un dé jusqu'à obtenir un 6. Quelle boucle convient ?"
+   ],
+   "options": [
+    {
+     "texte": "`while`, car on ne sait pas combien de lancers il faudra",
+     "juste": true,
+     "feedback": "Exact. Le nombre de tours est inconnu : on répète tant que le dé n'a pas donné 6. C'est le rôle de `while`."
+    },
+    {
+     "texte": "`for i in range(6):`, car on attend un 6",
+     "feedback": "`range(6)` ferait exactement 6 lancers. Or le 6 peut sortir au premier lancer, ou au vingtième."
+    },
+    {
+     "texte": "`for`, car on répète la même action",
+     "feedback": "`for` et `while` répètent tous les deux. `for` convient quand on connaît le nombre de tours, ce qui n'est pas le cas ici."
+    },
+    {
+     "texte": "Aucune : un `if` suffit",
+     "feedback": "Un `if` teste une seule fois. Ici, il faut relancer le dé encore et encore : c'est une boucle."
+    }
+   ],
+   "explication": "Nombre de tours connu : `for`. Nombre de tours inconnu, on répète « tant que » : `while`.",
+   "note_verification": "Question de cours, sans code à exécuter : la règle est celle du cours et du TD récapitulatif (exercice « for ou while ? »)."
+  },
+  {
+   "type": "question",
+   "id": "q15",
+   "nom": "[Boucle while] Traduire un programme du robot",
+   "objectif": "Dire en français ce que fait une boucle `while` suivie d'une instruction.",
+   "enonce": [
+    "Le robot avance d'une case avec `est()` ou `nord()`. `obstacleEst()` vaut `True` s'il y a un obstacle ou le bord juste à l'est.",
+    "Que fait ce programme ?"
+   ],
+   "code": [
+    "while not obstacleEst():",
+    "    est()",
+    "nord()"
+   ],
+   "options": [
+    {
+     "texte": "Il avance d'une case vers l'est, puis d'une case vers le nord.",
+     "feedback": "Le `while` répète `est()` : le robot peut avancer de plusieurs cases, pas d'une seule."
+    },
+    {
+     "texte": "Il avance vers l'est tant qu'il y a un obstacle à l'est.",
+     "feedback": "Attention au `not` : le robot avance tant qu'il n'y a pas d'obstacle. S'il y en a un, il s'arrête."
+    },
+    {
+     "texte": "Il avance vers l'est jusqu'à l'obstacle, puis il monte d'une case.",
+     "juste": true,
+     "feedback": "Exact. Tant que la voie est libre à l'est, il avance. `nord()` n'est pas indenté : il s'exécute une fois, après la boucle."
+    },
+    {
+     "texte": "À chaque case vers l'est, il monte aussi d'une case.",
+     "feedback": "`nord()` n'est pas indenté : il n'est pas dans la boucle. Il s'exécute une seule fois, à la fin."
+    }
+   ],
+   "explication": "`while not obstacleEst():` se lit « tant qu'il n'y a pas d'obstacle à l'est ».",
+   "verifications": [
+    {
+     "code": [
+      "print(position())"
+     ],
+     "sortie": "D4"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "surtitre": "Bloc 3 terminé",
+   "titre": "Note ton score sur ta feuille de route",
+   "texte": [
+    "Compte tes bonnes réponses du bloc « Boucle while » : un nombre sur 5.",
+    "4 ou 5 : acquis. 3 : à consolider. 0, 1 ou 2 : ==à revoir en priorité=="
+   ]
+  },
+  {
+   "type": "partie",
+   "numero": "4",
+   "titre": "Les fonctions",
+   "sous_titre": "def, paramètre, return, appel"
+  },
+  {
+   "type": "question",
+   "id": "q16",
+   "nom": "[Fonctions] Utiliser la valeur renvoyée",
+   "objectif": "Utiliser le résultat renvoyé par une fonction dans un calcul.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "def double(n):",
+    "    return n * 2",
+    "",
+    "print(double(4) + 1)"
+   ],
+   "options": [
+    {
+     "texte": "8",
+     "feedback": "`double(4)` renvoie bien 8, mais on lui ajoute 1 avant d'afficher."
+    },
+    {
+     "texte": "9",
+     "juste": true,
+     "feedback": "Exact. `double(4)` renvoie 8 ; cette valeur remplace l'appel, puis on ajoute 1."
+    },
+    {
+     "texte": "10",
+     "feedback": "On ajoute 1 après avoir doublé 4, pas avant : 4 × 2 + 1, et non (4 + 1) × 2."
+    },
+    {
+     "texte": "Une erreur",
+     "feedback": "Il n'y a pas d'erreur : la fonction renvoie un nombre, et on peut l'utiliser dans un calcul."
+    }
+   ],
+   "explication": "`return` renvoie une valeur : l'appel `double(4)` vaut alors 8 dans le reste du calcul.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "9"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q17",
+   "nom": "[Fonctions] Le return oublié",
+   "objectif": "Repérer ce que vaut l'appel d'une fonction sans `return`.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "def aire(l, h):",
+    "    a = l * h",
+    "",
+    "print(aire(3, 4))"
+   ],
+   "options": [
+    {
+     "texte": "`None`",
+     "juste": true,
+     "feedback": "Exact. La fonction calcule 12 mais ne le renvoie pas : sans `return`, un appel vaut `None`."
+    },
+    {
+     "texte": "12",
+     "feedback": "Le calcul est bien fait dans la fonction, mais rien n'est renvoyé : il manque `return a`."
+    },
+    {
+     "texte": "7",
+     "feedback": "L'étoile `*` multiplie. Et surtout, la fonction ne renvoie rien : regarde s'il y a un `return`."
+    },
+    {
+     "texte": "Une erreur",
+     "feedback": "Python accepte une fonction sans `return` : il n'y a pas d'erreur, mais l'appel vaut `None`."
+    }
+   ],
+   "explication": "Une fonction qui calcule doit finir par `return` ; sinon, son appel vaut `None`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "None"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q18",
+   "nom": "[Fonctions] Définir n'est pas appeler",
+   "objectif": "Distinguer la définition d'une fonction de son appel.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "def saluer():",
+    "    print(\"Bonjour\")",
+    "",
+    "print(\"Fin\")"
+   ],
+   "options": [
+    {
+     "texte": "`Bonjour` puis `Fin`",
+     "feedback": "La fonction est définie, mais jamais appelée : il n'y a aucune ligne `saluer()` dans le programme."
+    },
+    {
+     "texte": "`Fin` puis `Bonjour`",
+     "feedback": "Rien n'appelle la fonction, ni avant ni après : son contenu ne s'exécute pas."
+    },
+    {
+     "texte": "`Fin`",
+     "juste": true,
+     "feedback": "Exact. `def` apprend la fonction à Python sans l'exécuter. Pour afficher « Bonjour », il faudrait écrire `saluer()`."
+    },
+    {
+     "texte": "Rien du tout",
+     "feedback": "La dernière ligne n'est pas dans la fonction : `print(\"Fin\")` s'exécute normalement."
+    }
+   ],
+   "explication": "`def` définit une fonction ; elle ne s'exécute que lorsqu'on l'appelle, avec ses parenthèses.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "Fin"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q19",
+   "nom": "[Fonctions] Une fonction avec des conditions",
+   "objectif": "Suivre un appel de fonction qui contient un `if` / `elif` / `else`.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "def mention(note):",
+    "    if note >= 16:",
+    "        return \"TB\"",
+    "    elif note >= 14:",
+    "        return \"B\"",
+    "    else:",
+    "        return \"AB\"",
+    "",
+    "print(mention(14))"
+   ],
+   "options": [
+    {
+     "texte": "`TB`",
+     "feedback": "`14 >= 16` est faux : on passe à la condition suivante, `note >= 14`."
+    },
+    {
+     "texte": "`AB`",
+     "feedback": "Le `else` ne sert que si toutes les conditions sont fausses. Or `14 >= 14` est vrai."
+    },
+    {
+     "texte": "`None`",
+     "feedback": "Chaque branche contient un `return` : la fonction renvoie toujours une mention."
+    },
+    {
+     "texte": "`B`",
+     "juste": true,
+     "feedback": "Exact. `14 >= 16` est faux, puis `14 >= 14` est vrai (`>=` accepte l'égalité) : la fonction renvoie « B »."
+    }
+   ],
+   "explication": "Le paramètre `note` prend la valeur donnée à l'appel ; `return` arrête la fonction et renvoie le résultat.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "B"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q20",
+   "nom": "[Fonctions] Une boucle dans une fonction",
+   "objectif": "Suivre un appel de fonction qui contient une boucle `for` et un total.",
+   "enonce": [
+    "Qu'affiche ce code ?"
+   ],
+   "code": [
+    "def somme(n):",
+    "    total = 0",
+    "    for i in range(n):",
+    "        total = total + i",
+    "    return total",
+    "",
+    "print(somme(4))"
+   ],
+   "options": [
+    {
+     "texte": "6",
+     "juste": true,
+     "feedback": "Exact. `range(4)` donne 0, 1, 2 et 3 : le total vaut 0 + 1 + 2 + 3."
+    },
+    {
+     "texte": "10",
+     "feedback": "`range(4)` s'arrête avant 4 : on additionne 0 + 1 + 2 + 3, sans le 4."
+    },
+    {
+     "texte": "4",
+     "feedback": "4 est la valeur du paramètre `n`. La fonction renvoie `total`, la somme des valeurs de `i`."
+    },
+    {
+     "texte": "3",
+     "feedback": "3 est la dernière valeur de `i`. `total` garde la somme de toutes les valeurs : 0 + 1 + 2 + 3."
+    }
+   ],
+   "explication": "`range(n)` s'arrête à n − 1, même à l'intérieur d'une fonction.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "6"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "surtitre": "Bloc 4 terminé",
+   "titre": "Note ton score sur ta feuille de route",
+   "texte": [
+    "Compte tes bonnes réponses du bloc « Fonctions » : un nombre sur 5.",
+    "4 ou 5 : acquis. 3 : à consolider. 0, 1 ou 2 : ==à revoir en priorité=="
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "À retenir",
+     "Le piège"
+    ],
+    "lignes": [
+     [
+      "Conditions",
+      "`if` / `elif` / `else` : la première condition vraie gagne",
+      "`=` au lieu de `==` ; les deux-points oubliés"
+     ],
+     [
+      "Boucle `for`",
+      "nombre de tours connu ; `range(n)` va de 0 à n − 1",
+      "croire que `range(n)` atteint n ; l'indentation"
+     ],
+     [
+      "Boucle `while`",
+      "on répète tant que la condition est vraie",
+      "la boucle sans fin : rien ne change dans la boucle"
+     ],
+     [
+      "Fonctions",
+      "`def` définit, l'appel exécute, `return` renvoie",
+      "le `return` oublié : l'appel vaut `None`"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quel bloc a ton score le plus bas ? C'est par lui que tu commences tes révisions.",
+    "De 1 à 5, à quel point peux-tu expliquer la différence entre `for` et `while` à un·e camarade ?"
+   ]
+  }
+ ]
+}
