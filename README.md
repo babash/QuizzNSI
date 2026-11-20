@@ -26,6 +26,8 @@ Une seule page projetée par séance : si une deuxième est ouverte (onglet dupl
 
 Le premier cours, **piles et files**, commence par se demander pourquoi : des scènes du quotidien à Mayotte (la boîte de chips en tube, la file au doukabé, le bouchon jusqu'à Mamoudzou), puis deux programmes de tous les jours (le bouton « Annuler », l'imprimante de la salle info). Un essai avec une liste Python devient vite pénible, une diapositive d'humour le dit… et la pile et la file arrivent comme la solution : des structures qui imposent leur règle.
 
+Le second, **« Conditions, boucles, fonctions »** (Première), est une séance de révision : pas de cours, mais [4 blocs de 5 questions](https://babash.github.io/QuizzNSI/animer.html?cours=revision-conditions-boucles) (les conditions, la boucle `for`, la boucle `while`, les fonctions). À la fin de chaque bloc, chaque élève note son score sur sa feuille de route : le quiz sert de bilan avant un contrôle.
+
 Viennent ensuite les définitions (structure de données, structure linéaire, interface et implémentation), la pile, la file, Python, et pour aller plus loin. Les 20 questions sont placées là où elles font pratiquer :
 
 | Étape | Ce que les élèves font |
