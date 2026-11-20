@@ -76,7 +76,7 @@ Chaque diapositive a un `type` :
 | `nom` | `[Thème] Ce que la question fait travailler`, comme dans Pronote |
 | `objectif` | une phrase, affichée au début de la question |
 | `enonce` | une liste de paragraphes **impersonnels**, comme au bac |
-| `code` | facultatif : une liste de lignes Python, affichée numérotée et colorée ; viser **27 caractères au plus par ligne** (commentaire compris) : au-delà, le code défile à 320 px. C'est **obligatoire** (contrôlé) pour une ligne fautive, dont chaque ligne est un bouton coupé à 320 px, et pour le code d'un écran d'introduction |
+| `code` | facultatif : une liste de lignes Python, affichée numérotée et colorée ; **27 caractères au plus par ligne** (commentaire compris), **contrôlé** partout : code d'une question, d'une option, d'un écran d'introduction, d'une ligne fautive (chaque ligne est un bouton). À 320 px, le moteur affiche alors chaque ligne en entier (police de 13 px au moins, lettre de l'option au-dessus de son code) |
 | `console` | facultatif, sous un `code` : ce que Python affiche en l'exécutant, une ligne par ligne de sortie ; pour une erreur, sa dernière ligne **en entier** (Python 3.13, « Did you mean » compris). Affichée dans une console compacte sous le code ; le vérificateur l'exécute et compare mot pour mot |
 | `schema` | facultatif : un schéma (voir plus bas) |
 | `options` | **exactement 4** : `{ "texte": "…", "feedback": "…" }`, ou `"code": [lignes]` à la place de `texte` ; **une seule** porte `"juste": true` |
@@ -88,7 +88,7 @@ Chaque diapositive a un `type` :
 Les règles que le vérificateur contrôle :
 - 4 options, une seule juste ; un feedback d'au moins 40 caractères pour **chaque** option, au tutoiement : il explique l'erreur (bienveillant) ou consolide l'automatisme ;
 - aucun gras dans une option ; la bonne réponse n'est la plus longue que rarement (au plus 40 % des questions) ;
-- la bonne réponse répartie entre A, B, C et D (pour 20 questions : 4 à 6 fois chacune ; pour 11 : 1 à 4 fois), jamais 3 fois de suite la même lettre, aucun motif périodique ;
+- la bonne réponse répartie entre A, B, C et D (pour 20 questions : 4 à 6 fois chacune ; pour 11 : 1 à 4 fois), jamais 3 fois de suite la même lettre, aucun motif (ni périodique, ni partiel : une lettre juste au même rang modulo 2, 3 ou 4 sur 4 questions de ce rang, un groupe de 4 bonnes réponses qui se répète) ;
 - aucun caractère invisible ou de contrôle ;
 - 20 questions à choix dans une révision ; 12 questions en tout dans une introduction (voir les gabarits).
 
