@@ -1,0 +1,745 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "fonctions",
+ "titre": "Fonctions",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Langages et programmation : constructions élémentaires (appels de fonction) ; spécification ; mise au point de programmes (SNT : définitions et appels de fonctions)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/fonctions/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les fonctions en Python » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je définis une fonction avec `def` et je l'appelle.",
+  "Niveau 2 : je distingue `return` et `print`, paramètre et argument.",
+  "Niveau 3 : je prévois ce que renvoie un appel, et je lis un message d'erreur."
+ ],
+ "conventions": [
+  "Tous les codes sont en Python 3. Quand un code affiche plusieurs lignes, les réponses les donnent dans l'ordre, séparées par « puis ».",
+  "Le prix des mangues dans les exemples est inventé : 3 € le kilo."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Fonctions",
+   "conventions": false,
+   "texte": [
+    "Les bases de Python · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment ne pas refaire le même calcul ?",
+   "texte": [
+    "Au marché, la vendeuse calcule le prix de chaque panier : toujours le même calcul, un poids différent."
+   ],
+   "pistes": [
+    "On lui donne un nom, et on l'appelle !"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Définir, puis appeler",
+   "texte": [
+    "`def` ==définit== la fonction : rien ne s'exécute encore.",
+    "On l'==appelle== par son nom, avec des parenthèses."
+   ],
+   "code": [
+    "def prix(kilos):",
+    "    return kilos * 3",
+    "print(prix(2))   # 6",
+    "print(prix(5))   # 15"
+   ],
+   "vocabulaire": "fonction = function ; définir = define (def) ; appeler = call ; renvoyer = return"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Appel] Utiliser la valeur renvoyée",
+   "objectif": "Calculer la valeur d'un appel de fonction dans une expression.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "def double(x):",
+    "    return 2 * x",
+    "print(double(4) + 1)"
+   ],
+   "options": [
+    {
+     "texte": "`9`",
+     "juste": true,
+     "feedback": "Oui. `double(4)` renvoie 8, et le programme ajoute 1 : 9. L'appel est remplacé par la valeur renvoyée."
+    },
+    {
+     "texte": "`10`",
+     "feedback": "Tu as doublé 4 + 1. Mais l'argument est 4 : `double(4)` renvoie 8, puis on ajoute 1."
+    },
+    {
+     "texte": "`8`",
+     "feedback": "8 est bien la valeur renvoyée par `double(4)`. Mais le programme lui ajoute ensuite 1."
+    },
+    {
+     "texte": "`double(4) + 1`",
+     "feedback": "Python calcule toujours avant d'afficher : il appelle `double(4)`, obtient 8, puis ajoute 1."
+    }
+   ],
+   "explication": "Un appel est remplacé par la valeur que la fonction renvoie.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "9"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Définition] Définir n'est pas exécuter",
+   "objectif": "Savoir que le bloc d'une fonction ne s'exécute qu'à l'appel.",
+   "enonce": [
+    "Ce programme contient seulement les deux lignes suivantes.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "def bonjour():",
+    "    print(\"Bonjour\")"
+   ],
+   "options": [
+    {
+     "texte": "`Bonjour`",
+     "feedback": "Le `print` est dans le bloc de la fonction : il ne s'exécute que si on l'appelle, avec `bonjour()`. Ici, aucun appel."
+    },
+    {
+     "texte": "`None`",
+     "feedback": "`None` est la valeur renvoyée par une fonction sans `return`. Mais ici, la fonction n'est même pas appelée : rien ne s'affiche."
+    },
+    {
+     "texte": "Rien.",
+     "juste": true,
+     "feedback": "Exact. `def` définit la fonction sans l'exécuter. Il faudrait l'appeler, `bonjour()`, pour voir le message."
+    },
+    {
+     "texte": "Une erreur : la fonction n'est pas appelée.",
+     "feedback": "Définir une fonction sans l'appeler est permis : Python retient la recette pour plus tard. Rien ne s'affiche."
+    }
+   ],
+   "explication": "`def` définit ; seul l'appel `bonjour()` exécute le bloc.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": ""
+    },
+    {
+     "code": [
+      "bonjour()"
+     ],
+     "sortie": "Bonjour",
+     "option": 0
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Paramètre et argument",
+   "texte": [
+    "Le ==paramètre== est le nom écrit dans le `def`.",
+    "L'==argument== est la valeur donnée à l'appel : le paramètre la reçoit."
+   ],
+   "code": [
+    "# nom : le paramètre",
+    "def salut(nom):",
+    "    return \"Salut \" + nom",
+    "# \"Zaïna\" : l'argument",
+    "print(salut(\"Zaïna\"))"
+   ],
+   "vocabulaire": "paramètre = parameter ; argument = argument"
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Paramètres] L'ordre des arguments",
+   "objectif": "Associer chaque argument au paramètre de même rang.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "def monnaie(donne, prix):",
+    "    return donne - prix",
+    "print(monnaie(2, 10))"
+   ],
+   "options": [
+    {
+     "texte": "`8`",
+     "feedback": "Tu as mis le plus grand nombre en premier. Python suit l'ordre : le premier argument, 2, va dans `donne`."
+    },
+    {
+     "texte": "`-8`",
+     "juste": true,
+     "feedback": "Oui. Les arguments sont donnés dans l'ordre : `donne` reçoit 2 et `prix` reçoit 10. 2 - 10 = -8."
+    },
+    {
+     "texte": "`12`",
+     "feedback": "La fonction soustrait, elle n'additionne pas : `donne - prix`, soit 2 - 10."
+    },
+    {
+     "texte": "Une erreur : on ne peut pas rendre une monnaie négative.",
+     "feedback": "Python ne sait pas ce qu'est une monnaie : il calcule 2 - 10 sans erreur, et renvoie -8."
+    }
+   ],
+   "explication": "Le premier argument va dans le premier paramètre, le deuxième dans le deuxième.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "-8"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Arguments] Un argument oublié",
+   "objectif": "Prévoir l'erreur d'un appel qui n'a pas assez d'arguments.",
+   "enonce": [
+    "La fonction `monnaie` est celle de la question précédente. On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "def monnaie(donne, prix):",
+    "    return donne - prix",
+    "print(monnaie(10))"
+   ],
+   "options": [
+    {
+     "texte": "Le programme affiche `10` : `prix` vaut 0.",
+     "feedback": "Un paramètre ne vaut pas 0 par défaut : sans argument, il n'a aucune valeur. Python s'arrête avec une erreur `TypeError`."
+    },
+    {
+     "texte": "Le programme affiche `None`.",
+     "feedback": "`None` vient d'une fonction sans `return`. Ici, la fonction n'est même pas exécutée : il lui manque un argument, d'où une erreur."
+    },
+    {
+     "texte": "Le programme affiche `10 - prix`.",
+     "feedback": "Python ne calcule jamais avec un nom vide. Il manque un argument : il s'arrête avec une erreur `TypeError`."
+    },
+    {
+     "texte": "Une erreur `TypeError` : il manque l'argument `prix`.",
+     "juste": true,
+     "feedback": "Exact. Il faut un argument par paramètre. Python le dit : `TypeError: monnaie() missing 1 required positional argument: 'prix'` (« il manque 1 argument obligatoire : prix »)."
+    }
+   ],
+   "explication": "Un appel donne un argument pour chaque paramètre.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "`return` ou `print` ?",
+   "texte": [
+    "`print` ==affiche== ; `return` ==renvoie== la valeur au programme, qui peut la réutiliser.",
+    "Sans `return`, la fonction renvoie `None`."
+   ],
+   "code": [
+    "def double(x):",
+    "    print(2 * x)",
+    "r = double(5)   # affiche 10",
+    "print(r)        # None"
+   ],
+   "vocabulaire": "afficher = print ; renvoyer = return ; None = rien"
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[return] Une fonction qui affiche sans renvoyer",
+   "objectif": "Prévoir l'effet d'un calcul sur le résultat d'une fonction sans `return`.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "def carre(x):",
+    "    print(x * x)",
+    "y = carre(3) + 1"
+   ],
+   "options": [
+    {
+     "texte": "Le programme affiche `10`.",
+     "feedback": "`carre` affiche le carré, mais ne le renvoie pas : `carre(3)` vaut `None`, et `None + 1` provoque une erreur."
+    },
+    {
+     "texte": "Le programme affiche `9`, puis s'arrête sur une erreur `TypeError`.",
+     "juste": true,
+     "feedback": "Bravo. `carre(3)` affiche 9 mais renvoie `None`. Puis `None + 1` est impossible : `TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'`."
+    },
+    {
+     "texte": "Le programme affiche `9`, puis `10`.",
+     "feedback": "Aucun `print` n'affiche `y`. Et surtout, `carre(3)` vaut `None` : `None + 1` provoque une erreur."
+    },
+    {
+     "texte": "Le programme s'arrête tout de suite sur une erreur `TypeError`, sans rien afficher.",
+     "feedback": "L'erreur arrive après l'appel : `carre(3)` s'exécute d'abord et affiche 9. C'est ensuite `None + 1` qui échoue."
+    }
+   ],
+   "explication": "Une fonction qui calcule doit renvoyer avec `return`, pas seulement afficher.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "9",
+     "erreur": "TypeError"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[return] La fonction qui permet de calculer",
+   "objectif": "Choisir la définition qui renvoie une valeur réutilisable.",
+   "enonce": [
+    "On veut écrire `total = prix(2) + prix(3)`, avec 3 € le kilo.",
+    "Quelle définition de `prix` le permet ?"
+   ],
+   "options": [
+    {
+     "code": [
+      "def prix(kilos):",
+      "    print(kilos * 3)"
+     ],
+     "feedback": "Cette fonction affiche 6, mais renvoie `None` : `None + None` provoque une erreur `TypeError`."
+    },
+    {
+     "code": [
+      "def prix(kilos):",
+      "    kilos * 3"
+     ],
+     "feedback": "Le calcul est fait, puis oublié : sans `return`, la fonction renvoie `None`, et l'addition échoue."
+    },
+    {
+     "code": [
+      "def prix(kilos):",
+      "    return kilos * 3"
+     ],
+     "juste": true,
+     "feedback": "Oui. `return` donne la valeur au programme : `prix(2) + prix(3)` vaut 6 + 9 = 15."
+    },
+    {
+     "code": [
+      "def prix(kilos):",
+      "    return print(kilos * 3)"
+     ],
+     "feedback": "`print` renvoie `None` : cette fonction affiche le prix, puis renvoie `None`. L'addition échoue."
+    }
+   ],
+   "explication": "Pour réutiliser un résultat, la fonction le renvoie avec `return`.",
+   "verifications": [
+    {
+     "code": [
+      "def prix(kilos):",
+      "    return kilos * 3",
+      "print(prix(2) + prix(3))"
+     ],
+     "sortie": "15",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "def prix(kilos):",
+      "    print(kilos * 3)",
+      "total = prix(2) + prix(3)"
+     ],
+     "sortie": "6\n9",
+     "erreur": "TypeError",
+     "reprendre_code": false,
+     "option": 0
+    },
+    {
+     "code": [
+      "def prix(kilos):",
+      "    kilos * 3",
+      "print(prix(2))"
+     ],
+     "sortie": "None",
+     "reprendre_code": false,
+     "option": 1
+    },
+    {
+     "code": [
+      "def prix(kilos):",
+      "    return print(kilos * 3)",
+      "total = prix(2) + prix(3)"
+     ],
+     "sortie": "6\n9",
+     "erreur": "TypeError",
+     "reprendre_code": false,
+     "option": 3
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "`return` arrête la fonction",
+   "texte": [
+    "Dès qu'un `return` s'exécute, la fonction ==s'arrête== : les lignes suivantes ne sont pas lues."
+   ],
+   "code": [
+    "def signe(n):",
+    "    if n < 0:",
+    "        return \"négatif\"",
+    "    return \"positif\"",
+    "print(signe(-4))"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[return] Du code après le `return`",
+   "objectif": "Savoir qu'une ligne placée après un `return` ne s'exécute pas.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "def f(n):",
+    "    if n > 10:",
+    "        return \"grand\"",
+    "    return \"petit\"",
+    "    print(\"fin\")",
+    "print(f(12), f(3))"
+   ],
+   "options": [
+    {
+     "texte": "`grand petit`",
+     "juste": true,
+     "feedback": "Exact. `f(12)` renvoie \"grand\", `f(3)` renvoie \"petit\". La ligne 5 vient après un `return` : elle ne s'exécute jamais."
+    },
+    {
+     "texte": "`grand`",
+     "feedback": "Un `return` arrête la fonction, pas le programme : `f(3)` est ensuite appelée et renvoie \"petit\"."
+    },
+    {
+     "texte": "`fin` puis `grand petit`",
+     "feedback": "La ligne 5 est après le dernier `return` : la fonction s'arrête toujours avant elle. \"fin\" ne s'affiche jamais."
+    },
+    {
+     "texte": "`petit petit`",
+     "feedback": "Pour `f(12)`, la condition 12 > 10 est vraie : le premier `return` s'exécute et renvoie \"grand\"."
+    }
+   ],
+   "explication": "Après un `return`, la fonction est finie : la suite du bloc n'est pas lue.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "grand petit"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[return] Un `return` dans la boucle",
+   "objectif": "Repérer un `return` qui arrête la boucle dès le premier tour.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "def somme(n):",
+    "    total = 0",
+    "    for i in range(n):",
+    "        total = total + i",
+    "        return total",
+    "print(somme(4))"
+   ],
+   "options": [
+    {
+     "texte": "`6`",
+     "feedback": "Ce serait vrai avec le `return` après la boucle, au niveau du `for`. Ici, il est dans le bloc : il s'exécute dès le premier tour."
+    },
+    {
+     "texte": "`10`",
+     "feedback": "Même avec le `return` après la boucle, `range(4)` donne 0, 1, 2, 3 : la somme ferait 6. Et ici, le `return` arrête tout au premier tour."
+    },
+    {
+     "texte": "`None`",
+     "feedback": "La fonction a bien un `return`, exécuté au premier tour : elle renvoie `total`, qui vaut 0."
+    },
+    {
+     "texte": "`0`",
+     "juste": true,
+     "feedback": "Oui. Le `return` est décalé dans la boucle : au premier tour, `total` vaut 0 + 0, et la fonction s'arrête aussitôt."
+    }
+   ],
+   "explication": "Un `return` dans une boucle arrête la fonction au premier passage.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "0"
+    },
+    {
+     "code": [
+      "def somme(n):",
+      "    total = 0",
+      "    for i in range(n):",
+      "        total = total + i",
+      "    return total",
+      "print(somme(4))"
+     ],
+     "sortie": "6",
+     "reprendre_code": false,
+     "option": 0
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Une variable locale",
+   "texte": [
+    "Une variable créée dans une fonction est ==locale== : elle n'existe pas en dehors.",
+    "On récupère sa valeur par le `return`."
+   ],
+   "code": [
+    "def prix(kilos):",
+    "    total = kilos * 3",
+    "    return total",
+    "p = prix(2)",
+    "print(p)   # 6"
+   ],
+   "vocabulaire": "variable locale = local variable ; portée = scope"
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Portée] Utiliser une variable locale dehors",
+   "objectif": "Prévoir l'erreur d'une variable locale utilisée hors de sa fonction.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "def prix(kilos):",
+    "    total = kilos * 3",
+    "    return total",
+    "prix(2)",
+    "print(total)"
+   ],
+   "options": [
+    {
+     "texte": "Le programme affiche `6`.",
+     "feedback": "`total` vaut bien 6 pendant l'appel, mais elle est locale : elle n'existe plus après. Il faut écrire `p = prix(2)`, puis afficher `p`."
+    },
+    {
+     "texte": "Le programme affiche `None`.",
+     "feedback": "Le programme ne cherche pas la valeur renvoyée : il cherche une variable `total`, qui n'existe pas hors de la fonction. C'est une erreur."
+    },
+    {
+     "texte": "Une erreur `NameError` : `total` n'existe pas ici.",
+     "juste": true,
+     "feedback": "Exact. `total` est locale : elle disparaît à la fin de l'appel. Python le dit : `NameError: name 'total' is not defined` (« le nom total n'est pas défini »)."
+    },
+    {
+     "texte": "Le programme affiche `0`.",
+     "feedback": "Une variable inconnue ne vaut pas 0 : Python s'arrête avec une erreur `NameError`."
+    }
+   ],
+   "explication": "Une variable locale n'existe que dans sa fonction : on passe par `return`.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "NameError"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Tester avec `assert`",
+   "texte": [
+    "`assert` ==vérifie== un résultat attendu : rien ne s'affiche si c'est juste.",
+    "Sinon, le programme s'arrête : `AssertionError`."
+   ],
+   "code": [
+    "def prix(kilos):",
+    "    return kilos * 3",
+    "assert prix(2) == 6",
+    "assert prix(0) == 0"
+   ],
+   "vocabulaire": "affirmer = assert ; test = test"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Tests] Une assertion fausse",
+   "objectif": "Lire le résultat d'une suite d'assertions.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "def prix(kilos):",
+    "    return kilos * 3",
+    "assert prix(2) == 6",
+    "assert prix(1) == 4",
+    "print(\"Tests réussis\")"
+   ],
+   "options": [
+    {
+     "texte": "Une erreur `AssertionError`, à la ligne 4.",
+     "juste": true,
+     "feedback": "Bravo. La ligne 3 est juste : rien ne s'affiche. À la ligne 4, `prix(1)` vaut 3, pas 4 : le programme s'arrête, la ligne 5 n'est pas lue."
+    },
+    {
+     "texte": "Le programme affiche `Tests réussis`.",
+     "feedback": "La ligne 4 attend 4, mais `prix(1)` vaut 3 : l'assertion est fausse, le programme s'arrête avant la ligne 5."
+    },
+    {
+     "texte": "Le programme affiche `True`, `False`, puis `Tests réussis`.",
+     "feedback": "`assert` n'affiche rien quand c'est juste. Quand c'est faux, il arrête le programme avec une erreur."
+    },
+    {
+     "texte": "Une erreur `AssertionError`, à la ligne 3.",
+     "feedback": "La ligne 3 est juste : `prix(2)` vaut bien 6. C'est la ligne 4 qui échoue, car `prix(1)` vaut 3."
+    }
+   ],
+   "explication": "Une assertion juste ne dit rien ; une fausse arrête le programme.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "AssertionError"
+    },
+    {
+     "code": [
+      "def prix(kilos):",
+      "    return kilos * 3",
+      "print(prix(2) == 6, prix(1))"
+     ],
+     "sortie": "True 3",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Combiner] Le tarif de la barge",
+   "objectif": "Calculer avec deux appels d'une fonction qui contient une condition.",
+   "enonce": [
+    "Une fonction donne un tarif selon l'âge (tarifs inventés). On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "def tarif(age):",
+    "    if age < 12:",
+    "        return 1",
+    "    return 2",
+    "total = tarif(8) + tarif(15)",
+    "print(total)"
+   ],
+   "options": [
+    {
+     "texte": "`2`",
+     "feedback": "Chaque appel renvoie sa propre valeur : `tarif(8)` vaut 1 et `tarif(15)` vaut 2. On les additionne : 3."
+    },
+    {
+     "texte": "`3`",
+     "juste": true,
+     "feedback": "Oui. `tarif(8)` : 8 < 12, la fonction renvoie 1. `tarif(15)` : la condition est fausse, elle renvoie 2. 1 + 2 = 3."
+    },
+    {
+     "texte": "`4`",
+     "feedback": "Pour `tarif(8)`, 8 < 12 est vrai : le premier `return` s'exécute et renvoie 1, pas 2."
+    },
+    {
+     "texte": "`1 2`",
+     "feedback": "Les deux valeurs sont justes, mais le programme les additionne avant d'afficher : `total` vaut 3."
+    }
+   ],
+   "explication": "Chaque appel s'exécute avec son argument et renvoie sa propre valeur.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Les deux-points du `def`",
+   "objectif": "Lire un message `SyntaxError` et retrouver le symbole qui manque.",
+   "enonce": [
+    "Ce programme calcule le prix de 4 kilos de mangues.",
+    "Il ne démarre pas : `SyntaxError: expected ':'` (« deux-points attendus »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "def prix(kilos)",
+    "    return kilos * 3",
+    "print(prix(4))"
+   ],
+   "ligne": 1,
+   "correction": "def prix(kilos):",
+   "feedback": "Bien vu : la ligne du `def` se termine par deux-points, comme un `if` ou un `for`. Corrigé, le programme affiche 12.",
+   "feedback_autre": "Cette ligne est correcte. Le message attend des deux-points : cherche la ligne qui ouvre un bloc sans `:`.",
+   "pieges": {
+    "2": "La ligne 2 est juste : elle est décalée, c'est le bloc de la fonction. C'est la ligne qui ouvre ce bloc qui doit finir par `:`."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "SyntaxError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "12"
+    }
+   ],
+   "explication": "`def nom(parametres):` : les deux-points ouvrent le bloc de la fonction."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Ce qu'il faut savoir"
+    ],
+    "lignes": [
+     [
+      "Définir, appeler",
+      "`def nom(parametres):` puis un bloc ; on appelle `nom(arguments)`"
+     ],
+     [
+      "Paramètre, argument",
+      "le nom dans le `def` ; la valeur donnée à l'appel"
+     ],
+     [
+      "`return`",
+      "renvoie la valeur et arrête la fonction ; sans lui : `None`"
+     ],
+     [
+      "Locale",
+      "une variable de la fonction n'existe pas dehors"
+     ],
+     [
+      "Tester",
+      "`assert` : rien si c'est juste, `AssertionError` sinon"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade la différence entre `print` et `return` ?"
+   ]
+  }
+ ]
+}
