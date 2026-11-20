@@ -87,6 +87,7 @@
     const enLigne = l.filter(j => presents.has(j.id));
     const txt = pluriel(enLigne.length, 'élève');
     $('nbEleves').textContent = enLigne.length; $('nbEleves2').textContent = enLigne.length; $('nbBarre').textContent = txt;
+    $('qrNb').textContent = 'Dans la séance : ' + txt + '.';
     const items = () => l.map(j => el('li', { class: presents.has(j.id) ? '' : 'absent' },
       el('span', {}, j.pseudo, presents.has(j.id) ? null : el('small', {}, ' (déconnecté·e)')),
       el('button', { type: 'button', class: 'retirer', 'data-retirer': j.id, 'aria-label': 'Retirer le pseudo ' + j.pseudo }, 'Retirer')));
@@ -314,6 +315,17 @@
     montrerPodium();
   }
 
+  /* ── Le QR code en très grand ───────────── */
+  // À tout moment (accueil, cours, question, fin) : le bouton ou la touche Q l'ouvre, Q, Échap ou « Fermer » le referme.
+  // Un·e élève en retard rejoint en cours de route : la page projetée lui renvoie la diapositive ou la question en cours.
+  function basculerQrGrand() {
+    const b = $('qrBoite');
+    if (b.open) { b.close(); return; }
+    if ($('podiumBoite').open) $('podiumBoite').close();
+    try { b.showModal(); } catch (e) { b.setAttribute('open', ''); }
+    $('qrFermer').focus();
+  }
+
   /* ── La connexion ───────────────────────── */
   async function connecter() {
     if (seance) seance.fermer();
@@ -322,10 +334,12 @@
     const lien = Q.lienEleve(st.code);
     $('code').textContent = st.code; $('codePetit').textContent = st.code; $('codeBarre').textContent = st.code;
     $('lien').textContent = lien.replace(/^https?:\/\//, ''); $('lienPetit').textContent = lien.replace(/^https?:\/\//, '');
+    $('codeGrand').textContent = st.code; $('lienGrand').textContent = lien.replace(/^https?:\/\//, '');
     try {
       const q = qrcode(0, 'M'); q.addData(lien); q.make();
       const svgQr = q.createSvgTag({ scalable: true, margin: 0 });
-      $('qr').innerHTML = svgQr; $('qrPetit').innerHTML = svgQr;
+      // le SVG vient du générateur de QR codes, à partir du lien de la séance (fabriqué ici, pas reçu du canal)
+      $('qr').innerHTML = svgQr; $('qrPetit').innerHTML = svgQr; $('qrGrand').innerHTML = svgQr;
     } catch (e) { $('qr').textContent = ''; }
     const z = $('etatConnexion');
     if (!Q.chiffre.disponible()) { z.className = 'etat ko'; z.textContent = 'Ce navigateur ne peut pas chiffrer les réponses (page à ouvrir en https). Le cours marche sans les téléphones.'; return; }
@@ -378,8 +392,11 @@
     $('btnPodium').addEventListener('click', () => montrerPodium('force'));
     $('btnRejoindre').addEventListener('click', () => { const c = $('carteRejoindre'); c.hidden = !c.hidden; $('btnRejoindre').setAttribute('aria-expanded', String(!c.hidden)); });
     $('btnPleinEcran').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {}); });
+    $('btnQrGrand').addEventListener('click', basculerQrGrand);
+    $('qrBoite').addEventListener('close', () => { $('btnQrGrand').focus({ preventScroll: true }); });
     document.addEventListener('keydown', ev => {
-      if (!st.commence || $('podiumBoite').open) return;
+      if ((ev.key === 'q' || ev.key === 'Q') && !ev.altKey && !ev.ctrlKey && !ev.metaKey && !(ev.target.closest && ev.target.closest('input, select, textarea'))) { ev.preventDefault(); basculerQrGrand(); return; }
+      if (!st.commence || $('podiumBoite').open || $('qrBoite').open) return;
       if (ev.target.closest && ev.target.closest('input, select, textarea, button, a, summary')) return;
       if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
       if (ev.key === 'ArrowRight' || ev.key === 'Enter' || ev.key === ' ' || ev.key === 'PageDown') { ev.preventDefault(); action(); }

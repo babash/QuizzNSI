@@ -19,6 +19,7 @@
   <div class="actions">
     <span class="pastille-seance" id="pastilleSeance" hidden><span>Séance</span> <b id="codeBarre">····</b> · <span id="nbBarre">0 élève</span></span>
     <button class="bouton petit" type="button" id="btnRejoindre" aria-expanded="false" aria-controls="carteRejoindre" hidden>Code et QR code</button>
+    <button class="bouton petit" type="button" id="btnQrGrand" aria-haspopup="dialog" aria-controls="qrBoite" aria-keyshortcuts="Q">QR code en grand</button>
     <button class="bouton petit" type="button" id="btnPodium" hidden>Podium</button>
     <button class="bouton petit" type="button" id="btnPleinEcran">Plein écran</button>
     <button class="bouton petit" type="button" data-bascule-theme>Affichage obscur</button>
@@ -66,6 +67,21 @@
     <h3>Élèves : <span id="nbEleves2">0</span></h3><ul class="eleves" id="eleves2"></ul></div>
   </aside>
 
+  <dialog id="qrBoite" class="qr-boite" aria-labelledby="qrTitre">
+    <h2 id="qrTitre" class="qr-titre">Rejoindre la séance</h2>
+    <div class="qr-grand-corps">
+      <div id="qrGrand" class="qr" role="img" aria-label="QR code du lien de la séance"></div>
+      <div class="qr-grand-texte">
+        <p class="etape" id="qrEtape1">Scannez le QR code, ou ouvrez</p>
+        <p class="lien" id="lienGrand"></p>
+        <p class="etape" id="qrEtape2">puis entrez le code</p>
+        <p class="code-seance geant" id="codeGrand">····</p>
+        <p class="aide" id="qrNb"></p>
+      </div>
+    </div>
+    <form method="dialog"><button class="bouton fort" type="submit" id="qrFermer">Fermer (Q ou Échap)</button></form>
+  </dialog>
+
   <dialog id="podiumBoite" class="podium-boite" aria-labelledby="podiumTitre">
     <h2 id="podiumTitre">Podium</h2>
     <div id="podiumCorps"></div>
@@ -79,7 +95,7 @@
   <span class="statut-q" id="statutQ" role="status"></span>
   <button class="bouton fort" type="button" id="action">Suivante →</button>
 </nav>
-<footer class="pied">QuizzNSI · Babash - NSI Tani Malandi · code MIT, contenus CC BY-SA 4.0 · <a href="https://github.com/babash/QuizzNSI" rel="noopener">Code source sur GitHub</a> · au clavier : flèches, Entrée, P (podium), J (code)</footer>
+<footer class="pied">QuizzNSI · Babash - NSI Tani Malandi · code MIT, contenus CC BY-SA 4.0 · <a href="https://github.com/babash/QuizzNSI" rel="noopener">Code source sur GitHub</a> · au clavier : flèches, Entrée, P (podium), J (code), Q (QR code en grand)</footer>
 <script src="config.js"></script>
 <script src="vendor/temps-reel.js"></script>
 <script src="vendor/qrcode.js"></script>
