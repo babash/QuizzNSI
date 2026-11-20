@@ -64,8 +64,8 @@
      Le rendu « fixe » : la page projetée, la version imprimable, et l'énoncé sur le téléphone. Tout vient du
      fichier du cours ; aucune réponse d'élève ne passe par ici. */
   const A = () => Q.activites;
-  Q.rendreEnonceActivite = function (d) {
-    return '<header class="q-tete"><p class="q-num">' + e(A().NOMS[d.type]) + (d.type === 'nuage' ? ' · non noté' : '') + '</p><h2 class="q-nom">' + t(d.nom) + '</h2>'
+  Q.rendreEnonceActivite = function (d, total) {
+    return '<header class="q-tete"><p class="q-num">' + (total && Number.isInteger(d.numero) && d.type !== 'nuage' ? 'Question ' + d.numero + ' sur ' + total + ' · ' : '') + e(A().NOMS[d.type]) + (d.type === 'nuage' ? ' · non noté' : '') + '</p><h2 class="q-nom">' + t(d.nom) + '</h2>'
       + '<p class="objectif"><span>Objectif</span> ' + t(d.objectif) + '</p></header>'
       + '<div class="q-corps"><div class="q-texte">' + d.enonce.map(p => '<p>' + t(p) + '</p>').join('')
       + (d.code && d.type !== 'ligne' ? Q.blocCode(d.code) + Q.console(d.console) : '') + '</div></div>';
@@ -89,7 +89,7 @@
   };
   Q.rendreActivite = function (cours, d, opts) {
     opts = opts || {};
-    return '<section class="diapo d-question d-activite d-' + e(d.type) + '" data-act="' + e(d.id) + '">' + Q.rendreEnonceActivite(d)
+    return '<section class="diapo d-question d-activite d-' + e(d.type) + '" data-act="' + e(d.id) + '">' + Q.rendreEnonceActivite(d, cours.total)
       + '<div class="zone-options">' + (opts.interactif ? '' : Q.rendreElements(d)) + '</div><div class="zone-correction" aria-live="polite"></div></section>';
   };
 
@@ -138,7 +138,7 @@
 
   Q.rendreDiapo = function (cours, d, opts) {
     opts = opts || {};
-    const total = cours.questions.length;
+    const total = cours.total;
     if (d.type === 'titre') {
       return '<section class="diapo d-titre"><p class="surtitre">' + e(cours.niveau) + '</p><h1>' + t(d.titre || cours.titre) + '</h1>'
         + (cours.sous_titre ? '<p class="sous-titre">' + t(cours.sous_titre) + '</p>' : '')

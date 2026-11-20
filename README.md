@@ -35,7 +35,7 @@ Deux gabarits de cours-quiz ([le format](cours/FORMAT.md#les-gabarits)) :
 
 Le premier cours, **piles et files**, est une introduction : 8 écrans très courts et 12 questions. Il part du quotidien à Mayotte (la boîte de chips en tube pour la pile, la file au doukabé et le bouchon vers Mamoudzou pour la file, les véhicules qui attendent la barge), puis passe à l'informatique (le bouton « Annuler », l'imprimante de la salle info).
 
-Le second, **« Conditions, boucles, fonctions »** (Première), est une séance de révision : pas de cours, mais [4 blocs de 5 questions](https://babash.github.io/QuizzNSI/animer.html?cours=revision-conditions-boucles) (les conditions, la boucle `for`, la boucle `while`, les fonctions). À la fin de chaque bloc, chaque élève note son score sur sa feuille de route : le quiz sert de bilan avant un contrôle.
+**« Conditions, boucles, fonctions »** (Première), est une séance de révision : pas de cours, mais [4 blocs de 5 questions](https://babash.github.io/QuizzNSI/animer.html?cours=revision-conditions-boucles) (les conditions, la boucle `for`, la boucle `while`, les fonctions). À la fin de chaque bloc, chaque élève note son score sur sa feuille de route : le quiz sert de bilan avant un contrôle.
 
 **De nouveaux types de questions**, en plus des questions à choix : le **nuage de mots** (chaque élève propose autant de mots qu'il ou elle veut ; quand l'enseignant·e montre le nuage, il s'affiche au tableau et sur les téléphones, où l'on vote pour les mots des camarades ; l'enseignant·e supprime un mot à tout moment ; non noté), **relier** (un terme et sa définition, un code et sa sortie), le **puzzle de code** (remettre les lignes dans l'ordre et à la bonne indentation) et **la ligne fautive** (toucher la ligne qui contient l'erreur). Un cours de démonstration en a un de chaque : [demo-types-de-questions](https://babash.github.io/QuizzNSI/animer.html?cours=demo-types-de-questions) (un cours de révision garde ses 20 questions à choix ; l'introduction piles et files compte une ligne fautive parmi ses 12 questions). Chacun marche au téléphone (320 px, au clavier et au lecteur d'écran), sur la page projetée, en révision et sur papier ; son code est exécuté par le vérificateur ([le format](cours/FORMAT.md#les-autres-types-de-questions)).
 
@@ -48,7 +48,9 @@ Les 12 questions construisent la notion dans l'ordre :
 | Reconnaître | quelle situation informatique est une file (1 question) |
 | Lire un programme | une file qui passe par une pile, et la ligne fautive : empiler ou enfiler ? (2 questions) |
 
-Les définitions (interface et implémentation), Python (`append`, `pop()`, `pop(0)` et son coût), la file à deux piles, les parenthèses et la pile d'appels viennent ensuite, dans le cours ou TD applicatif et le TD type bac.
+Les définitions (interface et implémentation), Python (`append`, `pop()`, `pop(0)` et son coût), la file à deux piles, les parenthèses et la pile d'appels viennent ensuite, dans le cours ou TD applicatif et le TD type bac, puis dans **[la révision « Piles et files »](https://babash.github.io/QuizzNSI/animer.html?cours=revision-piles-files)** (Terminale, 30 min) : 4 blocs de 5 questions (implémenter avec une liste, parcourir une pile, des files, applications), pour faire son bilan en fin de chapitre.
+
+Toutes les questions notées sont numérotées ensemble, quel que soit leur type : « Question 12 sur 12 » pour la ligne fautive de l'introduction (le nuage de mots, non noté, n'a pas de numéro). Quand un code s'arrête sur une erreur, le message réel de Python 3.13 s'affiche en entier dans une console compacte sous le code.
 
 Chaque question a un objectif affiché, quatre options tirées d'erreurs fréquentes et un feedback pour chacune. Chaque code affiché a été exécuté par le vérificateur.
 

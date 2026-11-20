@@ -192,8 +192,19 @@
     cours.questions.forEach((q, i) => { q.numero = i + 1; q.bonne = q.options.findIndex(o => o.juste === true); });
     // les autres types de questions (nuage de mots, relier, puzzle de code, ligne fautive) : js/activites.js
     cours.interactifs = cours.diapositives.filter(d => Q.INTERACTIFS.includes(d.type));
+    // toutes les questions notées comptent (à choix, relier, puzzle, ligne fautive ; pas le nuage de mots) :
+    // « Question 12 sur 12 » ; une question à choix garde son rang parmi toutes
+    Q.numeroter(cours, cours.interactifs);
     return cours;
   };
+  Q.numeroter = function (cours, liste) {
+    const notees = liste.filter(d => d.type !== 'nuage');
+    notees.forEach((d, i) => { d.numero = i + 1; });
+    cours.total = notees.length;
+    return notees;
+  };
+  // « Question 3 sur 12 », pour une question à choix comme pour les autres types notés
+  Q.numQuestion = (d, cours) => d.type !== 'nuage' && Number.isInteger(d.numero) ? 'Question ' + d.numero + ' sur ' + cours.total : '';
   // Contrôle léger, dans le navigateur ; le contrôle complet est outils/verifier_cours.py.
   Q.INTERACTIFS = ['question', 'nuage', 'relier', 'puzzle', 'ligne'];
   Q.controlerCours = function (c) {

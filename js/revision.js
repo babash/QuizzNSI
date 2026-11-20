@@ -27,7 +27,7 @@
     let k = 0;
     const qs = Q.melanger(original.interactifs.filter(d => d.type !== 'nuage'), etat.graine).map(q => {
       const graine = (etat.graine ^ Q.graine(q.id)) >>> 0;
-      if (q.type !== 'question') return Object.assign({}, q, { graine });
+      if (q.type !== 'question') return Object.assign({}, q, { graine, numero: ++k });
       const ordre = Q.melanger([0, 1, 2, 3], graine);
       const c = Object.assign({}, q, { options: ordre.map(i => q.options[i]), numero: ++k });
       c.bonne = ordre.indexOf(q.bonne);
@@ -88,7 +88,7 @@
     // apparitions progressives : en arrivant par « Suivante », on les montre une à une ; en revenant en arrière, tout est montré
     vus = arriere ? Q.nbFragments(scene) : 0; arriere = false;
     Q.montrerFragments(scene, vus); majSuivante();
-    const nq = d.type === 'question' ? ' · question ' + d.numero + ' sur ' + cours.questions.length : Q.INTERACTIFS.includes(d.type) ? ' · ' + Q.activites.NOMS[d.type].toLowerCase() : '';
+    const nq = d.type === 'question' ? ' · question ' + d.numero + ' sur ' + cours.total : Q.INTERACTIFS.includes(d.type) ? (d.type !== 'nuage' ? ' · question ' + d.numero + ' sur ' + cours.total : '') + ' · ' + Q.activites.NOMS[d.type].toLowerCase() : '';
     $('compteur').textContent = 'Diapositive ' + (index + 1) + ' sur ' + diapos.length + nq;
     $('barre').style.width = ((index + 1) / diapos.length * 100) + '%';
     $('prec').disabled = index === 0;
@@ -178,18 +178,14 @@
   }
 
   function bilanPerso() {
-    const qs = cours.questions, faites = qs.filter(q => q.id in etat.premiers);
-    const justes = faites.filter(q => etat.premiers[q.id] === q.bonne);
-    const arevoir = qs.filter(q => q.id in etat.premiers && etat.premiers[q.id] !== q.bonne);
+    // toutes les questions notées comptent : les questions à choix et les autres types (pas le nuage de mots)
+    const qs = (cours.interactifs || []).filter(d => d.type !== 'nuage');
+    const fait = q => q.type === 'question' ? q.id in etat.premiers : !!(etat.act[q.id] && etat.act[q.id].premier !== null);
+    const juste = q => q.type === 'question' ? etat.premiers[q.id] === q.bonne : etat.act[q.id].premier === true;
+    const faites = qs.filter(fait), justes = faites.filter(juste), arevoir = faites.filter(q => !juste(q));
     let h = '<div class="cadre" style="margin-top:14px"><h3>Ton bilan</h3>' + (qs.length ? '<p><strong>' + justes.length + ' sur ' + qs.length + '</strong> du premier coup'
       + (faites.length < qs.length ? ' (' + (qs.length - faites.length) + ' question' + (qs.length - faites.length > 1 ? 's' : '') + ' sans réponse)' : '') + '.</p>' : '');
-    const autres = (cours.interactifs || []).filter(d => d.type !== 'question' && d.type !== 'nuage');
-    if (autres.length) {
-      const faits = autres.filter(d => etat.act[d.id] && etat.act[d.id].premier !== null);
-      h += '<p>Les autres questions : <strong>' + faits.filter(d => etat.act[d.id].premier).length + ' sur ' + autres.length + '</strong> du premier coup.</p>';
-      arevoir.push(...autres.filter(d => etat.act[d.id] && etat.act[d.id].premier === false));
-    }
-    if (arevoir.length) h += '<p>À revoir :</p><ul class="cours-liste">' + arevoir.map(q => '<li><button class="bouton petit" type="button" data-aller="' + q.id + '">' + (q.type === 'question' ? 'Question ' + q.numero : Q.echapper(Q.activites.NOMS[q.type])) + ' · ' + Q.texte(q.nom) + '</button></li>').join('') + '</ul>';
+    if (arevoir.length) h += '<p>À revoir :</p><ul class="cours-liste">' + arevoir.map(q => '<li><button class="bouton petit" type="button" data-aller="' + q.id + '">' + 'Question ' + q.numero + (q.type === 'question' ? '' : ' (' + Q.echapper(Q.activites.NOMS[q.type]).toLowerCase() + ')') + ' · ' + Q.texte(q.nom) + '</button></li>').join('') + '</ul>';
     else if (faites.length) h += '<p>Tout juste du premier coup : bravo ! Tu peux aider un·e camarade.</p>';
     h += REJOUER
       ? '<p><button class="bouton fort" type="button" id="recommencer">Rejouer encore (nouvel ordre)</button> <a class="bouton" href="revision.html?cours=' + encodeURIComponent(cours.id) + '">Revoir le cours</a></p></div>'

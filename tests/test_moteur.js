@@ -105,6 +105,12 @@ essai('console : compacte, nom de l\'erreur en gras, tout est échappé', () => 
   assert.ok(!h.includes('<img') && h.includes('&lt;img'));
   assert.equal(Q.console([]), ''); assert.equal(Q.console(undefined), '');
 });
+essai('numérotation : toutes les questions notées comptent, pas le nuage de mots', () => {
+  const c = { diapositives: [] }, l = [{ type: 'nuage' }, { type: 'question' }, { type: 'ligne' }, { type: 'question' }];
+  Q.numeroter(c, l);
+  assert.equal(c.total, 3); assert.deepEqual(l.map(d => d.numero), [undefined, 1, 2, 3]);
+  assert.equal(Q.numQuestion(l[2], c), 'Question 2 sur 3'); assert.equal(Q.numQuestion(l[0], c), '');
+});
 essai('code de séance : lecture tolérante', () => {
   assert.equal(Q.lireCode(' abcd '), 'ABCD'); assert.equal(Q.lireCode('ab-cd'), 'ABCD');
   assert.equal(Q.lireCode('ABIO'), null); assert.equal(Q.lireCode('ABC'), null);
