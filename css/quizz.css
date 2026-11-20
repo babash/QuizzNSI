@@ -6,7 +6,7 @@
   --accent: #0E7490; --accent-fond: #E0F4F8; --focus: #0A64E8; --bouton: #0B5F75; --bouton-ink: #FFFFFF;
   --ok: #166534; --ok-fond: #E8F6EC; --ko: #B91C1C; --ko-fond: #FDECEC; --neutre-fond: #EEF1F7;
   --f0: #DC2626; --f1: #2563EB; --f2: #B45309; --f3: #15803D;
-  --code-bg: #F5F7FB; --c-mot: #6D28D9; --c-ch: #036148; --c-nb: #8A3B05; --c-com: #4B5563; --c-fn: #0B5A70; --c-nat: #86143F; --c-def: #1E40AF; --c-self: #7C2D12; --guide: #C5CEDD;
+  --code-bg: #F5F7FB; --c-mot: #5B21B6; --c-ch: #035C44; --c-nb: #8A3B05; --c-com: #4B5563; --c-fn: #0B5A70; --c-nat: #86143F; --c-def: #1E40AF; --c-self: #7C2D12; --c-err: #9F1239; --guide: #C5CEDD;
   --display: "Chakra Petch", "Bahnschrift", "Arial Narrow", system-ui, sans-serif;
   --text: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -18,7 +18,7 @@
     --accent: #5EEAFF; --accent-fond: #0B2633; --focus: #5EEAFF; --bouton: #5EEAFF; --bouton-ink: #04121A;
     --ok: #4ADE80; --ok-fond: #0C2716; --ko: #FCA5A5; --ko-fond: #2A0F14; --neutre-fond: #141D33;
     --f0: #F87171; --f1: #60A5FA; --f2: #FBBF24; --f3: #4ADE80;
-    --code-bg: #0F182C; --c-mot: #C4B5FD; --c-ch: #6EE7B7; --c-nb: #FCD34D; --c-com: #94A3B8; --c-fn: #67E8F9; --c-nat: #F9A8D4; --c-def: #93C5FD; --c-self: #FDBA74; --guide: #2A3A5C;
+    --code-bg: #0F182C; --c-mot: #C4B5FD; --c-ch: #6EE7B7; --c-nb: #FCD34D; --c-com: #A3B1C6; --c-fn: #67E8F9; --c-nat: #F9A8D4; --c-def: #93C5FD; --c-self: #FDBA74; --c-err: #FCA5A5; --guide: #2A3A5C;
     color-scheme: dark;
   }
 }
@@ -27,7 +27,7 @@
   --accent: #5EEAFF; --accent-fond: #0B2633; --focus: #5EEAFF; --bouton: #5EEAFF; --bouton-ink: #04121A;
   --ok: #4ADE80; --ok-fond: #0C2716; --ko: #FCA5A5; --ko-fond: #2A0F14; --neutre-fond: #141D33;
   --f0: #F87171; --f1: #60A5FA; --f2: #FBBF24; --f3: #4ADE80;
-  --code-bg: #0F182C; --c-mot: #C4B5FD; --c-ch: #6EE7B7; --c-nb: #FCD34D; --c-com: #94A3B8; --c-fn: #67E8F9; --c-nat: #F9A8D4; --c-def: #93C5FD; --c-self: #FDBA74; --guide: #2A3A5C;
+  --code-bg: #0F182C; --c-mot: #C4B5FD; --c-ch: #6EE7B7; --c-nb: #FCD34D; --c-com: #A3B1C6; --c-fn: #67E8F9; --c-nat: #F9A8D4; --c-def: #93C5FD; --c-self: #FDBA74; --c-err: #FCA5A5; --guide: #2A3A5C;
   color-scheme: dark;
 }
 
@@ -73,8 +73,15 @@ pre.code code { background: none; border: 0; padding: 0; font-size: 1em; overflo
 pre.code .ligne { display: block; white-space: pre; }
 pre.code .num { display: inline-block; width: 2ch; margin-right: 1.2ch; color: var(--c-com); text-align: right; user-select: none; }
 pre.code .guide { border-left: 1px solid var(--guide); }
-.c-mot { color: var(--c-mot); font-weight: 700; } .c-ch { color: var(--c-ch); } .c-nb { color: var(--c-nb); } .c-com { color: var(--c-com); font-style: italic; }
-.c-fn { color: var(--c-fn); } .c-nat { color: var(--c-nat); } .c-def { color: var(--c-def); font-weight: 700; } .c-self { color: var(--c-self); }
+.c-mot { color: var(--c-mot); font-weight: 700; } .c-ch { color: var(--c-ch); font-style: italic; } .c-nb { color: var(--c-nb); } .c-com { color: var(--c-com); }
+/* lisible aussi en noir et blanc : mots-clés en gras, fonctions soulignées, chaînes en italique, commentaires gris */
+.c-fn { color: var(--c-fn); text-decoration: underline; text-underline-offset: 2px; } .c-nat { color: var(--c-nat); text-decoration: underline; text-underline-offset: 2px; }
+.c-def { color: var(--c-def); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; } .c-self { color: var(--c-self); }
+/* la console : compacte, une ligne de console par ligne de texte, sous le code */
+pre.console { font-family: var(--mono); font-size: .84em; line-height: 1.35; background: var(--code-bg); border: 1px solid var(--line); border-left: 4px solid var(--c-err); border-radius: 6px; padding: 3px 10px; margin: -.4em 0 .8em; overflow-x: auto; }
+pre.console code { background: none; border: 0; padding: 0; font-size: 1em; }
+pre.console .ligne { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+.c-err { color: var(--c-err); font-weight: 700; }
 
 /* ── Formes des options (A ▲, B ◆, C ●, D ■) ── */
 .forme { width: 1.15em; height: 1.15em; flex: none; }

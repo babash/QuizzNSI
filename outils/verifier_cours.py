@@ -42,10 +42,15 @@ TYPES_DIAPO = {"titre", "partie", "classe", "humour", "notion", "question", "bil
 AUTRES_TYPES = {"nuage", "relier", "puzzle", "ligne"}   # les autres types de questions (js/activites.js)
 RELIER_MAX, PUZZLE_MIN, PUZZLE_MAX, INDENT_MAX, LIGNES_MAX = 6, 3, 12, 6, 40
 TYPES_SCHEMA = {"pile", "file", "etapes", "deux-piles", "liste", "decalage", "svg"}
+LARGEUR_MAX = 27          # caractères par ligne de code d'une ligne fautive ou d'un écran d'introduction (320 px)
 FEEDBACK_MIN = 40          # caractères : un feedback plus court n'explique rien
 TEXTE_NOTION_MAX = 3       # puces par notion (peu de texte, règle 3)
 PUCE_MAX = 300             # caractères par puce
 DELAI = 20                 # secondes par exécution
+# Un message d'erreur cité dans un texte (`AttributeError: … Did you mean: 'empiler'?`) : il doit être, mot pour mot,
+# la dernière ligne d'une erreur obtenue en exécutant le code du cours (Python 3.13).
+MESSAGE_CITE = re.compile(r"`([A-Z][A-Za-z]*(?:Error|Exception|Warning)(?::[^`]*)?)`")
+MESSAGES_OBTENUS = set()   # rempli par executer(), vidé au début de chaque cours
 
 # Les gabarits (cours/FORMAT.md, « Les gabarits »). « revision » est la valeur par défaut : c'est le format
 # des cours écrits avant T113 (20 questions à choix, les autres types en bonus, non comptés).
@@ -198,7 +203,22 @@ def executer(lignes, delai=DELAI):
         derniere = [l for l in p.stderr.strip().splitlines() if l.strip()]
         derniere = derniere[-1] if derniere else ""
         erreur = derniere.split(":")[0].strip() or "Erreur"
+        MESSAGES_OBTENUS.add(derniere.strip())
     return p.stdout.rstrip("\n"), erreur, p.stderr.strip()
+
+
+def verifier_console(lignes, console, ou, r):
+    """« console » : ce que Python affiche en exécutant le code, mot pour mot (la sortie, puis la dernière ligne
+    de l'erreur, « Did you mean » compris)."""
+    if not liste_de_chaines(console) or not console:
+        r.erreur(ou, "« console » : une liste de lignes")
+        return
+    sortie, err, detail = executer(lignes)
+    obtenu = sortie.splitlines() if sortie else []
+    if err:
+        obtenu.append([l for l in detail.splitlines() if l.strip()][-1].strip())
+    if obtenu != console:
+        r.erreur(ou, f"console : Python affiche {obtenu!r}, le cours cite {console!r}")
 
 
 def verifier_question(q, n, prelude, r, executer_code=True):
@@ -210,6 +230,11 @@ def verifier_question(q, n, prelude, r, executer_code=True):
         r.erreur(ou, "« enonce » doit être une liste de paragraphes non vide")
     if "code" in q and not liste_de_chaines(q["code"]):
         r.erreur(ou, "« code » doit être une liste de lignes")
+    if "console" in q:
+        if not q.get("code"):
+            r.erreur(ou, "« console » : seulement sous un code")
+        elif executer_code:
+            verifier_console(list(prelude) + q["code"], q["console"], ou, r)
     if "schema" in q:
         verifier_schema(q["schema"], ou, r)
         if executer_code:
@@ -367,7 +392,7 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
     if "code" in d and not liste_de_chaines(d["code"]):
         r.erreur(ou, "« code » doit être une liste de lignes")
     code = d.get("code", []) if liste_de_chaines(d.get("code", [])) else []
-    connus = {"type", "id", "nom", "objectif", "enonce", "explication", "code", "note_verification"}
+    connus = {"type", "id", "nom", "objectif", "enonce", "explication", "code", "note_verification", "console"}
     permis = {"nuage": {"exemples"}, "relier": {"paires", "verifications"}, "puzzle": {"lignes", "indentation", "verifications"},
               "ligne": {"ligne", "correction", "feedback", "feedback_autre", "pieges", "verifications", "verifications_corrigees"}}[t]
     inconnus = set(d) - connus - permis
@@ -409,6 +434,8 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
         return
     if t == "puzzle":
         lignes = d.get("lignes")
+        if "console" in d:
+            r.erreur(ou, "« console » : seulement pour une question à choix ou une ligne fautive")
         if not liste_de_chaines(lignes) or not PUZZLE_MIN <= len(lignes) <= PUZZLE_MAX:
             r.erreur(ou, f"« lignes » : la solution, {PUZZLE_MIN} à {PUZZLE_MAX} lignes")
             return
@@ -429,12 +456,16 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
         if not 2 <= len(code) <= LIGNES_MAX:
             r.erreur(ou, f"« code » : 2 à {LIGNES_MAX} lignes")
             return
+        for k, l in enumerate(code):
+            if len(l) > LARGEUR_MAX:
+                r.erreur(ou, f"ligne {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (chaque ligne est un bouton, coupé à 320 px)")
         n = d.get("ligne")
         if not isinstance(n, int) or isinstance(n, bool) or not 1 <= n <= len(code):
             r.erreur(ou, "« ligne » : le numéro (à partir de 1) de la ligne qui contient l'erreur")
             return
         corr = d.get("correction")
-        if not isinstance(corr, str) or not corr.strip() or corr.strip() == code[n - 1].strip():
+        # la comparaison garde les espaces de début : une correction d'indentation (IndentationError) est permise
+        if not isinstance(corr, str) or not corr.strip() or corr.rstrip() == code[n - 1].rstrip():
             r.erreur(ou, "« correction » : la ligne corrigée, différente de la ligne fautive")
             return
         fb(d.get("feedback"), "« feedback » (pour la bonne ligne)")
@@ -451,6 +482,8 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
             r.erreur(ou, "une ligne fautive a des « verifications » (le code fautif) et des « verifications_corrigees » (le code corrigé)")
         elif executer_code:
             executer_verifications(list(prelude) + code, d["verifications"], ou + " (code fautif)", r)
+            if "console" in d:
+                verifier_console(list(prelude) + code, d["console"], ou, r)
             corrige = list(code)
             corrige[n - 1] = corr
             executer_verifications(list(prelude) + corrige, d["verifications_corrigees"], ou + " (code corrigé)", r)
@@ -531,6 +564,9 @@ def verifier_gabarit(cours, diapos, questions, autres, prelude, r, executer_code
             r.erreur(ou, f"{len(d['texte'])} phrases : {g['phrases_max']} au plus dans une introduction")
         code = d.get("code")
         if liste_de_chaines(code):
+            for k, l in enumerate(code):
+                if len(l) > LARGEUR_MAX:
+                    r.erreur(ou, f"ligne de code {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (lisible à 320 px)")
             if len(code) > g["code_notion_max"]:
                 r.erreur(ou, f"{len(code)} lignes de code : {g['code_notion_max']} au plus sur un écran")
             elif executer_code:
@@ -594,6 +630,7 @@ def verifier_cours(chemin, executer_code=True, n_questions=None):
     for champ in ("criteres", "conventions"):
         if not liste_de_chaines(cours.get(champ, [])):
             r.erreur("cours", f"« {champ} » doit être une liste de phrases")
+    MESSAGES_OBTENUS.clear()
     prelude = cours.get("prelude_python", [])
     if not liste_de_chaines(prelude):
         r.erreur("cours", "« prelude_python » doit être une liste de lignes")
@@ -682,6 +719,15 @@ def verifier_cours(chemin, executer_code=True, n_questions=None):
         positions.append(j)
         longues += 1 if pl else 0
     comptes = verifier_repartition(positions, r, n_questions)
+    # chaque message d'erreur cité est celui que donne Python, en entier
+    if executer_code:
+        for ou, s in parcourir_chaines(cours):
+            for m in MESSAGE_CITE.finditer(s):
+                cite = m.group(1).strip()
+                if ":" in cite and cite not in MESSAGES_OBTENUS:
+                    proches = sorted(x for x in MESSAGES_OBTENUS if x.split(":")[0] == cite.split(":")[0])
+                    r.erreur(ou, f"message d'erreur cité « {cite} » : aucune exécution du cours ne le donne"
+                             + (f" (Python donne : {' ; '.join(proches)})" if proches else ""))
     if questions and longues / len(questions) > 0.4:
         r.erreur("répartition", f"la bonne réponse est la plus longue dans {longues} questions sur {len(questions)} : elle se repère")
     elif questions and longues / len(questions) > 0.25:

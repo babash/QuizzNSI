@@ -32,7 +32,7 @@
     return '<header class="q-tete"><p class="q-num">Question ' + q.numero + ' sur ' + total + '</p><h2 class="q-nom">' + t(q.nom) + '</h2>'
       + '<p class="objectif"><span>Objectif</span> ' + t(q.objectif) + '</p></header>'
       + '<div class="q-corps"><div class="q-texte">' + q.enonce.map(p => '<p>' + t(p) + '</p>').join('')
-      + (q.code ? Q.blocCode(q.code) : '') + '</div>' + (q.schema ? Q.schema(q.schema) : '') + '</div>';
+      + (q.code ? Q.blocCode(q.code) : '') + Q.console(q.console) + '</div>' + (q.schema ? Q.schema(q.schema) : '') + '</div>';
   };
 
   Q.rendreTrace = function (tr) {
@@ -68,7 +68,7 @@
     return '<header class="q-tete"><p class="q-num">' + e(A().NOMS[d.type]) + (d.type === 'nuage' ? ' · non noté' : '') + '</p><h2 class="q-nom">' + t(d.nom) + '</h2>'
       + '<p class="objectif"><span>Objectif</span> ' + t(d.objectif) + '</p></header>'
       + '<div class="q-corps"><div class="q-texte">' + d.enonce.map(p => '<p>' + t(p) + '</p>').join('')
-      + (d.code && d.type !== 'ligne' ? Q.blocCode(d.code) : '') + '</div></div>';
+      + (d.code && d.type !== 'ligne' ? Q.blocCode(d.code) + Q.console(d.console) : '') + '</div></div>';
   };
   // Les éléments à relier, à remettre dans l'ordre ou à toucher, sans réponse (projection, impression).
   Q.rendreElements = function (d, opts) {
@@ -83,7 +83,7 @@
       return '<ol class="puzzle-fixe">' + o.map((k, j) => '<li><span class="r-num">' + Q.LETTRES_LONGUES[j] + '</span><code class="py">' + Q.colorerLigne(ind ? d.lignes[k].trim() : d.lignes[k]) + '</code></li>').join('') + '</ol>'
         + (ind ? '<p class="aide-act">Les lignes sont données sans leur indentation.</p>' : '');
     }
-    if (d.type === 'ligne') return Q.blocCode(d.code, { numeros: true, marques: opts.marques });
+    if (d.type === 'ligne') return Q.blocCode(d.code, { numeros: true, marques: opts.marques }) + Q.console(d.console);
     if (d.type === 'nuage') return '<div class="zone-nuage" aria-live="polite"></div>';
     return '';
   };

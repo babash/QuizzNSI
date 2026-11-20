@@ -193,6 +193,35 @@ class TestVerifier(unittest.TestCase):
         e = self.rev(lambda c: c.update(gabarit="revision"))
         self.assertTrue(any("pas de gabarit" in x for x in e))
 
+    def test_console_comparee_a_l_execution(self):
+        c = copy.deepcopy(MODELE)
+        d = autre(c, "ligne")
+        d["console"] = [d["console"][0].split(". Did you mean")[0]]  # le message sans la suggestion de Python 3.13
+        self.assertTrue(any("console : Python affiche" in x for x in self.verifier(c, executer=True)))
+
+    def test_message_cite_compare_a_l_execution(self):
+        c = copy.deepcopy(MODELE)
+        autre(c, "ligne")["feedback"] = "Bien vu : Python affiche `AttributeError: 'Pile' object has no attribute 'enfiler'` et s'arrête."
+        self.assertTrue(any("message d'erreur cité" in x and "Did you mean" in x for x in self.verifier(c, executer=True)))
+
+    def test_message_cite_complet_accepte(self):
+        c = copy.deepcopy(MODELE)
+        autre(c, "ligne")["feedback"] = "Bien vu : Python affiche `AttributeError: 'Pile' object has no attribute 'enfiler'. Did you mean: 'empiler'?` et s'arrête."
+        self.assertEqual(self.verifier(c, executer=True), [])
+
+    def test_ligne_fautive_d_indentation(self):
+        # la correction ne diffère que par l'indentation : permis (une IndentationError se corrige ainsi)
+        c = copy.deepcopy(DEMO)
+        d = autre(c, "ligne")
+        d.update(code=["def f(n):", "return n + 1", "print(f(2))"], ligne=2, correction="    return n + 1", pieges={},
+                 verifications=[{"code": [], "erreur": "IndentationError"}], verifications_corrigees=[{"code": [], "sortie": "3"}])
+        d.pop("console", None)
+        self.assertEqual([x for x in self.verifier(c, executer=True) if "ligne" in x], [])
+
+    def test_ligne_fautive_trop_large(self):
+        e = self.modifie(lambda c: autre(c, "ligne")["code"].__setitem__(1, 'for v in ["taxi", "bus", "camion"]:'))
+        self.assertTrue(any("27 au plus" in x for x in e))
+
     def test_gabarit_inconnu(self):
         self.assertTrue(any("gabarit" in x for x in self.modifie(lambda c: c.update(gabarit="long"))))
 

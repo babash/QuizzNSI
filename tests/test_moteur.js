@@ -86,6 +86,25 @@ essai('stockage : une entrée « eleve » périmée ou mal formée est effacée'
   m.set('quizz-nsi:theme', '"dark"'); Q.menage(t); assert.equal(m.has('quizz-nsi:theme'), true); // les réglages ne sont pas concernés
   delete globalThis.localStorage;
 });
+essai('stockage : la progression du mode révision est gardée un jour au plus', () => {
+  const m = new Map();
+  globalThis.localStorage = { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k),
+    key: i => [...m.keys()][i] ?? null, get length() { return m.size; } };
+  const t = Date.now(), jour = 24 * 3600 * 1000;
+  m.set('quizz-nsi:revision:piles-files', JSON.stringify({ t: t - jour - 1, sig: 1, premiers: {} })); Q.menage(t); assert.equal(m.has('quizz-nsi:revision:piles-files'), false);
+  m.set('quizz-nsi:revision:piles-files', JSON.stringify({ premiers: {} })); Q.menage(t); assert.equal(m.has('quizz-nsi:revision:piles-files'), false); // sans date : d'avant la renumérotation
+  m.set('quizz-nsi:revision:piles-files', JSON.stringify({ t: t + jour, sig: 1 })); Q.menage(t); assert.equal(m.has('quizz-nsi:revision:piles-files'), false); // date dans le futur
+  m.set('quizz-nsi:revision:piles-files', JSON.stringify({ t: t - 3600 * 1000, sig: 1 })); Q.menage(t); assert.equal(m.has('quizz-nsi:revision:piles-files'), true);
+  delete globalThis.localStorage;
+});
+essai('console : compacte, nom de l\'erreur en gras, tout est échappé', () => {
+  const h = Q.console(["AttributeError: 'Pile' object has no attribute 'enfiler'. Did you mean: 'empiler'?", '<img src=x onerror=1>']);
+  assert.ok(h.startsWith('<pre class="console"'));
+  assert.ok(h.includes('<span class="c-err">AttributeError</span>'));
+  assert.ok(h.includes('<span class="c-ch">&#39;empiler&#39;</span>'));
+  assert.ok(!h.includes('<img') && h.includes('&lt;img'));
+  assert.equal(Q.console([]), ''); assert.equal(Q.console(undefined), '');
+});
 essai('code de séance : lecture tolérante', () => {
   assert.equal(Q.lireCode(' abcd '), 'ABCD'); assert.equal(Q.lireCode('ab-cd'), 'ABCD');
   assert.equal(Q.lireCode('ABIO'), null); assert.equal(Q.lireCode('ABC'), null);

@@ -10,7 +10,11 @@
   const REJOUER = new URLSearchParams(location.search).has('rejouer');
   let cours, diapos = [], index = 0, etat;
   const cle = () => (REJOUER ? 'rejouer:' : 'revision:') + cours.id;
-  const sauver = () => (REJOUER ? Q.session : Q.stock).ecrire(cle(), etat);
+  // La signature du cours : une progression gardée pour une autre version du cours (questions renumérotées,
+  // ajoutées ou retirées) est ignorée. Sur l'appareil, la progression est datée et gardée un jour au plus (Q.menage).
+  let signature = 0;
+  const signer = c => Q.graine((c.interactifs || []).map(q => q.id + ':' + q.nom).join('|'));
+  const sauver = () => REJOUER ? Q.session.ecrire(cle(), etat) : Q.stock.ecrire(cle(), Object.assign({}, etat, { t: Date.now(), sig: signature }));
   const nouvelleGraine = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0]; };
 
   /* Rejouer : les questions dans un ordre tiré au hasard (une graine par partie), et les quatre réponses de
@@ -237,7 +241,11 @@
       afficher(Math.min(etat.index, diapos.length - 1), false);
       return;
     }
-    etat = etatRelu(Q.stock.lire(cle(), null));
+    signature = signer(cours);
+    const garde = Q.stock.lire(cle(), null);
+    const valide = garde && typeof garde === 'object' && garde.sig === signature && Number.isFinite(garde.t) && Date.now() - garde.t <= Q.DUREE_REVISION;
+    if (garde && !valide) Q.stock.oublier(cle());
+    etat = etatRelu(valide ? garde : null);
     $('questionsSeules').checked = Q.stock.lire('questions-seules', false) === true;
     diapos = liste();
     $('questionsSeules').addEventListener('change', () => {

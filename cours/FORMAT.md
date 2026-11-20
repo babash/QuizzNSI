@@ -76,7 +76,8 @@ Chaque diapositive a un `type` :
 | `nom` | `[Thème] Ce que la question fait travailler`, comme dans Pronote |
 | `objectif` | une phrase, affichée au début de la question |
 | `enonce` | une liste de paragraphes **impersonnels**, comme au bac |
-| `code` | facultatif : une liste de lignes Python, affichée numérotée et colorée |
+| `code` | facultatif : une liste de lignes Python, affichée numérotée et colorée ; viser **27 caractères au plus par ligne** (commentaire compris) : au-delà, le code défile à 320 px. C'est **obligatoire** (contrôlé) pour une ligne fautive, dont chaque ligne est un bouton coupé à 320 px, et pour le code d'un écran d'introduction |
+| `console` | facultatif, sous un `code` : ce que Python affiche en l'exécutant, une ligne par ligne de sortie ; pour une erreur, sa dernière ligne **en entier** (Python 3.13, « Did you mean » compris). Affichée dans une console compacte sous le code ; le vérificateur l'exécute et compare mot pour mot |
 | `schema` | facultatif : un schéma (voir plus bas) |
 | `options` | **exactement 4** : `{ "texte": "…", "feedback": "…" }`, ou `"code": [lignes]` à la place de `texte` ; **une seule** porte `"juste": true` |
 | `explication` | une phrase « À retenir », montrée après la réponse |
@@ -102,7 +103,7 @@ Un cours peut contenir des diapositives d'autres types. Dans une révision, elle
 | `nuage` | `exemples` (facultatif : des mots possibles, montrés après) | propose autant de mots qu'il ou elle veut (un ou deux mots à la fois) ; une fois le nuage montré, vote pour les mots des camarades | **non noté** : pas de bonne réponse, aucun point, ne compte pas pour le rebond |
 | `relier` | `paires` : 2 à 6 `{ "gauche", "droite", "feedback"?, "verification"? }` | relie chaque élément de gauche à une réponse de droite (une liste déroulante par élément) | en proportion : 3 paires bien reliées sur 5 donnent 60 points sur 100 ; rapidité et rebond seulement si tout est juste |
 | `puzzle` | `lignes` : la solution (3 à 12 lignes, indentées de 4 espaces) ; `indentation` (`true` par défaut : l'élève doit aussi indenter) ; `verifications` (obligatoires) | remet les lignes dans l'ordre et les indente (boutons « Monter », « Descendre », « Indenter », « Désindenter », ou Alt + flèches) | en proportion des lignes à leur place (et à la bonne indentation quand elle compte) |
-| `ligne` | `code` ; `ligne` (le numéro de la ligne fautive, à partir de 1) ; `correction` (la ligne corrigée) ; `feedback` (pour la bonne ligne) ; `feedback_autre` (pour une autre ligne) ; `pieges` (facultatif : `{ "2": "feedback de la ligne 2" }`) ; `verifications` et `verifications_corrigees` (obligatoires) | touche la ligne qui contient l'erreur | comme une question à choix : juste ou faux |
+| `ligne` | `code` ; `ligne` (le numéro de la ligne fautive, à partir de 1) ; `correction` (la ligne corrigée) ; `feedback` (pour la bonne ligne) ; `feedback_autre` (pour une autre ligne) ; `pieges` (facultatif : `{ "2": "feedback de la ligne 2" }`) ; `verifications` et `verifications_corrigees` (obligatoires) ; `console` (le message d'erreur réel, affiché sous le code, vérifié) | touche la ligne qui contient l'erreur | comme une question à choix : juste ou faux |
 
 L'ordre des réponses à relier et des lignes du puzzle est mélangé à partir de l'`id` : la page projetée et tous les téléphones voient le même ordre (on peut dire « 1 avec C » à la classe), et le puzzle ne commence jamais dans l'ordre de la solution. Le vérificateur refuse un `relier` dont le mélange laisserait toutes les paires face à face (il suffit de changer l'`id`).
 
@@ -118,6 +119,12 @@ L'ordre des réponses à relier et des lignes du puzzle est mélangé à partir 
 **Le nuage de mots, en classe** : chaque mot est filtré sur le téléphone puis de nouveau sur la page projetée (2 à 24 caractères, un ou deux mots, lettres d'une seule écriture, chiffres, espace, `-` et `'`) et affiché comme du texte. Frein contre l'inondation : un mot toutes les 3 secondes sur le téléphone, un toutes les 2 secondes et 100 au plus par élève sur la page projetée. Le nuage reste caché, et les téléphones ne reçoivent aucun mot, tant que l'enseignant·e n'a pas cliqué sur « Montrer le nuage » ; ensuite les mots du tableau (sans leur auteur·rice) arrivent sur les téléphones, où l'on vote (une voix par mot, pas pour ses propres mots) ; la taille d'un mot suit son nombre de voix. « Relire et supprimer » et un clic sur un mot le suppriment, au tableau et sur les téléphones, sans retour possible. Le réglage « 2 voix au moins » est désactivé par défaut.
 
 Le modèle : le cours de démonstration [`demo-types-de-questions.json`](demo-types-de-questions.json), avec `"demonstration": true` : il n'a pas les 20 questions à choix d'un cours de classe, et l'accueil le présente comme une démonstration. Dans un cours de classe : la ligne fautive `a01` de [`piles-files.json`](piles-files.json).
+
+## Les messages d'erreur
+
+« Trouve l'erreur » donne **toujours le message réel** de Python 3.13 (ou de SQLite pour le SQL) : de préférence dans le champ `console`, sous le code ; sinon cité entre accents graves dans un texte, **en entier** (`` `AttributeError: 'Pile' object has no attribute 'enfiler'. Did you mean: 'empiler'?` ``), suivi de sa traduction entre guillemets. Le vérificateur exécute le code du cours et refuse un message cité que Python ne donne pas mot pour mot. La correction d'une ligne fautive peut ne changer que l'indentation (une `IndentationError`). Le workflow de vérification utilise Python 3.13.
+
+Le code s'affiche avec une indentation visible (un filet par niveau) et une coloration qui se lit aussi en noir et blanc : mots-clés en gras, fonctions soulignées, chaînes en italique, commentaires gris ; contrastes d'au moins 7:1.
 
 ## Le texte
 

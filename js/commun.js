@@ -73,6 +73,19 @@
     return '<pre class="code' + (num ? ' numerote' : '') + '"><code>' + corps + '</code></pre>';
   };
 
+  // La console Python : une ligne par ligne de sortie, compacte, sous le code. Le nom de l'erreur est en
+  // gras et en couleur, les chaînes citées en italique (lisible aussi en noir et blanc). Le texte vient du
+  // fichier du cours (vérifié par exécution), jamais du canal ; tout est échappé.
+  Q.console = function (lignes) {
+    if (!Array.isArray(lignes) || !lignes.length) return '';
+    const ligne = l => {
+      const m = /^([A-Za-z_][\w.]*(?:Error|Exception|Warning|Interrupt|Exit))(:?)(.*)$/.exec(String(l));
+      const reste = s => echapper(s).replace(/&#39;([^&]*?)&#39;|'([^']*?)'/g, (x) => '<span class="c-ch">' + x + '</span>');
+      return '<span class="ligne">' + (m ? '<span class="c-err">' + echapper(m[1]) + '</span>' + m[2] + reste(m[3]) : reste(String(l))) + '</span>';
+    };
+    return '<pre class="console" aria-label="Console Python"><code>' + lignes.map(ligne).join('') + '</code></pre>';
+  };
+
   /* ── Formes des options ──────────────────── */
   const CHEMINS = [
     '<path d="M12 3 22 21H2z"/>',                 // A : triangle
@@ -239,9 +252,20 @@
   // sont effacés à la fin de la séance (par la page élève), et sinon au premier chargement d'une page de
   // QuizzNSI après 12 heures ; une entrée mal formée est effacée au premier chargement.
   Q.DUREE_ELEVE = 12 * 3600 * 1000;
+  // La progression du mode révision (« quizz-nsi:revision:<cours> ») est gardée un jour au plus.
+  Q.DUREE_REVISION = 24 * 3600 * 1000;
   Q.menage = function (maintenant) {
     const t = maintenant || Date.now();
     let efface = false;
+    try {
+      const rev = [];
+      for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^quizz-nsi:revision:/.test(k)) rev.push(k); }
+      for (const k of rev) {
+        let v = null; try { v = JSON.parse(localStorage.getItem(k)); } catch (e) { v = null; }
+        const ok = v && typeof v === 'object' && Number.isFinite(v.t) && v.t <= t + 60000 && t - v.t <= Q.DUREE_REVISION;
+        if (!ok) { localStorage.removeItem(k); efface = true; }
+      }
+    } catch (e) { /* stockage bloqué : rien à effacer */ }
     try {
       const cles = [];
       for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k === 'quizz-nsi:eleve' || /^quizz-nsi:hist:/.test(k)) cles.push(k); }

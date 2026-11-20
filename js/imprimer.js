@@ -34,7 +34,7 @@
     h += cours.interactifs.map(q => q.type !== 'question' ? sujetAutre(q) : '<section class="f-question"><h2><span class="f-num">' + q.numero + '.</span> ' + t(q.nom) + '</h2>'
       + '<p class="f-objectif">Objectif : ' + t(q.objectif) + '</p>'
       + q.enonce.map(p => '<p>' + t(p) + '</p>').join('')
-      + (q.code || q.schema ? '<div class="f-illus">' + (q.code ? Q.blocCode(q.code) : '') + (q.schema ? Q.schema(q.schema) : '') + '</div>' : '')
+      + (q.code || q.schema ? '<div class="f-illus">' + (q.code ? Q.blocCode(q.code) + Q.console(q.console) : '') + (q.schema ? Q.schema(q.schema) : '') + '</div>' : '')
       + '<ol class="f-options">' + q.options.map((o, i) => '<li><span class="case" aria-hidden="true"></span>' + Q.pastille(i) + '<span>' + (o.texte ? t(o.texte) : '') + (o.code ? Q.blocCode(o.code, { numeros: false }) : '') + '</span></li>').join('') + '</ol></section>').join('');
     return h + pied(cours);
   }

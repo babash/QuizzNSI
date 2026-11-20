@@ -870,20 +870,23 @@
    "objectif": "Lire un message d'erreur et retrouver la primitive de chaque structure.",
    "enonce": [
     "Ce programme fait passer les véhicules de la file `f` dans la pile `p`.",
-    "Il s'arrête sur l'erreur `AttributeError: 'Pile' object has no attribute 'enfiler'. Did you mean: 'empiler'?` (« une pile n'a pas d'attribut enfiler. Voulais-tu dire empiler ? »)."
+    "Il s'arrête sur l'erreur affichée sous le code (« une pile n'a pas d'attribut enfiler. Voulais-tu dire empiler ? »)."
    ],
    "code": [
     "f = File()",
-    "for v in [\"taxi\", \"bus\", \"camion\"]:",
+    "for v in [\"taxi\", \"bus\"]:",
     "    f.enfiler(v)",
     "p = Pile()",
     "while not f.est_vide():",
     "    p.enfiler(f.defiler())",
     "print(p.sommet())"
    ],
+   "console": [
+    "AttributeError: 'Pile' object has no attribute 'enfiler'. Did you mean: 'empiler'?"
+   ],
    "ligne": 6,
    "correction": "    p.empiler(f.defiler())",
-   "feedback": "Bien vu : `p` est une pile, on y empile avec `p.empiler(...)`. Corrigé, le programme affiche camion, le dernier véhicule empilé.",
+   "feedback": "Bien vu : `p` est une pile, on y empile avec `p.empiler(...)`. Corrigé, le programme affiche bus, le dernier véhicule empilé.",
    "feedback_autre": "Cette ligne est correcte. Python propose « Did you mean: 'empiler'? » : cherche la ligne où la pile `p` reçoit `enfiler` au lieu de `empiler`.",
    "pieges": {
     "3": "`f` est une file : `f.enfiler(v)` est juste. Le message parle d'une pile (« 'Pile' object ») : cherche l'appel sur `p`.",
@@ -898,7 +901,7 @@
    "verifications_corrigees": [
     {
      "code": [],
-     "sortie": "camion"
+     "sortie": "bus"
     }
    ],
    "explication": "Une pile : `empiler`, `depiler`. Une file : `enfiler`, `defiler`. Le message dit quelle primitive manque, et « Did you mean » propose la bonne."
