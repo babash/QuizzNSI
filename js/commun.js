@@ -256,6 +256,20 @@
   };
   Q.nouvelId = () => { const a = new Uint8Array(8); crypto.getRandomValues(a); return [...a].map(x => x.toString(16).padStart(2, '0')).join(''); };
 
+  /* ── Hasard reproductible ────────────────── */
+  // Un mélange qui dépend d'une graine : la même graine donne le même ordre (pour retrouver l'ordre après un
+  // rechargement, ou pour que tous les appareils d'une séance voient le même ordre).
+  Q.graine = function (texte) { let h = 0x811c9dc5; for (const c of String(texte)) { h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; };
+  Q.hasard = function (graine) {
+    let a = graine >>> 0;
+    return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  };
+  Q.melanger = function (liste, graine) {
+    const l = liste.slice(), r = Q.hasard(graine);
+    for (let i = l.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [l[i], l[j]] = [l[j], l[i]]; }
+    return l;
+  };
+
   /* ── Stockage de l'appareil (une commodité : la page marche sans) ── */
   Q.stock = {
     lire(k, defaut) { try { const v = JSON.parse(localStorage.getItem('quizz-nsi:' + k)); return v == null ? defaut : v; } catch (e) { return defaut; } },

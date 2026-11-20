@@ -118,4 +118,16 @@ essai('contrôle léger d\'un cours', () => {
   c.diapositives.find(d => d.type === 'question').options[0].juste = true;
   assert.equal(Q.controlerCours(c).length, 1);
 });
+essai('mélange : même graine, même ordre ; toutes les valeurs gardées ; graines différentes, ordres différents', () => {
+  const l = Array.from({ length: 20 }, (_, i) => i);
+  assert.deepEqual(Q.melanger(l, 42), Q.melanger(l, 42));
+  assert.deepEqual(Q.melanger(l, 42).slice().sort((a, b) => a - b), l);
+  assert.notDeepEqual(Q.melanger(l, 42), Q.melanger(l, 43));
+  assert.deepEqual(l, Array.from({ length: 20 }, (_, i) => i)); // la liste d'origine n'est pas touchée
+  assert.equal(Q.graine('q01'), Q.graine('q01')); assert.notEqual(Q.graine('q01'), Q.graine('q02'));
+  // chaque place est à peu près équiprobable (4 réponses, 4000 tirages)
+  const n0 = [0, 0, 0, 0];
+  for (let g = 0; g < 4000; g++) n0[Q.melanger([0, 1, 2, 3], g * 2654435761 >>> 0).indexOf(0)]++;
+  assert.ok(n0.every(x => x > 850 && x < 1150), n0.join(' '));
+});
 console.log(n + ' tests réussis');

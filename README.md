@@ -18,6 +18,8 @@ QuizzNSI fait partie des [Ressources NSI et SNT](https://babash.github.io/Babash
 2. **Les élèves** rejoignent avec le QR code, le lien ou le code, depuis un téléphone ou un ordinateur, avec un prénom ou un pseudo (jamais un nom de famille). Un pseudo déplacé se retire d'un clic : l'élève en choisit un autre. À tout moment, **QR code en grand** (ou la touche **Q**) affiche le QR code et le code de la séance en très grand, lisibles du fond de la classe ; Q ou Échap les referme. Un·e élève en retard rejoint en cours de route : son téléphone arrive directement sur la diapositive ou la question en cours.
 3. **Tu avances dans le cours** (flèches, Entrée), environ 45 minutes, ou deux fois 20 : les téléphones suivent les diapositives ; à chaque question, l'écran compte les réponses, puis **Montrer la réponse** affiche la répartition, l'erreur la plus fréquente avec son explication, et le feedback de chaque option.
 
+**À la fin de la séance, le quiz se rejoue.** Le téléphone de chaque élève propose « Rejouer le quiz seul·e », et la page projetée affiche un QR code « rejouer » (dans le podium, et en grand avec la touche Q) : chacun·e rejoue les questions sans l'enseignant·e, dans un nouvel ordre et avec les réponses mélangées, corrigées tout de suite. Rien n'est envoyé ; l'ordre et les réponses restent dans l'onglet du téléphone, effacés à sa fermeture. Le lien : `revision.html?cours=<id>&rejouer`.
+
 Tu veux d'abord découvrir QuizzNSI seul·e ? Ouvre l'animation [en mode démo](https://babash.github.io/QuizzNSI/animer.html?cours=piles-files&demo) : la séance passe alors entre les onglets de ton navigateur. Le [mode autonome](https://babash.github.io/QuizzNSI/revision.html?cours=piles-files) sert à réviser seul·e ; [les questions à imprimer](https://babash.github.io/QuizzNSI/imprimer.html?cours=piles-files) ont [leur corrigé](https://babash.github.io/QuizzNSI/imprimer.html?cours=piles-files&corrige) à part.
 
 Une seule page projetée par séance : si une deuxième est ouverte (onglet dupliqué, autre ordinateur), la page avertit. Sans réseau, la page d'animation marche comme un simple diaporama, et la page élève propose le mode autonome.
@@ -46,6 +48,7 @@ Chaque question a un objectif affiché, quatre options tirées d'erreurs fréque
 | **Une séance en classe** (≈ 45 min, ou deux fois 20) | La page d'animation projetée, les téléphones des élèves. |
 | **En îlots** | Un téléphone pour deux ou pour l'îlot : on se met d'accord avant de répondre. |
 | **Pour s'entraîner seul·e** | Le mode autonome : les diapositives et les questions, des essais illimités, la correction quand on veut ; « Questions seules » saute les notions. |
+| **Pour rejouer après la séance** | « Rejouer le quiz » : les questions seules, dans un nouvel ordre, les réponses mélangées ; « Rejouer encore » tire un autre ordre. |
 | **Sur papier** | Les questions sur une feuille A4 en noir et blanc, le corrigé à part. |
 
 ## Pourquoi ça marche
@@ -60,7 +63,7 @@ Chaque question a un objectif affiché, quatre options tirées d'erreurs fréque
 
 - **Enregistré en ligne** (canaux temps réel de Supabase, sans aucune table) : rien. Le prénom ou le pseudo et les réponses passent en direct dans la séance, sans être gardés en ligne. Pas d'adresse électronique, pas de nom de famille.
 - **Visible par les autres** : pendant la séance seulement, ce que montre l'écran projeté (les pseudos présents, la répartition des réponses, les rebonds, le podium quand il est affiché). Les réponses partent chiffrées pour la page projetée ; une fausse page projetée, ouverte par quelqu'un qui connaît le code, les reçoit aussi (voir les risques acceptés, [docs/DONNEES.md](docs/DONNEES.md)).
-- **Sur l'appareil** : le code de séance, le pseudo, un identifiant, les réponses et les points de la séance, effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, les réponses du mode autonome.
+- **Sur l'appareil** : le code de séance, le pseudo, un identifiant, les réponses et les points de la séance, effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, les réponses du mode autonome ; pour rejouer le quiz, l'ordre tiré et les réponses, dans l'onglet seulement (effacés à sa fermeture).
 - **Pour effacer** : rien à effacer en ligne ; sur l'appareil, « Quitter » ou « Recommencer à zéro », ou l'effacement des données du navigateur.
 
 Le détail : [docs/DONNEES.md](docs/DONNEES.md).

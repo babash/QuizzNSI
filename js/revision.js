@@ -1,16 +1,39 @@
 /* QuizzNSI : le mode autonome (MIT, Babash - NSI Tani Malandi).
    Les diapositives et les questions, corrigées dans le navigateur. Rien n'est envoyé :
-   la progression (première réponse à chaque question) reste dans le stockage de l'appareil. */
+   la progression (première réponse à chaque question) reste dans le stockage de l'appareil.
+   « Rejouer le quiz » (revision.html?cours=<id>&rejouer, proposé à la fin d'une séance) : les questions seules,
+   dans un ordre mélangé, et les réponses de chaque question mélangées aussi. Rien n'est envoyé ; l'ordre et
+   les réponses restent dans l'onglet (sessionStorage), effacés à sa fermeture. */
 (function () {
   'use strict';
   const Q = window.QuizzNSI, $ = Q.$;
+  const REJOUER = new URLSearchParams(location.search).has('rejouer');
   let cours, diapos = [], index = 0, etat;
-  const cle = () => 'revision:' + cours.id;
-  const sauver = () => Q.stock.ecrire(cle(), etat);
+  const cle = () => (REJOUER ? 'rejouer:' : 'revision:') + cours.id;
+  const sauver = () => (REJOUER ? Q.session : Q.stock).ecrire(cle(), etat);
+  const nouvelleGraine = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0]; };
+
+  /* Rejouer : les questions dans un ordre tiré au hasard (une graine par partie), et les quatre réponses de
+     chaque question mélangées. Une copie de chaque question est faite : la lettre d'une réponse est sa place
+     à l'écran, la bonne réponse est recalculée. */
+  let original = null;
+  function preparerRejouer() {
+    const qs = Q.melanger(original.questions, etat.graine).map((q, k) => {
+      const ordre = Q.melanger([0, 1, 2, 3], (etat.graine ^ Q.graine(q.id)) >>> 0);
+      const c = Object.assign({}, q, { options: ordre.map(i => q.options[i]), numero: k + 1 });
+      c.bonne = ordre.indexOf(q.bonne);
+      return c;
+    });
+    const titre = { type: 'titre', titre: original.titre, conventions: original.diapositives[0] && original.diapositives[0].conventions,
+      texte: ['Rejouer le quiz : les ' + qs.length + ' questions dans un nouvel ordre, les réponses mélangées.', 'Seul·e, sur ton téléphone : rien n\'est envoyé.'] };
+    const bilan = original.diapositives.find(d => d.type === 'bilan') || { type: 'bilan', titre: 'Ton bilan' };
+    cours = Object.assign({}, original, { diapositives: [titre].concat(qs, [bilan]), questions: qs });
+  }
 
   // Le stockage a pu être modifié : on ne garde que des choix 0 à 3 pour des questions du cours.
   function etatRelu(v) {
     const e = { premiers: {}, essais: {}, vus: {}, index: 0 }, ids = new Set(cours.questions.map(q => q.id));
+    if (REJOUER) e.graine = v && Number.isSafeInteger(v.graine) && v.graine >= 0 && v.graine < 2 ** 32 ? v.graine : nouvelleGraine();
     const choix = c => Number.isInteger(c) && c >= 0 && c <= 3;
     if (!v || typeof v !== 'object') return e;
     for (const id of ids) {
@@ -24,7 +47,7 @@
 
   function liste() {
     // « Questions seules » : sans les notions, les parties, les questions à la classe ni l'humour
-    return $('questionsSeules').checked ? cours.diapositives.filter(d => d.type === 'titre' || d.type === 'question' || d.type === 'bilan') : cours.diapositives;
+    return $('questionsSeules').checked && !REJOUER ? cours.diapositives.filter(d => d.type === 'titre' || d.type === 'question' || d.type === 'bilan') : cours.diapositives;
   }
 
   let vus = 0, arriere = false;
@@ -56,7 +79,7 @@
     $('prec').disabled = index === 0;
     if (d.type === 'question') brancherQuestion(d);
     if (d.type === 'bilan') brancherBilan();
-    try { history.replaceState(null, '', '#' + (cours.diapositives.indexOf(d) + 1)); } catch (e) { /* rien */ }
+    if (!REJOUER) try { history.replaceState(null, '', '#' + (cours.diapositives.indexOf(d) + 1)); } catch (e) { /* rien */ }
     if (focus !== false) scene.focus({ preventScroll: true });
     window.scrollTo(0, 0);
   }
@@ -110,7 +133,9 @@
       + (faites.length < qs.length ? ' (' + (qs.length - faites.length) + ' question' + (qs.length - faites.length > 1 ? 's' : '') + ' sans réponse)' : '') + '.</p>';
     if (arevoir.length) h += '<p>À revoir :</p><ul class="cours-liste">' + arevoir.map(q => '<li><button class="bouton petit" type="button" data-aller="' + q.id + '">Question ' + q.numero + ' · ' + Q.texte(q.nom) + '</button></li>').join('') + '</ul>';
     else if (faites.length) h += '<p>Tout juste du premier coup : bravo ! Tu peux aider un·e camarade.</p>';
-    h += '<p><button class="bouton" type="button" id="recommencer">Recommencer à zéro</button> <a class="bouton" href="imprimer.html?cours=' + encodeURIComponent(cours.id) + '">Version à imprimer</a></p></div>';
+    h += REJOUER
+      ? '<p><button class="bouton fort" type="button" id="recommencer">Rejouer encore (nouvel ordre)</button> <a class="bouton" href="revision.html?cours=' + encodeURIComponent(cours.id) + '">Revoir le cours</a></p></div>'
+      : '<p><button class="bouton" type="button" id="recommencer">Recommencer à zéro</button> <a class="bouton" href="imprimer.html?cours=' + encodeURIComponent(cours.id) + '">Version à imprimer</a> <a class="bouton" href="revision.html?cours=' + encodeURIComponent(cours.id) + '&amp;rejouer">Rejouer le quiz (mélangé)</a></p></div>';
     return h;
   }
   function brancherBilan() {
@@ -119,7 +144,11 @@
       afficher(diapos.findIndex(d => d.id === b.dataset.aller));
     }));
     const r = $('recommencer');
-    if (r) r.addEventListener('click', () => { etat = { premiers: {}, essais: {}, vus: {}, index: 0 }; sauver(); afficher(0); });
+    if (r) r.addEventListener('click', () => {
+      etat = { premiers: {}, essais: {}, vus: {}, index: 0 };
+      if (REJOUER) { etat.graine = nouvelleGraine(); preparerRejouer(); diapos = liste(); }
+      sauver(); afficher(0);
+    });
   }
 
   document.addEventListener('keydown', ev => {
@@ -137,8 +166,23 @@
     Q.theme();
     try { cours = await Q.chargerCours(Q.idCours()); }
     catch (e) { Q.erreurPage($('scene'), e.message); document.querySelector('.nav-diapos').hidden = true; return; }
-    document.title = 'QuizzNSI · ' + cours.titre + ' · réviser seul·e';
-    $('titreCours').textContent = cours.titre + ' · réviser seul·e';
+    const mode = REJOUER ? 'rejouer le quiz' : 'réviser seul·e';
+    document.title = 'QuizzNSI · ' + cours.titre + ' · ' + mode;
+    $('titreCours').textContent = cours.titre + ' · ' + mode;
+    if (REJOUER) {
+      original = cours;
+      etat = etatRelu(Q.session.lire(cle(), null));
+      preparerRejouer();
+      etat = Object.assign(etatRelu(etat), { graine: etat.graine });
+      $('questionsSeules').closest('label').hidden = true;
+      $('noteRevision').textContent = 'Au clavier : flèches gauche et droite pour changer de question ; touches A, B, C, D pour répondre. Rien n\'est envoyé : l\'ordre des questions et tes réponses restent dans cet onglet, effacés à sa fermeture.';
+      sauver();
+      diapos = liste();
+      $('prec').addEventListener('click', () => reculer(false));
+      $('suiv').addEventListener('click', () => avancer(false));
+      afficher(Math.min(etat.index, diapos.length - 1), false);
+      return;
+    }
     etat = etatRelu(Q.stock.lire(cle(), null));
     $('questionsSeules').checked = Q.stock.lire('questions-seules', false) === true;
     diapos = liste();

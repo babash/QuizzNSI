@@ -17,7 +17,8 @@ Lancement, depuis la racine de QuizzNSI :
    les deux élèves ont un pseudo qui contient XSSMARK, le podium est affiché après chaque question.
 1 ter. Le QR code en très grand (bouton et touche Q), à l'accueil et pendant une question, à 3 largeurs et
    dans les 2 thèmes ; un·e élève en retard rejoint en pleine question et reçoit ses points.
-2. Le mode autonome : les 37 diapositives, une erreur puis la bonne réponse, le bilan.
+2. Le mode autonome : les diapositives, une erreur puis la bonne réponse, le bilan ;
+   rejouer le quiz : les 20 questions dans un autre ordre, les réponses mélangées, rien d'envoyé.
 3. La version imprimable : le sujet et le corrigé en PDF A4, sans débordement.
 4. Toutes les pages à 320, 768 et 1440 px, en clair et en obscur : aucun défilement horizontal.
 Aucune erreur JavaScript n'est tolérée ; toute requête vers un autre site est bloquée et signalée.
@@ -371,6 +372,17 @@ def seance(nav, base):
     attendre_texte(eleve_1, "#ecran", f"{attendu['Kobalt']} points")
     attendre_texte(eleve_1, "#ecran", "1re place")
     eleve_1.screenshot(path=os.path.join(SORTIE, "eleve-fin-320.png"), full_page=True)
+    # rejouer : le lien sur le téléphone, le QR code « rejouer » sur la page projetée (dans le podium et en grand)
+    assert eleve_1.get_attribute('#ecran a.bouton.fort', "href") == "revision.html?cours=piles-files&rejouer"
+    assert prof.is_visible("#rejouerBloc") and prof.locator("#qrRejouer svg").count() == 1
+    assert prof.inner_text("#lienRejouer").endswith("revision.html?cours=piles-files&rejouer")
+    prof.click("#btnRejouerGrand")
+    prof.wait_for_selector("#qrBoite[open]")
+    attendre_texte(prof, "#qrTitre", "Rejouer le quiz")
+    assert not prof.is_visible("#codeGrand")
+    prof.screenshot(path=os.path.join(SORTIE, "seance-rejouer-grand-1440.png"))
+    prof.keyboard.press("q")
+    prof.wait_for_selector("#qrBoite:not([open])", state="attached")
     assert eleve_1.evaluate("localStorage.getItem('quizz-nsi:eleve')") is None, "l'entrée « eleve » doit être effacée à la fin de la séance"
     attendre_texte(eleve_2, "#ecran", f"{attendu['Ixo']} points")
     print(f"  séance : 20 questions, points Kobalt {attendu['Kobalt']}, Ixo {attendu['Ixo']}, envois {prof.evaluate('window.__fauxTempsReel.envois')}")
@@ -524,6 +536,57 @@ def autonome(nav, base):
     ctx.close()
 
 
+def rejouer(nav, base):
+    """Rejouer le quiz seul·e : les questions dans un autre ordre, les réponses mélangées, rien d'envoyé."""
+    ctx = contexte(nav, base)
+    p = ctx.new_page()
+    p.set_viewport_size({"width": 320, "height": 740})
+    surveiller(p, "rejouer")
+    envois = []
+    p.on("request", lambda r: envois.append(r.url) if r.method != "GET" else None)
+    p.goto(base + "revision.html?cours=piles-files&rejouer")
+    p.wait_for_selector("section.d-titre")
+    assert not p.is_visible("#questionsSeules")
+    juste_de = {}
+    for q in QUESTIONS:
+        o = q["options"][BONNES[QUESTIONS.index(q)]]
+        juste_de[q["nom"].replace("`", "")] = (o.get("texte") or " ".join(o.get("code", []))).replace("`", "")
+    noms, places = [], []
+    p.click("#suiv")
+    for k in range(20):
+        p.wait_for_selector(f'section.d-question[data-q="{k + 1}"]')
+        nom = p.inner_text(".q-nom").strip()
+        noms.append(nom)
+        bonne = juste_de[nom]
+        labels = p.eval_on_selector_all("button.option", "l => l.map(b => b.getAttribute('aria-label'))")
+        i = next(i for i, l in enumerate(labels) if l.endswith(": " + bonne))
+        places.append(i)
+        if k == 0:
+            p.click(f'button.option[data-choix="{(i + 1) % 4}"]')
+            attendre_texte(p, ".zone-correction", "Pas encore")
+            p.screenshot(path=os.path.join(SORTIE, "rejouer-question-320.png"), full_page=True)
+        p.click(f'button.option[data-choix="{i}"]')
+        attendre_texte(p, ".zone-correction", "Bonne réponse")
+        p.click("#suiv")
+    attendre_texte(p, "#scene", "19 sur 20")
+    p.screenshot(path=os.path.join(SORTIE, "rejouer-bilan-320.png"), full_page=True)
+    originaux = [q["nom"].replace("`", "") for q in QUESTIONS]
+    assert sorted(noms) == sorted(originaux) and noms != originaux, "les 20 questions, dans un autre ordre"
+    assert places != BONNES, "les réponses sont mélangées"
+    # le même ordre après un rechargement (onglet), un nouvel ordre avec « Rejouer encore »
+    p.reload()
+    attendre_texte(p, "#scene", "19 sur 20")
+    assert p.evaluate("Object.keys(localStorage).filter(k => k.includes('rejouer'))") == [], "rien dans le stockage durable"
+    p.click("#recommencer")
+    p.wait_for_selector("section.d-titre")
+    p.click("#suiv")
+    autre = p.inner_text(".q-nom").strip()
+    p.wait_for_timeout(100)
+    assert not envois, f"des données sont parties : {envois}"
+    print(f"  rejouer : 20 questions mélangées (la 1re était {noms[0][:30]}…, puis {autre[:30]}…), réponses mélangées, rien d'envoyé, rien de durable")
+    ctx.close()
+
+
 def impression(nav, base):
     ctx = contexte(nav, base)
     p = ctx.new_page()
@@ -544,7 +607,7 @@ def impression(nav, base):
 
 
 def rendus(nav, base):
-    pages = ["index.html", "revision.html#7", "revision.html#30", "animer.html", "rejoindre.html", "imprimer.html", "imprimer.html?corrige"]
+    pages = ["index.html", "revision.html#7", "revision.html#30", "revision.html?rejouer", "animer.html", "rejoindre.html", "imprimer.html", "imprimer.html?corrige"]
     for theme in ("light", "dark"):
         for largeur in (320, 768, 1440):
             ctx = contexte(nav, base, color_scheme=theme, viewport={"width": largeur, "height": 900})
@@ -559,7 +622,7 @@ def rendus(nav, base):
                 p.screenshot(path=os.path.join(SORTIE, f"rendu-{nom}-{largeur}-{theme}.png"), full_page=True)
                 p.close()
             ctx.close()
-    print("  rendus : 7 pages × 3 largeurs × 2 thèmes, sans défilement horizontal")
+    print("  rendus : 8 pages × 3 largeurs × 2 thèmes, sans défilement horizontal")
 
 
 def main():
@@ -572,6 +635,7 @@ def main():
         stockage(nav, base)
         sans_chiffrement(nav, base)
         autonome(nav, base)
+        rejouer(nav, base)
         impression(nav, base)
         rendus(nav, base)
         nav.close()

@@ -73,6 +73,14 @@
     };
   }
 
+  // Le lien « rejouer » : le quiz seul·e, questions et réponses mélangées (revision.html, rien n'est envoyé).
+  Q.lienRejouer = function (cours) {
+    const u = new URL('revision.html', location.href);
+    u.search = ''; u.hash = '';
+    u.searchParams.set('cours', cours);
+    return u.href + '&rejouer';
+  };
+
   Q.lienEleve = function (code) {
     const u = new URL('rejoindre.html', location.href);
     u.search = ''; u.hash = '';
