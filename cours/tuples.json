@@ -104,12 +104,13 @@
    "nom": "[Lire] Taille et dernier élément",
    "objectif": "Utiliser `len` et l'indice -1 sur un p-uplet.",
    "enonce": [
-    "Le p-uplet `trajet` donne le départ, l'arrivée et la durée d'un trajet en taxi, en minutes.",
+    "Le p-uplet `t` donne le départ, l'arrivée et la durée d'un trajet en taxi, en minutes.",
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "trajet = (\"Sada\", \"Mamoudzou\", 45)",
-    "print(len(trajet), trajet[-1])"
+    "t = (\"Sada\",",
+    "     \"Mamoudzou\", 45)",
+    "print(len(t), t[-1])"
    ],
    "options": [
     {
@@ -127,7 +128,7 @@
     {
      "texte": "`3 45`",
      "juste": true,
-     "feedback": "Exact. 3 éléments, et `trajet[-1]` est le dernier, la durée."
+     "feedback": "Exact. 3 éléments, et `t[-1]` est le dernier, la durée."
     }
    ],
    "explication": "`len(t)` compte les éléments ; `t[-1]` est le dernier.",
@@ -181,7 +182,7 @@
     },
     {
      "texte": "Rien ne change, et il n'y a pas d'erreur.",
-     "feedback": "Python ne laisse pas passer en silence : il s'arrête sur `TypeError` et le dit."
+     "feedback": "Python ne laisse pas passer en silence : il s'arrête sur `TypeError: 'tuple' object does not support item assignment`."
     }
    ],
    "explication": "Un p-uplet est immuable : `t[0] = ...` provoque `TypeError`.",
@@ -394,8 +395,8 @@
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "def partage(n, taille):",
-    "    return n // taille, n % taille",
+    "def partage(n, k):",
+    "    return n // k, n % k",
     "",
     "resultat = partage(17, 5)",
     "print(resultat)"
@@ -443,14 +444,14 @@
       "    return min(t)",
       "    return max(t)"
      ],
-     "feedback": "Le premier `return` arrête la fonction : le second n'est jamais exécuté. La fonction renvoie un seul nombre, et le déballage échoue."
+     "feedback": "Le premier `return` arrête la fonction : le second n'est jamais exécuté. La fonction renvoie un seul nombre, et le déballage échoue : `TypeError: cannot unpack non-iterable int object`."
     },
     {
      "code": [
       "def extremes(t):",
       "    print(min(t), max(t))"
      ],
-     "feedback": "`print` affiche les valeurs mais ne les renvoie pas : la fonction renvoie `None`, et `bas, haut = None` provoque `TypeError`."
+     "feedback": "`print` affiche les valeurs mais ne les renvoie pas : la fonction renvoie `None`, et le déballage provoque `TypeError: cannot unpack non-iterable NoneType object`."
     },
     {
      "code": [
@@ -535,11 +536,11 @@
     "    return min(t), max(t)",
     "",
     "notes = [12, 8, 15]",
-    "bas, milieu, haut = extremes(notes)",
-    "print(bas, haut)"
+    "b, m, h = extremes(notes)",
+    "print(b, h)"
    ],
    "ligne": 5,
-   "correction": "bas, haut = extremes(notes)",
+   "correction": "b, h = extremes(notes)",
    "feedback": "Bien vu. `extremes` renvoie un p-uplet de 2 valeurs : il faut 2 variables, pas 3. Corrigé, le programme affiche 8 15.",
    "feedback_autre": "Cette ligne est correcte. Le message parle d'un déballage (unpack) : cherche la ligne où l'on range un p-uplet dans plusieurs variables.",
    "pieges": {
@@ -558,7 +559,7 @@
      "sortie": "8 15"
     }
    ],
-   "explication": "Autant de variables que de valeurs : `bas, haut = extremes(notes)`."
+   "explication": "Autant de variables que de valeurs : `b, h = extremes(notes)`."
   },
   {
    "type": "notion",
@@ -582,7 +583,10 @@
     "Quelle expression vaut `\"Mamoudzou\"` ?"
    ],
    "code": [
-    "taxi = {\"depart\": \"Sada\", \"arrivee\": \"Mamoudzou\", \"places\": 4}"
+    "taxi = {",
+    "  \"depart\": \"Sada\",",
+    "  \"arrivee\": \"Mamoudzou\",",
+    "  \"places\": 4}"
    ],
    "options": [
     {
@@ -596,7 +600,7 @@
     },
     {
      "texte": "`taxi.arrivee`",
-     "feedback": "Le point sert aux méthodes, comme `append` pour un tableau. Python répond `AttributeError` : il faut `taxi[\"arrivee\"]`."
+     "feedback": "Le point sert aux méthodes, comme `append` pour un tableau. Python répond `AttributeError: 'dict' object has no attribute 'arrivee'` : il faut `taxi[\"arrivee\"]`."
     },
     {
      "texte": "`taxi(\"arrivee\")`",
