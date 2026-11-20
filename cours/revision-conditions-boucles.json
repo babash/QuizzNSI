@@ -74,13 +74,13 @@
      "feedback": "La condition `age >= 18` est fausse pour 15 : c'est la branche du `else` qui s'exécute."
     },
     {
+     "texte": "`majeur` puis `mineur`",
+     "feedback": "Un `if` / `else` n'exécute jamais les deux branches : c'est l'une ou l'autre, selon la condition."
+    },
+    {
      "texte": "`mineur`",
      "juste": true,
      "feedback": "Exact. 15 n'est pas supérieur ou égal à 18 : la condition est fausse, on exécute le `else`."
-    },
-    {
-     "texte": "`majeur` puis `mineur`",
-     "feedback": "Un `if` / `else` n'exécute jamais les deux branches : c'est l'une ou l'autre, selon la condition."
     },
     {
      "texte": "Rien du tout",
@@ -437,17 +437,17 @@
      "feedback": "Le 5 n'est pas atteint : `i` vaut 2, 3 puis 4. Le total est 2 + 3 + 4."
     },
     {
-     "texte": "10",
-     "feedback": "La boucle commence à 2, pas à 1 : on additionne 2 + 3 + 4."
+     "texte": "9",
+     "juste": true,
+     "feedback": "Exact. `i` vaut 2, 3 puis 4 : `total` passe de 0 à 2, puis 5, puis 9."
     },
     {
      "texte": "4",
      "feedback": "4 est la dernière valeur de `i`, pas le total : `total` garde la somme de toutes les valeurs."
     },
     {
-     "texte": "9",
-     "juste": true,
-     "feedback": "Exact. `i` vaut 2, 3 puis 4 : `total` passe de 0 à 2, puis 5, puis 9."
+     "texte": "10",
+     "feedback": "La boucle commence à 2, pas à 1 : on additionne 2 + 3 + 4."
     }
    ],
    "explication": "Un total s'initialise avant la boucle (`total = 0`), puis grandit à chaque tour.",

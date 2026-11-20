@@ -42,7 +42,7 @@ TYPES_DIAPO = {"titre", "partie", "classe", "humour", "notion", "question", "bil
 AUTRES_TYPES = {"nuage", "relier", "puzzle", "ligne"}   # les autres types de questions (js/activites.js)
 RELIER_MAX, PUZZLE_MIN, PUZZLE_MAX, INDENT_MAX, LIGNES_MAX = 6, 3, 12, 6, 40
 TYPES_SCHEMA = {"pile", "file", "etapes", "deux-piles", "liste", "decalage", "svg"}
-LARGEUR_MAX = 27          # caractères par ligne de code d'une ligne fautive ou d'un écran d'introduction (320 px)
+LARGEUR_MAX = 27          # caractères par ligne de code : écrans d'introduction, questions, options, lignes fautives (320 px)
 FEEDBACK_MIN = 40          # caractères : un feedback plus court n'explique rien
 TEXTE_NOTION_MAX = 3       # puces par notion (peu de texte, règle 3)
 PUCE_MAX = 300             # caractères par puce
@@ -230,6 +230,10 @@ def verifier_question(q, n, prelude, r, executer_code=True):
         r.erreur(ou, "« enonce » doit être une liste de paragraphes non vide")
     if "code" in q and not liste_de_chaines(q["code"]):
         r.erreur(ou, "« code » doit être une liste de lignes")
+    elif "code" in q:
+        for k, l in enumerate(q["code"]):
+            if len(l) > LARGEUR_MAX:
+                r.erreur(ou, f"ligne de code {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (lisible à 320 px)")
     if "console" in q:
         if not q.get("code"):
             r.erreur(ou, "« console » : seulement sous un code")
@@ -266,6 +270,10 @@ def verifier_question(q, n, prelude, r, executer_code=True):
             r.erreur(oo, "l'option n'a ni « texte » ni « code »")
         if "code" in o and not liste_de_chaines(code):
             r.erreur(oo, "« code » doit être une liste de lignes")
+        elif "code" in o:
+            for k, l in enumerate(code):
+                if len(l) > LARGEUR_MAX:
+                    r.erreur(oo, f"ligne de code {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (lisible à 320 px)")
         contenu = (texte if isinstance(texte, str) else "") + "\n".join(code if liste_de_chaines(code) else [])
         if "**" in contenu or "==" in contenu.replace("== ", "").replace(" ==", "") or "<b>" in contenu.lower() or "<strong" in contenu.lower():
             r.erreur(oo, "aucune mise en avant dans une option (gras interdit)")
@@ -602,6 +610,22 @@ def verifier_repartition(positions, r, n_attendu):
     for periode in (2, 3, 4):
         if n >= 2 * periode and all(positions[i] == positions[i % periode] for i in range(n)):
             r.erreur("répartition", f"motif périodique de longueur {periode}")
+    # un motif partiel : une lettre juste au même rang modulo 2, 3 ou 4, sur 4 questions de suite de ce rang
+    # (D en 3, 7, 11, 15…) ; un groupe de 4 bonnes réponses qui se répète (ACDB … ACDB)
+    trouves = set()
+    for periode in (2, 3, 4):
+        for debut in range(n):
+            rangs = list(range(debut, n, periode))[:4]
+            if len(rangs) == 4 and len({positions[i] for i in rangs}) == 1 and (periode, debut % periode) not in trouves:
+                trouves.add((periode, debut % periode))
+                r.erreur("répartition", f"motif : {LETTRES[positions[debut]]} est juste aux questions {', '.join(str(i + 1) for i in rangs)} (tous les {periode} rangs)")
+    groupes = {}
+    for i in range(n - 3):
+        g = tuple(positions[i:i + 4])
+        if g in groupes and i - groupes[g] >= 4:
+            r.erreur("répartition", f"motif : le groupe {''.join(LETTRES[x] for x in g)} se répète (questions {groupes[g] + 1} et {i + 1})")
+            break
+        groupes.setdefault(g, i)
     return comptes
 
 

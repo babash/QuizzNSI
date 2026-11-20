@@ -249,6 +249,35 @@ class TestVerifier(unittest.TestCase):
         e = self.modifie(tout_en_a)
         self.assertTrue(any("répartition" in x for x in e))
 
+    def repartition(self, lettres):
+        r = V.Rapport()
+        V.verifier_repartition(["ABCD".index(x) for x in lettres], r, len(lettres))
+        return r.erreurs
+
+    def test_motif_partiel_meme_rang(self):
+        # D juste aux questions 3, 7, 11, 15, 19 (l'ancienne révision piles et files)
+        e = self.repartition("BADCACDBACDBCADBACDB")
+        self.assertTrue(any("D est juste aux questions 3, 7, 11, 15" in x for x in e), e)
+
+    def test_motif_groupe_repete(self):
+        e = self.repartition("CADBBACADBDC")
+        self.assertTrue(any("le groupe CADB se répète" in x for x in e), e)
+
+    def test_repartition_sans_motif_acceptee(self):
+        self.assertEqual(self.repartition("ACBDBACDABDCCADBBDAC"), [])
+
+    def test_code_de_question_trop_large(self):
+        e = self.modifie(lambda c: questions(c)[1].__setitem__("code", ["p = Pile()", "p.empiler(4)  # le premier véhicule"]))
+        self.assertTrue(any("question" in x and "27 au plus" in x for x in e), e)
+
+    def test_code_d_option_trop_large(self):
+        def f(c):
+            q = next(q for q in questions(c) if any("code" in o for o in q["options"]))
+            o = next(o for o in q["options"] if "code" in o)
+            o["code"] = list(o["code"]) + ["print(\"la pile est maintenant vide\")"]
+        e = self.modifie(f)
+        self.assertTrue(any("option" in x and "27 au plus" in x for x in e), e)
+
     def test_sortie_fausse_detectee_a_l_execution(self):
         c = copy.deepcopy(MODELE)
         questions(c)[3]["verifications"][0]["sortie"] = "[4, 1, 3]"
