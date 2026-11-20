@@ -238,11 +238,19 @@
    "nom": "[Maximum] Combien de mises à jour ?",
    "objectif": "Suivre pas à pas la recherche d'un maximum.",
    "enonce": [
-    "On exécute `maximum(pluie)`, avec la fonction de l'écran précédent.",
-    "Combien de fois la ligne `m = x` est-elle exécutée ?"
+    "On exécute le code suivant.",
+    "Combien de fois la ligne `m = x` (ligne 5) est-elle exécutée ?"
    ],
    "code": [
-    "pluie = [12, 0, 35, 8, 35]"
+    "def maximum(t):",
+    "    m = t[0]",
+    "    for x in t:",
+    "        if x > m:",
+    "            m = x",
+    "    return m",
+    "",
+    "pluie = [12, 0, 35, 8, 35]",
+    "print(maximum(pluie))"
    ],
    "options": [
     {
@@ -288,7 +296,12 @@
    },
    "verifications": [
     {
+     "code": [],
+     "sortie": "35"
+    },
+    {
      "code": [
+      "pluie = [12, 0, 35, 8, 35]",
       "n = 0",
       "m = pluie[0]",
       "for x in pluie:",
@@ -297,7 +310,8 @@
       "        n = n + 1",
       "print(m, n)"
      ],
-     "sortie": "35 1"
+     "sortie": "35 1",
+     "reprendre_code": false
     }
    ]
   },
@@ -318,7 +332,8 @@
     "            m = x",
     "    return m",
     "",
-    "print(maxi([-3, -8, -1, -5]))"
+    "t = [-3, -8, -1, -5]",
+    "print(maxi(t))"
    ],
    "options": [
     {
@@ -353,8 +368,16 @@
    "nom": "[Minimum] Adapter le maximum",
    "objectif": "Adapter la recherche du maximum à celle du minimum.",
    "enonce": [
-    "On part de la fonction `maximum` de l'écran « Le maximum » pour écrire `minimum`.",
+    "On part de la fonction `maximum` ci-dessous pour écrire une fonction `minimum`.",
     "Quelle modification suffit ?"
+   ],
+   "code": [
+    "def maximum(t):",
+    "    m = t[0]",
+    "    for x in t:",
+    "        if x > m:",
+    "            m = x",
+    "    return m"
    ],
    "options": [
     {
@@ -377,6 +400,12 @@
    ],
    "explication": "Minimum : la même fonction, avec `x < m`.",
    "verifications": [
+    {
+     "code": [
+      "print(maximum([12, 0, 35, 8]))"
+     ],
+     "sortie": "35"
+    },
     {
      "code": [
       "def minimum(t):",
@@ -530,7 +559,7 @@
      "feedback": "5 est la taille du tableau. La boucle s'arrête au dernier indice, 4, et la fonction renvoie -1."
     },
     {
-     "texte": "Une erreur `IndexError`",
+     "texte": "Une erreur `IndexError: list index out of range`",
      "feedback": "`range(len(t))` ne donne que des indices qui existent, de 0 à 4 : il n'y a pas d'erreur."
     }
    ],
@@ -559,7 +588,8 @@
     "        else:",
     "            return -1",
     "",
-    "print(indice_faux([12, 0, 35], 35))"
+    "t = [12, 0, 35]",
+    "print(indice_faux(t, 35))"
    ],
    "options": [
     {
