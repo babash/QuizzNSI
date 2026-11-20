@@ -1,0 +1,776 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "sql",
+ "titre": "Bases de données et SQL",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Terminale NSI",
+ "programme": "Bases de données : modèle relationnel (relation, attribut, domaine, clé primaire, clé étrangère, schéma relationnel) ; système de gestion de bases de données ; langage SQL : requêtes d'interrogation et de mise à jour d'une base de données",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/sql/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision FichesNSI « Les bases de données et le langage SQL » (Terminale NSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je reconnais une table, ses attributs, ses enregistrements et sa clé primaire.",
+  "Niveau 2 : je lis et j'écris une requête SELECT … FROM … WHERE, triée ou comptée.",
+  "Niveau 3 : je relie deux tables avec JOIN et je prévois l'effet d'une mise à jour."
+ ],
+ "conventions": [
+  "La clé primaire est soulignée ; une clé étrangère est précédée de #.",
+  "Les requêtes sont écrites pour SQLite ; un résultat s'écrit une ligne par enregistrement, les valeurs séparées par « | ».",
+  "Les données (taxis, trajets, prix en euros) sont fictives."
+ ],
+ "prelude_python": [
+  "import sqlite3",
+  "base = sqlite3.connect(':memory:')",
+  "base.executescript(\"\"\"",
+  "CREATE TABLE taxi (id INTEGER PRIMARY KEY, prenom TEXT, commune TEXT);",
+  "CREATE TABLE trajet (id INTEGER PRIMARY KEY, depart TEXT, arrivee TEXT, prix INTEGER, id_taxi INTEGER REFERENCES taxi(id));",
+  "INSERT INTO taxi VALUES (1, 'Anli', 'Koungou'), (2, 'Faïza', 'Dembéni'), (3, 'Moussa', 'Sada'), (4, 'Léa', 'Koungou');",
+  "INSERT INTO trajet VALUES (1, 'Dembéni', 'Mamoudzou', 3, 2), (2, 'Sada', 'Chirongui', 2, 3), (3, 'Koungou', 'Mamoudzou', 2, 1), (4, 'Sada', 'Mamoudzou', 5, 3), (5, 'Mamoudzou', 'Koungou', 2, 4);",
+  "\"\"\")",
+  "def sql(*lignes):",
+  "    for ligne in base.execute('\\n'.join(lignes)).fetchall():",
+  "        print(' | '.join(str(v) for v in ligne))",
+  "def message(*lignes):",
+  "    try:",
+  "        base.execute('\\n'.join(lignes))",
+  "        print('aucune erreur')",
+  "    except sqlite3.Error as e:",
+  "        print(type(e).__name__ + ': ' + str(e))"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Bases de données et SQL",
+   "conventions": false,
+   "texte": [
+    "Thème 2 · Bases de données · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Quel taxi pour aller de Sada à Mamoudzou ?",
+   "texte": [
+    "La station note chaque trajet dans un tableau."
+   ],
+   "pistes": [
+    "Un tableau par sujet : les trajets, les taxis."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 355 194\" width=\"355\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text></svg>",
+    "legende": "Données et prix fictifs, en euros."
+   }
+  },
+  {
+   "type": "notion",
+   "titre": "Une table",
+   "texte": [
+    "Une ==table== (ou relation) a des ==attributs== (les colonnes) et des ==enregistrements== (les lignes).",
+    "La ==clé primaire== (soulignée) identifie chaque ligne : jamais de doublon."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 185 167\" width=\"185\" height=\"167\" role=\"img\" aria-label=\"Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé primaire est id.\"><title>Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé primaire est id.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">taxi</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"69\" height=\"27\" class=\"case sommet\"/><text x=\"68.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prenom</text><rect x=\"103\" y=\"28\" width=\"78\" height=\"27\" class=\"case sommet\"/><text x=\"142.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">commune</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">Anli</text><rect x=\"103\" y=\"55\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">Faïza</text><rect x=\"103\" y=\"82\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">Moussa</text><rect x=\"103\" y=\"109\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">Léa</text><rect x=\"103\" y=\"136\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Koungou</text></svg>"
+   },
+   "vocabulaire": "table = table ; attribut = attribute ; enregistrement = record ; clé primaire = primary key"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Modèle relationnel] La clé primaire de trajet",
+   "objectif": "Reconnaître un attribut qui peut servir de clé primaire.",
+   "enonce": [
+    "Voici la table `trajet`.",
+    "Quel attribut peut servir de clé primaire ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 355 194\" width=\"355\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "`depart`",
+     "feedback": "Deux trajets partent de Sada : la valeur 'Sada' apparaît deux fois. Une clé primaire n'a jamais de doublon."
+    },
+    {
+     "texte": "`prix`",
+     "feedback": "Trois trajets coûtent 2 € : le prix ne distingue pas les lignes. Une clé primaire identifie une seule ligne."
+    },
+    {
+     "texte": "`id`",
+     "juste": true,
+     "feedback": "Oui : chaque trajet a son propre numéro, jamais deux fois le même. C'est pour cela qu'on ajoute souvent un attribut `id`."
+    },
+    {
+     "texte": "`id_taxi`",
+     "feedback": "Le taxi 3 fait deux trajets : la valeur 3 apparaît deux fois. `id_taxi` renvoie à un taxi, il n'identifie pas un trajet."
+    }
+   ],
+   "explication": "Une clé primaire prend une valeur différente sur chaque ligne.",
+   "verifications": [
+    {
+     "code": [
+      "sql('SELECT COUNT(*), COUNT(DISTINCT id), COUNT(DISTINCT depart), COUNT(DISTINCT prix), COUNT(DISTINCT id_taxi) FROM trajet;')"
+     ],
+     "sortie": "5 | 5 | 4 | 3 | 4",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Interroger : SELECT",
+   "texte": [
+    "`SELECT` les colonnes, `FROM` la table, `WHERE` la condition sur les lignes.",
+    "Une chaîne s'écrit entre apostrophes : `'Sada'`."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 355 194\" width=\"355\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text></svg>"
+   },
+   "vocabulaire": "select = choisir ; from = depuis ; where = où"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[SELECT] Les arrivées depuis Sada",
+   "objectif": "Lire le résultat d'une requête SELECT … FROM … WHERE.",
+   "enonce": [
+    "On exécute cette requête sur la table `trajet`.",
+    "Quel est son résultat ?"
+   ],
+   "code": [
+    "SELECT arrivee FROM trajet",
+    "WHERE depart = 'Sada';"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 355 194\" width=\"355\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Deux lignes : Chirongui et Mamoudzou.",
+     "juste": true,
+     "feedback": "Oui : `WHERE` garde les deux trajets qui partent de Sada (id 2 et 4), et `SELECT arrivee` n'affiche que leur arrivée."
+    },
+    {
+     "texte": "Deux lignes : Sada et Sada.",
+     "feedback": "Ces deux lignes sont bien choisies, mais `SELECT arrivee` affiche la colonne `arrivee`, pas `depart`. La condition du `WHERE` ne s'affiche pas."
+    },
+    {
+     "texte": "Une ligne : Chirongui.",
+     "feedback": "La requête ne s'arrête pas à la première ligne trouvée : elle renvoie toutes les lignes qui vérifient la condition. Le trajet 4 part aussi de Sada."
+    },
+    {
+     "texte": "Deux lignes : 2 et 4, les numéros des trajets.",
+     "feedback": "2 et 4 sont les `id` des lignes choisies. Mais seule la colonne `arrivee` est demandée après `SELECT`."
+    }
+   ],
+   "explication": "`WHERE` choisit les lignes ; `SELECT` choisit les colonnes affichées.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"SELECT arrivee FROM trajet\", \"WHERE depart = 'Sada';\"])"
+     ],
+     "sortie": "Chirongui\nMamoudzou",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[SELECT] Écrire la requête",
+   "objectif": "Écrire une requête SELECT … FROM … WHERE.",
+   "enonce": [
+    "On veut le prénom des chauffeur·e·s de taxi de Koungou, et rien d'autre.",
+    "Quelle requête l'obtient ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 185 167\" width=\"185\" height=\"167\" role=\"img\" aria-label=\"Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé primaire est id.\"><title>Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé primaire est id.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">taxi</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"69\" height=\"27\" class=\"case sommet\"/><text x=\"68.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prenom</text><rect x=\"103\" y=\"28\" width=\"78\" height=\"27\" class=\"case sommet\"/><text x=\"142.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">commune</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">Anli</text><rect x=\"103\" y=\"55\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">Faïza</text><rect x=\"103\" y=\"82\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">Moussa</text><rect x=\"103\" y=\"109\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"68.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">Léa</text><rect x=\"103\" y=\"136\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"142.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Koungou</text></svg>"
+   },
+   "options": [
+    {
+     "code": [
+      "SELECT * FROM taxi",
+      "WHERE commune = 'Koungou';"
+     ],
+     "feedback": "`SELECT *` affiche toutes les colonnes : on aurait aussi l'`id` et la commune. Pour le prénom seul, on écrit `SELECT prenom`."
+    },
+    {
+     "code": [
+      "SELECT taxi FROM prenom",
+      "WHERE commune = 'Koungou';"
+     ],
+     "feedback": "Les rôles sont inversés : après `SELECT`, on met les colonnes ; après `FROM`, la table. SQLite répond : no such table: prenom."
+    },
+    {
+     "code": [
+      "SELECT prenom FROM taxi",
+      "WHERE prenom = 'Koungou';"
+     ],
+     "feedback": "La condition porte sur la mauvaise colonne : aucun prénom ne vaut 'Koungou', le résultat est vide. Koungou est une valeur de la colonne `commune`."
+    },
+    {
+     "code": [
+      "SELECT prenom FROM taxi",
+      "WHERE commune = 'Koungou';"
+     ],
+     "juste": true,
+     "feedback": "Oui : `SELECT` la colonne voulue, `FROM` la table, `WHERE` la condition. Le résultat : Anli et Léa."
+    }
+   ],
+   "explication": "`SELECT` colonnes `FROM` table `WHERE` condition.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"SELECT prenom FROM taxi\", \"WHERE commune = 'Koungou';\"])"
+     ],
+     "sortie": "Anli\nLéa",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "sql(*[\"SELECT * FROM taxi\", \"WHERE commune = 'Koungou';\"])"
+     ],
+     "sortie": "1 | Anli | Koungou\n4 | Léa | Koungou",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "message(*[\"SELECT taxi FROM prenom\", \"WHERE commune = 'Koungou';\"])"
+     ],
+     "sortie": "OperationalError: no such table: prenom",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "sql(*[\"SELECT prenom FROM taxi\", \"WHERE prenom = 'Koungou';\"])"
+     ],
+     "sortie": "",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Erreur] no such column: Koungou",
+   "objectif": "Lire un message d'erreur de SQLite et corriger une requête.",
+   "enonce": [
+    "Cette requête s'arrête sur l'erreur de SQLite `no such column: Koungou` (« pas de colonne Koungou »).",
+    "D'où vient l'erreur ?"
+   ],
+   "code": [
+    "SELECT prenom FROM taxi",
+    "WHERE commune = Koungou;"
+   ],
+   "options": [
+    {
+     "texte": "Aucun taxi n'est de Koungou.",
+     "feedback": "Une requête qui ne trouve rien n'est pas une erreur : elle renvoie un résultat vide. Ici, Anli et Léa sont de Koungou, mais la requête ne s'exécute même pas."
+    },
+    {
+     "texte": "Sans apostrophes, Koungou est lu comme une colonne.",
+     "juste": true,
+     "feedback": "Oui : une chaîne s'écrit entre apostrophes, `'Koungou'`. Sans elles, SQLite cherche une colonne qui s'appellerait Koungou."
+    },
+    {
+     "texte": "Il faut écrire `WHERE` avant `FROM`.",
+     "feedback": "L'ordre `SELECT … FROM … WHERE` est le bon. Le message parle d'une colonne Koungou : regarde comment est écrite la valeur cherchée."
+    },
+    {
+     "texte": "La colonne `commune` n'existe pas dans la table `taxi`.",
+     "feedback": "La colonne `commune` existe bien dans `taxi`. Le message nomme la colonne introuvable : Koungou, la valeur écrite sans apostrophes."
+    }
+   ],
+   "explication": "Une chaîne s'écrit entre apostrophes : `'Koungou'`.",
+   "verifications": [
+    {
+     "code": [
+      "message(*[\"SELECT prenom FROM taxi\", \"WHERE commune = Koungou;\"])"
+     ],
+     "sortie": "OperationalError: no such column: Koungou",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "sql(*[\"SELECT prenom FROM taxi\", \"WHERE commune = 'Koungou';\"])"
+     ],
+     "sortie": "Anli\nLéa",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "notion",
+   "titre": "Trier et compter",
+   "texte": [
+    "`ORDER BY` trie le résultat ; `DESC` pour l'ordre décroissant.",
+    "`COUNT(*)` compte les lignes ; `SUM`, `MIN`, `MAX` et `AVG` calculent sur une colonne."
+   ],
+   "vocabulaire": "order by = trier par ; descending = décroissant ; count = compter ; average = moyenne"
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[ORDER BY] Du plus cher au moins cher",
+   "objectif": "Lire le résultat d'une requête triée avec ORDER BY.",
+   "enonce": [
+    "On exécute cette requête sur la table `trajet`.",
+    "Quel est son résultat ?"
+   ],
+   "code": [
+    "SELECT depart, prix FROM trajet",
+    "WHERE arrivee = 'Mamoudzou'",
+    "ORDER BY prix DESC;"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 355 194\" width=\"355\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Koungou | 2, puis Dembéni | 3, puis Sada | 5",
+     "feedback": "C'est l'ordre croissant, celui de `ORDER BY prix` tout seul. `DESC` demande l'ordre décroissant : le plus cher d'abord."
+    },
+    {
+     "texte": "Dembéni | 3, puis Koungou | 2, puis Sada | 5",
+     "feedback": "C'est l'ordre des lignes dans la table. `ORDER BY` trie le résultat : ici, par prix décroissant."
+    },
+    {
+     "texte": "Sada | 5",
+     "feedback": "`ORDER BY` trie toutes les lignes, il n'en garde pas qu'une. Pour le seul prix le plus haut, on écrirait `MAX(prix)`."
+    },
+    {
+     "texte": "Sada | 5, puis Dembéni | 3, puis Koungou | 2",
+     "juste": true,
+     "feedback": "Oui : on garde les trois trajets vers Mamoudzou, puis `ORDER BY prix DESC` les range du plus cher au moins cher."
+    }
+   ],
+   "explication": "`ORDER BY colonne` trie dans l'ordre croissant ; `DESC`, décroissant.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"SELECT depart, prix FROM trajet\", \"WHERE arrivee = 'Mamoudzou'\", \"ORDER BY prix DESC;\"])"
+     ],
+     "sortie": "Sada | 5\nDembéni | 3\nKoungou | 2",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "sql(*[\"SELECT depart, prix FROM trajet\", \"WHERE arrivee = 'Mamoudzou';\"])"
+     ],
+     "sortie": "Dembéni | 3\nKoungou | 2\nSada | 5",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[COUNT] Combien de trajets vers Mamoudzou ?",
+   "objectif": "Utiliser une fonction d'agrégation : COUNT.",
+   "enonce": [
+    "On exécute cette requête sur la table `trajet`.",
+    "Quel est son résultat ?"
+   ],
+   "code": [
+    "SELECT COUNT(*) FROM trajet",
+    "WHERE arrivee = 'Mamoudzou';"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 355 194\" width=\"355\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "5",
+     "feedback": "5 est le nombre de lignes de toute la table. `COUNT(*)` ne compte que les lignes qui vérifient la condition du `WHERE`."
+    },
+    {
+     "texte": "10",
+     "feedback": "10, c'est la somme des prix de ces trajets (3 + 2 + 5) : ce serait `SUM(prix)`. `COUNT(*)` compte les lignes."
+    },
+    {
+     "texte": "3",
+     "juste": true,
+     "feedback": "Oui : trois lignes ont pour arrivée Mamoudzou, et `COUNT(*)` compte les lignes gardées par `WHERE`."
+    },
+    {
+     "texte": "Dembéni, Koungou, Sada",
+     "feedback": "Ce sont les départs de ces trajets. `COUNT(*)` ne liste pas les lignes : il renvoie un seul nombre, combien il y en a."
+    }
+   ],
+   "explication": "`COUNT(*)` renvoie le nombre de lignes du résultat.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"SELECT COUNT(*) FROM trajet\", \"WHERE arrivee = 'Mamoudzou';\"])"
+     ],
+     "sortie": "3",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "sql(*[\"SELECT SUM(prix) FROM trajet\", \"WHERE arrivee = 'Mamoudzou';\"])"
+     ],
+     "sortie": "10",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "notion",
+   "titre": "Relier deux tables",
+   "texte": [
+    "La ==clé étrangère== `id_taxi` (marquée #) renvoie à la clé primaire de `taxi`.",
+    "`JOIN … ON` recolle chaque trajet à son taxi."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 550 194\" width=\"550\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé étrangère trajet.id_taxi renvoie à la clé primaire taxi.id.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé étrangère trajet.id_taxi renvoie à la clé primaire taxi.id.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text><text x=\"369\" y=\"20\" text-anchor=\"start\" class=\"etiq\">taxi</text><rect x=\"369\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"384.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"376.6\" y1=\"49\" x2=\"391.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"399\" y=\"28\" width=\"69\" height=\"27\" class=\"case sommet\"/><text x=\"433.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prenom</text><rect x=\"468\" y=\"28\" width=\"78\" height=\"27\" class=\"case sommet\"/><text x=\"507.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">commune</text><rect x=\"369\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"399\" y=\"55\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">Anli</text><rect x=\"468\" y=\"55\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"369\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"399\" y=\"82\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">Faïza</text><rect x=\"468\" y=\"82\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"369\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"399\" y=\"109\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">Moussa</text><rect x=\"468\" y=\"109\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"369\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"399\" y=\"136\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">Léa</text><rect x=\"468\" y=\"136\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Koungou</text></svg>"
+   },
+   "vocabulaire": "clé étrangère = foreign key ; join = joindre"
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[JOIN] Qui conduit vers Mamoudzou ?",
+   "objectif": "Lire une requête avec une jointure : clé étrangère = clé primaire.",
+   "enonce": [
+    "On exécute cette requête sur les tables `trajet` et `taxi`.",
+    "Quel est son résultat ?"
+   ],
+   "code": [
+    "SELECT taxi.prenom",
+    "FROM trajet",
+    "JOIN taxi ON trajet.id_taxi = taxi.id",
+    "WHERE trajet.arrivee = 'Mamoudzou'",
+    "ORDER BY taxi.prenom;"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 550 194\" width=\"550\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé étrangère trajet.id_taxi renvoie à la clé primaire taxi.id.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. Table taxi (id, prenom, commune) : 1, Anli, Koungou ; 2, Faïza, Dembéni ; 3, Moussa, Sada ; 4, Léa, Koungou. La clé étrangère trajet.id_taxi renvoie à la clé primaire taxi.id.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text><text x=\"369\" y=\"20\" text-anchor=\"start\" class=\"etiq\">taxi</text><rect x=\"369\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"384.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"376.6\" y1=\"49\" x2=\"391.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"399\" y=\"28\" width=\"69\" height=\"27\" class=\"case sommet\"/><text x=\"433.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prenom</text><rect x=\"468\" y=\"28\" width=\"78\" height=\"27\" class=\"case sommet\"/><text x=\"507.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">commune</text><rect x=\"369\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"399\" y=\"55\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">Anli</text><rect x=\"468\" y=\"55\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"369\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"399\" y=\"82\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">Faïza</text><rect x=\"468\" y=\"82\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"369\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"399\" y=\"109\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">Moussa</text><rect x=\"468\" y=\"109\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"369\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"384.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"399\" y=\"136\" width=\"69\" height=\"27\" class=\"case\"/><text x=\"433.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">Léa</text><rect x=\"468\" y=\"136\" width=\"78\" height=\"27\" class=\"case\"/><text x=\"507.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Koungou</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Anli, Faïza, Léa, Moussa",
+     "feedback": "Léa conduit le trajet 5, qui va à Koungou : le `WHERE` l'écarte. La jointure ne garde que les taxis des trajets choisis."
+    },
+    {
+     "texte": "Anli, Faïza, Moussa",
+     "juste": true,
+     "feedback": "Oui : les trajets 1, 3 et 4 vont à Mamoudzou ; leurs `id_taxi` 2, 1 et 3 désignent Faïza, Anli et Moussa, rangés par ordre alphabétique."
+    },
+    {
+     "texte": "Dembéni, Koungou, Sada",
+     "feedback": "Ce sont les départs des trajets vers Mamoudzou. `SELECT taxi.prenom` demande le prénom, pris dans la table `taxi` grâce à la jointure."
+    },
+    {
+     "texte": "Une erreur : `prenom` n'est pas une colonne de `trajet`.",
+     "feedback": "Après `JOIN`, on peut lire les colonnes des deux tables : `taxi.prenom` dit dans quelle table chercher. La requête marche."
+    }
+   ],
+   "explication": "`JOIN … ON` clé étrangère = clé primaire : on lit alors les colonnes des deux tables.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"SELECT taxi.prenom\", \"FROM trajet\", \"JOIN taxi ON trajet.id_taxi = taxi.id\", \"WHERE trajet.arrivee = 'Mamoudzou'\", \"ORDER BY taxi.prenom;\"])"
+     ],
+     "sortie": "Anli\nFaïza\nMoussa",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[JOIN] Une jointure sans condition",
+   "objectif": "Comprendre le rôle de la condition ON d'une jointure.",
+   "enonce": [
+    "La table `trajet` a 5 lignes, la table `taxi` en a 4. On oublie la condition `ON` de la jointure.",
+    "Combien de lignes a le résultat ?"
+   ],
+   "code": [
+    "SELECT * FROM trajet JOIN taxi;"
+   ],
+   "options": [
+    {
+     "texte": "20",
+     "juste": true,
+     "feedback": "Oui : sans condition, chaque trajet est recollé à chaque taxi, 5 × 4 = 20 lignes, presque toutes fausses. La condition `ON` ne garde que les bonnes paires."
+    },
+    {
+     "texte": "5",
+     "feedback": "5 lignes, c'est le résultat avec la condition `ON trajet.id_taxi = taxi.id` : un taxi par trajet. Sans elle, chaque trajet est associé à chaque taxi."
+    },
+    {
+     "texte": "9",
+     "feedback": "Une jointure ne met pas les lignes bout à bout (5 + 4) : elle forme des paires. Sans condition, toutes les paires possibles : 5 × 4."
+    },
+    {
+     "texte": "Aucune : SQLite refuse la requête, il manque `ON`.",
+     "feedback": "SQLite accepte une jointure sans condition, c'est bien le piège : il n'y a pas d'erreur, mais 20 lignes, chaque trajet avec chaque taxi."
+    }
+   ],
+   "explication": "Sans `ON`, une jointure associe chaque ligne de l'une à chaque ligne de l'autre.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"SELECT COUNT(*) FROM trajet JOIN taxi;\"])"
+     ],
+     "sortie": "20",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "sql(*[\"SELECT COUNT(*) FROM trajet JOIN taxi ON trajet.id_taxi = taxi.id;\"])"
+     ],
+     "sortie": "5",
+     "reprendre_code": false
+    },
+    {
+     "code": [
+      "message(*[\"SELECT * FROM trajet JOIN taxi;\"])"
+     ],
+     "sortie": "aucune erreur",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude. La requête affichée et sa version avec COUNT(*) donnent le nombre de lignes."
+  },
+  {
+   "type": "notion",
+   "titre": "Modifier la base",
+   "texte": [
+    "`INSERT INTO` ajoute, `UPDATE … SET` modifie, `DELETE FROM` supprime.",
+    "Sans `WHERE`, ==toutes== les lignes sont touchées."
+   ],
+   "vocabulaire": "insert = insérer ; update = mettre à jour ; delete = supprimer"
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[UPDATE] Un UPDATE sans WHERE",
+   "objectif": "Prévoir l'effet d'une requête de mise à jour.",
+   "enonce": [
+    "On voulait passer le prix du trajet 2 à 4 €. On exécute cette requête.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "UPDATE trajet SET prix = 4;"
+   ],
+   "options": [
+    {
+     "texte": "Seul le trajet 2 coûte 4 €.",
+     "feedback": "La requête ne dit nulle part « trajet 2 » : sans `WHERE`, rien ne limite les lignes modifiées. Toutes passent à 4 €."
+    },
+    {
+     "texte": "Une erreur : il manque `WHERE`.",
+     "feedback": "`WHERE` est facultatif : SQLite exécute la requête sans prévenir. C'est pour cela que l'oubli est dangereux."
+    },
+    {
+     "texte": "Un nouveau trajet à 4 € est ajouté.",
+     "feedback": "`UPDATE` modifie des lignes qui existent déjà ; c'est `INSERT INTO` qui ajoute une ligne. La table garde ses 5 lignes."
+    },
+    {
+     "texte": "Les 5 trajets coûtent maintenant 4 €.",
+     "juste": true,
+     "feedback": "Oui : sans `WHERE`, `UPDATE` modifie toutes les lignes. Il fallait écrire `UPDATE trajet SET prix = 4 WHERE id = 2;`."
+    }
+   ],
+   "explication": "Un `UPDATE` ou un `DELETE` sans `WHERE` touche toutes les lignes.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"UPDATE trajet SET prix = 4;\"])",
+      "sql(*[\"SELECT COUNT(*), MIN(prix), MAX(prix) FROM trajet;\"])"
+     ],
+     "sortie": "5 | 4 | 4",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Erreur] UNIQUE constraint failed",
+   "objectif": "Lire un message d'erreur de SQLite : la contrainte de clé primaire.",
+   "enonce": [
+    "Cette requête s'arrête sur l'erreur de SQLite `UNIQUE constraint failed: trajet.id` (« contrainte d'unicité non respectée »).",
+    "Que veut dire ce message ?"
+   ],
+   "code": [
+    "INSERT INTO trajet",
+    "(id, depart, arrivee, prix, id_taxi)",
+    "VALUES (3, 'Chirongui', 'Sada', 2, 3);"
+   ],
+   "options": [
+    {
+     "texte": "Le taxi 3 a déjà un trajet : un taxi ne peut pas en faire deux.",
+     "feedback": "Le message parle de `trajet.id`, pas de `id_taxi`. Un taxi peut faire plusieurs trajets : Moussa (taxi 3) en fait déjà deux."
+    },
+    {
+     "texte": "Il manque une condition `WHERE` à la fin de la requête.",
+     "feedback": "`INSERT INTO` ajoute une ligne : il n'a pas de `WHERE`. Le message nomme la colonne en cause : `trajet.id`."
+    },
+    {
+     "texte": "L'`id` 3 est déjà pris : une clé primaire refuse les doublons.",
+     "juste": true,
+     "feedback": "Oui : le SGBD (le logiciel qui gère la base) vérifie la clé primaire et refuse le doublon. Il faut un `id` libre, comme 6."
+    },
+    {
+     "texte": "Les valeurs ne sont pas dans le même ordre que les colonnes.",
+     "feedback": "Les valeurs suivent bien l'ordre de la liste des colonnes. Le message dit que la valeur de `trajet.id` existe déjà."
+    }
+   ],
+   "explication": "Le SGBD refuse une clé primaire déjà prise.",
+   "verifications": [
+    {
+     "code": [
+      "message(*[\"INSERT INTO trajet\", \"(id, depart, arrivee, prix, id_taxi)\", \"VALUES (3, 'Chirongui', 'Sada', 2, 3);\"])"
+     ],
+     "sortie": "IntegrityError: UNIQUE constraint failed: trajet.id",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[DELETE] Combien de lignes restent ?",
+   "objectif": "Prévoir l'effet d'une requête DELETE avec WHERE.",
+   "enonce": [
+    "On exécute cette requête sur la table `trajet`, qui a 5 lignes.",
+    "Combien de lignes reste-t-il dans la table ?"
+   ],
+   "code": [
+    "DELETE FROM trajet",
+    "WHERE depart = 'Sada';"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 355 194\" width=\"355\" height=\"194\" role=\"img\" aria-label=\"Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.\"><title>Table trajet (id, depart, arrivee, prix, id_taxi) : 1, Dembéni, Mamoudzou, 3, 2 ; 2, Sada, Chirongui, 2, 3 ; 3, Koungou, Mamoudzou, 2, 1 ; 4, Sada, Mamoudzou, 5, 3 ; 5, Mamoudzou, Koungou, 2, 4. La clé primaire est id ; id_taxi est une clé étrangère.</title><text x=\"4\" y=\"20\" text-anchor=\"start\" class=\"etiq\">trajet</text><rect x=\"4\" y=\"28\" width=\"30\" height=\"27\" class=\"case sommet\"/><text x=\"19.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">id</text><line x1=\"11.6\" y1=\"49\" x2=\"26.4\" y2=\"49\" class=\"trait\" style=\"stroke-width:1.5\"/><rect x=\"34\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"82.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">depart</text><rect x=\"130\" y=\"28\" width=\"96\" height=\"27\" class=\"case sommet\"/><text x=\"178.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">arrivee</text><rect x=\"226\" y=\"28\" width=\"46\" height=\"27\" class=\"case sommet\"/><text x=\"249.0\" y=\"46\" text-anchor=\"middle\" class=\"petit\">prix</text><rect x=\"272\" y=\"28\" width=\"79\" height=\"27\" class=\"case sommet\"/><text x=\"311.5\" y=\"46\" text-anchor=\"middle\" class=\"petit\">#id_taxi</text><rect x=\"4\" y=\"55\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"34\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Dembéni</text><rect x=\"130\" y=\"55\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"55\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"73\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"272\" y=\"55\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"73\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"4\" y=\"82\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"34\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"82\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">Chirongui</text><rect x=\"226\" y=\"82\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"100\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"82\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"100\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"109\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"34\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"130\" y=\"109\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"109\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"127\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"109\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"127\" text-anchor=\"middle\" class=\"val\">1</text><rect x=\"4\" y=\"136\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">4</text><rect x=\"34\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Sada</text><rect x=\"130\" y=\"136\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"226\" y=\"136\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"154\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"272\" y=\"136\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"154\" text-anchor=\"middle\" class=\"val\">3</text><rect x=\"4\" y=\"163\" width=\"30\" height=\"27\" class=\"case\"/><text x=\"19.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">5</text><rect x=\"34\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"82.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Mamoudzou</text><rect x=\"130\" y=\"163\" width=\"96\" height=\"27\" class=\"case\"/><text x=\"178.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">Koungou</text><rect x=\"226\" y=\"163\" width=\"46\" height=\"27\" class=\"case\"/><text x=\"249.0\" y=\"181\" text-anchor=\"middle\" class=\"val\">2</text><rect x=\"272\" y=\"163\" width=\"79\" height=\"27\" class=\"case\"/><text x=\"311.5\" y=\"181\" text-anchor=\"middle\" class=\"val\">4</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "3",
+     "juste": true,
+     "feedback": "Oui : deux trajets partent de Sada, ils sont supprimés avec toute leur ligne. Il en reste 5 − 2 = 3."
+    },
+    {
+     "texte": "2",
+     "feedback": "2 est le nombre de lignes supprimées : celles qui vérifient la condition. Il en reste les 3 autres."
+    },
+    {
+     "texte": "0",
+     "feedback": "Avec un `WHERE`, `DELETE` ne supprime que les lignes qui vérifient la condition. Sans `WHERE`, la table serait vidée."
+    },
+    {
+     "texte": "5, mais la case `depart` de deux lignes est vidée",
+     "feedback": "`DELETE` supprime des lignes entières, pas des cases. Pour vider une case, on utiliserait `UPDATE`."
+    }
+   ],
+   "explication": "`DELETE FROM … WHERE …` supprime les lignes entières qui vérifient la condition.",
+   "verifications": [
+    {
+     "code": [
+      "sql(*[\"DELETE FROM trajet\", \"WHERE depart = 'Sada';\"])",
+      "sql(*[\"SELECT COUNT(*) FROM trajet;\"])"
+     ],
+     "sortie": "3",
+     "reprendre_code": false
+    }
+   ],
+   "note_verification": "Le code affiché est du SQL : chaque vérification l'exécute tel quel dans SQLite (module sqlite3 de Python 3.13), sur la base décrite dans le prélude."
+  },
+  {
+   "type": "relier",
+   "id": "mots-sql",
+   "nom": "[Vocabulaire] Les mots des bases de données",
+   "objectif": "Associer chaque mot du modèle relationnel à sa définition.",
+   "enonce": [
+    "Relier chaque définition au mot qui lui correspond."
+   ],
+   "paires": [
+    {
+     "gauche": "Une colonne d'une table",
+     "droite": "un attribut",
+     "feedback": "Un attribut a un nom (`prix`) et un domaine, son type (un entier)."
+    },
+    {
+     "gauche": "Une ligne d'une table",
+     "droite": "un enregistrement",
+     "feedback": "Un enregistrement donne une valeur à chaque attribut : un trajet, un taxi."
+    },
+    {
+     "gauche": "Une table, dans le modèle relationnel",
+     "droite": "une relation",
+     "feedback": "Relation est le mot du modèle ; table, celui du SGBD. Les deux désignent le même tableau."
+    },
+    {
+     "gauche": "Ce qui identifie chaque ligne",
+     "droite": "la clé primaire",
+     "feedback": "La clé primaire, soulignée, ne prend jamais deux fois la même valeur."
+    },
+    {
+     "gauche": "Ce qui renvoie à la clé primaire d'une autre table",
+     "droite": "une clé étrangère",
+     "feedback": "La clé étrangère, marquée #, permet la jointure : `trajet.id_taxi = taxi.id`."
+    }
+   ],
+   "explication": "Relation (table), attribut (colonne), enregistrement (ligne), clé primaire (identifie), clé étrangère (renvoie)."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "SQL"
+    ],
+    "lignes": [
+     [
+      "Clés",
+      "primaire : identifie chaque ligne ; étrangère : renvoie à une autre table"
+     ],
+     [
+      "Interroger",
+      "`SELECT` colonnes `FROM` table `WHERE` condition `ORDER BY` colonne"
+     ],
+     [
+      "Calculer",
+      "`COUNT(*)`, `SUM`, `MIN`, `MAX`, `AVG`"
+     ],
+     [
+      "Relier",
+      "`JOIN` table `ON` clé étrangère = clé primaire"
+     ],
+     [
+      "Modifier",
+      "`INSERT INTO`, `UPDATE … SET`, `DELETE FROM` : sans `WHERE`, toutes les lignes"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu écrire une requête qui relie deux tables ?"
+   ]
+  }
+ ]
+}
