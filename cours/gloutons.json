@@ -23,13 +23,13 @@
   "Dans le sac à dos, un produit se prend en entier ou pas du tout."
  ],
  "prelude_python": [
-  "def rendu(somme, pieces):",
-  "    resultat = []",
+  "def rendu(s, pieces):",
+  "    pris = []",
   "    for p in pieces:",
-  "        while somme >= p:",
-  "            resultat.append(p)",
-  "            somme = somme - p",
-  "    return resultat",
+  "        while s >= p:",
+  "            pris.append(p)",
+  "            s = s - p",
+  "    return pris",
   "def optimal(somme, pieces):",
   "    mini = [0] + [None] * somme",
   "    for s in range(1, somme + 1):",
@@ -162,17 +162,17 @@
    "type": "notion",
    "titre": "Le rendu en Python",
    "texte": [
-    "Les pièces sont rangées de la plus ==grande== à la plus petite.",
+    "`s` est la somme à rendre ; les pièces vont de la plus ==grande== à la plus petite.",
     "On prend chaque pièce ==tant que== c'est possible."
    ],
    "code": [
-    "def rendu(somme, pieces):",
-    "    resultat = []",
+    "def rendu(s, pieces):",
+    "    pris = []",
     "    for p in pieces:",
-    "        while somme >= p:",
-    "            resultat.append(p)",
-    "            somme = somme - p",
-    "    return resultat"
+    "        while s >= p:",
+    "            pris.append(p)",
+    "            s = s - p",
+    "    return pris"
    ]
   },
   {
@@ -186,18 +186,18 @@
     "Toucher la ligne qui contient l'erreur."
    ],
    "code": [
-    "def rendu(somme, pieces):",
-    "    resultat = []",
+    "def rendu(s, pieces):",
+    "    pris = []",
     "    for p in pieces:",
-    "        if somme >= p:",
-    "            resultat.append(p)",
-    "            somme = somme - p",
-    "    return resultat",
+    "        if s >= p:",
+    "            pris.append(p)",
+    "            s = s - p",
+    "    return pris",
     "euros = [20, 10, 5, 2, 1]",
     "print(rendu(40, euros))"
    ],
    "ligne": 4,
-   "correction": "        while somme >= p:",
+   "correction": "        while s >= p:",
    "feedback": "Bien vu : un `if` ne prend chaque pièce qu'une fois. Avec `while`, on reprend le billet de 20 tant qu'il ne dépasse pas le reste. Corrigé : `[20, 20]`.",
    "feedback_autre": "Cette ligne est correcte. Chaque valeur n'est prise qu'une fois : cherche la ligne qui devrait répéter la prise d'une même pièce.",
    "pieges": {
@@ -215,7 +215,7 @@
      "sortie": "[20, 20]"
     }
    ],
-   "explication": "`while somme >= p` reprend la même pièce tant qu'elle ne dépasse pas le reste ; un `if` ne la prend qu'une fois."
+   "explication": "`while s >= p` reprend la même pièce tant qu'elle ne dépasse pas le reste ; un `if` ne la prend qu'une fois."
   },
   {
    "type": "question",
@@ -241,7 +241,7 @@
     },
     {
      "texte": "[1, 2, 5]",
-     "feedback": "1 + 2 + 5 = 8, mais la fonction ne prend pas chaque pièce une fois : le `while` reprend la pièce de 1 tant que `somme >= 1`, jusqu'à 0."
+     "feedback": "1 + 2 + 5 = 8, mais la fonction ne prend pas chaque pièce une fois : le `while` reprend la pièce de 1 tant que `s >= 1`, jusqu'à 0."
     },
     {
      "texte": "[2, 2, 2, 2]",

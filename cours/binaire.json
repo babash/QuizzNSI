@@ -227,12 +227,12 @@
    ],
    "code": [
     "n = 45",
-    "bits = \"\"",
+    "b = \"\"",
     "while n > 0:",
     "    # reste ajouté à gauche",
-    "    bits = str(n % 2) + bits",
+    "    b = str(n % 2) + b",
     "    n = n // 2",
-    "print(bits)  # 101101"
+    "print(b)  # 101101"
    ]
   },
   {
@@ -518,10 +518,10 @@
     "`bin` et `hex` écrivent un entier en base 2 ou 16 ; `int(texte, base)` le relit."
    ],
    "code": [
-    "print(bin(45))           # 0b101101",
-    "print(hex(182))          # 0xb6",
-    "print(int(\"101101\", 2))  # 45",
-    "print(int(\"B6\", 16))     # 182"
+    "bin(45)    # '0b101101'",
+    "hex(182)   # '0xb6'",
+    "int(\"101101\", 2)  # 45",
+    "int(\"B6\", 16)  # 182"
    ]
   },
   {

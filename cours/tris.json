@@ -24,14 +24,19 @@
   "On trie dans l'ordre croissant, du plus petit au plus grand."
  ],
  "prelude_python": [
+  "def pos_min(t, i):",
+  "    m, n = i, len(t)",
+  "    for j in range(i+1, n):",
+  "        if t[j] < t[m]:",
+  "            m = j",
+  "    return m",
   "def tri_selection(t):",
-  "    n = len(t)",
-  "    for i in range(n - 1):",
-  "        i_min = i",
-  "        for j in range(i + 1, n):",
-  "            if t[j] < t[i_min]:",
-  "                i_min = j",
-  "        t[i], t[i_min] = t[i_min], t[i]",
+  "    for i in range(len(t)):",
+  "        m = pos_min(t, i)",
+  "        # on échange",
+  "        x = t[i]",
+  "        t[i] = t[m]",
+  "        t[m] = x",
   "def tri_insertion(t):",
   "    for i in range(1, len(t)):",
   "        cle = t[i]",
@@ -398,65 +403,65 @@
    "type": "notion",
    "titre": "Le code de la sélection",
    "texte": [
-    "Deux boucles ==imbriquées== : on retient l'==indice== du minimum, puis on échange."
+    "`pos_min(t, i)` renvoie la ==position== du minimum, de la case `i` à la fin.",
+    "On l'==échange== avec la case `i`."
    ],
    "code": [
     "def tri_selection(t):",
-    "    n = len(t)",
-    "    for i in range(n - 1):",
-    "        i_min = i",
-    "        for j in range(i + 1, n):",
-    "            if t[j] < t[i_min]:",
-    "                i_min = j",
-    "        t[i], t[i_min] = t[i_min], t[i]"
+    "    for i in range(len(t)):",
+    "        m = pos_min(t, i)",
+    "        # on échange",
+    "        x = t[i]",
+    "        t[i] = t[m]",
+    "        t[m] = x"
    ]
   },
   {
    "type": "question",
    "id": "q06",
-   "nom": "[Code] À quoi sert `i_min` ?",
-   "objectif": "Lire le code du tri par sélection et le rôle de chaque variable.",
+   "nom": "[Code] À quoi sert `m` ?",
+   "objectif": "Lire le code de la recherche du minimum et le rôle de chaque variable.",
    "enonce": [
-    "Dans la fonction `tri_selection` ci-dessous, à quoi sert la variable `i_min` ?"
+    "Voici la fonction `pos_min` utilisée par `tri_selection`. Ses deux boucles sont imbriquées : `pos_min` est appelée à chaque tour de `tri_selection`.",
+    "À quoi sert la variable `m` ?"
    ],
    "code": [
-    "def tri_selection(t):",
-    "    n = len(t)",
-    "    for i in range(n - 1):",
-    "        i_min = i",
-    "        for j in range(i + 1, n):",
-    "            if t[j] < t[i_min]:",
-    "                i_min = j",
-    "        t[i], t[i_min] = t[i_min], t[i]"
+    "def pos_min(t, i):",
+    "    m, n = i, len(t)",
+    "    for j in range(i+1, n):",
+    "        if t[j] < t[m]:",
+    "            m = j",
+    "    return m"
    ],
    "options": [
     {
      "texte": "Elle garde la plus petite valeur du tableau, pour l'échanger à la fin.",
-     "feedback": "C'est un indice, pas une valeur : `i_min = j` range une position. Avec la seule valeur, on ne saurait plus où faire l'échange."
+     "feedback": "C'est un indice, pas une valeur : `m = j` range une position. Avec la seule valeur, on ne saurait plus où faire l'échange."
     },
     {
      "texte": "Elle compte le nombre d'échanges déjà faits.",
-     "feedback": "Aucune ligne n'ajoute 1 à `i_min`. Elle reçoit `i`, puis `j` quand `t[j]` est plus petit : c'est une position dans le tableau."
+     "feedback": "Aucune ligne n'ajoute 1 à `m`. Elle reçoit `i`, puis `j` quand `t[j]` est plus petit : c'est une position dans le tableau."
     },
     {
      "texte": "Elle garde la position de la première case de la partie non triée.",
-     "feedback": "Ça, c'est `i`. `i_min` part de `i`, mais change dès qu'on trouve plus petit plus loin : elle finit sur la case du minimum."
+     "feedback": "Ça, c'est `i`. `m` part de `i`, mais change dès qu'on trouve plus petit plus loin : elle finit sur la case du minimum."
     },
     {
      "texte": "Elle garde la position du plus petit élément trouvé dans la partie non triée.",
      "juste": true,
-     "feedback": "Oui. Avec cette position, on sait où est le minimum : la dernière ligne peut l'échanger avec la case `i`."
+     "feedback": "Oui. Avec cette position, `tri_selection` sait où est le minimum : elle peut l'échanger avec la case `i`."
     }
    ],
-   "explication": "`i_min` est l'indice du minimum : on sait où échanger.",
+   "explication": "`m` est l'indice du minimum : on sait où échanger.",
    "verifications": [
     {
      "code": [
       "t = [6, 3, 9, 1, 4]",
+      "print(pos_min(t, 0), pos_min(t, 1))",
       "tri_selection(t)",
       "print(t)"
      ],
-     "sortie": "[1, 3, 4, 6, 9]"
+     "sortie": "3 3\n[1, 3, 4, 6, 9]"
     }
    ]
   },
@@ -480,26 +485,26 @@
    ],
    "code": [
     "notes = [12, 8, 15]",
-    "resultat = tri_selection(notes)",
-    "print(resultat, notes)"
+    "r = tri_selection(notes)",
+    "print(r, notes)"
    ],
    "options": [
     {
      "texte": "[8, 12, 15] [12, 8, 15]",
-     "feedback": "Tu as pensé que la fonction fabrique une copie triée. Elle modifie le tableau lui-même, et ne renvoie rien : `resultat` vaut `None`."
+     "feedback": "Tu as pensé que la fonction fabrique une copie triée. Elle modifie le tableau lui-même, et ne renvoie rien : `r` vaut `None`."
     },
     {
      "texte": "None [8, 12, 15]",
      "juste": true,
-     "feedback": "Exact. La fonction trie `notes` sur place et ne renvoie rien : `resultat` vaut `None`, et `notes` est trié."
+     "feedback": "Exact. La fonction trie `notes` sur place et ne renvoie rien : `r` vaut `None`, et `notes` est trié."
     },
     {
      "texte": "[8, 12, 15] [8, 12, 15]",
-     "feedback": "`notes` est bien trié. Mais la fonction n'a pas de `return` : elle renvoie `None`, et c'est ce que contient `resultat`."
+     "feedback": "`notes` est bien trié. Mais la fonction n'a pas de `return` : elle renvoie `None`, et c'est ce que contient `r`."
     },
     {
      "texte": "None [12, 8, 15]",
-     "feedback": "`resultat` vaut bien `None`. Mais le tri a eu lieu : la fonction a modifié `notes` lui-même, qui est maintenant trié."
+     "feedback": "`r` vaut bien `None`. Mais le tri a eu lieu : la fonction a modifié `notes` lui-même, qui est maintenant trié."
     }
    ],
    "explication": "Un tri en place modifie le tableau et renvoie `None`.",
@@ -561,7 +566,7 @@
    "nom": "[Coût] Compter les comparaisons",
    "objectif": "Compter les comparaisons du tri par sélection sur un petit tableau.",
    "enonce": [
-    "Le tri par sélection compare `t[j] < t[i_min]` dans sa boucle intérieure.",
+    "Le tri par sélection compare `t[j] < t[m]` dans `pos_min`, à chaque tour.",
     "Combien de comparaisons fait-il pour un tableau de 5 éléments ?"
    ],
    "options": [

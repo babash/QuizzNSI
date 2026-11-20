@@ -265,7 +265,8 @@
     "        else:",
     "            return m",
     "    return -1",
-    "t = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+    "t = [2, 5, 8, 12, 16,",
+    "     23, 38, 56, 72, 91]",
     "r = dichotomie(t, 7)"
    ],
    "options": [
@@ -474,7 +475,8 @@
     "        else:",
     "            return m",
     "    return -1",
-    "print(dichotomie([4, 9], 9))"
+    "t = [4, 9]",
+    "print(dichotomie(t, 9))"
    ],
    "options": [
     {
