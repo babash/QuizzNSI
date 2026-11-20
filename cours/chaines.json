@@ -1,0 +1,714 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "chaines",
+ "titre": "Chaînes de caractères",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Langages et programmation : constructions élémentaires (séquences, boucles bornées) ; types construits : accès par indice et parcours d'une séquence, appliqués aux chaînes de caractères",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/chaines-de-caracteres/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les chaînes de caractères en Python » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je lis un caractère d'une chaîne par son indice, de 0 à `len(s) - 1`.",
+  "Niveau 2 : je donne une tranche, je colle des chaînes et je parcours une chaîne.",
+  "Niveau 3 : je sais qu'une chaîne ne se modifie pas, et je lis le message d'erreur."
+ ],
+ "conventions": [
+  "Tous les codes sont en Python 3. Quand un code affiche plusieurs lignes, les réponses les donnent dans l'ordre, séparées par « puis ».",
+  "Les indices commencent à 0."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Chaînes de caractères",
+   "conventions": false,
+   "texte": [
+    "Les bases de Python · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Comment ranger le mot « barge » ?",
+   "texte": [
+    "L'ordinateur range un mot lettre par lettre, chacune dans une case numérotée."
+   ],
+   "pistes": [
+    "Le numéro de la première case ? 0 !"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Les indices",
+   "texte": [
+    "Chaque caractère a un ==indice==, de `0` à `len(s) - 1`.",
+    "`s[-1]` est le ==dernier== caractère."
+   ],
+   "schema": {
+    "type": "liste",
+    "elements": [
+     "b",
+     "a",
+     "r",
+     "g",
+     "e"
+    ],
+    "legende": "s = \"barge\" : s[0] vaut \"b\", s[4] vaut \"e\"."
+   },
+   "code": [
+    "s = \"barge\"",
+    "print(len(s))   # 5",
+    "print(s[0])     # b",
+    "print(s[-1])    # e"
+   ],
+   "vocabulaire": "chaîne = string (str) ; indice = index ; longueur = length (len)"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Indices] Le caractère d'indice 1",
+   "objectif": "Lire un caractère par son indice, en comptant à partir de 0.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "s = \"Mamoudzou\"",
+    "print(s[1])"
+   ],
+   "options": [
+    {
+     "texte": "`M`",
+     "feedback": "`M` est le premier caractère, mais son indice est 0. L'indice 1 désigne le deuxième caractère : `a`."
+    },
+    {
+     "texte": "`Ma`",
+     "feedback": "`s[1]` donne un seul caractère. Pour plusieurs caractères, on écrit une tranche, comme `s[0:2]`."
+    },
+    {
+     "texte": "`u`",
+     "feedback": "`u` est le dernier caractère : c'est `s[-1]`. `s[1]` est le deuxième caractère, en comptant à partir de 0."
+    },
+    {
+     "texte": "`a`",
+     "juste": true,
+     "feedback": "Oui. Les indices commencent à 0 : `M` a l'indice 0, `a` l'indice 1."
+    }
+   ],
+   "explication": "Le premier caractère a l'indice 0 : `s[1]` est le deuxième.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "a"
+    },
+    {
+     "code": [
+      "print(s[-1], s[0:2])"
+     ],
+     "sortie": "a\nu Ma"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Indices] Lire après la fin",
+   "objectif": "Prévoir l'erreur d'un indice trop grand.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "s = \"Sada\"",
+    "print(s[len(s)])"
+   ],
+   "options": [
+    {
+     "texte": "Le programme affiche `a`.",
+     "feedback": "`a` est le dernier caractère, mais son indice est 3, soit `len(s) - 1`. L'indice 4 n'existe pas : c'est une erreur."
+    },
+    {
+     "texte": "Une erreur `IndexError` : l'indice 4 n'existe pas.",
+     "juste": true,
+     "feedback": "Exact. \"Sada\" a 4 caractères, d'indices 0 à 3. `s[4]` est après la fin : `IndexError: string index out of range` (« indice hors de la chaîne »)."
+    },
+    {
+     "texte": "Le programme affiche `S`.",
+     "feedback": "Python ne repart pas au début quand on dépasse la fin : l'indice 4 n'existe pas, c'est une erreur `IndexError`."
+    },
+    {
+     "texte": "Le programme n'affiche rien.",
+     "feedback": "Python ne renvoie pas une chaîne vide pour un indice trop grand : il s'arrête avec une erreur `IndexError`."
+    }
+   ],
+   "explication": "Le dernier indice est `len(s) - 1` ; `s[len(s)]` provoque `IndexError`.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "IndexError"
+    },
+    {
+     "code": [
+      "s = \"Sada\"",
+      "print(len(s), s[len(s) - 1])"
+     ],
+     "sortie": "4 a",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Indices] Les indices négatifs",
+   "objectif": "Lire un caractère avec un indice négatif.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "s = \"lagon\"",
+    "print(s[-1], s[-2])"
+   ],
+   "options": [
+    {
+     "texte": "`n o`",
+     "juste": true,
+     "feedback": "Bravo. `s[-1]` est le dernier caractère, `n` ; `s[-2]` l'avant-dernier, `o`."
+    },
+    {
+     "texte": "`l a`",
+     "feedback": "Tu as compté depuis le début. Un indice négatif compte depuis la fin : -1 est le dernier caractère."
+    },
+    {
+     "texte": "`o n`",
+     "feedback": "L'ordre d'affichage suit le `print` : d'abord `s[-1]`, le dernier, `n` ; puis `s[-2]`, `o`."
+    },
+    {
+     "texte": "Une erreur : un indice ne peut pas être négatif.",
+     "feedback": "En Python, un indice négatif est permis : il compte depuis la fin. `s[-1]` est le dernier caractère."
+    }
+   ],
+   "explication": "`s[-1]` : le dernier caractère ; `s[-2]` : l'avant-dernier.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "n o"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Les tranches",
+   "texte": [
+    "`s[a:b]` va de l'indice `a` ==inclus== à `b` ==exclu==.",
+    "Sans `a` : depuis le début ; sans `b` : jusqu'à la fin."
+   ],
+   "code": [
+    "s = \"Mamoudzou\"",
+    "print(s[0:4])   # Mamo",
+    "print(s[4:])    # udzou",
+    "print(s[:3])    # Mam"
+   ],
+   "vocabulaire": "tranche = slice"
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Tranches] Une tranche au milieu",
+   "objectif": "Donner une tranche `s[a:b]`, fin exclue.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "s = \"Mamoudzou\"",
+    "print(s[2:5])"
+   ],
+   "options": [
+    {
+     "texte": "`moud`",
+     "feedback": "Tu as inclus l'indice 5. Comme pour `range`, la fin d'une tranche est exclue : on s'arrête à l'indice 4."
+    },
+    {
+     "texte": "`amo`",
+     "feedback": "Tu as compté à partir de 1. Les indices commencent à 0 : l'indice 2 est le troisième caractère, `m`."
+    },
+    {
+     "texte": "`mou`",
+     "juste": true,
+     "feedback": "Oui. Les indices 2, 3 et 4 : `m`, `o`, `u`. L'indice 5, la fin, est exclu."
+    },
+    {
+     "texte": "`amou`",
+     "feedback": "Le début est l'indice 2, le troisième caractère, car on compte à partir de 0 : la tranche commence à `m`."
+    }
+   ],
+   "explication": "`s[2:5]` : les indices 2, 3, 4 ; trois caractères.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "mou"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Tranches] L'heure de la barge",
+   "objectif": "Combiner deux tranches avec `+`.",
+   "enonce": [
+    "L'heure de départ de la barge est rangée dans une chaîne. On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "h = \"07h30\"",
+    "print(h[:2] + h[3:])"
+   ],
+   "options": [
+    {
+     "texte": "`0730`",
+     "juste": true,
+     "feedback": "Exact. `h[:2]` vaut \"07\" (indices 0 et 1) ; `h[3:]` vaut \"30\" (de l'indice 3 à la fin). `+` les colle."
+    },
+    {
+     "texte": "`37`",
+     "feedback": "Ce sont des chaînes, pas des nombres : `+` colle \"07\" et \"30\", il n'additionne pas 7 et 30."
+    },
+    {
+     "texte": "`07 30`",
+     "feedback": "`+` colle les chaînes bout à bout, sans ajouter d'espace."
+    },
+    {
+     "texte": "`07h30`",
+     "feedback": "Le `h` a l'indice 2 : `h[:2]` s'arrête juste avant lui, et `h[3:]` commence juste après. Il disparaît."
+    }
+   ],
+   "explication": "`s[:b]` : le début jusqu'à `b` exclu ; `s[a:]` : de `a` à la fin.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "0730"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Coller des chaînes",
+   "texte": [
+    "`+` ==concatène== deux chaînes : il les colle bout à bout.",
+    "Un nombre se convertit d'abord en chaîne : `str(5)`."
+   ],
+   "code": [
+    "lieu = \"Petite-\" + \"Terre\"",
+    "print(lieu)   # Petite-Terre",
+    "n = 3",
+    "print(\"quai \" + str(n))"
+   ],
+   "vocabulaire": "concaténer = concatenate ; convertir = convert"
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Concaténation] Un nombre collé à une chaîne",
+   "objectif": "Prévoir l'erreur d'une concaténation entre une chaîne et un nombre.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "print(\"Total : \" + 5)"
+   ],
+   "options": [
+    {
+     "texte": "Le programme affiche `Total : 5`.",
+     "feedback": "Ce serait vrai avec `str(5)`. Ici, 5 est un nombre : Python refuse de le coller à une chaîne."
+    },
+    {
+     "texte": "Le programme affiche `Total : `.",
+     "feedback": "Python ne laisse pas tomber le nombre : il refuse toute l'opération et s'arrête avec une erreur `TypeError`."
+    },
+    {
+     "texte": "Le programme affiche `Total :5`.",
+     "feedback": "Python ne convertit pas le nombre tout seul : il s'arrête avec une erreur `TypeError`. Il faut `str(5)`."
+    },
+    {
+     "texte": "Une erreur `TypeError` : 5 n'est pas une chaîne.",
+     "juste": true,
+     "feedback": "Exact. `+` ne colle que deux chaînes : `TypeError: can only concatenate str (not \"int\") to str`. Il faut écrire `str(5)`."
+    }
+   ],
+   "explication": "Pour coller un nombre à une chaîne, on le convertit : `str(5)`.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    },
+    {
+     "code": [
+      "print(\"Total : \" + str(5))"
+     ],
+     "sortie": "Total : 5",
+     "reprendre_code": false,
+     "option": 0
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Concaténation] L'espace oublié",
+   "objectif": "Prévoir exactement le résultat d'une concaténation.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "prenom = \"Anli\"",
+    "print(\"Bonjour\" + prenom)"
+   ],
+   "options": [
+    {
+     "texte": "`Bonjour Anli`",
+     "feedback": "C'est sans doute ce qu'on voulait, mais `+` n'ajoute pas d'espace. Il faut la mettre dans la chaîne : \"Bonjour \"."
+    },
+    {
+     "texte": "`BonjourAnli`",
+     "juste": true,
+     "feedback": "Oui. `+` colle les chaînes telles quelles : aucune espace n'est ajoutée. Il faudrait écrire \"Bonjour \", avec une espace."
+    },
+    {
+     "texte": "`Bonjour prenom`",
+     "feedback": "`prenom` est écrit sans guillemets : c'est une variable. Python la remplace par sa valeur, \"Anli\"."
+    },
+    {
+     "texte": "`Bonjour + Anli`",
+     "feedback": "Python calcule `+` avant d'afficher : il colle les deux chaînes, sans afficher le signe."
+    }
+   ],
+   "explication": "`+` colle les chaînes sans rien ajouter entre elles.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "BonjourAnli"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Parcourir une chaîne",
+   "texte": [
+    "`for c in s:` donne les caractères ==un par un==, du premier au dernier.",
+    "`c in \"aeiouy\"` teste si `c` est une voyelle."
+   ],
+   "code": [
+    "n = 0",
+    "for c in \"Mamoudzou\":",
+    "    if c == \"o\":",
+    "        n = n + 1",
+    "print(n)   # 2"
+   ],
+   "vocabulaire": "caractère = character ; dans = in"
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Parcours] Ajouter devant",
+   "objectif": "Faire la trace d'une boucle qui construit une chaîne.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "s = \"NSI\"",
+    "r = \"\"",
+    "for c in s:",
+    "    r = c + r",
+    "print(r)"
+   ],
+   "options": [
+    {
+     "texte": "`NSI`",
+     "feedback": "Ce serait vrai avec `r = r + c`. Ici, `c + r` met le nouveau caractère devant : l'ordre s'inverse."
+    },
+    {
+     "texte": "`I`",
+     "feedback": "`r` n'est pas remplacée à chaque tour : elle garde les caractères d'avant, et le nouveau s'ajoute devant."
+    },
+    {
+     "texte": "`ISN`",
+     "juste": true,
+     "feedback": "Bravo. Chaque caractère est ajouté devant `r` : `N`, puis `SN`, puis `ISN`. La chaîne est retournée."
+    },
+    {
+     "texte": "`N`",
+     "feedback": "La boucle fait un tour par caractère : 3 tours. `r` vaut `N` après le premier tour seulement."
+    }
+   ],
+   "explication": "`r = c + r` ajoute devant : la chaîne est retournée.",
+   "trace": {
+    "colonnes": [
+     "Tour",
+     "c",
+     "r après le tour"
+    ],
+    "lignes": [
+     [
+      "1",
+      "\"N\"",
+      "\"N\""
+     ],
+     [
+      "2",
+      "\"S\"",
+      "\"SN\""
+     ],
+     [
+      "3",
+      "\"I\"",
+      "\"ISN\""
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "ISN"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Parcours] Compter les voyelles",
+   "objectif": "Lire une boucle qui compte les caractères qui vérifient une condition.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "mot = \"Dzaoudzi\"",
+    "v = 0",
+    "for lettre in mot:",
+    "    if lettre in \"aeiouy\":",
+    "        v = v + 1",
+    "print(v)"
+   ],
+   "options": [
+    {
+     "texte": "`8`",
+     "feedback": "8 est la longueur du mot. `v` n'augmente que si la lettre est dans \"aeiouy\", c'est-à-dire pour les voyelles."
+    },
+    {
+     "texte": "`aoui`",
+     "feedback": "Le programme ne range pas les lettres : il ajoute 1 à `v` pour chaque voyelle. Il affiche un nombre."
+    },
+    {
+     "texte": "`0`",
+     "feedback": "`lettre in \"aeiouy\"` teste une seule lettre à chaque tour, pas le mot entier : `a`, `o`, `u` et `i` sont trouvées."
+    },
+    {
+     "texte": "`4`",
+     "juste": true,
+     "feedback": "Oui. Les voyelles de \"Dzaoudzi\" sont `a`, `o`, `u` et `i` : `v` augmente quatre fois."
+    }
+   ],
+   "explication": "Un compteur augmente de 1 à chaque caractère qui vérifie la condition.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "4"
+    },
+    {
+     "code": [
+      "print(len(mot))"
+     ],
+     "sortie": "4\n8",
+     "option": 0
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Une chaîne ne se modifie pas",
+   "texte": [
+    "Une chaîne est ==immuable== : `s.upper()` ==fabrique une nouvelle chaîne==, sans changer `s`."
+   ],
+   "code": [
+    "s = \"sada\"",
+    "t = s.upper()",
+    "print(s, t)   # sada SADA"
+   ],
+   "vocabulaire": "immuable = immutable ; majuscules = upper case"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Immuable] `upper()` sans affectation",
+   "objectif": "Savoir qu'une méthode de chaîne renvoie une nouvelle chaîne.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "ville = \"chiconi\"",
+    "ville.upper()",
+    "print(ville)"
+   ],
+   "options": [
+    {
+     "texte": "`chiconi`",
+     "juste": true,
+     "feedback": "Exact. `ville.upper()` fabrique \"CHICONI\", mais ce résultat n'est rangé nulle part. `ville` n'a pas changé."
+    },
+    {
+     "texte": "`CHICONI`",
+     "feedback": "`upper()` ne modifie pas `ville` : une chaîne est immuable. Il faudrait écrire `ville = ville.upper()`."
+    },
+    {
+     "texte": "`Chiconi`",
+     "feedback": "`upper()` met toutes les lettres en majuscules, pas seulement la première. Et ici, son résultat n'est pas gardé."
+    },
+    {
+     "texte": "`None`",
+     "feedback": "`ville` garde sa valeur, \"chiconi\". La ligne 2 calcule une nouvelle chaîne, puis la perd, faute d'affectation."
+    }
+   ],
+   "explication": "Une chaîne ne change pas : on écrit `ville = ville.upper()` pour garder le résultat.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "chiconi"
+    },
+    {
+     "code": [
+      "ville = ville.upper()",
+      "print(ville)"
+     ],
+     "sortie": "chiconi\nCHICONI",
+     "option": 1
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Combiner] Un caractère sur deux",
+   "objectif": "Parcourir une chaîne par ses indices avec `range(len(s))`.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "mot = \"lagon\"",
+    "r = \"\"",
+    "for i in range(len(mot)):",
+    "    if i % 2 == 0:",
+    "        r = r + mot[i]",
+    "print(r)"
+   ],
+   "options": [
+    {
+     "texte": "`aon`",
+     "feedback": "Tu as gardé les caractères de rang pair en comptant à partir de 1. Les indices commencent à 0 : `l` a l'indice 0, pair."
+    },
+    {
+     "texte": "`lagon`",
+     "feedback": "Le `if` filtre les tours : on n'ajoute `mot[i]` que si `i` est pair, soit les indices 0, 2 et 4."
+    },
+    {
+     "texte": "`lgn`",
+     "juste": true,
+     "feedback": "Bravo. `i` prend 0, 1, 2, 3, 4 ; on garde les indices pairs, 0, 2 et 4 : `l`, `g`, `n`."
+    },
+    {
+     "texte": "`024`",
+     "feedback": "On ajoute `mot[i]`, le caractère d'indice `i`, pas l'indice lui-même : les caractères `l`, `g`, `n`."
+    }
+   ],
+   "explication": "`for i in range(len(s)):` donne les indices ; `s[i]` donne le caractère.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "lgn"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Changer une lettre ?",
+   "objectif": "Lire un message `TypeError` et reconstruire une chaîne au lieu de la modifier.",
+   "enonce": [
+    "Ce programme veut mettre une majuscule au nom de la commune.",
+    "Il s'arrête sur l'erreur `TypeError: 'str' object does not support item assignment` (« une chaîne ne permet pas de changer un de ses éléments »).",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "ville = \"kani-kéli\"",
+    "ville[0] = \"K\"",
+    "print(ville)"
+   ],
+   "ligne": 2,
+   "correction": "ville = \"K\" + ville[1:]",
+   "feedback": "Bien vu : une chaîne est immuable, on ne change pas `ville[0]`. On fabrique une nouvelle chaîne : `ville = \"K\" + ville[1:]`, qui affiche Kani-kéli.",
+   "feedback_autre": "Cette ligne est correcte. Le message parle d'une affectation à un élément d'une chaîne : cherche la ligne où l'on écrit `ville[0] = …`.",
+   "pieges": {
+    "3": "Le programme s'arrête avant cette ligne. Le message parle d'une affectation (« item assignment ») : cherche le `=` qui vise un caractère."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "Kani-kéli"
+    }
+   ],
+   "explication": "Une chaîne ne se modifie pas : on en fabrique une nouvelle avec `+` et une tranche."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Ce qu'il faut savoir"
+    ],
+    "lignes": [
+     [
+      "Indices",
+      "de `0` à `len(s) - 1` ; `s[-1]` est le dernier caractère"
+     ],
+     [
+      "Tranches",
+      "`s[a:b]` : de `a` inclus à `b` exclu"
+     ],
+     [
+      "Coller",
+      "`+` colle deux chaînes ; `str(5)` pour un nombre"
+     ],
+     [
+      "Parcourir",
+      "`for c in s:` caractère par caractère"
+     ],
+     [
+      "Immuable",
+      "on ne change pas `s[0]` : on fabrique une nouvelle chaîne"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade pourquoi `s[len(s)]` provoque une erreur ?"
+   ]
+  }
+ ]
+}
