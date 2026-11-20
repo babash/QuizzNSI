@@ -8,6 +8,7 @@ const path = require('node:path');
 globalThis.location = { search: '' };
 require(path.join(__dirname, '..', 'js', 'commun.js'));
 require(path.join(__dirname, '..', 'js', 'chiffre.js'));
+require(path.join(__dirname, '..', 'js', 'activites.js'));
 const M = require(path.join(__dirname, '..', 'js', 'messages.js'));
 
 const MOI = '0123456789abcdef', AUTRE = 'fedcba9876543210';
@@ -27,6 +28,8 @@ const VERS_ELEVE = {
   correction: { t: 'correction', cours: 'piles-files', qid: 'q02', precedente: 'q01', bonne: 3, rep: [1, 2, 0, 0],
     bareme: { participation: 10, juste: 100, rapidite: 20, rebond: 30 }, duree: 45, podium: [{ pseudo: 'Kobalt', total: 400, place: 1 }] },
   fin: { t: 'fin', cours: 'piles-files', podium: [{ pseudo: 'Ixo', total: 500, place: 1 }] },
+  nuage: { t: 'nuage', cours: 'demo-types-de-questions', qid: 'a01', mots: [{ k: 0, m: 'boucle', n: 3 }, { k: 4, m: 'tant-que', n: 1 }] },
+  corrige: { t: 'corrige', cours: 'revision-conditions-boucles', qid: 'a02', precedente: 'q05', duree: 0, nb: 3, justes: 1, podium: [{ pseudo: 'Kobalt', total: 400, place: 1 }] },
 };
 const VERS_HOTE = { bonjour: { t: 'bonjour', id: MOI }, rep: { t: 'rep', de: CLE, iv: 'abcdefghijklmnop', donnees: 'QUJDRA' } };
 
@@ -79,6 +82,23 @@ assert.equal(M.versEleve(Object.assign(copie(VERS_ELEVE.recus), { ids: [MOI] }),
 // le contenu déchiffré d'une réponse
 assert.deepEqual(M.reponse({ id: MOI, qid: 'q01', c: 2, n: '00112233aabbccdd' }), { id: MOI, qid: 'q01', c: 2, n: '00112233aabbccdd' });
 for (const f of FORGES) for (const k of ['id', 'qid', 'c', 'n']) { assert.equal(M.reponse(Object.assign({ id: MOI, qid: 'q01', c: 2, n: '00112233aabbccdd' }, { [k]: f })), null); n++; }
+n += 3;
+// les autres types : r est un mot (nuage), un entier (ligne), une liste d'entiers (relier) ou de paires (puzzle)
+const R = { id: MOI, qid: 'a02', n: '00112233aabbccdd' };
+for (const r of ['boucle', 2, [0, 1, -1], [[0, 0], [1, 1]], { vote: 3 }]) assert.deepEqual(M.reponse(Object.assign({}, R, { r })), Object.assign({}, R, { r }), JSON.stringify(r));
+for (const r of [1e300, -1, 2.5, 200, {}, { a: '<b>' }, 'x'.repeat(65), '', true, null, [], ['<b>'], [[0, 0, 0]], [[0, 9]], [1, [0, 0]], Array(17).fill(0), [16], [{}], { vote: -1 }, { vote: '3' }, { vote: 1e6 }, { vote: 1, html: '<b>' }, { voter: 1 }]) {
+  assert.equal(M.reponse(Object.assign({}, R, { r })), null, JSON.stringify(r)); n++;
+}
+assert.equal(M.reponse(Object.assign({}, R, { r: 1, c: 1 })), null); // jamais les deux
+assert.equal(M.versEleve(Object.assign(copie(VERS_ELEVE.corrige), { justes: 4 }), MOI), null); // plus de justes que de réponses
+assert.equal(M.versEleve(Object.assign(copie(VERS_ELEVE.corrige), { mots: ['boucle'] }), MOI), null); // aucun mot du nuage
+// le nuage : un mot qui ne passe pas le filtre tel quel (majuscule, balise, invisible, trois mots), un numéro en double,
+// une voix nulle, l'auteur·rice d'un mot, une liste trop longue : tout le message est rejeté
+const nuageAvec = mots => Object.assign(copie(VERS_ELEVE.nuage), { mots });
+for (const mots of [[{ k: 0, m: 'Boucle', n: 1 }], [{ k: 0, m: '<b>x</b>', n: 1 }], [{ k: 0, m: 'bou' + String.fromCharCode(0x200B) + 'cle', n: 1 }], [{ k: 0, m: 'un deux trois', n: 1 }],
+  [{ k: 0, m: 'boucle', n: 1 }, { k: 0, m: 'tant', n: 1 }], [{ k: 0, m: 'boucle', n: 0 }], [{ k: 0, m: 'boucle', n: 1, de: 'Kobalt' }], [{ k: 0, m: 'boucle', n: 1, pseudo: 'Ixo' }],
+  Array.from({ length: 201 }, (_, k) => ({ k, m: 'mot', n: 1 }))]) { assert.equal(M.versEleve(nuageAvec(mots), MOI), null, JSON.stringify(mots).slice(0, 80)); n++; }
+assert.deepEqual(M.versEleve(nuageAvec([]), MOI).mots, []); // un mot supprimé : la liste suivante ne le porte plus
 n += 3;
 // types inconnus, prototypes, valeurs non objets
 for (const v of [null, 3, 'attente', [], { t: 'inconnu' }, { t: { toString: () => 'attente' } }, JSON.parse('{"t":"attente","__proto__":{"x":1}}')]) {

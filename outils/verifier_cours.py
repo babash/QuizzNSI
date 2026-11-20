@@ -8,13 +8,16 @@ Lancement, depuis la racine de QuizzNSI :
 
 Ce qu'il contrôle (le détail est dans cours/FORMAT.md) :
 - la forme : champs obligatoires, types de diapositives, schémas connus ;
-- les questions (règle 22) : 20 questions, 4 options, une seule juste, un feedback
+- les questions (règle 22) : 20 questions (moins dans un cours de démonstration, « demonstration »: true), 4 options, une seule juste, un feedback
   pour chaque option, l'objectif, le nom, aucune mise en avant (gras) ;
 - la répartition des bonnes réponses entre A, B, C et D, sans série ni motif évident,
   et la bonne réponse qui n'est pas trop souvent la plus longue ;
 - les caractères invisibles ou de contrôle, refusés partout ;
 - l'exécution : le prélude Python, puis le code affiché, puis chaque vérification ;
-  la sortie et l'erreur attendues doivent être exactement celles obtenues.
+  la sortie et l'erreur attendues doivent être exactement celles obtenues ;
+- les autres types de questions (nuage de mots, relier, puzzle de code, ligne fautive) : leur forme,
+  l'exécution de leur code (la solution du puzzle, le code fautif et le code corrigé, les paires « code et
+  sortie »), et l'ordre mélangé qui ne laisse jamais la solution en place (le même calcul que js/commun.js).
 
 Code de sortie : 0 si tout est conforme (des avertissements sont possibles), 1 sinon.
 Licence MIT, Babash - NSI Tani Malandi.
@@ -29,7 +32,9 @@ import unicodedata
 
 FORMAT = "quizz-nsi/1"
 LETTRES = "ABCD"
-TYPES_DIAPO = {"titre", "partie", "classe", "humour", "notion", "question", "bilan"}
+TYPES_DIAPO = {"titre", "partie", "classe", "humour", "notion", "question", "bilan", "nuage", "relier", "puzzle", "ligne"}
+AUTRES_TYPES = {"nuage", "relier", "puzzle", "ligne"}   # les autres types de questions (js/activites.js)
+RELIER_MAX, PUZZLE_MIN, PUZZLE_MAX, INDENT_MAX, LIGNES_MAX = 6, 3, 12, 6, 40
 TYPES_SCHEMA = {"pile", "file", "etapes", "deux-piles", "liste", "decalage", "svg"}
 FEEDBACK_MIN = 40          # caractères : un feedback plus court n'explique rien
 TEXTE_NOTION_MAX = 3       # puces par notion (peu de texte, règle 3)
@@ -279,6 +284,162 @@ def verifier_question(q, n, prelude, r, executer_code=True):
     return juste, plus_longue
 
 
+# ── Le hasard reproductible de js/commun.js (Q.graine, Q.hasard, Q.melanger), recalculé à l'identique ──
+M32 = 0xFFFFFFFF
+
+
+def _imul(a, b):
+    return (a * b) & M32
+
+
+def graine(texte):
+    h = 0x811c9dc5
+    for c in texte:
+        h ^= ord(c)
+        h = _imul(h, 0x01000193)
+    return h
+
+
+def melanger(liste, g):
+    a = g & M32
+    l = list(liste)
+
+    def hasard():
+        nonlocal a
+        a = (a + 0x6D2B79F5) & M32
+        t = a
+        t = _imul(t ^ (t >> 15), t | 1)
+        t ^= (t + _imul(t ^ (t >> 7), t | 61)) & M32
+        return ((t ^ (t >> 14)) & M32) / 4294967296
+    for i in range(len(l) - 1, 0, -1):
+        j = int(hasard() * (i + 1))
+        l[i], l[j] = l[j], l[i]
+    return l
+
+
+def executer_verifications(base, verifs, ou, r, avec_base=True):
+    """Exécute chaque vérification { code, sortie?, erreur?, reprendre_code? } après les lignes « base »."""
+    if not isinstance(verifs, list):
+        r.erreur(ou, "les vérifications sont une liste")
+        return
+    for k, v in enumerate(verifs):
+        ov = f"{ou}, vérification {k + 1}"
+        if not isinstance(v, dict) or not liste_de_chaines(v.get("code", [])) or ("sortie" not in v and "erreur" not in v):
+            r.erreur(ov, "une vérification est { code: [lignes], sortie ou erreur }")
+            continue
+        lignes = (list(base) if v.get("reprendre_code", avec_base) else []) + v["code"]
+        sortie, err, detail = executer(lignes)
+        if err != v.get("erreur"):
+            r.erreur(ov, f"erreur attendue {v.get('erreur')!r}, obtenue {err!r}" + (f" ({detail.splitlines()[-1]})" if detail else ""))
+        if "sortie" in v and sortie != v["sortie"]:
+            r.erreur(ov, f"sortie attendue {v['sortie']!r}, obtenue {sortie!r}")
+
+
+def verifier_autre(d, ou, prelude, r, executer_code=True):
+    """Un autre type de question : nuage de mots, relier, puzzle de code, ligne fautive."""
+    t = d["type"]
+    if not isinstance(d.get("id"), str) or not re.fullmatch(r"[a-z0-9-]{1,20}", d["id"]):
+        r.erreur(ou, "« id » : minuscules, chiffres et tirets, 20 caractères au plus")
+    for champ in ("nom", "objectif"):
+        if not isinstance(d.get(champ), str) or not d[champ].strip():
+            r.erreur(ou, f"champ « {champ} » manquant ou vide")
+    if not liste_de_chaines(d.get("enonce")) or not d.get("enonce"):
+        r.erreur(ou, "« enonce » doit être une liste de paragraphes non vide")
+    if t != "nuage" and (not isinstance(d.get("explication"), str) or not d["explication"].strip()):
+        r.erreur(ou, "« explication » manquante (la phrase « À retenir », montrée après la réponse)")
+    if "code" in d and not liste_de_chaines(d["code"]):
+        r.erreur(ou, "« code » doit être une liste de lignes")
+    code = d.get("code", []) if liste_de_chaines(d.get("code", [])) else []
+    connus = {"type", "id", "nom", "objectif", "enonce", "explication", "code", "note_verification"}
+    permis = {"nuage": {"exemples"}, "relier": {"paires", "verifications"}, "puzzle": {"lignes", "indentation", "verifications"},
+              "ligne": {"ligne", "correction", "feedback", "feedback_autre", "pieges", "verifications", "verifications_corrigees"}}[t]
+    inconnus = set(d) - connus - permis
+    if inconnus:
+        r.erreur(ou, f"champ inconnu : {', '.join(sorted(inconnus))}")
+
+    def fb(v, quoi):
+        if not isinstance(v, str) or len(v.strip()) < FEEDBACK_MIN:
+            r.erreur(ou, f"{quoi} : au moins {FEEDBACK_MIN} caractères qui expliquent")
+
+    if t == "nuage":
+        if "exemples" in d and not liste_de_chaines(d["exemples"]):
+            r.erreur(ou, "« exemples » : une liste de mots")
+        return
+    if t == "relier":
+        p = d.get("paires")
+        if not isinstance(p, list) or not 2 <= len(p) <= RELIER_MAX or not all(isinstance(x, dict) and isinstance(x.get("gauche"), str) and x["gauche"].strip() and isinstance(x.get("droite"), str) and x["droite"].strip() for x in p):
+            r.erreur(ou, f"« paires » : 2 à {RELIER_MAX} paires {{ gauche, droite }}")
+            return
+        for k, x in enumerate(p):
+            if set(x) - {"gauche", "droite", "feedback", "verification"}:
+                r.erreur(f"{ou}, paire {k + 1}", f"champ inconnu : {', '.join(sorted(set(x) - {'gauche', 'droite', 'feedback', 'verification'}))}")
+            if "feedback" in x:
+                fb(x["feedback"], f"paire {k + 1}, feedback")
+            if "verification" in x and executer_code:
+                executer_verifications(list(prelude) + code, [x["verification"]], f"{ou}, paire {k + 1}", r)
+        for cote in ("gauche", "droite"):
+            vals = [x[cote].strip() for x in p]
+            if len(set(vals)) != len(vals):
+                r.erreur(ou, f"deux éléments identiques à {cote}")
+        o = melanger(range(len(p)), graine(d.get("id", "")))
+        fixes = sum(1 for i, k in enumerate(o) if i == k)
+        if fixes == len(p):
+            r.erreur(ou, "l'ordre mélangé laisse toutes les paires face à face : change l'identifiant")
+        elif fixes > len(p) // 2:
+            r.avert(ou, f"l'ordre mélangé laisse {fixes} paires face à face sur {len(p)}")
+        if executer_code and "verifications" in d:
+            executer_verifications(list(prelude) + code, d["verifications"], ou, r)
+        return
+    if t == "puzzle":
+        lignes = d.get("lignes")
+        if not liste_de_chaines(lignes) or not PUZZLE_MIN <= len(lignes) <= PUZZLE_MAX:
+            r.erreur(ou, f"« lignes » : la solution, {PUZZLE_MIN} à {PUZZLE_MAX} lignes")
+            return
+        for k, l in enumerate(lignes):
+            n = len(l) - len(l.lstrip(" "))
+            if not l.strip():
+                r.erreur(ou, f"ligne {k + 1} vide")
+            if n % 4 or n // 4 > INDENT_MAX or "\t" in l:
+                r.erreur(ou, f"ligne {k + 1} : indentation de 4 espaces par niveau ({INDENT_MAX} niveaux au plus)")
+        if "indentation" in d and not isinstance(d["indentation"], bool):
+            r.erreur(ou, "« indentation » vaut true ou false")
+        if not d.get("verifications"):
+            r.erreur(ou, "un puzzle de code a au moins une vérification par exécution de la solution")
+        elif executer_code:
+            executer_verifications(list(prelude) + lignes, d["verifications"], ou, r)
+        return
+    if t == "ligne":
+        if not 2 <= len(code) <= LIGNES_MAX:
+            r.erreur(ou, f"« code » : 2 à {LIGNES_MAX} lignes")
+            return
+        n = d.get("ligne")
+        if not isinstance(n, int) or isinstance(n, bool) or not 1 <= n <= len(code):
+            r.erreur(ou, "« ligne » : le numéro (à partir de 1) de la ligne qui contient l'erreur")
+            return
+        corr = d.get("correction")
+        if not isinstance(corr, str) or not corr.strip() or corr.strip() == code[n - 1].strip():
+            r.erreur(ou, "« correction » : la ligne corrigée, différente de la ligne fautive")
+            return
+        fb(d.get("feedback"), "« feedback » (pour la bonne ligne)")
+        fb(d.get("feedback_autre"), "« feedback_autre » (pour une autre ligne)")
+        pieges = d.get("pieges", {})
+        if not isinstance(pieges, dict):
+            r.erreur(ou, "« pieges » : { \"numéro de ligne\": \"feedback\" }")
+        else:
+            for k, v in pieges.items():
+                if not k.isdigit() or not 1 <= int(k) <= len(code) or int(k) == n:
+                    r.erreur(ou, f"« pieges » : {k!r} n'est pas le numéro d'une autre ligne")
+                fb(v, f"piège de la ligne {k}")
+        if not d.get("verifications") or not d.get("verifications_corrigees"):
+            r.erreur(ou, "une ligne fautive a des « verifications » (le code fautif) et des « verifications_corrigees » (le code corrigé)")
+        elif executer_code:
+            executer_verifications(list(prelude) + code, d["verifications"], ou + " (code fautif)", r)
+            corrige = list(code)
+            corrige[n - 1] = corr
+            executer_verifications(list(prelude) + corrige, d["verifications_corrigees"], ou + " (code corrigé)", r)
+        return
+
+
 def verifier_repartition(positions, r, n_attendu):
     n = len(positions)
     if None in positions or n == 0:
@@ -332,13 +493,19 @@ def verifier_cours(chemin, executer_code=True, n_questions=20):
     if not isinstance(diapos, list) or not diapos:
         r.erreur("cours", "« diapositives » manquantes")
         return r, cours
-    questions, ids = [], set()
+    questions, ids, autres = [], set(), []
     for i, d in enumerate(diapos):
         ou = f"diapositive {i + 1}"
         if not isinstance(d, dict) or d.get("type") not in TYPES_DIAPO:
             r.erreur(ou, f"type inconnu (permis : {', '.join(sorted(TYPES_DIAPO))})")
             continue
-        if d["type"] == "question":
+        if d["type"] in AUTRES_TYPES:
+            if d.get("id") in ids:
+                r.erreur(ou, f"identifiant en double : {d.get('id')}")
+            ids.add(d.get("id"))
+            verifier_autre(d, f"{ou} ({d['type']} {d.get('id', '?')})", prelude, r, executer_code)
+            autres.append(d)
+        elif d["type"] == "question":
             questions.append(d)
             if d.get("id") in ids:
                 r.erreur(ou, f"identifiant en double : {d.get('id')}")
@@ -381,7 +548,14 @@ def verifier_cours(chemin, executer_code=True, n_questions=20):
                 r.erreur(ou, "« consigne » : une liste de consignes d'observation")
     if diapos and diapos[0].get("type") != "titre":
         r.avert("diapositive 1", "un cours commence d'habitude par une diapositive « titre »")
-    if n_questions and len(questions) != n_questions:
+    demo = cours.get("demonstration") is True
+    if "demonstration" in cours and not demo:
+        r.erreur("cours", "« demonstration » vaut true, ou n'est pas écrit")
+    if demo and len(questions) > n_questions:
+        r.erreur("cours", f"un cours de démonstration a au plus {n_questions} questions à choix")
+    if demo and not questions and not autres:
+        r.erreur("cours", "un cours de démonstration a au moins une question")
+    if n_questions and not demo and len(questions) != n_questions:
         r.erreur("cours", f"{len(questions)} questions au lieu de {n_questions}")
     positions, longues = [], 0
     for n, q in enumerate(questions, 1):
@@ -393,7 +567,7 @@ def verifier_cours(chemin, executer_code=True, n_questions=20):
         r.erreur("répartition", f"la bonne réponse est la plus longue dans {longues} questions sur {len(questions)} : elle se repère")
     elif questions and longues / len(questions) > 0.25:
         r.avert("répartition", f"la bonne réponse est la plus longue dans {longues} questions sur {len(questions)}")
-    return r, {"cours": cours, "questions": questions, "positions": positions, "comptes": comptes, "longues": longues}
+    return r, {"cours": cours, "questions": questions, "positions": positions, "comptes": comptes, "longues": longues, "autres": autres}
 
 
 def main(args):
@@ -425,6 +599,8 @@ def main(args):
             for n, (q, p) in enumerate(zip(info["questions"], info["positions"]), 1):
                 lettre = LETTRES[p] if p is not None else "?"
                 print(f"  {n:2d}. {lettre}  {q.get('nom', '')}")
+            for d in info.get("autres", []):
+                print(f"   ·  {d['type']:<6} {d.get('nom', '')}")
             if info.get("comptes"):
                 print("  Bonnes réponses : " + ", ".join(f"{l} {c}" for l, c in info["comptes"].items())
                       + f" ; la plus longue : {info['longues']} fois")

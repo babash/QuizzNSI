@@ -4,6 +4,8 @@
    entiers bornés, chaînes au format attendu, listes bornées. Un message non conforme est ignoré
    (null). Les pages n'affichent ensuite les valeurs reçues que par textContent ou par des éléments
    créés un à un, jamais par innerHTML ; le texte des questions vient du fichier du cours, pas du canal.
+   Seule exception au « ni texte ni pseudo libre » : le message « nuage », qui porte les mots du nuage affichés au
+   tableau (chacun repasse le filtre des mots, js/activites.js), sans leur auteur·rice.
    Ce que le canal diffuse se limite à ce que l'écran projeté montre déjà à toute la classe : la bonne
    réponse, la répartition des réponses (en nombres), le podium quand il est affiché. Chaque téléphone
    calcule ses propres points ; les réponses des élèves arrivent chiffrées pour la page projetée.
@@ -74,6 +76,28 @@
         const pd = podium(m.podium); if (pd === undefined) return null;
         return { t: 'correction', cours: m.cours, qid: m.qid, precedente: m.precedente, bonne: m.bonne, rep: m.rep.slice(), bareme: b, duree: m.duree, podium: pd };
       }
+      // la correction d'une question d'un autre type (relier, puzzle, ligne fautive, nuage de mots) : seulement le
+      // nombre de réponses et le nombre de réponses tout à fait justes, comme à l'écran ; la solution vient du fichier du cours
+      case 'corrige': {
+        if (!cles(m, ['t', 'cours', 'qid', 'precedente', 'duree', 'nb', 'justes', 'podium']) || !estCours(m.cours) || !estQid(m.qid)) return null;
+        if (!(m.precedente === null || estQid(m.precedente)) || !entier(m.duree, 0, 3600) || !entier(m.nb, 0, MAX_ELEVES) || !entier(m.justes, 0, MAX_ELEVES) || m.justes > m.nb) return null;
+        const pd = podium(m.podium); if (pd === undefined) return null;
+        return { t: 'corrige', cours: m.cours, qid: m.qid, precedente: m.precedente, duree: m.duree, nb: m.nb, justes: m.justes, podium: pd };
+      }
+      // le nuage de mots, une fois montré par l'enseignant·e : les mots affichés au tableau et leur nombre de voix,
+      // jamais l'auteur·rice ; chaque mot doit passer le filtre des mots (js/activites.js) sans être modifié
+      case 'nuage': {
+        if (!cles(m, ['t', 'cours', 'qid', 'mots']) || !estCours(m.cours) || !estQid(m.qid) || !Array.isArray(m.mots) || m.mots.length > 200) return null;
+        if (!Q.activites) return null;
+        const vus = new Set(), mots = [];
+        for (const w of m.mots) {
+          if (!cles(w, ['k', 'm', 'n']) || !entier(w.k, 0, 99999) || vus.has(w.k) || !entier(w.n, 1, MAX_ELEVES) || typeof w.m !== 'string' || w.m.length > 64) return null;
+          const f = Q.activites.filtrerMot(w.m);
+          if (!f.ok || f.mot !== w.m) return null;
+          vus.add(w.k); mots.push({ k: w.k, m: w.m, n: w.n });
+        }
+        return { t: 'nuage', cours: m.cours, qid: m.qid, mots };
+      }
       case 'fin': {
         if (!cles(m, ['t', 'cours', 'podium']) || !estCours(m.cours)) return null;
         const pd = podium(m.podium); if (pd === undefined) return null;
@@ -93,9 +117,23 @@
       && typeof m.donnees === 'string' && /^[A-Za-z0-9_-]{1,400}$/.test(m.donnees) ? { t: 'rep', de: { x: m.de.x, y: m.de.y }, iv: m.iv, donnees: m.donnees } : null;
     return null;
   }
-  /* Le contenu déchiffré d'une réponse. */
+  /* Le contenu déchiffré d'une réponse : { id, qid, c, n } pour une question à choix (c de 0 à 3),
+     { id, qid, r, n } pour un autre type. Ici, on ne contrôle que la forme de r ; la page projetée la contrôle
+     ensuite contre la diapositive du cours (js/activites.js, valider). */
+  function formeReponse(r) {
+    if (typeof r === 'string') return r.length >= 1 && r.length <= 64 ? r : undefined;          // nuage de mots : un mot proposé
+    if (objet(r)) return cles(r, ['vote']) && entier(r.vote, 0, 99999) ? { vote: r.vote } : undefined; // nuage : une voix
+    if (entier(r, 0, 199)) return r;                                                          // ligne fautive
+    if (!Array.isArray(r) || r.length < 1 || r.length > 16) return undefined;
+    if (r.every(x => entier(x, -1, 15))) return r.slice();                                     // relier
+    if (r.every(x => Array.isArray(x) && x.length === 2 && entier(x[0], 0, 15) && entier(x[1], 0, 6))) return r.map(x => [x[0], x[1]]); // puzzle
+    return undefined;
+  }
   function reponse(m) {
-    return cles(m, ['id', 'qid', 'c', 'n']) && estId(m.id) && estQid(m.qid) && entier(m.c, 0, 3) && typeof m.n === 'string' && NONCE.test(m.n) ? { id: m.id, qid: m.qid, c: m.c, n: m.n } : null;
+    if (!objet(m) || !estId(m.id) || !estQid(m.qid) || typeof m.n !== 'string' || !NONCE.test(m.n)) return null;
+    if (cles(m, ['id', 'qid', 'c', 'n']) && 'c' in m) return entier(m.c, 0, 3) ? { id: m.id, qid: m.qid, c: m.c, n: m.n } : null;
+    if (cles(m, ['id', 'qid', 'r', 'n']) && 'r' in m) { const r = formeReponse(m.r); return r === undefined ? null : { id: m.id, qid: m.qid, r, n: m.n }; }
+    return null;
   }
 
   /* Une entrée de présence. Les élèves : { id, pseudo, role: 'eleve' } ; l'hôte : { id, role: 'hote' }.
@@ -108,6 +146,6 @@
     return { id: p.id, role: 'eleve', pseudo: f.ok ? f.pseudo : null };
   }
 
-  Q.messages = { versEleve, versHote, reponse, presence, estId, estQid, estCours };
+  Q.messages = { versEleve, versHote, reponse, formeReponse, presence, estId, estQid, estCours };
   if (typeof module !== 'undefined' && module.exports) module.exports = Q.messages;
 })(typeof window !== 'undefined' ? window : globalThis);

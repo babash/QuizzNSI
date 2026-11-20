@@ -55,3 +55,16 @@
   .f-grille, .f-tableau { display: block; overflow-x: auto; }
   .f-entete { flex-direction: column; align-items: flex-start; }
 }
+/* Les autres types de questions, sur papier */
+.feuille .r-num { border-width: 1pt; color: #000; border-color: #000; min-width: 1.4em; height: 1.4em; }
+.feuille .relier-fixe { gap: 3pt 12pt; }
+.feuille .relier-fixe li, .feuille .puzzle-fixe li, .feuille .relier-corr li { padding: 2pt 4pt; border-color: #999; border-radius: 3px; }
+.feuille .relier-fixe ol, .feuille .puzzle-fixe, .feuille .relier-corr { gap: 2pt; }
+.feuille .puzzle-fixe li { overflow: visible; font-size: 9pt; }
+.f-ligne { margin-top: 4pt; }
+.f-consigne { font-weight: 700; margin-top: 3pt; }
+.f-cadre-code { border: .75pt solid #000; border-radius: 3px; height: 32mm; margin-top: 3pt; background: repeating-linear-gradient(#fff 0 6.5mm, #bbb 6.5mm 6.8mm); }
+.feuille .verdict, .feuille .correction-ligne { border-width: 1pt; padding: 2pt 5pt; background: #fff; }
+.feuille pre.code .ligne.fautive { background: #eee; outline: 1pt solid #000; }
+.feuille .explication { border-left-width: 2pt; padding: 1pt 5pt; }
+.feuille .fb-titre { font-weight: 700; margin-top: 3pt; }

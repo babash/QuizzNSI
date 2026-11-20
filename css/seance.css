@@ -70,7 +70,7 @@ select, input[type="text"] { font: inherit; color: var(--ink); background: var(-
 .rejouer-bloc > div:last-child { flex: 1 1 260px; min-width: 0; }
 .rejouer-bloc .lien { font-size: 15px; }
 .reussite { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 16px; }
-.reussite li { display: grid; grid-template-columns: 4ch 1fr 5ch; gap: 8px; align-items: center; font-size: 15px; }
+.reussite li { display: grid; grid-template-columns: 4ch 1fr minmax(5ch, auto); gap: 8px; align-items: center; font-size: 15px; }
 .reussite .rep-barre > span { background: var(--accent); }
 
 @media (max-width: 900px) {

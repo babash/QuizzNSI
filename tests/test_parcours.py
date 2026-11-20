@@ -15,6 +15,9 @@ Lancement, depuis la racine de QuizzNSI :
    chaîne très longue). Un piège sur innerHTML, outerHTML, insertAdjacentHTML, createContextualFragment
    et document.write échoue si une donnée venue du canal (marquée XSSMARK) y passe, même échappée :
    les deux élèves ont un pseudo qui contient XSSMARK, le podium est affiché après chaque question.
+1 quater. Les autres types de questions en séance (nuage de mots, relier, puzzle de code, ligne fautive) :
+   deux téléphones et la page projetée ; le mot du nuage filtré, caché puis montré, masqué ; les points
+   (en proportion pour relier) ; un piège à innerHTML et un espion sur le canal.
 1 ter. Le QR code en très grand (bouton et touche Q), à l'accueil et pendant une question, à 3 largeurs et
    dans les 2 thèmes ; un·e élève en retard rejoint en pleine question et reçoit ses points.
 2. Le mode autonome : les diapositives, une erreur puis la bonne réponse, le bilan ;
@@ -111,6 +114,8 @@ def forges(moi, autre):
          "bareme": {"participation": 10, "juste": 100, "rapidite": 20, "rebond": 30}, "duree": 0,
          "podium": [{"pseudo": "Kobalt", "total": 110, "place": 1}]},
         {"t": "fin", "cours": "piles-files", "podium": [{"pseudo": "Kobalt", "total": 110, "place": 1}]},
+        {"t": "corrige", "cours": "piles-files", "qid": "q01", "precedente": None, "duree": 0, "nb": 2, "justes": 1,
+         "podium": [{"pseudo": "Kobalt", "total": 110, "place": 1}]},
         {"t": "bonjour", "id": autre},
         {"t": "rep", "de": cle, "iv": "abcdefghijklmnop", "donnees": "QUJDRA"},
     ]
@@ -448,6 +453,178 @@ def qr_et_retard(nav, base):
     ctx.close()
 
 
+def puzzle_resoudre(page, lignes, indentation=True):
+    """Remet le puzzle dans l'ordre avec les boutons (choisir une ligne, « Monter », « Indenter »)."""
+    for p, sol in enumerate(lignes):
+        textes = page.eval_on_selector_all(".puzzle .p-ligne code", "l => l.map(c => c.textContent)")
+        cur = next(i for i in range(p, len(textes)) if textes[i] == sol.strip())
+        page.locator(".puzzle .p-ligne").nth(cur).click()
+        for _ in range(cur - p):
+            page.click(".p-outils button:text-is('↑ Monter')")
+        if indentation:
+            for _ in range((len(sol) - len(sol.lstrip(" "))) // 4):
+                page.click(".p-outils button:text-is('⇥ Indenter')")
+
+
+def autres_types(nav, base):
+    """Les autres types de questions en séance : nuage de mots, relier, puzzle de code, ligne fautive.
+    Deux téléphones (320 px, clair et obscur) et la page projetée ; un espion écoute le canal."""
+    with open(os.path.join(RACINE, "cours", "demo-types-de-questions.json"), encoding="utf-8") as f:
+        cours = json.load(f)
+    diapos = cours["diapositives"]
+    ou = {d["type"]: i for i, d in enumerate(diapos) if d["type"] in ("nuage", "relier", "puzzle", "ligne")}
+    ctx = contexte(nav, base)
+    # le piège à innerHTML : un mot du nuage marqué « motpiege » ne doit jamais passer par du HTML
+    ctx.add_init_script(PIEGE.replace("XSSMARK", "motpiege"))
+    prof = ctx.new_page()
+    prof.set_viewport_size({"width": 1440, "height": 900})
+    surveiller(prof, "autres types : enseignant·e")
+    prof.goto(base + "animer.html?cours=demo-types-de-questions")
+    attendre_texte(prof, "#etatConnexion", "Séance ouverte")
+    code = prof.inner_text("#code").strip()
+    espion = ctx.new_page()
+    espion.goto(base + "index.html")
+    espion.evaluate("canal => { window.__vus = []; const bc = new BroadcastChannel('faux:' + canal); bc.onmessage = ({ data }) => { if (data.k === 'b') window.__vus.push(data.payload); }; }", "quizz-nsi:" + code)
+    tel = []
+    for pseudo, theme in (("Kobalt", "light"), ("Ixo", "dark")):
+        e = ctx.new_page()
+        e.set_viewport_size({"width": 320, "height": 740})
+        e.emulate_media(color_scheme=theme)
+        surveiller(e, "autres types : " + pseudo)
+        e.goto(base + f"rejoindre.html?s={code}")
+        e.fill("#champPseudo", pseudo)
+        e.click("#rejoindre")
+        tel.append(e)
+    attendre_texte(prof, "#eleves", "Ixo")
+    prof.select_option("#duree", "0")
+    prof.click("#commencer")
+    k, i = tel
+
+    # ── le nuage de mots : autant de mots qu'on veut, des voix, des mots supprimés ──
+    suivante(prof, "#action", "#compteur", ou["nuage"])
+    def proposer(e, mot):
+        e.wait_for_selector("#motEnvoyer:not([disabled])", timeout=8000)
+        e.fill("#motNuage", mot)
+        e.click("#motEnvoyer")
+    k.wait_for_selector("#motNuage")
+    proposer(k, "<b>x</b>")
+    attendre_texte(k, "#motErreur", "Seulement")  # filtré avant l'envoi
+    proposer(k, "Répéter")
+    assert k.is_disabled("#motEnvoyer"), "frein : un mot toutes les 3 secondes"
+    proposer(k, "boucle")  # attend la fin du frein
+    proposer(i, "  motpiege   Répéter ")
+    proposer(i, "REPETER")  # le même mot : une voix de plus, pas un doublon
+    attendre_texte(k, "#nuageMiens", "boucle")
+    k.wait_for_function("() => !document.querySelector('#nuageMiens').innerText.includes('envoi…')", timeout=12000)
+    attendre_texte(prof, ".zone-nuage", "3 mots reçus", delai=12000)
+    assert "motpiege" not in prof.inner_text("#scene") and "boucle" not in prof.inner_text(".zone-nuage"), "le nuage reste caché avant « Montrer le nuage »"
+    assert k.locator("#nuageClasse .nuage").count() == 0, "les téléphones ne reçoivent aucun mot avant « Montrer le nuage »"
+    k.screenshot(path=os.path.join(SORTIE, "autres-nuage-320.png"), full_page=True)
+    prof.click(".nuage-reglages button")
+    prof.wait_for_selector("#motsBoite[open]")
+    attendre_texte(prof, "#motsListe", "motpiege répéter")
+    prof.evaluate("document.getElementById('motsBoite').close()")
+    assert prof.inner_text("#action").startswith("Montrer le nuage")
+    prof.click("#action")
+    prof.wait_for_selector(".nuage .mot")
+    mots_prof = lambda: sorted(prof.eval_on_selector_all(".nuage .mot", "l => l.map(b => b.firstChild.textContent)"))
+    assert mots_prof() == ["boucle", "motpiege répéter", "répéter"], mots_prof()
+    # les téléphones reçoivent le nuage : on vote pour les mots des autres, pas pour les siens
+    k.wait_for_selector("#nuageClasse .nuage li")
+    attendre_texte(k, "#nuageClasse", "motpiege répéter")
+    assert k.is_disabled("#nuageClasse li:has(.mot:text-is('boucle')) button"), "pas de voix pour son propre mot"
+    i.wait_for_selector("#nuageClasse li:has(.mot:text-is('boucle')) button:not([disabled])")
+    i.click("#nuageClasse li:has(.mot:text-is('boucle')) button")
+    prof.wait_for_function("() => [...document.querySelectorAll('.nuage .mot')].some(b => b.firstChild.textContent === 'boucle' && b.querySelector('.voix').textContent === '2')", timeout=12000)
+    attendre_texte(i, "#nuageClasse", "✓ voté")
+    i.screenshot(path=os.path.join(SORTIE, "autres-nuage-vote-320-obscur.png"), full_page=True)
+    for theme in ("light", "dark"):
+        prof.emulate_media(color_scheme=theme)
+        prof.screenshot(path=os.path.join(SORTIE, f"autres-nuage-1440-{theme}.png"))
+    prof.emulate_media(color_scheme="light")
+    # l'enseignant·e supprime un mot : il disparaît du tableau et des téléphones, et ne revient pas
+    prof.click(".nuage .mot:has-text('motpiege')")
+    prof.wait_for_function("() => document.querySelectorAll('.nuage .mot').length === 2")
+    k.wait_for_function("() => !document.querySelector('#nuageClasse').innerText.includes('motpiege')", timeout=8000)
+    proposer(i, "motpiege répéter")
+    prof.wait_for_timeout(3000)
+    assert mots_prof() == ["boucle", "répéter"], "un mot supprimé ne revient pas"
+    prof.select_option("#seuilNuage", "2")  # le réglage « 2 voix au moins » (désactivé par défaut)
+    prof.wait_for_timeout(300)
+    assert mots_prof() == ["boucle", "répéter"]
+    attendre_texte(k, "#points", "0 pts")  # non noté
+
+    # ── relier ──
+    rel = diapos[ou["relier"]]
+    suivante(prof, "#action", "#compteur", ou["relier"])
+    n = len(rel["paires"])
+    for e, choix in ((k, list(range(n))), (i, [1, 0] + list(range(2, n)))):
+        e.wait_for_selector(".relier select")
+        for g, d in enumerate(choix):
+            e.locator(".relier select").nth(g).select_option(str(d))
+        e.click(".relier button.bouton.fort")
+        attendre_texte(e, "#envoyee", "reçue")
+    i.screenshot(path=os.path.join(SORTIE, "autres-relier-320-obscur.png"), full_page=True)
+    attendre_texte(prof, "#statutQ", "Tout le monde a répondu")
+    prof.click("#action")
+    attendre_texte(prof, ".zone-correction", "1 sur 2")
+    prof.screenshot(path=os.path.join(SORTIE, "autres-relier-1440.png"), full_page=True)
+    attendre_texte(k, "#points", "110 pts")
+    attendre_texte(i, "#points", f"{10 + round(100 * (n - 2) / n)} pts")  # 3 paires sur 5 : 60 points sur 100
+    i.screenshot(path=os.path.join(SORTIE, "autres-relier-correction-320-obscur.png"), full_page=True)
+
+    # ── puzzle de code ──
+    pz = diapos[ou["puzzle"]]
+    suivante(prof, "#action", "#compteur", ou["puzzle"])
+    k.wait_for_selector(".puzzle .p-ligne")
+    puzzle_resoudre(k, pz["lignes"])
+    k.screenshot(path=os.path.join(SORTIE, "autres-puzzle-320.png"), full_page=True)
+    k.click(".puzzle-zone button.bouton.fort")
+    attendre_texte(k, "#envoyee", "reçue")
+    prof.screenshot(path=os.path.join(SORTIE, "autres-puzzle-1440.png"), full_page=True)
+    prof.click("#action")
+    attendre_texte(prof, ".zone-correction", "1 sur 1")
+    attendre_texte(k, "#points", "220 pts")
+
+    # ── la ligne fautive ──
+    lg = diapos[ou["ligne"]]
+    suivante(prof, "#action", "#compteur", ou["ligne"])
+    for e, l in ((k, lg["ligne"]), (i, 2)):
+        e.wait_for_selector(".c-ligne")
+        e.locator(".c-ligne").nth(l - 1).click()
+        e.click(".lignes-zone button.bouton.fort")
+        attendre_texte(e, "#envoyee", "reçue")
+    attendre_texte(prof, "#statutQ", "Tout le monde a répondu")
+    prof.click("#action")
+    attendre_texte(prof, ".zone-correction", "1 sur 2")
+    prof.screenshot(path=os.path.join(SORTIE, "autres-ligne-1440.png"), full_page=True)
+    attendre_texte(k, "#points", "330 pts")
+    attendre_texte(i, "#ecran", "total = 0")
+    attendre_texte(i, "#ecran", lg["pieges"]["2"].split("`")[0].strip())
+    i.screenshot(path=os.path.join(SORTIE, "autres-ligne-correction-320-obscur.png"), full_page=True)
+    attendre_texte(i, "#points", f"{10 + round(100 * (n - 2) / n) + 10} pts")
+
+    for pg in (prof, k, i):
+        assert not pg.evaluate("window.__piege"), f"un mot du nuage est passé par du HTML : {pg.evaluate('window.__piege')[:3]}"
+    # ce que l'espion a vu : aucun mot du nuage, aucune réponse en clair
+    vus = espion.evaluate("window.__vus")
+    nuages = [m for m in vus if m.get("t") == "nuage"]
+    assert nuages, "le nuage montré part vers les téléphones"
+    for m in vus:
+        t = json.dumps(m, ensure_ascii=False).lower()
+        if m.get("t") != "nuage":
+            assert "répéter" not in t and "motpiege" not in t and "boucle" not in t, f"un mot du nuage est passé hors du message « nuage » : {t[:120]}"
+        else:
+            assert all(set(w) == {"k", "m", "n"} for w in m["mots"]), "un mot part avec autre chose que son numéro et ses voix"
+            assert "kobalt" not in t and "ixo" not in t, "un pseudo est parti avec le nuage"
+        if m.get("t") == "rep":
+            assert set(m) == {"t", "de", "iv", "donnees"}
+    assert "motpiege" not in json.dumps(nuages[-1]), "le mot supprimé a disparu du dernier nuage envoyé"
+    assert any(m.get("t") == "corrige" for m in vus)
+    print(f"  autres types : nuage (filtré, frein, caché puis montré, voix, mot supprimé partout), relier (60 points pour 3 paires sur 5), puzzle, ligne fautive ; {len(vus)} messages écoutés, mots seulement dans « nuage », sans pseudo, aucune réponse en clair")
+    ctx.close()
+
+
 def sans_chiffrement(nav, base):
     """Un téléphone qui ne sait pas chiffrer le dit tout de suite ; un accusé qui ne vient pas est signalé."""
     for nom, script in (("sans crypto.subtle", "Object.defineProperty(window.crypto, 'subtle', { get: () => undefined });"),
@@ -587,12 +764,55 @@ def rejouer(nav, base):
     ctx.close()
 
 
+def autonome_autres(nav, base):
+    """Les autres types en révision : essais illimités, ce qui est juste est marqué, le bilan les compte."""
+    with open(os.path.join(RACINE, "cours", "demo-types-de-questions.json"), encoding="utf-8") as f:
+        diapos = json.load(f)["diapositives"]
+    ou = {d["type"]: i + 1 for i, d in enumerate(diapos) if d["type"] in ("nuage", "relier", "puzzle", "ligne")}
+    ctx = contexte(nav, base)
+    p = ctx.new_page()
+    p.set_viewport_size({"width": 320, "height": 740})
+    surveiller(p, "autonome, autres types")
+    url = base + "revision.html?cours=demo-types-de-questions#"
+    p.goto(url + str(ou["nuage"]))
+    p.wait_for_selector(".nuage-form input")
+    p.fill(".nuage-form input", "répéter")
+    p.click(".nuage-form button")
+    attendre_texte(p, ".zone-correction", "Merci")
+    p.goto(url + str(ou["relier"])); p.reload()
+    p.wait_for_selector(".relier select")
+    n = len(diapos[ou["relier"] - 1]["paires"])
+    for choix in ([1, 0] + list(range(2, n)), list(range(n))):
+        for g, d in enumerate(choix):
+            p.locator(".relier select").nth(g).select_option(str(d))
+        p.click(".relier button.bouton.fort")
+    attendre_texte(p, ".zone-correction", "Tout est bien relié")
+    p.screenshot(path=os.path.join(SORTIE, "autonome-relier-320.png"), full_page=True)
+    p.goto(url + str(ou["puzzle"])); p.reload()
+    p.wait_for_selector(".puzzle .p-ligne")  # le cours se charge après la page
+    puzzle_resoudre(p, diapos[ou["puzzle"] - 1]["lignes"])
+    p.click(".puzzle-zone button.bouton.fort")
+    attendre_texte(p, ".zone-correction", "remis en ordre")
+    p.goto(url + str(ou["ligne"])); p.reload()
+    p.wait_for_selector(".c-ligne")
+    p.locator(".c-ligne").nth(1).click(); p.click(".lignes-zone button.bouton.fort")
+    attendre_texte(p, ".zone-correction", "Pas encore")
+    p.screenshot(path=os.path.join(SORTIE, "autonome-ligne-erreur-320.png"), full_page=True)
+    p.locator(".c-ligne").nth(diapos[ou["ligne"] - 1]["ligne"] - 1).click(); p.click(".lignes-zone button.bouton.fort")
+    attendre_texte(p, ".zone-correction", "Bien vu")
+    p.goto(url + str(len(diapos))); p.reload()
+    p.wait_for_selector("section.d-bilan")
+    attendre_texte(p, "#scene", "Les autres questions : 1 sur 3")
+    print("  autonome, autres types : nuage, relier (2 essais), puzzle, ligne fautive (2 essais) ; bilan 1 sur 3 du premier coup")
+    ctx.close()
+
+
 def impression(nav, base):
     ctx = contexte(nav, base)
     p = ctx.new_page()
     surveiller(p, "impression")
-    for nom, q in (("sujet", ""), ("corrige", "&corrige")):
-        p.goto(base + "imprimer.html?cours=piles-files" + q)
+    for nom, q in (("sujet", "piles-files"), ("corrige", "piles-files&corrige"), ("sujet-demo", "demo-types-de-questions"), ("corrige-demo", "demo-types-de-questions&corrige")):
+        p.goto(base + "imprimer.html?cours=" + q)
         p.wait_for_selector(".f-question")
         p.emulate_media(media="print")
         p.set_viewport_size({"width": 702, "height": 1000})  # largeur utile d'une page A4 (186 mm)
@@ -607,7 +827,8 @@ def impression(nav, base):
 
 
 def rendus(nav, base):
-    pages = ["index.html", "revision.html#7", "revision.html#30", "revision.html?rejouer", "animer.html", "rejoindre.html", "imprimer.html", "imprimer.html?corrige"]
+    pages = ["index.html", "revision.html#7", "revision.html#30", "revision.html?rejouer", "revision.html?cours=demo-types-de-questions#3",
+             "revision.html?cours=demo-types-de-questions#4", "revision.html?cours=demo-types-de-questions#5", "revision.html?cours=demo-types-de-questions&rejouer", "animer.html", "rejoindre.html", "imprimer.html", "imprimer.html?corrige"]
     for theme in ("light", "dark"):
         for largeur in (320, 768, 1440):
             ctx = contexte(nav, base, color_scheme=theme, viewport={"width": largeur, "height": 900})
@@ -622,7 +843,7 @@ def rendus(nav, base):
                 p.screenshot(path=os.path.join(SORTIE, f"rendu-{nom}-{largeur}-{theme}.png"), full_page=True)
                 p.close()
             ctx.close()
-    print("  rendus : 8 pages × 3 largeurs × 2 thèmes, sans défilement horizontal")
+    print("  rendus : 12 pages × 3 largeurs × 2 thèmes, sans défilement horizontal")
 
 
 def main():
@@ -632,10 +853,12 @@ def main():
         seance(nav, base)
         injection(nav, base)
         qr_et_retard(nav, base)
+        autres_types(nav, base)
         stockage(nav, base)
         sans_chiffrement(nav, base)
         autonome(nav, base)
         rejouer(nav, base)
+        autonome_autres(nav, base)
         impression(nav, base)
         rendus(nav, base)
         nav.close()

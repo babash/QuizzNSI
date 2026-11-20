@@ -52,7 +52,9 @@
     const c = await r.json(); if (!c || !Array.isArray(c.cours) || !c.cours.length) return;
     document.getElementById('cours').innerHTML = c.cours.filter(x => /^[a-z0-9-]{1,60}$/.test(x.id)).map(x => {
       const id = encodeURIComponent(x.id);
-      return '<li class="cadre"><strong>' + Q.echapper(x.titre) + '</strong> · ' + Q.echapper(x.niveau) + ' · ' + (x.questions | 0) + ' questions · '
+      // un cours de démonstration (les types de questions) : marqué comme tel, ce n'est pas un cours de classe
+      const quoi = x.demonstration === true ? 'démonstration des types de questions' : (x.questions | 0) + ' questions';
+      return '<li class="cadre"><strong>' + Q.echapper(x.titre) + '</strong> · ' + Q.echapper(x.niveau) + ' · ' + quoi + ' · '
         + '<a href="revision.html?cours=' + id + '">réviser</a> · <a href="animer.html?cours=' + id + '">animer</a> · <a href="imprimer.html?cours=' + id + '">imprimer</a> · <a href="imprimer.html?cours=' + id + '&amp;corrige">corrigé</a> · <a href="revision.html?cours=' + id + '&amp;rejouer">rejouer</a></li>';
     }).join('');
   } catch (e) { /* la liste écrite dans la page reste */ }

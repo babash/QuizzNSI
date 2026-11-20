@@ -30,6 +30,8 @@ Le premier cours, **piles et files**, commence par se demander pourquoi : des sc
 
 Le second, **« Conditions, boucles, fonctions »** (Première), est une séance de révision : pas de cours, mais [4 blocs de 5 questions](https://babash.github.io/QuizzNSI/animer.html?cours=revision-conditions-boucles) (les conditions, la boucle `for`, la boucle `while`, les fonctions). À la fin de chaque bloc, chaque élève note son score sur sa feuille de route : le quiz sert de bilan avant un contrôle.
 
+**De nouveaux types de questions**, en plus des questions à choix : le **nuage de mots** (chaque élève propose autant de mots qu'il ou elle veut ; quand l'enseignant·e montre le nuage, il s'affiche au tableau et sur les téléphones, où l'on vote pour les mots des camarades ; l'enseignant·e supprime un mot à tout moment ; non noté), **relier** (un terme et sa définition, un code et sa sortie), le **puzzle de code** (remettre les lignes dans l'ordre et à la bonne indentation) et **la ligne fautive** (toucher la ligne qui contient l'erreur). Un cours de démonstration en a un de chaque : [demo-types-de-questions](https://babash.github.io/QuizzNSI/animer.html?cours=demo-types-de-questions) (les cours de classe gardent leurs 20 questions à choix). Chacun marche au téléphone (320 px, au clavier et au lecteur d'écran), sur la page projetée, en révision et sur papier ; son code est exécuté par le vérificateur ([le format](cours/FORMAT.md#les-autres-types-de-questions)).
+
 Viennent ensuite les définitions (structure de données, structure linéaire, interface et implémentation), la pile, la file, Python, et pour aller plus loin. Les 20 questions sont placées là où elles font pratiquer :
 
 | Étape | Ce que les élèves font |
@@ -62,8 +64,9 @@ Chaque question a un objectif affiché, quatre options tirées d'erreurs fréque
 ## Données des élèves
 
 - **Enregistré en ligne** (canaux temps réel de Supabase, sans aucune table) : rien. Le prénom ou le pseudo et les réponses passent en direct dans la séance, sans être gardés en ligne. Pas d'adresse électronique, pas de nom de famille.
-- **Visible par les autres** : pendant la séance seulement, ce que montre l'écran projeté (les pseudos présents, la répartition des réponses, les rebonds, le podium quand il est affiché). Les réponses partent chiffrées pour la page projetée ; une fausse page projetée, ouverte par quelqu'un qui connaît le code, les reçoit aussi (voir les risques acceptés, [docs/DONNEES.md](docs/DONNEES.md)).
-- **Sur l'appareil** : le code de séance, le pseudo, un identifiant, les réponses et les points de la séance, effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, les réponses du mode autonome ; pour rejouer le quiz, l'ordre tiré et les réponses, dans l'onglet seulement (effacés à sa fermeture).
+- **Visible par les autres** : pendant la séance seulement, ce que montre l'écran projeté (les pseudos présents, la répartition des réponses, les rebonds, le podium quand il est affiché, et les mots du nuage, sans les pseudos, au tableau et sur les téléphones, quand l'enseignant·e montre le nuage). Les réponses partent chiffrées pour la page projetée ; une fausse page projetée, ouverte par quelqu'un qui connaît le code, les reçoit aussi (voir les risques acceptés, [docs/DONNEES.md](docs/DONNEES.md)).
+- **Le nuage de mots** : le seul texte libre d'élève qui circule. Les mots partent chiffrés vers la page projetée ; rien ne s'affiche avant « Montrer le nuage » ; ensuite, les mots du tableau (jamais leur auteur·rice) partent en clair vers les téléphones de la classe, qui votent. Chaque mot est filtré (un ou deux mots, sans caractère spécial) et affiché comme du texte ; l'enseignant·e supprime un mot à tout moment, partout. Rien n'est gardé, ni en ligne ni sur les téléphones. Le filtre ne juge pas le sens : un mot déplacé s'affiche jusqu'à sa suppression (risques décrits dans [docs/DONNEES.md](docs/DONNEES.md)).
+- **Sur l'appareil** : le code de séance, le pseudo, un identifiant, les réponses et les points de la séance (pas les mots ni les voix du nuage), effacés à la fin de la séance, et sinon au premier chargement d'une page de QuizzNSI après 12 heures ; en révision, les réponses du mode autonome ; pour rejouer le quiz, l'ordre tiré et les réponses, dans l'onglet seulement (effacés à sa fermeture).
 - **Pour effacer** : rien à effacer en ligne ; sur l'appareil, « Quitter » ou « Recommencer à zéro », ou l'effacement des données du navigateur.
 
 Le détail : [docs/DONNEES.md](docs/DONNEES.md).
@@ -76,6 +79,8 @@ Le détail : [docs/DONNEES.md](docs/DONNEES.md).
 | Bonne réponse | +100 | l'essentiel : réfléchir |
 | Rapidité (avec une minuterie, et seulement si c'est juste) | de +20 à 0 | un peu d'élan, sans écraser la réflexion |
 | Rebond : une bonne réponse juste après une erreur | +30 | valoriser la progression, pas seulement les meilleur·e·s |
+
+Les autres types de questions : **relier** et **puzzle de code** rapportent la bonne réponse en proportion de ce qui est juste (3 paires sur 5 : +60 au lieu de +100 ; rapidité et rebond seulement si tout est juste) ; **la ligne fautive** se note comme une question à choix ; **le nuage de mots** n'est pas noté (il n'a pas de bonne réponse).
 
 Chaque téléphone calcule ses propres points ; la page projetée fait seule foi pour le podium. La place d'un·e élève n'est connue que s'il ou elle est sur le podium affiché.
 

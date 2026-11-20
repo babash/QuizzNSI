@@ -1,0 +1,220 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "demo-types-de-questions",
+ "titre": "Démonstration : les types de questions",
+ "sous_titre": "Un nuage de mots, relier, un puzzle de code, la ligne fautive",
+ "niveau": "Première NSI",
+ "programme": "Langages et programmation : constructions élémentaires (conditionnelles, boucles bornées, appels de fonction)",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "duree_minutes": 10,
+ "demonstration": true,
+ "criteres": [
+  "Je dis avec mes mots à quoi sert une boucle.",
+  "Je distingue `=` et `==`, et je lis `!=`, `and`, `or`.",
+  "Je remets une boucle `for` dans l'ordre, avec son indentation.",
+  "Je repère qu'un `range` s'arrête avant la valeur de fin."
+ ],
+ "conventions": [
+  "Tous les codes sont en Python 3. « Qu'affiche ce code ? » : les valeurs sont données dans l'ordre d'affichage."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Démonstration : les types de questions",
+   "texte": [
+    "Un exemple de chaque type de question, en plus des questions à choix : le nuage de mots, relier, le puzzle de code, la ligne fautive."
+   ]
+  },
+  {
+   "type": "nuage",
+   "id": "a01",
+   "nom": "[Boucles] Une boucle, en un ou deux mots",
+   "objectif": "Dire avec ses mots à quoi sert une boucle, avant de réviser.",
+   "enonce": [
+    "En programmation, à quoi sert une ==boucle== ?",
+    "Propose autant de mots que tu veux, un ou deux mots à la fois. Quand le nuage s'affiche, vote pour les mots de tes camarades."
+   ],
+   "exemples": [
+    "répéter",
+    "répétition",
+    "parcourir",
+    "itération",
+    "compter",
+    "tant que"
+   ]
+  },
+  {
+   "type": "relier",
+   "id": "a02",
+   "nom": "[Conditions] Chaque opérateur et son sens",
+   "objectif": "Distinguer `=` et `==`, et lire `!=`, `and`, `or`.",
+   "enonce": [
+    "Relier chaque opérateur Python à ce qu'il fait."
+   ],
+   "paires": [
+    {
+     "gauche": "`=`",
+     "droite": "range une valeur dans une variable",
+     "feedback": "`=` est l'affectation : `age = 15` range 15 dans la variable `age`. Ce n'est pas une comparaison.",
+     "verification": {
+      "code": [
+       "age = 15",
+       "print(age)"
+      ],
+      "sortie": "15"
+     }
+    },
+    {
+     "gauche": "`==`",
+     "droite": "vaut `True` si les deux valeurs sont égales",
+     "feedback": "`==` compare deux valeurs : `3 == 3` vaut `True`, `3 == 4` vaut `False`. On l'écrit dans un `if`.",
+     "verification": {
+      "code": [
+       "print(3 == 3, 3 == 4)"
+      ],
+      "sortie": "True False"
+     }
+    },
+    {
+     "gauche": "`!=`",
+     "droite": "vaut `True` si les deux valeurs sont différentes",
+     "feedback": "`!=` se lit « différent de » : `3 != 4` vaut `True`, `3 != 3` vaut `False`.",
+     "verification": {
+      "code": [
+       "print(3 != 4, 3 != 3)"
+      ],
+      "sortie": "True False"
+     }
+    },
+    {
+     "gauche": "`and`",
+     "droite": "vaut `True` seulement si les deux conditions sont vraies",
+     "feedback": "Avec `and`, il suffit qu'une seule condition soit fausse pour que tout soit faux.",
+     "verification": {
+      "code": [
+       "print(True and True, True and False)"
+      ],
+      "sortie": "True False"
+     }
+    },
+    {
+     "gauche": "`or`",
+     "droite": "vaut `True` si au moins une des deux conditions est vraie",
+     "feedback": "Avec `or`, une seule condition vraie suffit ; tout est faux seulement si les deux sont fausses.",
+     "verification": {
+      "code": [
+       "print(True or False, False or False)"
+      ],
+      "sortie": "True False"
+     }
+    }
+   ],
+   "explication": "Un seul `=` range une valeur ; deux `==` comparent. `and` demande les deux conditions, `or` en demande au moins une."
+  },
+  {
+   "type": "puzzle",
+   "id": "a03",
+   "nom": "[Boucle for] Additionner les nombres pairs",
+   "objectif": "Remettre dans l'ordre une boucle `for` qui contient un `if`, avec la bonne indentation.",
+   "enonce": [
+    "Ce programme doit afficher la somme des nombres pairs de 1 à 10 (2 + 4 + 6 + 8 + 10 = 30).",
+    "Remettre les lignes dans l'ordre, puis indenter chaque ligne : l'indentation dit quelle ligne est dans la boucle, et quelle ligne est dans le `if`."
+   ],
+   "lignes": [
+    "total = 0",
+    "for i in range(1, 11):",
+    "    if i % 2 == 0:",
+    "        total = total + i",
+    "print(total)"
+   ],
+   "indentation": true,
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "30"
+    }
+   ],
+   "explication": "On initialise avant la boucle, on teste et on ajoute dans la boucle (lignes indentées), on affiche après la boucle (sans indentation)."
+  },
+  {
+   "type": "ligne",
+   "id": "a04",
+   "nom": "[Fonctions] Une somme qui s'arrête trop tôt",
+   "objectif": "Repérer l'erreur classique : `range` s'arrête avant la valeur de fin.",
+   "enonce": [
+    "La fonction `somme(n)` doit renvoyer 1 + 2 + … + n. Pour `somme(4)`, le résultat attendu est 10, mais le programme affiche 6.",
+    "Toucher la ligne qui contient l'erreur."
+   ],
+   "code": [
+    "def somme(n):",
+    "    total = 0",
+    "    for i in range(1, n):",
+    "        total = total + i",
+    "    return total",
+    "print(somme(4))"
+   ],
+   "ligne": 3,
+   "correction": "    for i in range(1, n + 1):",
+   "feedback": "Bien vu : `range(1, n)` donne 1, 2, 3 pour n = 4 ; il s'arrête avant n. Il faut `range(1, n + 1)` pour aller jusqu'à n.",
+   "feedback_autre": "Cette ligne est correcte. Fais la trace avec n = 4 : quelles valeurs prend `i` ? Le 4 manque-t-il ?",
+   "pieges": {
+    "2": "`total = 0` est correct : on part de 0 avant d'ajouter. Le problème vient des valeurs que prend `i`.",
+    "5": "Le `return` est bien placé, après la boucle (une seule indentation). Regarde plutôt jusqu'où va `range`.",
+    "4": "L'ajout `total = total + i` est juste. Le problème : `i` ne prend jamais la valeur 4."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "6"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "10"
+    },
+    {
+     "code": [
+      "print(somme(1), somme(10))"
+     ],
+     "sortie": "10\n1 55"
+    }
+   ],
+   "explication": "`range(a, b)` s'arrête avant `b` : pour aller jusqu'à n, on écrit `range(1, n + 1)`."
+  },
+  {
+   "type": "bilan",
+   "titre": "Les types de questions",
+   "tableau": {
+    "colonnes": [
+     "Type",
+     "Ce que fait l'élève",
+     "Noté ?"
+    ],
+    "lignes": [
+     [
+      "Nuage de mots",
+      "propose des mots, puis vote pour ceux des camarades",
+      "non"
+     ],
+     [
+      "Relier",
+      "relie chaque élément à sa réponse",
+      "oui, en proportion des paires justes"
+     ],
+     [
+      "Puzzle de code",
+      "remet les lignes dans l'ordre, avec l'indentation",
+      "oui, en proportion des lignes à leur place"
+     ],
+     [
+      "Ligne fautive",
+      "touche la ligne qui contient l'erreur",
+      "oui, juste ou faux"
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -20,6 +20,7 @@ Le modèle complet est [`piles-files.json`](piles-files.json).
 | `fiche` | non | le lien de la fiche de cours correspondante (FichesNSI) |
 | `auteur`, `licence` | oui | `"Babash - NSI Tani Malandi"`, `"CC BY-SA 4.0"` |
 | `duree_minutes` | non | 45 au plus |
+| `demonstration` | non | `true` pour un cours de démonstration (pas un cours de classe) : moins de 20 questions à choix, ou aucune ; marqué « démonstration » dans le catalogue et sur l'accueil |
 | `sources` | non | les supports dont le cours s'inspire (contrôles, sujets de bac cités) |
 | `criteres` | oui | les critères de réussite, par niveau (apprentissage visible) |
 | `conventions` | oui | les conventions rappelées au début et sur la feuille imprimée (sens d'écriture d'une pile, hauteur d'un arbre réduit à un nœud…) |
@@ -39,6 +40,7 @@ Chaque diapositive a un `type` :
 
 **Les apparitions progressives.** Sur la page projetée et en révision, « Suite » montre l'élément suivant de la diapositive avant de passer à la suivante ; les téléphones suivent l'écran projeté (le message de séance porte le nombre d'éléments montrés, `f`). En revenant en arrière, tout est montré.
 - **`question`** : voir plus bas.
+- **`nuage`**, **`relier`**, **`puzzle`**, **`ligne`** : les autres types de questions, voir plus bas.
 - **`partie`** : un titre de partie, en grand. Champs : `numero` (facultatif), `titre`, `sous_titre`.
 - **`classe`** : une question ouverte à la classe, sans réponse à cocher (« Et si on programmait… ? »). Champs : `question`, `texte` (facultatif), `pistes` (des pistes qui apparaissent une à une), `schema`, `code`.
 - **`humour`** : la diapositive qui dramatise (« Bon, si on continue… »). Champs : `titre`, `lignes` (elles apparaissent une à une), `chute` (la dernière phrase, « Il nous faut agir ! »).
@@ -68,6 +70,32 @@ Les règles que le vérificateur contrôle :
 - 20 questions par cours.
 
 Ce qu'il faut relire à la main : les distracteurs viennent d'erreurs typiques d'élèves ; les énoncés sont impersonnels et courts ; le vocabulaire anglais est traduit ; le langage inclusif ; les contextes de Mayotte, sans cliché.
+
+## Les autres types de questions
+
+En plus des 20 questions à choix unique (la règle 22 ne change pas : le vérificateur compte toujours 20 questions `question`), un cours peut contenir des diapositives d'autres types. Chacune a les champs `id` (unique, comme `a01`), `nom`, `objectif`, `enonce`, `explication` (sauf le nuage) et, au besoin, `code`. Elles s'affichent sur la page projetée, sur le téléphone, en révision (essais illimités) et sur la feuille imprimée (avec la place pour répondre, et leur correction dans le corrigé).
+
+| `type` | Champs | Ce que fait l'élève | Comment c'est noté |
+|---|---|---|---|
+| `nuage` | `exemples` (facultatif : des mots possibles, montrés après) | propose autant de mots qu'il ou elle veut (un ou deux mots à la fois) ; une fois le nuage montré, vote pour les mots des camarades | **non noté** : pas de bonne réponse, aucun point, ne compte pas pour le rebond |
+| `relier` | `paires` : 2 à 6 `{ "gauche", "droite", "feedback"?, "verification"? }` | relie chaque élément de gauche à une réponse de droite (une liste déroulante par élément) | en proportion : 3 paires bien reliées sur 5 donnent 60 points sur 100 ; rapidité et rebond seulement si tout est juste |
+| `puzzle` | `lignes` : la solution (3 à 12 lignes, indentées de 4 espaces) ; `indentation` (`true` par défaut : l'élève doit aussi indenter) ; `verifications` (obligatoires) | remet les lignes dans l'ordre et les indente (boutons « Monter », « Descendre », « Indenter », « Désindenter », ou Alt + flèches) | en proportion des lignes à leur place (et à la bonne indentation quand elle compte) |
+| `ligne` | `code` ; `ligne` (le numéro de la ligne fautive, à partir de 1) ; `correction` (la ligne corrigée) ; `feedback` (pour la bonne ligne) ; `feedback_autre` (pour une autre ligne) ; `pieges` (facultatif : `{ "2": "feedback de la ligne 2" }`) ; `verifications` et `verifications_corrigees` (obligatoires) | touche la ligne qui contient l'erreur | comme une question à choix : juste ou faux |
+
+L'ordre des réponses à relier et des lignes du puzzle est mélangé à partir de l'`id` : la page projetée et tous les téléphones voient le même ordre (on peut dire « 1 avec C » à la classe), et le puzzle ne commence jamais dans l'ordre de la solution. Le vérificateur refuse un `relier` dont le mélange laisserait toutes les paires face à face (il suffit de changer l'`id`).
+
+**Ce que le vérificateur exécute** : la solution du puzzle (`lignes`, puis chaque vérification) ; pour la ligne fautive, le code tel quel (`verifications`, qui montrent l'erreur) puis le code où la ligne est remplacée par `correction` (`verifications_corrigees`, qui montrent que la correction marche) ; pour `relier`, la `verification` de chaque paire « code et sortie » (et les `verifications` de la diapositive s'il y en a).
+
+```json
+{ "type": "ligne", "id": "a04", "nom": "[Fonctions] Une somme qui s'arrête trop tôt", "objectif": "…", "enonce": ["…"],
+  "code": ["def somme(n):", "    total = 0", "    for i in range(1, n):", "        total = total + i", "    return total", "print(somme(4))"],
+  "ligne": 3, "correction": "    for i in range(1, n + 1):", "feedback": "…", "feedback_autre": "…", "pieges": { "5": "…" },
+  "verifications": [{ "code": [], "sortie": "6" }], "verifications_corrigees": [{ "code": [], "sortie": "10" }], "explication": "…" }
+```
+
+**Le nuage de mots, en classe** : chaque mot est filtré sur le téléphone puis de nouveau sur la page projetée (2 à 24 caractères, un ou deux mots, lettres d'une seule écriture, chiffres, espace, `-` et `'`) et affiché comme du texte. Frein contre l'inondation : un mot toutes les 3 secondes sur le téléphone, un toutes les 2 secondes et 100 au plus par élève sur la page projetée. Le nuage reste caché, et les téléphones ne reçoivent aucun mot, tant que l'enseignant·e n'a pas cliqué sur « Montrer le nuage » ; ensuite les mots du tableau (sans leur auteur·rice) arrivent sur les téléphones, où l'on vote (une voix par mot, pas pour ses propres mots) ; la taille d'un mot suit son nombre de voix. « Relire et supprimer » et un clic sur un mot le suppriment, au tableau et sur les téléphones, sans retour possible. Le réglage « 2 voix au moins » est désactivé par défaut.
+
+Le modèle : le cours de démonstration [`demo-types-de-questions.json`](demo-types-de-questions.json), avec `"demonstration": true` : il n'a pas les 20 questions à choix d'un cours de classe, et l'accueil le présente comme une démonstration.
 
 ## Le texte
 

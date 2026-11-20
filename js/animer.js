@@ -13,6 +13,9 @@
   const diapo = () => cours.diapositives[st.index];
   const pluriel = (n, mot) => n + ' ' + mot + (n > 1 ? 's' : '');
   const envoyer = m => { if (seance) seance.envoyer(m); };
+  // les diapositives où les élèves répondent : les questions à choix, et les autres types (js/activites.js)
+  const inter = d => !!d && Q.INTERACTIFS.includes(d.type);
+  const qcu = d => !!d && d.type === 'question';
 
   function etatNeuf(code) {
     return { code: code || Q.nouveauCode(), id: Q.nouvelId(), commence: false, index: 0, f: 0, duree: 45, podium: 'fin',
@@ -25,7 +28,7 @@
     const ent = (x, a, b) => Number.isSafeInteger(x) && x >= a && x <= b;
     if (!v || typeof v !== 'object' || Q.lireCode(v.code) !== v.code || !Q.messages.estId(v.id)) return null;
     if (!ent(v.index, 0, cours.diapositives.length - 1) || !DUREES.includes(v.duree) || !PODIUMS.includes(v.podium)) return null;
-    const qids = new Set(cours.questions.map(q => q.id));
+    const qids = new Set(cours.interactifs.map(q => q.id)), parId = new Map(cours.interactifs.map(q => [q.id, q]));
     const st = etatNeuf(v.code);
     Object.assign(st, { id: v.id, commence: v.commence === true, fini: v.fini === true, index: v.index, f: ent(v.f, 0, 100) ? v.f : 0, duree: v.duree, podium: v.podium });
     st.bannis = Array.isArray(v.bannis) ? v.bannis.filter(c => typeof c === 'string' && /^[a-z0-9]{0,64}$/.test(c)) : [];
@@ -33,14 +36,17 @@
     if (v.q && typeof v.q === 'object') for (const [qid, e] of Object.entries(v.q)) {
       if (!qids.has(qid) || !e || typeof e !== 'object' || !ent(e.ouverte, 0, 1e14) || !(e.fin === null || ent(e.fin, 0, 1e14))) continue;
       st.q[qid] = { ouverte: e.ouverte, fin: e.fin, ferme: e.ferme === true, revelee: e.revelee === true, raison: typeof e.raison === 'string' ? e.raison.slice(0, 40) : '',
-        rebonds: Array.isArray(e.rebonds) ? e.rebonds.filter(p => Q.filtrerPseudo(p).ok) : [] };
+        rebonds: Array.isArray(e.rebonds) ? e.rebonds.filter(p => Q.filtrerPseudo(p).ok) : [],
+        seuil: e.seuil === 2 ? 2 : 1, nuage: parId.get(qid).type === 'nuage' ? nuageRelu(e.nuage) : undefined };
     }
     if (v.joueurs && typeof v.joueurs === 'object') for (const [id, j] of Object.entries(v.joueurs)) {
       if (!Q.messages.estId(id) || !j || typeof j !== 'object' || !Q.filtrerPseudo(j.pseudo).ok || !ent(j.total, 0, 1e7)) continue;
       const rep = {};
       if (j.rep && typeof j.rep === 'object') for (const [qid, r] of Object.entries(j.rep)) {
-        if (!qids.has(qid) || !r || !ent(r.c, 0, 3) || !ent(r.ms, -1e7, 1e9)) continue;
-        rep[qid] = { c: r.c, ms: r.ms };
+        if (!qids.has(qid) || !r || !ent(r.ms, -1e7, 1e9)) continue;
+        const dq = parId.get(qid);
+        if (dq.type === 'question') { if (!ent(r.c, 0, 3)) continue; rep[qid] = { c: r.c, ms: r.ms }; }
+        else { const a = Q.activites.valider(dq, r.a); if (a === null) continue; rep[qid] = { a, ms: r.ms }; }
         if (typeof r.juste === 'boolean' && ent(r.gain, 0, 1000) && r.detail && typeof r.detail === 'object') {
           const d = {}; let ok = true;
           for (const k of ['participation', 'juste', 'rapidite', 'rebond']) { if (!ent(r.detail[k], 0, 1000)) ok = false; d[k] = r.detail[k]; }
@@ -50,6 +56,20 @@
       st.joueurs[id] = { pseudo: j.pseudo, cle: Q.clePseudo(j.pseudo), rep, total: j.total, retire: j.retire === true };
     }
     return st;
+  }
+
+  // Le nuage relu : chaque mot repasse le filtre, les identifiants sont contrôlés, les empreintes sont des nombres.
+  function nuageRelu(v) {
+    const n = Q.activites.nuageVide(), ent = (x, a, b) => Number.isSafeInteger(x) && x >= a && x <= b, ids = l => Array.isArray(l) ? [...new Set(l.filter(Q.messages.estId))].slice(0, 100000) : [];
+    if (!v || typeof v !== 'object') return n;
+    if (Array.isArray(v.supprimes)) n.supprimes = v.supprimes.filter(x => ent(x, 0, 2 ** 32 - 1)).slice(0, 5000);
+    if (Array.isArray(v.mots)) for (const w of v.mots.slice(0, 20000)) {
+      const f = w && Q.activites.filtrerMot(w.m);
+      if (!f || !f.ok || f.mot !== w.m || !ent(w.k, 0, 99999) || n.mots.some(x => x.k === w.k || x.cle === Q.clePseudo(w.m))) continue;
+      n.mots.push({ k: w.k, m: w.m, cle: Q.clePseudo(w.m), de: ids(w.de), votes: ids(w.votes) });
+    }
+    n.suivant = Math.max(ent(v.suivant, 0, 99999) ? v.suivant : 0, ...n.mots.map(w => w.k + 1));
+    return n;
   }
 
   /* ── Les élèves ─────────────────────────── */
@@ -118,11 +138,22 @@
       const recu = Date.now();
       const m = Q.messages.reponse(await cleHote.dechiffrer(env)); // illisible ou forgée : ignorée
       if (!m) return;
-      const d = diapo(), etat = d && d.type === 'question' ? st.q[d.id] : null;
-      if (!etat || etat.ferme || m.qid !== d.id) return;
+      const d = diapo(), etat = inter(d) ? st.q[d.id] : null;
+      if (!etat || m.qid !== d.id) return;
       const j = st.joueurs[m.id];
       if (!j || j.retire) return;
-      if (!j.rep[d.id]) { j.rep[d.id] = { c: m.c, ms: recu - etat.ouverte }; sauver(); majStatut(); }
+      if (d.type === 'nuage') { recevoirNuage(d, etat, m, recu); return; }
+      if (etat.ferme) return;
+      if (!j.rep[d.id]) {
+        if (qcu(d)) { if (m.c === undefined) return; j.rep[d.id] = { c: m.c, ms: recu - etat.ouverte }; }
+        else {
+          // une réponse d'un autre type est contrôlée contre la diapositive du cours (longueur, indices, mot filtré)
+          const a = m.r === undefined ? null : Q.activites.valider(d, m.r);
+          if (a === null) return;
+          j.rep[d.id] = { a, ms: recu - etat.ouverte };
+        }
+        sauver(); majStatut(); if (d.type === 'nuage') majNuage(d);
+      }
       // l'accusé de réception ne porte qu'un nombre tiré au hasard par le téléphone, pas son identifiant
       accuses.add(m.n);
       if (!accuseMinuterie) accuseMinuterie = setTimeout(() => { envoyer({ t: 'recus', qid: d.id, n: [...accuses] }); accuses = new Set(); accuseMinuterie = null; }, 400);
@@ -130,6 +161,36 @@
       if (repondu > 0 && repondu === presentsActifs().length && !etat.ferme) fermer(d, 'Tout le monde a répondu.');
     }
   }
+
+  /* Le nuage : autant de mots que voulu, et des voix. Frein contre l'inondation : un mot accepté toutes les
+     2 secondes au plus par élève (un mot arrivé trop tôt n'a pas d'accusé de réception : le téléphone le renvoie),
+     et 100 mots au plus par élève et par nuage. Un même envoi (même nombre tiré au hasard) n'est compté qu'une fois. */
+  const dernierMot = new Map(), envoisVus = new Set();
+  function accuser(qid, n) {
+    accuses.add(n);
+    if (!accuseMinuterie) accuseMinuterie = setTimeout(() => { envoyer({ t: 'recus', qid, n: [...accuses] }); accuses = new Set(); accuseMinuterie = null; }, 400);
+  }
+  function recevoirNuage(d, etat, m, recu) {
+    if (envoisVus.has(m.n)) { accuser(d.id, m.n); return; }
+    const a = m.r === undefined ? null : Q.activites.valider(d, m.r);
+    if (a !== null && typeof a === 'object') {
+      if (!etat.revelee) return; // on ne vote que pour un mot affiché
+      Q.activites.voter(etat.nuage, m.id, a.vote);
+    } else if (typeof a === 'string') {
+      if (recu - (dernierMot.get(m.id) || 0) < 2000) return; // trop tôt : pas d'accusé, le téléphone renverra
+      dernierMot.set(m.id, recu);
+      Q.activites.proposer(etat.nuage, m.id, a);
+    }
+    // un mot refusé (filtre, mot supprimé, 100 mots déjà) reçoit aussi l'accusé : il ne sert à rien de le renvoyer
+    if (envoisVus.size > 100000) envoisVus.clear();
+    envoisVus.add(m.n); accuser(d.id, m.n);
+    sauver(); majStatut(); majNuage(d); if ($('motsBoite').open) remplirMots(d);
+    if (etat.revelee) planifierNuage(d);
+  }
+  let nuageMinuterie = null;
+  function planifierNuage(d) { if (!nuageMinuterie) nuageMinuterie = setTimeout(() => { nuageMinuterie = null; const x = diapo(); if (x === d && st.q[d.id].revelee) envoyer(messageNuage(d)); }, 400); }
+  // Ce que reçoivent les téléphones : seulement les mots affichés au tableau, leur numéro et leur nombre de voix.
+  const messageNuage = d => ({ t: 'nuage', cours: cours.id, qid: d.id, mots: Q.activites.affiches(st.q[d.id].nuage, st.q[d.id].seuil) });
 
   // Un message renvoyé quand un·e élève arrive ou revient : il lui donne la phase en cours.
   function planifierRenvoi() {
@@ -148,6 +209,13 @@
   const podiumPublic = () => podium().filter(j => j.place <= 3).slice(0, 20).map(j => ({ pseudo: j.pseudo, total: j.total, place: j.place }));
   function messageCorrection(d) {
     const k = st.ordre.indexOf(d.id);
+    if (!qcu(d)) {
+      // un autre type : seulement le nombre de réponses et de réponses tout à fait justes ; chaque téléphone compare
+      // sa réponse à la solution du fichier du cours. Les mots du nuage ne sont jamais envoyés aux téléphones.
+      const l = joueursActifs().filter(j => j.rep[d.id]);
+      return { t: 'corrige', cours: cours.id, qid: d.id, precedente: k > 0 ? st.ordre[k - 1] : null, duree: st.duree, nb: l.length,
+        justes: l.filter(j => j.rep[d.id].juste === true).length, podium: st.podium === 'chaque' ? podiumPublic() : null };
+    }
     return { t: 'correction', cours: cours.id, qid: d.id, precedente: k > 0 ? st.ordre[k - 1] : null, bonne: d.bonne, rep: repartition(d),
       bareme: Object.assign({}, B.BAREME), duree: st.duree, podium: st.podium === 'chaque' ? podiumPublic() : null };
   }
@@ -155,7 +223,7 @@
     const d = diapo();
     if (st.fini) return messageFin();
     if (!st.commence) return { t: 'attente' };
-    if (d.type === 'question') { const e = st.q[d.id]; return e && e.revelee ? messageCorrection(d) : messageQuestion(d); }
+    if (inter(d)) { const e = st.q[d.id]; return e && e.revelee ? (d.type === 'nuage' ? messageNuage(d) : messageCorrection(d)) : messageQuestion(d); }
     // toute autre diapositive (titre, partie, question à la classe, humour, notion, bilan) : le téléphone
     // l'affiche à partir du fichier du cours, avec le même nombre d'éléments déjà apparus
     return { t: 'notion', cours: cours.id, n: st.index, f: st.f };
@@ -172,6 +240,8 @@
 
   function corriger(d) {
     const e = st.q[d.id];
+    // le nuage n'est pas noté et reste ouvert : « Montrer le nuage » l'affiche au tableau et sur les téléphones
+    if (d.type === 'nuage') { if (!e.revelee) { e.revelee = true; sauver(); envoyer(messageNuage(d)); } return; }
     if (!e.ferme) fermer(d, '');
     if (e.revelee) return;
     const precedente = st.ordre.length ? st.ordre[st.ordre.length - 1] : null;
@@ -180,8 +250,10 @@
       const r = j.rep[d.id];
       if (!r) continue;
       const pr = precedente && j.rep[precedente] ? (j.rep[precedente].juste ? 'juste' : 'faux') : null;
-      r.juste = r.c === d.bonne;
-      const p = B.points({ juste: r.juste, ms: r.ms }, { duree: st.duree, precedente: pr });
+      let part;
+      if (qcu(d)) r.juste = r.c === d.bonne;
+      else { const n = Q.activites.noter(d, r.a); r.juste = n.juste; part = n.part; }
+      const p = B.points({ juste: r.juste, ms: r.ms, part }, { duree: st.duree, precedente: pr });
       r.gain = p.total; r.detail = p.detail; j.total += p.total;
       if (p.detail.rebond && !j.retire) e.rebonds.push(j.pseudo);
     }
@@ -194,7 +266,7 @@
   /* ── Ouvrir, fermer, corriger une question ── */
   function ouvrir(d) {
     if (st.q[d.id]) return;
-    st.q[d.id] = { ouverte: Date.now(), fin: st.duree > 0 ? Date.now() + st.duree * 1000 : null, ferme: false, revelee: false };
+    st.q[d.id] = { ouverte: Date.now(), fin: st.duree > 0 ? Date.now() + st.duree * 1000 : null, ferme: false, revelee: false, seuil: 1, nuage: d.type === 'nuage' ? Q.activites.nuageVide() : undefined };
     sauver();
   }
   function fermer(d, raison) {
@@ -210,10 +282,10 @@
     const d = diapo();
     $('scene').innerHTML = Q.rendreDiapo(cours, d, { boutons: false });
     st.f = Math.min(st.f, Q.nbFragments($('scene'))); Q.montrerFragments($('scene'), st.f);
-    $('compteur').textContent = (st.index + 1) + ' / ' + cours.diapositives.length + (d.type === 'question' ? ' · question ' + d.numero + ' sur ' + cours.questions.length : '');
+    $('compteur').textContent = (st.index + 1) + ' / ' + cours.diapositives.length + (qcu(d) ? ' · question ' + d.numero + ' sur ' + cours.questions.length : inter(d) ? ' · ' + Q.activites.NOMS[d.type].toLowerCase() : '');
     $('barre').style.width = ((st.index + 1) / cours.diapositives.length * 100) + '%';
     $('prec').disabled = st.index === 0;
-    if (d.type === 'question') { ouvrir(d); if (st.q[d.id].revelee) montrerCorrection(d); }
+    if (inter(d)) { ouvrir(d); if (st.q[d.id].revelee) montrerCorrection(d); else if (d.type === 'nuage') majNuage(d); }
     envoyer(messagePhase());
     majStatut(); majAction();
     $('scene').focus({ preventScroll: true });
@@ -222,9 +294,14 @@
 
   function majStatut() {
     const d = cours && st && st.commence ? diapo() : null, z = $('statutQ');
-    if (!d || d.type !== 'question' || !st.q[d.id]) { z.textContent = ''; return; }
+    if (!inter(d) || !st.q[d.id]) { z.textContent = ''; return; }
     const e = st.q[d.id], n = joueursActifs().filter(j => j.rep[d.id]).length, total = presentsActifs().length;
     let t = 'Réponses : ' + n + ' / ' + total;
+    if (d.type === 'nuage') {
+      const nu = e.nuage, auteurs = new Set(nu.mots.flatMap(w => w.de)).size;
+      z.textContent = pluriel(nu.mots.length, 'mot') + ' de ' + pluriel(auteurs, 'élève') + (e.revelee ? ' · nuage affiché' : '');
+      return;
+    }
     if (e.revelee) t = n + ' réponse' + (n > 1 ? 's' : '') + ' · correction affichée';
     else if (e.ferme) t += ' · ' + (e.raison || 'réponses fermées');
     else if (e.fin) t = '⏱ ' + Math.max(0, Math.ceil((e.fin - Date.now()) / 1000)) + ' s · ' + t;
@@ -236,11 +313,12 @@
     const a = $('action'), d = diapo();
     if (d.type !== 'question' && fragmentsRestants() > 0) { a.textContent = 'Suite (' + fragmentsRestants() + ') →'; return; }
     if (st.index === cours.diapositives.length - 1) { a.textContent = st.fini ? 'Revoir le podium' : 'Terminer la séance'; return; }
-    if (d.type === 'question' && st.q[d.id] && !st.q[d.id].revelee) { a.textContent = 'Montrer la réponse'; return; }
+    if (inter(d) && st.q[d.id] && !st.q[d.id].revelee) { a.textContent = d.type === 'nuage' ? 'Montrer le nuage' : 'Montrer la réponse'; return; }
     a.textContent = 'Suivante →';
   }
 
   function montrerCorrection(d) {
+    if (!qcu(d)) { montrerCorrectionActivite(d); return; }
     const e = st.q[d.id], rep = repartition(d), total = rep.reduce((a, b) => a + b, 0);
     const sc = $('scene');
     sc.querySelectorAll('.option').forEach(o => {
@@ -263,12 +341,84 @@
     if (st.podium === 'chaque' && joueursActifs().length) setTimeout(montrerPodium, 50);
   }
 
+  /* ── Les autres types de questions, sur la page projetée ── */
+  // Les réponses arrivent chiffrées pour cette page seule ; elle n'en montre que des nombres (et les mots du nuage).
+  const barre = pc => { const b = el('span', {}); b.style.width = pc + '%'; return el('span', { class: 'rep-barre', 'aria-hidden': 'true' }, b); };
+  const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+  function montrerCorrectionActivite(d) {
+    const e = st.q[d.id], sc = $('scene'), zone = sc.querySelector('.zone-correction');
+    if (d.type === 'nuage') { majNuage(d); zone.replaceChildren(Q.fragmentCours(Q.rendreCorrectionActivite(d, null))); majStatut(); majAction(); return; }
+    const l = joueursActifs().filter(j => j.rep[d.id]), n = l.length, notes = l.map(j => Q.activites.noter(d, j.rep[d.id].a)), justes = notes.filter(x => x.juste).length;
+    const quoi = d.type === 'relier' ? 'ont tout relié juste' : d.type === 'puzzle' ? 'ont remis tout le programme en ordre' : 'ont trouvé la ligne fautive';
+    const stats = [el('p', { class: 'bilan-q' }, el('strong', {}, justes + ' sur ' + n), ' ' + quoi + '.',
+      e.rebonds && e.rebonds.length ? el('span', { class: 'rebonds' }, ' Beaux rebonds : ' + e.rebonds.join(', ') + '.') : null)];
+    if (n && d.type === 'relier') {
+      const o = Q.activites.ordreDroite(d);
+      stats.push(el('ol', { class: 'reussite' }, d.paires.map((p, i) => { const k = notes.filter(x => x.detail[i]).length; return el('li', {}, el('span', { class: 'q' }, (i + 1) + '→' + Q.LETTRES_LONGUES[o.indexOf(i)]), barre(pct(k, n)), el('span', {}, pct(k, n) + ' %')); })));
+    } else if (n && d.type === 'puzzle') {
+      const moy = notes.reduce((a, x) => a + x.detail.filter(Boolean).length, 0) / n;
+      stats.push(el('p', {}, 'En moyenne, ' + (Math.round(moy * 10) / 10).toString().replace('.', ',') + ' ligne' + (moy >= 2 ? 's' : '') + ' sur ' + d.lignes.length + ' à leur place.'));
+    } else if (n && d.type === 'ligne') {
+      const c = d.code.map((_, i) => l.filter(j => j.rep[d.id].a === i).length);
+      stats.push(el('ol', { class: 'reussite' }, c.map((k, i) => k || i === d.ligne - 1 ? el('li', { class: i === d.ligne - 1 ? 'bonne' : '' }, el('span', { class: 'q' }, 'L' + (i + 1)), barre(pct(k, n)), el('span', {}, k + ' (' + pct(k, n) + ' %)')) : null).filter(Boolean)));
+    }
+    zone.replaceChildren(...stats);
+    // la solution vient du fichier du cours (contenu local)
+    zone.appendChild(Q.fragmentCours(Q.rendreCorrectionActivite(d, null, { tousOuverts: true })));
+    if (d.type !== 'ligne') sc.querySelector('.zone-options').hidden = true;
+    else sc.querySelector('.zone-options').replaceChildren();
+    majStatut(); majAction();
+    if (st.podium === 'chaque' && joueursActifs().length) setTimeout(montrerPodium, 50);
+  }
+
+  /* Le nuage de mots. Texte libre d'élèves, projeté en classe puis envoyé aux téléphones : chaque mot est filtré
+     (js/activites.js), affiché par textContent, jamais avec son auteur·rice. L'enseignant·e garde la main : le nuage
+     reste caché jusqu'à « Montrer le nuage » (les téléphones ne reçoivent rien avant), « Relire les mots » les montre
+     en liste, et « Supprimer » retire un mot à tout moment, partout (tableau et téléphones), sans retour possible. */
+  function supprimerMot(d, k) {
+    const e = st.q[d.id];
+    if (!Q.activites.supprimer(e.nuage, k)) return;
+    sauver(); majNuage(d); majStatut(); if ($('motsBoite').open) remplirMots(d);
+    if (e.revelee) envoyer(messageNuage(d)); // les téléphones l'effacent aussitôt
+    Q.annoncer('Mot supprimé.');
+  }
+  function majNuage(d) {
+    const z = $('scene').querySelector('.zone-nuage'); if (!z || !st.q[d.id] || !st.q[d.id].nuage) return;
+    const e = st.q[d.id], nu = e.nuage, montres = Q.activites.affiches(nu, e.seuil);
+    const reglages = el('div', { class: 'nuage-reglages' },
+      el('label', { for: 'seuilNuage' }, 'Afficher'),
+      (() => { const s = el('select', { id: 'seuilNuage' }, el('option', { value: '1' }, 'tous les mots'), el('option', { value: '2' }, 'les mots qui ont 2 voix au moins')); s.value = String(e.seuil); s.addEventListener('change', () => { e.seuil = s.value === '2' ? 2 : 1; sauver(); majNuage(d); if (e.revelee) envoyer(messageNuage(d)); }); return s; })(),
+      (() => { const b = el('button', { type: 'button', class: 'bouton petit' }, 'Relire et supprimer (' + nu.mots.length + ')'); b.addEventListener('click', () => ouvrirMots(d)); return b; })());
+    if (!e.revelee) {
+      z.replaceChildren(el('p', { class: 'nuage-compte' }, el('strong', {}, pluriel(nu.mots.length, 'mot') + ' reçu' + (nu.mots.length > 1 ? 's' : '')), ' · le nuage s\'affiche au tableau et sur les téléphones quand tu cliques sur « Montrer le nuage ».'), reglages);
+      return;
+    }
+    const max = montres.reduce((a, g) => Math.max(a, g.n), 1);
+    const ordre = Q.melanger(montres, Q.graine(d.id)); // un nuage, pas un classement
+    const ul = el('ul', { class: 'nuage', 'aria-label': 'Le nuage de mots de la classe' }, ordre.map((g, i) => {
+      const b = el('button', { type: 'button', class: 'mot t' + Math.max(1, Math.round(g.n / max * 5)) + ' c' + (i % 4), 'aria-label': g.m + ', ' + pluriel(g.n, 'voix').replace('voixs', 'voix') + '. Supprimer ce mot', title: 'Supprimer ce mot' }, g.m, el('sup', { class: 'voix' }, String(g.n)));
+      b.addEventListener('click', () => supprimerMot(d, g.k));
+      return el('li', {}, b);
+    }));
+    z.replaceChildren(montres.length ? ul : el('p', { class: 'nuage-compte' }, e.seuil === 2 ? 'Aucun mot n\'a 2 voix pour l\'instant.' : 'Aucun mot pour l\'instant.'),
+      el('p', { class: 'aide' }, 'La taille d\'un mot suit son nombre de voix (élèves qui l\'ont proposé ou qui ont voté pour). Un clic sur un mot le supprime, au tableau et sur les téléphones.'), reglages);
+  }
+  function remplirMots(d) {
+    const nu = st.q[d.id].nuage, tous = nu.mots.slice().sort((a, b) => a.k - b.k);
+    $('motsListe').replaceChildren(...(tous.length ? tous.map(w => {
+      const b = el('button', { type: 'button', class: 'bouton petit', 'aria-label': 'Supprimer le mot ' + w.m }, 'Supprimer');
+      b.addEventListener('click', () => supprimerMot(d, w.k));
+      return el('li', {}, el('span', {}, w.m), el('small', {}, ' × ' + Q.activites.voix(w)), b);
+    }) : [el('li', {}, 'Aucun mot pour l\'instant.')]));
+  }
+  function ouvrirMots(d) { remplirMots(d); const b = $('motsBoite'); if (!b.open) { try { b.showModal(); } catch (e) { b.setAttribute('open', ''); } } }
+
   function action() {
     const d = diapo();
     // d'abord les apparitions progressives de la diapositive, une à une
     if (d.type !== 'question' && fragmentsRestants() > 0) { st.f++; sauver(); Q.montrerFragments($('scene'), st.f); envoyer(messagePhase()); majAction(); return; }
     if (st.index === cours.diapositives.length - 1) { terminer(); return; }
-    if (d.type === 'question' && st.q[d.id] && !st.q[d.id].revelee) { corriger(d); montrerCorrection(d); Q.annoncer('Correction affichée.'); return; }
+    if (inter(d) && st.q[d.id] && !st.q[d.id].revelee) { corriger(d); montrerCorrection(d); Q.annoncer(d.type === 'nuage' ? 'Nuage affiché.' : 'Correction affichée.'); return; }
     aller(st.index + 1);
   }
   function aller(i) {
@@ -411,7 +561,7 @@
     $('qrBoite').addEventListener('close', () => { $('btnQrGrand').focus({ preventScroll: true }); });
     document.addEventListener('keydown', ev => {
       if ((ev.key === 'q' || ev.key === 'Q') && !ev.altKey && !ev.ctrlKey && !ev.metaKey && !(ev.target.closest && ev.target.closest('input, select, textarea'))) { ev.preventDefault(); basculerQrGrand(); return; }
-      if (!st.commence || $('podiumBoite').open || $('qrBoite').open) return;
+      if (!st.commence || $('podiumBoite').open || $('qrBoite').open || $('motsBoite').open) return;
       if (ev.target.closest && ev.target.closest('input, select, textarea, button, a, summary')) return;
       if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
       if (ev.key === 'ArrowRight' || ev.key === 'Enter' || ev.key === ' ' || ev.key === 'PageDown') { ev.preventDefault(); action(); }
@@ -422,7 +572,7 @@
     setInterval(() => {
       if (!st.commence) return;
       const d = diapo();
-      if (d.type === 'question' && st.q[d.id] && !st.q[d.id].ferme && st.q[d.id].fin && Date.now() >= st.q[d.id].fin) fermer(d, 'Temps écoulé.');
+      if (inter(d) && d.type !== 'nuage' && st.q[d.id] && !st.q[d.id].ferme && st.q[d.id].fin && Date.now() >= st.q[d.id].fin) fermer(d, 'Temps écoulé.');
       majStatut();
     }, 500);
   }

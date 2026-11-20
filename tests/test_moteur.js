@@ -6,6 +6,7 @@ const path = require('node:path');
 globalThis.location = { search: '' };
 require(path.join(__dirname, '..', 'js', 'commun.js'));
 const B = require(path.join(__dirname, '..', 'js', 'bareme.js'));
+const A = require(path.join(__dirname, '..', 'js', 'activites.js'));
 const Q = globalThis.QuizzNSI;
 let n = 0;
 const essai = (nom, f) => { f(); n++; console.log('ok  ' + nom); };
@@ -129,5 +130,73 @@ essai('mélange : même graine, même ordre ; toutes les valeurs gardées ; grai
   const n0 = [0, 0, 0, 0];
   for (let g = 0; g < 4000; g++) n0[Q.melanger([0, 1, 2, 3], g * 2654435761 >>> 0).indexOf(0)]++;
   assert.ok(n0.every(x => x > 850 && x < 1150), n0.join(' '));
+});
+essai('mélange : le même que le vérificateur Python (outils/verifier_cours.py)', () => {
+  assert.equal(Q.graine('a02'), 3771486418);
+  assert.deepEqual(Q.melanger([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], Q.graine('a02')), [8, 5, 1, 3, 4, 7, 0, 6, 9, 2]);
+});
+
+/* ── Les autres types de questions (js/activites.js) ── */
+const REL = { type: 'relier', id: 'a02', paires: [{ gauche: 'a', droite: '1' }, { gauche: 'b', droite: '2' }, { gauche: 'c', droite: '3' }, { gauche: 'd', droite: '4' }] };
+const PUZ = { type: 'puzzle', id: 'a03', lignes: ['total = 0', 'for i in range(3):', '    total = total + i', 'print(total)'] };
+const LIG = { type: 'ligne', id: 'a04', code: ['a = 1', 'b = 2', 'print(a + c)'], ligne: 3 };
+const NUA = { type: 'nuage', id: 'a01' };
+essai('nuage : un mot ou deux, filtrés', () => {
+  assert.deepEqual(A.filtrerMot('  Répéter  '), { ok: true, mot: 'répéter' });
+  assert.equal(A.filtrerMot('tant que').ok, true);
+  assert.equal(A.filtrerMot("l'itération").ok, true);
+  assert.equal(A.filtrerMot('Ζ').ok, false);
+  for (const m of ['un deux trois', 'x'.repeat(25), '<b>x</b>', 'a&b', 'http://x.fr', 'javascript:x', '"x"', '😀😀', 'répé' + String.fromCharCode(0x200B) + 'ter', 'Nаdia' /* а cyrillique */, 42, null, {}, ['x']])
+    assert.equal(A.filtrerMot(m).ok, false, String(m));
+});
+essai('nuage : proposer sans limite de nombre, les doublons deviennent des voix, un mot supprimé ne revient pas', () => {
+  const n = A.nuageVide(), K = '0123456789abcdef', I = 'fedcba9876543210', Z = '00112233aabbccdd';
+  assert.equal(A.proposer(n, K, 'Répéter'), 'ajoute');
+  assert.equal(A.proposer(n, I, 'REPETER'), 'voix'); // même clé : une voix de plus, pas un doublon
+  assert.equal(A.proposer(n, K, 'boucle'), 'ajoute');
+  assert.equal(A.proposer(n, K, '<b>'), 'refuse');
+  assert.deepEqual(A.affiches(n, 1), [{ k: 0, m: 'répéter', n: 2 }, { k: 1, m: 'boucle', n: 1 }]);
+  assert.equal(A.voter(n, K, 1), false, 'pas de voix pour son propre mot');
+  assert.equal(A.voter(n, I, 1), true); assert.equal(A.voter(n, I, 1), false, 'une voix par élève et par mot');
+  assert.equal(A.voter(n, Z, 99), false, 'mot inconnu');
+  assert.deepEqual(A.affiches(n, 2).map(w => w.m), ['répéter', 'boucle']);
+  assert.equal(A.supprimer(n, 0), true);
+  assert.deepEqual(A.affiches(n, 1).map(w => w.m), ['boucle']);
+  assert.equal(A.proposer(n, Z, 'répéter'), 'supprime'); assert.equal(A.voter(n, Z, 0), false);
+  assert.ok(n.supprimes.every(Number.isInteger), 'seule une empreinte du mot supprimé reste');
+  for (let i = 0; i < 150; i++) A.proposer(n, Z, 'mot' + String.fromCharCode(97 + (i % 26)) + String.fromCharCode(97 + Math.floor(i / 26)));
+  assert.equal(n.mots.filter(w => w.de.includes(Z)).length, A.PAR_ELEVE_MAX, 'frein : 100 mots au plus par élève');
+  assert.ok(A.affiches(n, 1).length <= A.AFFICHES_MAX);
+  assert.deepEqual(A.valider({ type: 'nuage' }, { vote: 3 }), { vote: 3 });
+  for (const r of [{ vote: -1 }, { vote: 3, x: 1 }, { vote: '3' }, {}]) assert.equal(A.valider({ type: 'nuage' }, r), null);
+});
+essai('autres types : réponses forgées refusées', () => {
+  for (const r of [null, undefined, 1, 'x', [0, 1, 2], [0, 1, 2, 3, 4], [0, 0, 1, 2], [0, 1, 2, 9], [0, 1, 2, 1.5], [0, 1, 2, '3'], [-2, 1, 2, 3], { 0: 0 }])
+    assert.equal(A.valider(REL, r), null, JSON.stringify(r));
+  assert.deepEqual(A.valider(REL, [-1, 1, -1, 3]), [-1, 1, -1, 3]); // incomplète, sans doublon : acceptée, notée 2 sur 4
+  for (const r of [[[0, 0], [1, 0], [2, 1]], [[0, 0], [0, 0], [2, 1], [3, 0]], [[0, 0], [1, 0], [2, 7], [3, 0]], [[0, 0], [1, 0], [2, 1], [4, 0]], [[0, 0, 0], [1, 0], [2, 1], [3, 0]], [0, 1, 2, 3]])
+    assert.equal(A.valider(PUZ, r), null, JSON.stringify(r));
+  for (const r of [-1, 3, 1.5, '1', [1], null]) assert.equal(A.valider(LIG, r), null, String(r));
+  assert.equal(A.valider(NUA, '<script>'), null);
+});
+essai('autres types : la note (part juste) et le barème', () => {
+  assert.deepEqual(A.noter(REL, [0, 1, 2, 3]), { juste: true, part: 1, detail: [true, true, true, true] });
+  const n = A.noter(REL, [1, 0, 2, 3]);
+  assert.equal(n.juste, false); assert.equal(n.part, 0.5);
+  assert.equal(B.points({ juste: false, ms: 0, part: n.part }, { duree: 30, precedente: 'faux' }).total, 60); // 10 + 50, sans rapidité ni rebond
+  assert.equal(B.points({ juste: true, ms: 0, part: 1 }, { duree: 30, precedente: 'faux' }).total, 160);
+  assert.equal(A.noter(PUZ, [[0, 0], [1, 0], [2, 1], [3, 0]]).juste, true);
+  assert.equal(A.noter(PUZ, [[0, 0], [1, 0], [2, 0], [3, 0]]).part, 0.75); // une ligne mal indentée
+  assert.equal(A.noter(PUZ, [[1, 0], [0, 0], [2, 1], [3, 0]]).part, 0.5);
+  assert.equal(A.noter(Object.assign({}, PUZ, { indentation: false }), [[0, 0], [1, 0], [2, 0], [3, 0]]).juste, true);
+  assert.equal(A.noter(LIG, 2).juste, true); assert.equal(A.noter(LIG, 0).part, 0);
+  assert.equal(A.noter(NUA, 'boucle'), null); // non noté
+  assert.deepEqual(A.noter(REL, 'x'), { juste: false, part: 0, detail: [] });
+});
+essai('autres types : l\'ordre affiché n\'est jamais la solution du puzzle', () => {
+  for (let k = 0; k < 300; k++) {
+    const d = Object.assign({}, PUZ, { id: 'p' + k });
+    assert.notDeepEqual(A.ordrePuzzle(d).map(i => d.lignes[i]), d.lignes);
+  }
 });
 console.log(n + ' tests réussis');
