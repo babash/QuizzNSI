@@ -65,6 +65,10 @@ select, input[type="text"] { font: inherit; color: var(--ink); background: var(-
 .podium .rang { font-family: var(--display); font-weight: 700; color: var(--accent); }
 .podium .qui { font-weight: 700; overflow-wrap: anywhere; } .podium .pts { font-family: var(--display); }
 .podium li.place1 { border: 3px solid var(--accent); font-size: 1.5em; }
+.rejouer-bloc { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 10px; }
+.rejouer-bloc .qr { width: 170px; flex: none; }
+.rejouer-bloc > div:last-child { flex: 1 1 260px; min-width: 0; }
+.rejouer-bloc .lien { font-size: 15px; }
 .reussite { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 16px; }
 .reussite li { display: grid; grid-template-columns: 4ch 1fr 5ch; gap: 8px; align-items: center; font-size: 15px; }
 .reussite .rep-barre > span { background: var(--accent); }
@@ -98,5 +102,6 @@ select, input[type="text"] { font: inherit; color: var(--ink); background: var(-
 .suite li.f { border-color: var(--ko); color: var(--ko); background: var(--ko-fond); }
 .gains { font-family: var(--display); font-size: 1.15em; }
 .gains small { font-family: var(--text); color: var(--ink-soft); font-size: .75em; }
+.fin-liens { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .envoyee { text-align: center; font-weight: 700; }
 #autreHote { margin: 12px 16px; }

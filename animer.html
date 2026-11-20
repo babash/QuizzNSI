@@ -85,6 +85,13 @@
   <dialog id="podiumBoite" class="podium-boite" aria-labelledby="podiumTitre">
     <h2 id="podiumTitre">Podium</h2>
     <div id="podiumCorps"></div>
+    <div id="rejouerBloc" class="rejouer-bloc" hidden>
+      <div id="qrRejouer" class="qr" role="img" aria-label="QR code pour rejouer le quiz seul·e"></div>
+      <div><h3>Rejouer le quiz seul·e</h3>
+        <p>Chaque élève peut rejouer le quiz sur son téléphone, sans l'enseignant·e : les questions dans un nouvel ordre, les réponses mélangées. Rien n'est envoyé.</p>
+        <p class="lien" id="lienRejouer"></p>
+        <p><button class="bouton" type="button" id="btnRejouerGrand">QR code « rejouer » en grand (Q)</button></p></div>
+    </div>
     <form method="dialog"><button class="bouton fort" type="submit">Fermer</button></form>
   </dialog>
 </main>

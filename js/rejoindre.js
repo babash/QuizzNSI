@@ -322,7 +322,10 @@
       const arevoir = h.ordre.filter(q => !h.res[q].juste).map(q => (cours.questions.find(x => x.id === q) || {}).numero).filter(Number.isInteger);
       s.appendChild(arevoir.length ? el('p', {}, 'À revoir : question' + (arevoir.length > 1 ? 's' : '') + ' ' + arevoir.join(', ') + '.') : el('p', {}, 'Tout juste : tu peux aider un·e camarade.'));
     } else s.appendChild(el('p', {}, 'Merci d\'avoir suivi le cours.'));
-    s.appendChild(el('p', {}, el('a', { class: 'bouton fort', href: 'revision.html?cours=' + encodeURIComponent(cours.id) }, 'Revoir le cours seul·e')));
+    // rejouer le quiz seul·e, sans l'enseignant·e : questions et réponses mélangées, rien n'est envoyé
+    s.appendChild(el('p', { class: 'fin-liens' }, el('a', { class: 'bouton fort', href: 'revision.html?cours=' + encodeURIComponent(cours.id) + '&rejouer' }, 'Rejouer le quiz seul·e'),
+      ' ', el('a', { class: 'bouton', href: 'revision.html?cours=' + encodeURIComponent(cours.id) }, 'Revoir le cours')));
+    s.appendChild(el('p', { class: 'aide' }, 'Rejouer : les questions dans un nouvel ordre, les réponses mélangées, corrigées tout de suite. Rien n\'est envoyé.'));
     ecran(s);
     // la séance est finie : le code, le pseudo, l'identifiant et l'historique gardés sur l'appareil sont effacés
     Q.stock.oublier('eleve'); Q.stock.oublier('hist:' + moi.id);

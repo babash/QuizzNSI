@@ -87,7 +87,7 @@
     const enLigne = l.filter(j => presents.has(j.id));
     const txt = pluriel(enLigne.length, 'élève');
     $('nbEleves').textContent = enLigne.length; $('nbEleves2').textContent = enLigne.length; $('nbBarre').textContent = txt;
-    $('qrNb').textContent = 'Dans la séance : ' + txt + '.';
+    if (!st.fini) $('qrNb').textContent = 'Dans la séance : ' + txt + '.';
     const items = () => l.map(j => el('li', { class: presents.has(j.id) ? '' : 'absent' },
       el('span', {}, j.pseudo, presents.has(j.id) ? null : el('small', {}, ' (déconnecté·e)')),
       el('button', { type: 'button', class: 'retirer', 'data-retirer': j.id, 'aria-label': 'Retirer le pseudo ' + j.pseudo }, 'Retirer')));
@@ -302,6 +302,9 @@
   function montrerPodium(final) {
     $('podiumTitre').textContent = st.podium === 'jamais' && final !== 'force' ? 'Bilan de la classe' : 'Podium';
     $('podiumCorps').replaceChildren(...noeudsPodium(final));
+    // à la fin de la séance : le QR code « rejouer » (lien fabriqué ici à partir de l'identifiant du cours)
+    $('rejouerBloc').hidden = !st.fini;
+    if (st.fini) { $('qrRejouer').innerHTML = qrSvg(Q.lienRejouer(cours.id)); $('lienRejouer').textContent = Q.lienRejouer(cours.id).replace(/^https?:\/\//, ''); }
     const b = $('podiumBoite');
     if (!b.open) { try { b.showModal(); } catch (e) { b.setAttribute('open', ''); } }
   }
@@ -318,9 +321,20 @@
   /* ── Le QR code en très grand ───────────── */
   // À tout moment (accueil, cours, question, fin) : le bouton ou la touche Q l'ouvre, Q, Échap ou « Fermer » le referme.
   // Un·e élève en retard rejoint en cours de route : la page projetée lui renvoie la diapositive ou la question en cours.
+  // Après la fin de la séance, il montre le QR code « rejouer » : chaque élève rejoue le quiz seul·e.
+  function qrSvg(lien) { try { const q = qrcode(0, 'M'); q.addData(lien); q.make(); return q.createSvgTag({ scalable: true, margin: 0 }); } catch (e) { return ''; } }
+  function modeQrGrand() {
+    const fin = !!(st && st.fini), sansProto = l => l.replace(/^https?:\/\//, '');
+    $('qrTitre').textContent = fin ? 'Rejouer le quiz seul·e' : 'Rejoindre la séance';
+    $('qrEtape2').hidden = $('codeGrand').hidden = fin;
+    $('qrNb').textContent = fin ? 'Les questions dans un nouvel ordre, les réponses mélangées. Rien n\'est envoyé.' : 'Dans la séance : ' + pluriel(presentsActifs().length, 'élève') + '.';
+    if (fin) { $('lienGrand').textContent = sansProto(Q.lienRejouer(cours.id)); $('qrGrand').innerHTML = qrSvg(Q.lienRejouer(cours.id)); $('qrGrand').setAttribute('aria-label', 'QR code pour rejouer le quiz seul·e'); }
+    else { $('lienGrand').textContent = sansProto(Q.lienEleve(st.code)); $('qrGrand').innerHTML = qrSvg(Q.lienEleve(st.code)); $('qrGrand').setAttribute('aria-label', 'QR code du lien de la séance'); }
+  }
   function basculerQrGrand() {
     const b = $('qrBoite');
     if (b.open) { b.close(); return; }
+    modeQrGrand();
     if ($('podiumBoite').open) $('podiumBoite').close();
     try { b.showModal(); } catch (e) { b.setAttribute('open', ''); }
     $('qrFermer').focus();
@@ -393,6 +407,7 @@
     $('btnRejoindre').addEventListener('click', () => { const c = $('carteRejoindre'); c.hidden = !c.hidden; $('btnRejoindre').setAttribute('aria-expanded', String(!c.hidden)); });
     $('btnPleinEcran').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {}); });
     $('btnQrGrand').addEventListener('click', basculerQrGrand);
+    $('btnRejouerGrand').addEventListener('click', basculerQrGrand);
     $('qrBoite').addEventListener('close', () => { $('btnQrGrand').focus({ preventScroll: true }); });
     document.addEventListener('keydown', ev => {
       if ((ev.key === 'q' || ev.key === 'Q') && !ev.altKey && !ev.ctrlKey && !ev.metaKey && !(ev.target.closest && ev.target.closest('input, select, textarea'))) { ev.preventDefault(); basculerQrGrand(); return; }

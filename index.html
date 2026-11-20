@@ -39,7 +39,7 @@
   </div>
   <h2>Les cours</h2>
   <ul class="cours-liste" id="cours"><li class="cadre"><strong>Piles et files</strong> · Terminale NSI · 20 questions ·
-    <a href="revision.html?cours=piles-files">réviser</a> · <a href="animer.html?cours=piles-files">animer</a> · <a href="imprimer.html?cours=piles-files">imprimer</a> · <a href="imprimer.html?cours=piles-files&amp;corrige">corrigé</a></li></ul>
+    <a href="revision.html?cours=piles-files">réviser</a> · <a href="animer.html?cours=piles-files">animer</a> · <a href="imprimer.html?cours=piles-files">imprimer</a> · <a href="imprimer.html?cours=piles-files&amp;corrige">corrigé</a> · <a href="revision.html?cours=piles-files&amp;rejouer">rejouer</a></li></ul>
   <p class="info">Rien n'est enregistré en ligne. En classe, le prénom ou le pseudo et les réponses passent seulement en direct dans la séance ; sur le téléphone, ils sont effacés à la fin de la séance (et sinon au premier chargement d'une page de QuizzNSI après 12 heures). Tu veux d'abord essayer seul·e ? Ouvre l'animation <a href="animer.html?cours=piles-files&amp;demo">en mode démo</a> : la séance passe alors entre les onglets de ton navigateur.</p>
 </main>
 <footer class="pied">QuizzNSI · Babash - NSI Tani Malandi · code MIT, contenus CC BY-SA 4.0 · <a href="https://github.com/babash/QuizzNSI" rel="noopener">Code source sur GitHub</a></footer>
@@ -53,7 +53,7 @@
     document.getElementById('cours').innerHTML = c.cours.filter(x => /^[a-z0-9-]{1,60}$/.test(x.id)).map(x => {
       const id = encodeURIComponent(x.id);
       return '<li class="cadre"><strong>' + Q.echapper(x.titre) + '</strong> · ' + Q.echapper(x.niveau) + ' · ' + (x.questions | 0) + ' questions · '
-        + '<a href="revision.html?cours=' + id + '">réviser</a> · <a href="animer.html?cours=' + id + '">animer</a> · <a href="imprimer.html?cours=' + id + '">imprimer</a> · <a href="imprimer.html?cours=' + id + '&amp;corrige">corrigé</a></li>';
+        + '<a href="revision.html?cours=' + id + '">réviser</a> · <a href="animer.html?cours=' + id + '">animer</a> · <a href="imprimer.html?cours=' + id + '">imprimer</a> · <a href="imprimer.html?cours=' + id + '&amp;corrige">corrigé</a> · <a href="revision.html?cours=' + id + '&amp;rejouer">rejouer</a></li>';
     }).join('');
   } catch (e) { /* la liste écrite dans la page reste */ }
 })();
