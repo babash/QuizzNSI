@@ -282,7 +282,7 @@
     const d = diapo();
     $('scene').innerHTML = Q.rendreDiapo(cours, d, { boutons: false });
     st.f = Math.min(st.f, Q.nbFragments($('scene'))); Q.montrerFragments($('scene'), st.f);
-    $('compteur').textContent = (st.index + 1) + ' / ' + cours.diapositives.length + (qcu(d) ? ' · question ' + d.numero + ' sur ' + cours.questions.length : inter(d) ? ' · ' + Q.activites.NOMS[d.type].toLowerCase() : '');
+    $('compteur').textContent = (st.index + 1) + ' / ' + cours.diapositives.length + (qcu(d) ? ' · question ' + d.numero + ' sur ' + cours.total : inter(d) ? (d.type !== 'nuage' ? ' · question ' + d.numero + ' sur ' + cours.total : '') + ' · ' + Q.activites.NOMS[d.type].toLowerCase() : '');
     $('barre').style.width = ((st.index + 1) / cours.diapositives.length * 100) + '%';
     $('prec').disabled = st.index === 0;
     if (inter(d)) { ouvrir(d); if (st.q[d.id].revelee) montrerCorrection(d); else if (d.type === 'nuage') majNuage(d); }

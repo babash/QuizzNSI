@@ -73,6 +73,19 @@
     return '<pre class="code' + (num ? ' numerote' : '') + '"><code>' + corps + '</code></pre>';
   };
 
+  // La console Python : une ligne par ligne de sortie, compacte, sous le code. Le nom de l'erreur est en
+  // gras et en couleur, les chaînes citées en italique (lisible aussi en noir et blanc). Le texte vient du
+  // fichier du cours (vérifié par exécution), jamais du canal ; tout est échappé.
+  Q.console = function (lignes) {
+    if (!Array.isArray(lignes) || !lignes.length) return '';
+    const ligne = l => {
+      const m = /^([A-Za-z_][\w.]*(?:Error|Exception|Warning|Interrupt|Exit))(:?)(.*)$/.exec(String(l));
+      const reste = s => echapper(s).replace(/&#39;([^&]*?)&#39;|'([^']*?)'/g, (x) => '<span class="c-ch">' + x + '</span>');
+      return '<span class="ligne">' + (m ? '<span class="c-err">' + echapper(m[1]) + '</span>' + m[2] + reste(m[3]) : reste(String(l))) + '</span>';
+    };
+    return '<pre class="console" aria-label="Console Python"><code>' + lignes.map(ligne).join('') + '</code></pre>';
+  };
+
   /* ── Formes des options ──────────────────── */
   const CHEMINS = [
     '<path d="M12 3 22 21H2z"/>',                 // A : triangle
@@ -179,8 +192,19 @@
     cours.questions.forEach((q, i) => { q.numero = i + 1; q.bonne = q.options.findIndex(o => o.juste === true); });
     // les autres types de questions (nuage de mots, relier, puzzle de code, ligne fautive) : js/activites.js
     cours.interactifs = cours.diapositives.filter(d => Q.INTERACTIFS.includes(d.type));
+    // toutes les questions notées comptent (à choix, relier, puzzle, ligne fautive ; pas le nuage de mots) :
+    // « Question 12 sur 12 » ; une question à choix garde son rang parmi toutes
+    Q.numeroter(cours, cours.interactifs);
     return cours;
   };
+  Q.numeroter = function (cours, liste) {
+    const notees = liste.filter(d => d.type !== 'nuage');
+    notees.forEach((d, i) => { d.numero = i + 1; });
+    cours.total = notees.length;
+    return notees;
+  };
+  // « Question 3 sur 12 », pour une question à choix comme pour les autres types notés
+  Q.numQuestion = (d, cours) => d.type !== 'nuage' && Number.isInteger(d.numero) ? 'Question ' + d.numero + ' sur ' + cours.total : '';
   // Contrôle léger, dans le navigateur ; le contrôle complet est outils/verifier_cours.py.
   Q.INTERACTIFS = ['question', 'nuage', 'relier', 'puzzle', 'ligne'];
   Q.controlerCours = function (c) {
@@ -239,9 +263,20 @@
   // sont effacés à la fin de la séance (par la page élève), et sinon au premier chargement d'une page de
   // QuizzNSI après 12 heures ; une entrée mal formée est effacée au premier chargement.
   Q.DUREE_ELEVE = 12 * 3600 * 1000;
+  // La progression du mode révision (« quizz-nsi:revision:<cours> ») est gardée un jour au plus.
+  Q.DUREE_REVISION = 24 * 3600 * 1000;
   Q.menage = function (maintenant) {
     const t = maintenant || Date.now();
     let efface = false;
+    try {
+      const rev = [];
+      for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^quizz-nsi:revision:/.test(k)) rev.push(k); }
+      for (const k of rev) {
+        let v = null; try { v = JSON.parse(localStorage.getItem(k)); } catch (e) { v = null; }
+        const ok = v && typeof v === 'object' && Number.isFinite(v.t) && v.t <= t + 60000 && t - v.t <= Q.DUREE_REVISION;
+        if (!ok) { localStorage.removeItem(k); efface = true; }
+      }
+    } catch (e) { /* stockage bloqué : rien à effacer */ }
     try {
       const cles = [];
       for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k === 'quizz-nsi:eleve' || /^quizz-nsi:hist:/.test(k)) cles.push(k); }

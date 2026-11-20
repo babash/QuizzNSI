@@ -129,7 +129,10 @@
     btn.addEventListener('click', () => { if (choix !== null) o.onValider(choix); });
     maj();
     const noeud = el('div', { class: 'lignes-zone' }, el('p', { class: 'aide' }, 'Touche la ligne qui contient l\'erreur, puis valide.'),
-      el('div', { class: 'c-lignes', role: 'group', 'aria-label': 'Les lignes du programme' }, boutons), el('p', {}, btn));
+      el('div', { class: 'c-lignes', role: 'group', 'aria-label': 'Les lignes du programme' }, boutons));
+    // le message d'erreur réel, dans une console compacte sous le code
+    if (d.console) noeud.appendChild(Q.fragmentCours(Q.console(d.console)));
+    noeud.appendChild(el('p', {}, btn));
     return {
       noeud, valeur: () => choix,
       bloquer() { boutons.forEach(b => { b.disabled = true; }); btn.disabled = true; },

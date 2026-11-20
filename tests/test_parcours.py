@@ -8,7 +8,7 @@ Lancement, depuis la racine de QuizzNSI :
    par le chemin « en ligne » de js/seance.js, mais avec un faux client temps réel
    (tests/faux-temps-reel.js) : aucune requête ne sort, la base n'est jamais appelée.
    On contrôle : le pseudo invisible refusé, le pseudo déjà pris refusé, le pseudo retiré par
-   l'enseignant·e, les 20 questions, les points de chaque élève (recalculés ici d'après le barème),
+   l'enseignant·e, les questions à choix, les points de chaque élève (recalculés ici d'après le barème),
    le podium et l'écran de fin.
 1 bis. Injection : un·e élève malveillant·e qui connaît le code de séance envoie, pour chaque type de
    message et chaque champ, une valeur forgée (balise <img onerror>, nombre énorme, négatif, objet,
@@ -21,7 +21,7 @@ Lancement, depuis la racine de QuizzNSI :
 1 ter. Le QR code en très grand (bouton et touche Q), à l'accueil et pendant une question, à 3 largeurs et
    dans les 2 thèmes ; un·e élève en retard rejoint en pleine question et reçoit ses points.
 2. Le mode autonome : les diapositives, une erreur puis la bonne réponse, le bilan ;
-   rejouer le quiz : les 20 questions dans un autre ordre, les réponses mélangées, rien d'envoyé.
+   rejouer le quiz : toutes les questions dans un autre ordre, les réponses mélangées, rien d'envoyé.
 3. La version imprimable : le sujet et le corrigé en PDF A4, sans débordement.
 4. Toutes les pages à 320, 768 et 1440 px, en clair et en obscur : aucun défilement horizontal.
 Aucune erreur JavaScript n'est tolérée ; toute requête vers un autre site est bloquée et signalée.
@@ -42,6 +42,9 @@ with open(os.path.join(RACINE, "cours", "piles-files.json"), encoding="utf-8") a
     COURS = json.load(f)
 QUESTIONS = [d for d in COURS["diapositives"] if d["type"] == "question"]
 BONNES = [next(i for i, o in enumerate(q["options"]) if o.get("juste")) for q in QUESTIONS]
+N = len(QUESTIONS)   # les questions à choix du cours (11 dans l'introduction « piles et files », plus une ligne fautive)
+AUTRES = [d for d in COURS["diapositives"] if d["type"] in ("relier", "puzzle", "ligne")]
+T = N + len(AUTRES)  # toutes les questions notées comptent : « Question 3 sur 12 »
 with open(os.path.join(RACINE, "tests", "faux-temps-reel.js"), encoding="utf-8") as f:
     FAUX = f.read()
 
@@ -202,7 +205,7 @@ def injection(nav, base):
     prof.click("#action")
     prof.wait_for_selector("#podiumBoite[open]")
     attendre_texte(prof, "#podiumCorps", "Kobalt " + MARQUE)
-    attendre_texte(eleves[0], ".q-num", "Question 1 sur 20 · correction")
+    attendre_texte(eleves[0], ".q-num", f"Question 1 sur {T} · correction")
     attendre_texte(eleves[0], "#points", "110 pts")
     fermer = "() => { const b = document.getElementById('podiumBoite'); if (b.open) b.close(); }"
     for _ in range(250):  # jusqu'à la fin, en fermant le podium affiché après chaque question
@@ -310,8 +313,8 @@ def seance(nav, base):
     prof.select_option("#duree", "0")
     prof.click("#commencer")
     # Kobalt : une erreur sur 4, Ixo : toujours A (ses rebonds sont rares)
-    choix_n = [BONNES[k] if k % 4 != 1 else (BONNES[k] + 1) % 4 for k in range(20)]
-    choix_a = [0] * 20
+    choix_n = [BONNES[k] if k % 4 != 1 else (BONNES[k] + 1) % 4 for k in range(N)]
+    choix_a = [0] * N
     attendu = {"Kobalt": 0, "Ixo": 0}
     prec = {"Kobalt": None, "Ixo": None}
     k = 0
@@ -332,7 +335,7 @@ def seance(nav, base):
             continue
         for page, nom, ch in ((eleve_1, "Kobalt", choix_n), (eleve_2, "Ixo", choix_a)):
             page.wait_for_selector(f'section.d-question button.option[data-choix="{ch[k]}"]:not([disabled])', timeout=8000)
-            attendre_texte(page, ".q-num", f"Question {k + 1} sur 20")
+            attendre_texte(page, ".q-num", f"Question {k + 1} sur {T}")
             if k == 2 and nom == "Kobalt":
                 page.screenshot(path=os.path.join(SORTIE, "eleve-question-320.png"), full_page=True)
             page.click(f'button.option[data-choix="{ch[k]}"]')
@@ -361,14 +364,14 @@ def seance(nav, base):
             prof.screenshot(path=os.path.join(SORTIE, "seance-question-1440.png"))
         prof.click("#action")  # montrer la réponse
         for page, nom in ((eleve_1, "Kobalt"), (eleve_2, "Ixo")):
-            attendre_texte(page, ".q-num", f"Question {k + 1} sur 20 · correction")
+            attendre_texte(page, ".q-num", f"Question {k + 1} sur {T} · correction")
             attendre_texte(page, "#points", f"{attendu[nom]} pts")
         if k == 4:
             prof.screenshot(path=os.path.join(SORTIE, "seance-correction-1440.png"), full_page=True)
             eleve_1.screenshot(path=os.path.join(SORTIE, "eleve-correction-320.png"), full_page=True)
             eleve_2.screenshot(path=os.path.join(SORTIE, "eleve-correction-320-obscur.png"), full_page=True)
         k += 1
-    assert k == 20
+    assert k == N
     prof.click("#action")  # terminer la séance
     prof.wait_for_selector("#podiumBoite[open]")
     attendre_texte(prof, "#podiumCorps", "Kobalt")
@@ -390,7 +393,7 @@ def seance(nav, base):
     prof.wait_for_selector("#qrBoite:not([open])", state="attached")
     assert eleve_1.evaluate("localStorage.getItem('quizz-nsi:eleve')") is None, "l'entrée « eleve » doit être effacée à la fin de la séance"
     attendre_texte(eleve_2, "#ecran", f"{attendu['Ixo']} points")
-    print(f"  séance : 20 questions, points Kobalt {attendu['Kobalt']}, Ixo {attendu['Ixo']}, envois {prof.evaluate('window.__fauxTempsReel.envois')}")
+    print(f"  séance : {N} questions à choix, points Kobalt {attendu['Kobalt']}, Ixo {attendu['Ixo']}, envois {prof.evaluate('window.__fauxTempsReel.envois')}")
     ctx.close()
 
 
@@ -443,7 +446,7 @@ def qr_et_retard(nav, base):
     e.fill("#champPseudo", "Retard")
     e.click("#rejoindre")
     e.wait_for_selector('button.option[data-choix="0"]:not([disabled])')
-    attendre_texte(e, ".q-num", "Question 1 sur 20")
+    attendre_texte(e, ".q-num", f"Question 1 sur {T}")
     e.click(f'button.option[data-choix="{BONNES[0]}"]')
     attendre_texte(e, "#envoyee", "reçue")
     attendre_texte(prof, "#statutQ", "Tout le monde a répondu")
@@ -705,11 +708,11 @@ def autonome(nav, base):
             p.keyboard.press("abcd"[BONNES[k]])  # au clavier
             attendre_texte(p, ".zone-correction", "Bonne réponse")
             k += 1
-    attendre_texte(p, "#scene", "19 sur 20")
+    attendre_texte(p, "#scene", f"{N - 1} sur {T}")
     p.screenshot(path=os.path.join(SORTIE, "autonome-bilan-390.png"), full_page=True)
     p.reload()  # la progression reste sur l'appareil
-    attendre_texte(p, "#scene", "19 sur 20")
-    print(f"  autonome : {len(COURS['diapositives'])} diapositives, apparitions progressives, bilan 19 sur 20 du premier coup")
+    attendre_texte(p, "#scene", f"{N - 1} sur {T}")
+    print(f"  autonome : {len(COURS['diapositives'])} diapositives, apparitions progressives, bilan {N - 1} sur {T} du premier coup")
     ctx.close()
 
 
@@ -730,8 +733,17 @@ def rejouer(nav, base):
         juste_de[q["nom"].replace("`", "")] = (o.get("texte") or " ".join(o.get("code", []))).replace("`", "")
     noms, places = [], []
     p.click("#suiv")
-    for k in range(20):
-        p.wait_for_selector(f'section.d-question[data-q="{k + 1}"]')
+    k = 0
+    for pos in range(T):
+        attendre_texte(p, ".q-num", f"Question {pos + 1} sur {T}")  # toutes les questions numérotées, dans le nouvel ordre
+        if p.locator(".c-ligne").count():  # la ligne fautive, mélangée avec les questions à choix
+            lg = AUTRES[0]
+            p.locator(".c-ligne").nth(lg["ligne"] - 1).click()
+            p.click(".lignes-zone button.bouton.fort")
+            attendre_texte(p, ".zone-correction", lg["feedback"].split(":")[0])
+            p.click("#suiv")
+            continue
+        p.wait_for_selector(f'section.d-question[data-q="{pos + 1}"]')
         nom = p.inner_text(".q-nom").strip()
         noms.append(nom)
         bonne = juste_de[nom]
@@ -745,14 +757,16 @@ def rejouer(nav, base):
         p.click(f'button.option[data-choix="{i}"]')
         attendre_texte(p, ".zone-correction", "Bonne réponse")
         p.click("#suiv")
-    attendre_texte(p, "#scene", "19 sur 20")
+        k += 1
+    assert k == N
+    attendre_texte(p, "#scene", f"{N - 1 + len(AUTRES)} sur {T}")
     p.screenshot(path=os.path.join(SORTIE, "rejouer-bilan-320.png"), full_page=True)
     originaux = [q["nom"].replace("`", "") for q in QUESTIONS]
-    assert sorted(noms) == sorted(originaux) and noms != originaux, "les 20 questions, dans un autre ordre"
+    assert sorted(noms) == sorted(originaux) and noms != originaux, "toutes les questions, dans un autre ordre"
     assert places != BONNES, "les réponses sont mélangées"
     # le même ordre après un rechargement (onglet), un nouvel ordre avec « Rejouer encore »
     p.reload()
-    attendre_texte(p, "#scene", "19 sur 20")
+    attendre_texte(p, "#scene", f"{N - 1 + len(AUTRES)} sur {T}")
     assert p.evaluate("Object.keys(localStorage).filter(k => k.includes('rejouer'))") == [], "rien dans le stockage durable"
     p.click("#recommencer")
     p.wait_for_selector("section.d-titre")
@@ -760,7 +774,7 @@ def rejouer(nav, base):
     autre = p.inner_text(".q-nom").strip()
     p.wait_for_timeout(100)
     assert not envois, f"des données sont parties : {envois}"
-    print(f"  rejouer : 20 questions mélangées (la 1re était {noms[0][:30]}…, puis {autre[:30]}…), réponses mélangées, rien d'envoyé, rien de durable")
+    print(f"  rejouer : {N} questions à choix et {len(AUTRES)} autre(s) mélangées (la 1re était {noms[0][:30]}…, puis {autre[:30]}…), réponses mélangées, rien d'envoyé, rien de durable")
     ctx.close()
 
 
@@ -802,8 +816,8 @@ def autonome_autres(nav, base):
     attendre_texte(p, ".zone-correction", "Bien vu")
     p.goto(url + str(len(diapos))); p.reload()
     p.wait_for_selector("section.d-bilan")
-    attendre_texte(p, "#scene", "Les autres questions : 1 sur 3")
-    print("  autonome, autres types : nuage, relier (2 essais), puzzle, ligne fautive (2 essais) ; bilan 1 sur 3 du premier coup")
+    attendre_texte(p, "#scene", "1 sur 3 du premier coup")
+    print("  autonome, autres types : nuage, relier (2 essais), puzzle, ligne fautive (2 essais) ; bilan 1 sur 3 du premier coup (toutes les questions notées comptent)")
     ctx.close()
 
 
@@ -827,7 +841,7 @@ def impression(nav, base):
 
 
 def rendus(nav, base):
-    pages = ["index.html", "revision.html#7", "revision.html#30", "revision.html?rejouer", "revision.html?cours=demo-types-de-questions#3",
+    pages = ["index.html", "revision.html#2", "revision.html#14", "revision.html#21", "revision.html?rejouer", "revision.html?cours=demo-types-de-questions#3",
              "revision.html?cours=demo-types-de-questions#4", "revision.html?cours=demo-types-de-questions#5", "revision.html?cours=demo-types-de-questions&rejouer", "animer.html", "rejoindre.html", "imprimer.html", "imprimer.html?corrige"]
     for theme in ("light", "dark"):
         for largeur in (320, 768, 1440):
@@ -843,7 +857,7 @@ def rendus(nav, base):
                 p.screenshot(path=os.path.join(SORTIE, f"rendu-{nom}-{largeur}-{theme}.png"), full_page=True)
                 p.close()
             ctx.close()
-    print("  rendus : 12 pages × 3 largeurs × 2 thèmes, sans défilement horizontal")
+    print(f"  rendus : {len(pages)} pages × 3 largeurs × 2 thèmes, sans défilement horizontal")
 
 
 def main():

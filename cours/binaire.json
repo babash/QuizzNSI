@@ -1,0 +1,640 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "binaire",
+ "titre": "Binaire et hexadécimal",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Représentation des données : types et valeurs de base ; écriture d'un entier positif dans une base b ≥ 2 (passer de la représentation d'une base dans une autre ; les bases 2, 10 et 16 sont privilégiées)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/binaire/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « L'écriture binaire et hexadécimale » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je passe d'un petit nombre binaire à la base 10, et je connais les valeurs d'un octet.",
+  "Niveau 2 : j'écris un entier en base 2 et je passe de la base 2 à la base 16.",
+  "Niveau 3 : je lis `bin`, `hex` et `int` en Python, et j'y trouve l'erreur."
+ ],
+ "conventions": [
+  "On écrit les entiers positifs seulement : les entiers négatifs viendront plus tard.",
+  "Le bit de droite vaut 1, le suivant 2, puis 4, 8, 16…",
+  "La base est toujours précisée : « `1101` en base 2 », « `42` en base 16 »."
+ ],
+ "prelude_python": [],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Écrire en binaire et en hexadécimal",
+   "conventions": false,
+   "texte": [
+    "Représentation des données · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Que peut-on dire avec trois lampadaires ?",
+   "texte": [
+    "Sur le front de mer, un lampadaire est allumé ou éteint : 1 ou 0."
+   ],
+   "pistes": [
+    "Avec un lampadaire : 2 messages.",
+    "Avec trois ?"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Bits] Combien de messages avec 3 bits ?",
+   "objectif": "Compter les valeurs possibles avec quelques bits.",
+   "enonce": [
+    "Trois lampadaires, chacun allumé (1) ou éteint (0), envoient un message, comme 101 ou 110.",
+    "Combien de messages différents peut-on former ?"
+   ],
+   "options": [
+    {
+     "texte": "6",
+     "feedback": "Tu as fait 2 × 3. Mais chaque nouveau lampadaire double le nombre de messages : 2 × 2 × 2 = 8, de 000 à 111."
+    },
+    {
+     "texte": "9",
+     "feedback": "Tu as fait 3 × 3, ou 3 au carré. Chaque lampadaire n'a que 2 états : on multiplie par 2 à chaque lampadaire, 2 × 2 × 2 = 8."
+    },
+    {
+     "texte": "3",
+     "feedback": "3, c'est le nombre de lampadaires. Les messages sont toutes les combinaisons : 000, 001, 010, 011, 100, 101, 110, 111."
+    },
+    {
+     "texte": "8",
+     "juste": true,
+     "feedback": "Oui. Chaque lampadaire double le nombre de messages : 2, puis 4, puis 8. De 000 à 111, il y en a 2 × 2 × 2 = 8."
+    }
+   ],
+   "explication": "Avec n bits, on forme 2 puissance n messages : 8 avec 3 bits.",
+   "verifications": [
+    {
+     "code": [
+      "from itertools import product",
+      "print(len(list(product([0, 1], repeat=3))))"
+     ],
+     "sortie": "8"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "La base 2",
+   "texte": [
+    "Chaque chiffre, ou ==bit==, vaut une ==puissance de 2==.",
+    "On additionne les puissances sous les bits à 1."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 336 96\" width=\"336\" height=\"96\" role=\"img\" aria-label=\"Le nombre binaire 1011 0110 sous les puissances de 2 : 128, 64, 32, 16, 8, 4, 2, 1. Les bits à 1 sont sous 128, 32, 16, 4 et 2.\"><title>Chaque bit vaut une puissance de 2</title><text x=\"22\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">128</text><rect x=\"4\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case sommet\"/><text x=\"22\" y=\"54\" text-anchor=\"middle\" class=\"val\">1</text><text x=\"22\" y=\"88\" text-anchor=\"middle\" class=\"etiq petit\">128</text><text x=\"63\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">64</text><rect x=\"45\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case\"/><text x=\"63\" y=\"54\" text-anchor=\"middle\" class=\"val\">0</text><text x=\"104\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">32</text><rect x=\"86\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case sommet\"/><text x=\"104\" y=\"54\" text-anchor=\"middle\" class=\"val\">1</text><text x=\"104\" y=\"88\" text-anchor=\"middle\" class=\"etiq petit\">32</text><text x=\"145\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">16</text><rect x=\"127\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case sommet\"/><text x=\"145\" y=\"54\" text-anchor=\"middle\" class=\"val\">1</text><text x=\"145\" y=\"88\" text-anchor=\"middle\" class=\"etiq petit\">16</text><text x=\"186\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">8</text><rect x=\"168\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case\"/><text x=\"186\" y=\"54\" text-anchor=\"middle\" class=\"val\">0</text><text x=\"227\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">4</text><rect x=\"209\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case sommet\"/><text x=\"227\" y=\"54\" text-anchor=\"middle\" class=\"val\">1</text><text x=\"227\" y=\"88\" text-anchor=\"middle\" class=\"etiq petit\">4</text><text x=\"268\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">2</text><rect x=\"250\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case sommet\"/><text x=\"268\" y=\"54\" text-anchor=\"middle\" class=\"val\">1</text><text x=\"268\" y=\"88\" text-anchor=\"middle\" class=\"etiq petit\">2</text><text x=\"309\" y=\"20\" text-anchor=\"middle\" class=\"muet petit\">1</text><rect x=\"291\" y=\"30\" width=\"36\" height=\"36\" rx=\"4\" class=\"case\"/><text x=\"309\" y=\"54\" text-anchor=\"middle\" class=\"val\">0</text></svg>",
+    "legende": "128 + 32 + 16 + 4 + 2 = 182"
+   },
+   "vocabulaire": "bit = binary digit ; base 2 = binaire, binary"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Base 2 → base 10] Lire un nombre binaire",
+   "objectif": "Convertir un petit nombre binaire en base 10.",
+   "enonce": [
+    "Que vaut, en base 10, le nombre `1101` écrit en base 2 ?"
+   ],
+   "options": [
+    {
+     "texte": "11",
+     "feedback": "Tu as lu les puissances dans le mauvais sens : 1011 vaut 11. Le bit de droite vaut 1, puis 2, 4, 8 en allant vers la gauche."
+    },
+    {
+     "texte": "13",
+     "juste": true,
+     "feedback": "Oui. Sous les bits, de droite à gauche : 1, 2, 4, 8. Les bits à 1 sont sous 8, 4 et 1 : 8 + 4 + 1 = 13."
+    },
+    {
+     "texte": "1101",
+     "feedback": "Le même écrit, mais pas le même nombre : en base 2, chaque chiffre vaut une puissance de 2. Ici, 8 + 4 + 1 = 13."
+    },
+    {
+     "texte": "3",
+     "feedback": "3, c'est le nombre de bits à 1. Chacun vaut une puissance de 2 différente : 8 + 4 + 1 = 13."
+    }
+   ],
+   "explication": "`1101` en base 2 : 8 + 4 + 1 = 13.",
+   "verifications": [
+    {
+     "code": [
+      "print(int(\"1101\", 2), int(\"1011\", 2))"
+     ],
+     "sortie": "13 11"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Bits et octets",
+   "texte": [
+    "Un ==octet==, c'est 8 bits : il code les entiers de 0 à 255.",
+    "Avec ==n bits== : de 0 à 2ⁿ − 1."
+   ],
+   "vocabulaire": "octet = byte"
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Octet] Le plus grand entier d'un octet",
+   "objectif": "Connaître les entiers qu'on code sur un octet.",
+   "enonce": [
+    "Un octet compte 8 bits.",
+    "Quel est le plus grand entier qu'il peut coder ?"
+   ],
+   "options": [
+    {
+     "texte": "255",
+     "juste": true,
+     "feedback": "Oui. `11111111` vaut 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255. Avec 0, cela fait 256 valeurs."
+    },
+    {
+     "texte": "256",
+     "feedback": "Presque : 256 = 2 puissance 8, c'est le nombre de valeurs. Comme on commence à 0, la plus grande est 256 − 1 = 255."
+    },
+    {
+     "texte": "128",
+     "feedback": "128 est la valeur du bit de gauche seul, `10000000`. Si tous les bits sont à 1, on ajoute les autres puissances : 255."
+    },
+    {
+     "texte": "8",
+     "feedback": "8, c'est le nombre de bits d'un octet. Le plus grand entier, `11111111`, vaut 255."
+    }
+   ],
+   "explication": "Un octet : de 0 à 255, soit 256 valeurs.",
+   "verifications": [
+    {
+     "code": [
+      "print(int(\"11111111\", 2), 2 ** 8)"
+     ],
+     "sortie": "255 256"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Bits] Combien de bits pour 300 ?",
+   "objectif": "Trouver le nombre de bits nécessaire pour écrire un entier.",
+   "enonce": [
+    "Combien de bits faut-il, au moins, pour écrire 300 en base 2 ?"
+   ],
+   "options": [
+    {
+     "texte": "8",
+     "feedback": "8 bits, un octet, vont jusqu'à 255 seulement : 300 est trop grand. On n'est pas limité à un octet : avec 9 bits, on va jusqu'à 511."
+    },
+    {
+     "texte": "3",
+     "feedback": "3, c'est le nombre de chiffres de 300 en base 10. En base 2, il faut beaucoup plus de chiffres : 300 s'écrit `100101100`."
+    },
+    {
+     "texte": "9",
+     "juste": true,
+     "feedback": "Oui. 8 bits vont jusqu'à 255 : pas assez. 9 bits vont jusqu'à 2 puissance 9 − 1 = 511 : 300 tient."
+    },
+    {
+     "texte": "300",
+     "feedback": "Il ne faut pas un bit par unité : chaque bit double les possibilités. 9 bits suffisent pour aller jusqu'à 511."
+    }
+   ],
+   "explication": "n bits codent de 0 à 2ⁿ − 1 : 300 demande 9 bits.",
+   "verifications": [
+    {
+     "code": [
+      "print(bin(300), len(bin(300)) - 2, 2 ** 8 - 1, 2 ** 9 - 1)"
+     ],
+     "sortie": "0b100101100 9 255 511"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "De la base 10 à la base 2",
+   "texte": [
+    "On divise par 2 jusqu'à obtenir 0.",
+    "On lit les ==restes== de ==bas en haut==."
+   ],
+   "code": [
+    "n = 45",
+    "b = \"\"",
+    "while n > 0:",
+    "    # reste ajouté à gauche",
+    "    b = str(n % 2) + b",
+    "    n = n // 2",
+    "print(b)  # 101101"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Base 10 → base 2] Écrire 22 en binaire",
+   "objectif": "Convertir un entier en base 2 par divisions successives.",
+   "enonce": [
+    "On écrit 22 en base 2 par divisions successives par 2 : les restes sont, dans l'ordre des divisions, 0, 1, 1, 0, 1.",
+    "Quelle est l'écriture de 22 en base 2 ?"
+   ],
+   "options": [
+    {
+     "texte": "`01101`",
+     "feedback": "Tu as lu les restes de haut en bas : l'écriture est à l'envers. Le premier reste est le bit de droite : on lit de bas en haut."
+    },
+    {
+     "texte": "`1011`",
+     "feedback": "`1011` vaut 11, le premier quotient : il manque le premier reste, 0, à droite. 22 = 16 + 4 + 2 s'écrit `10110`."
+    },
+    {
+     "texte": "`10100`",
+     "feedback": "`10100` vaut 16 + 4 = 20 : il manque 2. Vérifie toujours en additionnant les puissances de 2 sous les bits à 1."
+    },
+    {
+     "texte": "`10110`",
+     "juste": true,
+     "feedback": "Oui. Les restes se lisent de bas en haut : 1, 0, 1, 1, 0. Vérification : 16 + 4 + 2 = 22."
+    }
+   ],
+   "explication": "Restes lus de bas en haut ; on vérifie en additionnant.",
+   "trace": {
+    "colonnes": [
+     "Division",
+     "Quotient",
+     "Reste"
+    ],
+    "lignes": [
+     [
+      "22 ÷ 2",
+      "11",
+      "0"
+     ],
+     [
+      "11 ÷ 2",
+      "5",
+      "1"
+     ],
+     [
+      "5 ÷ 2",
+      "2",
+      "1"
+     ],
+     [
+      "2 ÷ 2",
+      "1",
+      "0"
+     ],
+     [
+      "1 ÷ 2",
+      "0",
+      "1"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [
+      "n, restes = 22, []",
+      "while n > 0:",
+      "    restes.append(n % 2)",
+      "    n = n // 2",
+      "print(restes, bin(22))"
+     ],
+     "sortie": "[0, 1, 1, 0, 1] 0b10110"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Base 2] Un nombre qui finit par 0",
+   "objectif": "Relier le bit de droite à la parité d'un entier.",
+   "enonce": [
+    "Un entier s'écrit en base 2 avec un 0 tout à droite, comme `10110`.",
+    "Que peut-on dire de cet entier ?"
+   ],
+   "options": [
+    {
+     "texte": "Il est pair.",
+     "juste": true,
+     "feedback": "Oui. Le bit de droite vaut 1 ; tous les autres valent 2, 4, 8… qui sont pairs. Si ce bit est 0, la somme est paire."
+    },
+    {
+     "texte": "Il est impair.",
+     "feedback": "C'est l'inverse : un 1 à droite ajoute 1 à une somme de nombres pairs, ce qui donne un impair. Un 0 à droite donne un nombre pair."
+    },
+    {
+     "texte": "Il est multiple de 10.",
+     "feedback": "En base 10, un 0 à droite donne un multiple de 10. En base 2, un 0 à droite donne un multiple de 2 : un nombre pair."
+    },
+    {
+     "texte": "On ne peut rien dire sans le convertir.",
+     "feedback": "Pas besoin de tout calculer : seul le bit de droite vaut 1, les autres sont des puissances de 2 paires. Un 0 à droite : c'est pair."
+    }
+   ],
+   "explication": "Bit de droite à 0 : pair ; à 1 : impair.",
+   "verifications": [
+    {
+     "code": [
+      "print(all(int(bin(n)[-1]) == n % 2 for n in range(1000)))"
+     ],
+     "sortie": "True"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "La base 16",
+   "texte": [
+    "Seize chiffres : 0 à 9, puis A (10) à F (15).",
+    "Un chiffre ==hexadécimal== = ==4 bits==, en partant de la droite."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 300 120\" width=\"300\" height=\"120\" role=\"img\" aria-label=\"1011 0110 coupé en deux paquets de 4 bits : 1011 vaut 11, soit B ; 0110 vaut 6. Donc B6 en base 16.\"><title>Un paquet de 4 bits donne un chiffre hexadécimal</title><defs><marker id=\"pointe-hexa\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\"><path d=\"M0 0 10 5 0 10z\" class=\"pointe\"/></marker></defs><rect x=\"20\" y=\"10\" width=\"110\" height=\"36\" rx=\"4\" class=\"case\"/><text x=\"75\" y=\"34\" text-anchor=\"middle\" class=\"val\">1011</text><rect x=\"170\" y=\"10\" width=\"110\" height=\"36\" rx=\"4\" class=\"case\"/><text x=\"225\" y=\"34\" text-anchor=\"middle\" class=\"val\">0110</text><line x1=\"75\" y1=\"50\" x2=\"75\" y2=\"74\" class=\"trait\" marker-end=\"url(#pointe-hexa)\"/><line x1=\"225\" y1=\"50\" x2=\"225\" y2=\"74\" class=\"trait\" marker-end=\"url(#pointe-hexa)\"/><rect x=\"50\" y=\"78\" width=\"50\" height=\"36\" rx=\"4\" class=\"case sommet\"/><text x=\"75\" y=\"102\" text-anchor=\"middle\" class=\"val\">B</text><text x=\"110\" y=\"102\" class=\"muet petit\">(11)</text><rect x=\"200\" y=\"78\" width=\"50\" height=\"36\" rx=\"4\" class=\"case sommet\"/><text x=\"225\" y=\"102\" text-anchor=\"middle\" class=\"val\">6</text></svg>"
+   },
+   "vocabulaire": "hexadécimal = hexadecimal ; base 16"
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Base 2 → base 16] Couper en paquets de 4",
+   "objectif": "Convertir de la base 2 à la base 16 par paquets de 4 bits.",
+   "enonce": [
+    "Quelle est l'écriture en base 16 du nombre binaire `101101` ?"
+   ],
+   "options": [
+    {
+     "texte": "`B1`",
+     "feedback": "Tu as coupé depuis la gauche : `1011` puis `01`. Les paquets se forment depuis la droite : `10 1101`, soit `2D`."
+    },
+    {
+     "texte": "`2D`",
+     "juste": true,
+     "feedback": "Oui. On coupe depuis la droite : `10` et `1101`. `10` vaut 2 et `1101` vaut 13, soit D. Donc `2D`."
+    },
+    {
+     "texte": "`45`",
+     "feedback": "45 est bien la valeur de `101101`, mais en base 10. En base 16, on coupe en paquets de 4 bits : `10 1101`, soit `2D`."
+    },
+    {
+     "texte": "`213`",
+     "feedback": "Le paquet `1101` vaut 13, mais en base 16, 13 s'écrit avec un seul chiffre : D. Donc `2D`."
+    }
+   ],
+   "explication": "Paquets de 4 bits depuis la droite ; 10 à 15 s'écrivent A à F.",
+   "verifications": [
+    {
+     "code": [
+      "print(hex(0b101101), int(\"101101\", 2))"
+     ],
+     "sortie": "0x2d 45"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Base 16 → base 10] Un hexadécimal sans lettre",
+   "objectif": "Convertir de la base 16 à la base 10.",
+   "enonce": [
+    "Que vaut, en base 10, le nombre `42` écrit en base 16 ?"
+   ],
+   "options": [
+    {
+     "texte": "42",
+     "feedback": "Un nombre hexadécimal n'a pas forcément de lettres : `42` en base 16 n'est pas 42. Le 4 vaut 4 × 16 = 64, donc 66."
+    },
+    {
+     "texte": "66",
+     "juste": true,
+     "feedback": "Oui. En base 16, le 4 vaut 4 × 16 et le 2 vaut 2 : 64 + 2 = 66."
+    },
+    {
+     "texte": "6",
+     "feedback": "Additionner les chiffres ne suffit pas : chacun vaut une puissance de 16. Le 4 vaut 4 × 16 = 64, le 2 vaut 2 : 66."
+    },
+    {
+     "texte": "36",
+     "feedback": "Tu as lu les chiffres à l'envers, comme `24` : 2 × 16 + 4 = 36. Le chiffre de gauche est celui qui vaut des seizaines."
+    }
+   ],
+   "explication": "En base 16, chaque chiffre vaut une puissance de 16 : `42` = 4 × 16 + 2.",
+   "verifications": [
+    {
+     "code": [
+      "print(int(\"42\", 16), int(\"24\", 16))"
+     ],
+     "sortie": "66 36"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Base 16 → base 2] Écrire `A3` en binaire",
+   "objectif": "Convertir de la base 16 à la base 2, chiffre par chiffre.",
+   "enonce": [
+    "Quelle est l'écriture en base 2 du nombre `A3` écrit en base 16 ?"
+   ],
+   "options": [
+    {
+     "texte": "`101011`",
+     "feedback": "Tu as écrit 3 avec 2 bits seulement, `11`. Chaque chiffre hexadécimal fait 4 bits : 3 s'écrit `0011`, sinon on obtient un autre nombre."
+    },
+    {
+     "texte": "`163`",
+     "feedback": "163 est la valeur de `A3` en base 10, pas son écriture en base 2. En base 2, chaque chiffre hexadécimal donne 4 bits."
+    },
+    {
+     "texte": "`10100011`",
+     "juste": true,
+     "feedback": "Oui. A vaut 10, soit `1010` ; 3 s'écrit `0011` sur 4 bits. On colle les paquets : `1010 0011`."
+    },
+    {
+     "texte": "`11000101`",
+     "feedback": "Ce sont les bits de `A3` lus à l'envers. On garde l'ordre : A d'abord, `1010`, puis 3, `0011`."
+    }
+   ],
+   "explication": "Un chiffre hexadécimal donne 4 bits, zéros compris.",
+   "verifications": [
+    {
+     "code": [
+      "print(bin(0xA3), 0xA3, int(\"101011\", 2))"
+     ],
+     "sortie": "0b10100011 163 43"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Base 16] Une couleur sur une page web",
+   "objectif": "Lire un octet écrit en hexadécimal dans un usage courant.",
+   "enonce": [
+    "Sur une page web, la couleur orange s'écrit `#FF8000` : trois octets en base 16, pour le rouge, le vert et le bleu.",
+    "Que vaut, en base 10, l'octet du rouge, `FF` ?"
+   ],
+   "options": [
+    {
+     "texte": "255",
+     "juste": true,
+     "feedback": "Oui. F vaut 15 : 15 × 16 + 15 = 255. C'est le plus grand octet : `11111111` en base 2. Le rouge est au maximum."
+    },
+    {
+     "texte": "1515",
+     "feedback": "Tu as écrit 15 et 15 côte à côte. En base 16, le F de gauche vaut 15 × 16 : 240 + 15 = 255."
+    },
+    {
+     "texte": "30",
+     "feedback": "Additionner les chiffres ne suffit pas : le F de gauche vaut 15 × 16 = 240. Donc `FF` = 240 + 15 = 255."
+    },
+    {
+     "texte": "256",
+     "feedback": "256 ne tient pas dans un octet : la plus grande valeur est 255. `FF` = 15 × 16 + 15 = 255."
+    }
+   ],
+   "explication": "`FF` en base 16 = 255 = `11111111` en base 2 : un octet plein.",
+   "verifications": [
+    {
+     "code": [
+      "print(int(\"FF\", 16), bin(0xFF), int(\"80\", 16))"
+     ],
+     "sortie": "255 0b11111111 128"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "En Python",
+   "texte": [
+    "`bin` et `hex` écrivent un entier en base 2 ou 16 ; `int(texte, base)` le relit."
+   ],
+   "code": [
+    "bin(45)    # '0b101101'",
+    "hex(182)   # '0xb6'",
+    "int(\"101101\", 2)  # 45",
+    "int(\"B6\", 16)  # 182"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Python] Les préfixes `0b` et `0x`",
+   "objectif": "Lire ce qu'affichent `bin` et un entier écrit en base 2 dans le code.",
+   "enonce": [
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "print(bin(45), 0b101101)"
+   ],
+   "options": [
+    {
+     "texte": "101101 45",
+     "feedback": "`bin` ajoute toujours le préfixe `0b`, qui dit « base 2 » : il affiche `0b101101`. Pour enlever le préfixe, on écrit `bin(45)[2:]`."
+    },
+    {
+     "texte": "0b101101 0b101101",
+     "feedback": "Écrire `0b101101` dans le code donne un entier, 45. `print` affiche un entier en base 10, quelle que soit la façon dont on l'a écrit."
+    },
+    {
+     "texte": "45 101101",
+     "feedback": "C'est l'inverse : `bin(45)` donne l'écriture en base 2, `0b101101`, et l'entier `0b101101` s'affiche en base 10, 45."
+    },
+    {
+     "texte": "0b101101 45",
+     "juste": true,
+     "feedback": "Oui. `bin(45)` renvoie le texte `\"0b101101\"`, avec le préfixe de la base 2. `0b101101` dans le code est un entier : Python l'affiche en base 10, 45."
+    }
+   ],
+   "explication": "`bin(n)` donne un texte en base 2 ; `0b...` est un entier, affiché en base 10.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "0b101101 45"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Un octet qui n'est pas un texte",
+   "objectif": "Lire un message d'erreur de `int` et savoir ce qu'il attend.",
+   "enonce": [
+    "Ce programme doit afficher la valeur en base 10 de l'octet `10110110`.",
+    "Il s'arrête à la ligne 2 sur l'erreur affichée sous le code (« `int()` ne peut pas convertir autre chose qu'un texte quand on donne la base »)."
+   ],
+   "code": [
+    "octet = 10110110",
+    "valeur = int(octet, 2)",
+    "print(valeur)"
+   ],
+   "console": [
+    "TypeError: int() can't convert non-string with explicit base"
+   ],
+   "ligne": 1,
+   "correction": "octet = \"10110110\"",
+   "feedback": "Bien vu : sans guillemets, `10110110` est un entier de base 10, dix millions et plus. `int(..., 2)` attend un texte, `\"10110110\"`. Corrigé : 182.",
+   "feedback_autre": "Cette ligne est correcte. Le message dit que `int()` a reçu autre chose qu'un texte : cherche la ligne où `octet` est créé.",
+   "pieges": {
+    "2": "Python s'arrête bien ici, et `int(octet, 2)` est la bonne façon de lire un nombre binaire, à condition que `octet` soit un texte. Regarde comment `octet` est créé."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "182"
+    }
+   ],
+   "explication": "`int(texte, 2)` lit un texte écrit en base 2 : l'octet s'écrit entre guillemets."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "Conversion",
+     "Méthode"
+    ],
+    "lignes": [
+     [
+      "base 2 → base 10",
+      "additionner les puissances de 2 sous les bits à 1"
+     ],
+     [
+      "base 10 → base 2",
+      "diviser par 2, lire les restes de bas en haut"
+     ],
+     [
+      "base 2 ↔ base 16",
+      "paquets de 4 bits depuis la droite ; A à F pour 10 à 15"
+     ],
+     [
+      "n bits",
+      "de 0 à 2ⁿ − 1 ; un octet : de 0 à 255"
+     ],
+     [
+      "En Python",
+      "`bin(n)`, `hex(n)`, `int(texte, base)`"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle conversion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu écrire ton âge en base 2 devant un·e camarade ?"
+   ]
+  }
+ ]
+}

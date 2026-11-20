@@ -1,0 +1,769 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "dichotomie",
+ "titre": "Recherche dichotomique",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Algorithmique : recherche dichotomique dans un tableau trié (montrer la terminaison de la recherche dichotomique à l'aide d'un variant de boucle ; coût logarithmique)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/dichotomie/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « La recherche dichotomique » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je sais qu'une dichotomie demande un tableau trié, et je choisis la moitié où continuer.",
+  "Niveau 2 : je déroule une dichotomie avec `g`, `d` et `m`.",
+  "Niveau 3 : je lis le code, j'y trouve l'erreur et j'explique pourquoi la boucle s'arrête."
+ ],
+ "conventions": [
+  "Les cases d'un tableau sont numérotées à partir de 0.",
+  "`g` et `d` sont les indices de gauche et de droite de la zone de recherche ; `m` est l'indice du milieu.",
+  "`dichotomie(t, v)` renvoie l'indice de `v` dans `t`, ou -1 si `v` est absent."
+ ],
+ "prelude_python": [
+  "def dichotomie(t, v):",
+  "    g, d = 0, len(t) - 1",
+  "    while g <= d:",
+  "        m = (g + d) // 2",
+  "        if t[m] < v:",
+  "            g = m + 1",
+  "        elif t[m] > v:",
+  "            d = m - 1",
+  "        else:",
+  "            return m",
+  "    return -1",
+  "def tours(t, v):",
+  "    g, d, n = 0, len(t) - 1, 0",
+  "    while g <= d:",
+  "        n = n + 1",
+  "        m = (g + d) // 2",
+  "        if t[m] < v:",
+  "            g = m + 1",
+  "        elif t[m] > v:",
+  "            d = m - 1",
+  "        else:",
+  "            return n",
+  "    return n",
+  "def pire(n):",
+  "    t = list(range(0, 2 * n, 2))",
+  "    return max(tours(t, v) for v in range(-1, 2 * n + 1))"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "La recherche dichotomique",
+   "conventions": false,
+   "texte": [
+    "Algorithmique · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Devine mon nombre entre 1 et 100 !",
+   "texte": [
+    "On ne répond que « plus grand », « plus petit » ou « trouvé »."
+   ],
+   "pistes": [
+    "Proposer 1, puis 2, puis 3… ?",
+    "Ou commencer par 50 ?"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Principe] Deviner un nombre en peu d'essais",
+   "objectif": "Découvrir l'idée de la dichotomie : couper en deux ce qui reste possible.",
+   "enonce": [
+    "Pour deviner un nombre entre 1 et 100, on n'entend que « plus grand », « plus petit » ou « trouvé ».",
+    "Quelle stratégie garantit le moins d'essais, même dans le pire des cas ?"
+   ],
+   "options": [
+    {
+     "texte": "Proposer 1, puis 2, puis 3, jusqu'à trouver.",
+     "feedback": "Ça marche, mais au pire il faut 100 essais : chaque réponse n'élimine qu'un seul nombre. On n'utilise pas « plus grand » ou « plus petit »."
+    },
+    {
+     "texte": "Proposer des nombres au hasard parmi ceux qui restent.",
+     "feedback": "Le hasard peut avoir de la chance, mais rien n'est garanti : un essai près du bord n'élimine presque rien. Le milieu élimine toujours la moitié."
+    },
+    {
+     "texte": "Proposer toujours le milieu des nombres possibles.",
+     "juste": true,
+     "feedback": "Oui. Chaque réponse élimine la moitié des nombres : 100, 50, 25, 13, 7, 4, 2, 1. En 7 essais au plus, c'est trouvé."
+    },
+    {
+     "texte": "Commencer par 50, puis avancer de 1 en 1.",
+     "feedback": "50 est un excellent début : il élimine la moitié. Mais ensuite, avancer de 1 en 1 peut demander encore 50 essais. Il faut couper en deux à chaque fois."
+    }
+   ],
+   "explication": "Viser le milieu élimine la moitié des possibilités à chaque essai.",
+   "verifications": [
+    {
+     "code": [
+      "print(pire(100))"
+     ],
+     "sortie": "7"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "La dichotomie",
+   "texte": [
+    "Dans un tableau ==trié==, on regarde la case du ==milieu==.",
+    "Selon sa valeur, on garde la moitié gauche ou la moitié droite."
+   ],
+   "schema": {
+    "type": "liste",
+    "elements": [
+     2,
+     5,
+     8,
+     12,
+     16,
+     23,
+     38,
+     56,
+     72,
+     91
+    ]
+   },
+   "vocabulaire": "recherche dichotomique = binary search ; milieu = middle ; trié = sorted"
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Principe] La moitié qu'on garde",
+   "objectif": "Choisir la moitié du tableau où continuer la recherche.",
+   "enonce": [
+    "On cherche 23 dans le tableau trié `t = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]`.",
+    "Le milieu est la case 4, qui contient 16. Où continue-t-on la recherche ?"
+   ],
+   "options": [
+    {
+     "texte": "Dans les cases 5 à 9, de 23 à 91.",
+     "juste": true,
+     "feedback": "Oui. 16 est plus petit que 23 et le tableau est trié : 23 ne peut être qu'à droite. On garde les cases 5 à 9."
+    },
+    {
+     "texte": "Dans les cases 0 à 3, de 2 à 12.",
+     "feedback": "C'est la mauvaise moitié : 16 est plus petit que 23, et tout ce qui est à gauche de 16 est encore plus petit. 23 est à droite."
+    },
+    {
+     "texte": "Dans les cases 4 à 9, de 16 à 91.",
+     "feedback": "La bonne moitié, mais on garde la case 4 pour rien : on sait déjà que 16 n'est pas 23. On repart de la case 5."
+    },
+    {
+     "texte": "Dans tout le tableau, sauf la case 4.",
+     "feedback": "On n'enlève qu'une case : ce serait presque une recherche case par case. La force de la dichotomie : éliminer toute une moitié d'un coup."
+    }
+   ],
+   "explication": "Milieu trop petit : on garde la droite ; trop grand : la gauche.",
+   "verifications": [
+    {
+     "code": [
+      "t = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]",
+      "m = (0 + len(t) - 1) // 2",
+      "print(m, t[m], t[m + 1:])"
+     ],
+     "sortie": "4 16 [23, 38, 56, 72, 91]"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Prérequis] Un tableau qui n'est pas trié",
+   "objectif": "Savoir que la dichotomie ne marche que sur un tableau trié.",
+   "enonce": [
+    "La fonction `dichotomie(t, v)` applique la méthode de l'écran précédent : elle renvoie l'indice de `v` dans `t`, ou -1 si elle ne le trouve pas.",
+    "On l'utilise sur un tableau qui n'est pas trié. Qu'affiche ce code ?"
+   ],
+   "code": [
+    "t = [16, 2, 91, 23, 8]",
+    "print(dichotomie(t, 23))"
+   ],
+   "options": [
+    {
+     "texte": "3 : 23 est en case 3, et la fonction le trouve.",
+     "feedback": "23 est bien en case 3, mais la dichotomie ne le voit pas : le milieu vaut 91, elle part à gauche, alors que 23 est à droite."
+    },
+    {
+     "texte": "Une erreur, car le tableau n'est pas trié.",
+     "feedback": "Python ne vérifie pas que le tableau est trié : aucun message d'erreur. C'est plus grave : la réponse est fausse, en silence."
+    },
+    {
+     "texte": "23 : la valeur cherchée.",
+     "feedback": "La fonction renvoie un indice, la position de la valeur, pas la valeur elle-même. Et ici, elle ne trouve même pas 23."
+    },
+    {
+     "texte": "-1 : elle rate 23, pourtant présent.",
+     "juste": true,
+     "feedback": "Exact. Milieu : 91, trop grand, on part à gauche… et on rate 23, qui est à droite. Sans tableau trié, la réponse peut être fausse."
+    }
+   ],
+   "explication": "Dichotomie seulement sur un tableau trié : sinon, réponse fausse sans erreur.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "-1"
+    },
+    {
+     "code": [
+      "print(t.index(23))"
+     ],
+     "sortie": "-1\n3"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Gauche, droite, milieu",
+   "texte": [
+    "Zone de recherche : de `g` à `d`, milieu `m = (g + d) // 2`.",
+    "On s'arrête si on trouve, ou si la zone est ==vide== : `g > d`."
+   ],
+   "schema": {
+    "type": "liste",
+    "elements": [
+     2,
+     5,
+     8,
+     12,
+     16,
+     23,
+     38,
+     56,
+     72,
+     91
+    ],
+    "legende": "Au départ, `m` = 4."
+   },
+   "vocabulaire": "g = gauche ; d = droite ; m = milieu"
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Trace] Chercher une valeur absente",
+   "objectif": "Dérouler la dichotomie pas à pas, avec `g`, `d` et `m`.",
+   "enonce": [
+    "Voici la fonction `dichotomie`. On cherche 7 dans le tableau trié de l'écran précédent.",
+    "Quelles valeurs prend `m`, et que renvoie la fonction ?"
+   ],
+   "code": [
+    "def dichotomie(t, v):",
+    "    g, d = 0, len(t) - 1",
+    "    while g <= d:",
+    "        m = (g + d) // 2",
+    "        if t[m] < v:",
+    "            g = m + 1",
+    "        elif t[m] > v:",
+    "            d = m - 1",
+    "        else:",
+    "            return m",
+    "    return -1",
+    "t = [2, 5, 8, 12, 16,",
+    "     23, 38, 56, 72, 91]",
+    "r = dichotomie(t, 7)"
+   ],
+   "options": [
+    {
+     "texte": "4, 1, 2, 3, puis la fonction renvoie -1.",
+     "feedback": "Après `m` = 2, `t[2]` = 8 > 7, donc `d` = 1 : `g` = 2 > `d`, la zone est vide. La boucle s'arrête, la case 3 n'est pas regardée."
+    },
+    {
+     "texte": "4, 1, 2, puis la fonction renvoie -1.",
+     "juste": true,
+     "feedback": "Oui. 16 > 7 : à gauche. 5 < 7 : à droite. 8 > 7 : à gauche, `d` devient 1, plus petit que `g` = 2. Zone vide : -1."
+    },
+    {
+     "texte": "4, puis la fonction renvoie -1, car 16 > 7.",
+     "feedback": "16 > 7 ne prouve pas que 7 est absent : il pourrait être à gauche. On continue dans la moitié gauche, jusqu'à une zone vide."
+    },
+    {
+     "texte": "0, 1, 2, puis la fonction renvoie -1.",
+     "feedback": "Ce serait un parcours case par case. La dichotomie commence au milieu : `m = (0 + 9) // 2`, soit 4."
+    }
+   ],
+   "explication": "La recherche s'arrête quand la zone est vide : `g > d`, on renvoie -1.",
+   "trace": {
+    "colonnes": [
+     "g",
+     "d",
+     "m",
+     "t[m]",
+     "Décision"
+    ],
+    "lignes": [
+     [
+      "0",
+      "9",
+      "4",
+      "16",
+      "16 > 7 : à gauche"
+     ],
+     [
+      "0",
+      "3",
+      "1",
+      "5",
+      "5 < 7 : à droite"
+     ],
+     [
+      "2",
+      "3",
+      "2",
+      "8",
+      "8 > 7 : à gauche, d = 1 < g, renvoie -1"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [
+      "g, d = 0, len(t) - 1",
+      "while g <= d:",
+      "    m = (g + d) // 2",
+      "    print(m)",
+      "    if t[m] < 7:",
+      "        g = m + 1",
+      "    elif t[m] > 7:",
+      "        d = m - 1",
+      "    else:",
+      "        break",
+      "print(r)"
+     ],
+     "sortie": "4\n1\n2\n-1"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Un milieu qui n'est pas entier",
+   "objectif": "Lire un message d'erreur et retrouver le calcul du milieu.",
+   "enonce": [
+    "Ce programme cherche le départ de 14 h dans la liste `h` des horaires de la barge, rangés dans l'ordre.",
+    "Il s'arrête à la ligne 5 sur l'erreur affichée sous le code (« les indices d'une liste sont des entiers, pas des flottants »)."
+   ],
+   "code": [
+    "def dichotomie(t, v):",
+    "    g, d = 0, len(t) - 1",
+    "    while g <= d:",
+    "        m = (g + d) / 2",
+    "        if t[m] < v:",
+    "            g = m + 1",
+    "        elif t[m] > v:",
+    "            d = m - 1",
+    "        else:",
+    "            return m",
+    "    return -1",
+    "h = [6, 8, 11, 14, 17, 20]",
+    "print(dichotomie(h, 14))"
+   ],
+   "console": [
+    "TypeError: list indices must be integers or slices, not float"
+   ],
+   "ligne": 4,
+   "correction": "        m = (g + d) // 2",
+   "feedback": "Bien vu : `/` donne un flottant, ici 2.5, qui ne peut pas être un indice. La division entière `//` donne 2. Corrigé, le programme affiche 3.",
+   "feedback_autre": "Cette ligne est correcte. Le message parle d'un indice flottant : cherche la ligne qui calcule l'indice `m`.",
+   "pieges": {
+    "5": "Python s'arrête bien ici, mais `t[m]` est juste si `m` est un entier. Le problème vient de la ligne qui calcule `m`.",
+    "2": "`len(t) - 1` est bien un entier : la dernière case. Le message parle d'un indice flottant : regarde le calcul de `m`."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "3"
+    }
+   ],
+   "explication": "Le milieu se calcule avec la division entière : `m = (g + d) // 2`."
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Code] Pourquoi `g = m + 1` ?",
+   "objectif": "Comprendre pourquoi on exclut la case du milieu de la nouvelle zone.",
+   "enonce": [
+    "Dans la fonction `dichotomie`, quand `t[m] < v`, on écrit `g = m + 1`.",
+    "Pourquoi pas `g = m` ?"
+   ],
+   "code": [
+    "def dichotomie(t, v):",
+    "    g, d = 0, len(t) - 1",
+    "    while g <= d:",
+    "        m = (g + d) // 2",
+    "        if t[m] < v:",
+    "            g = m + 1",
+    "        elif t[m] > v:",
+    "            d = m - 1",
+    "        else:",
+    "            return m",
+    "    return -1"
+   ],
+   "options": [
+    {
+     "texte": "Pour aller plus vite, en sautant une case de plus.",
+     "feedback": "On ne saute aucune case utile : `t[m]` vient d'être comparé, on sait qu'il n'est pas `v`. Et avec `g = m`, la zone pourrait ne plus rétrécir."
+    },
+    {
+     "texte": "La case `m` est déjà vue : on l'exclut de la zone.",
+     "juste": true,
+     "feedback": "Oui. `t[m]` n'est pas `v`, inutile de le garder. Et surtout, avec `g = m`, la zone pourrait ne plus rétrécir : boucle sans fin."
+    },
+    {
+     "texte": "Parce que les indices commencent à 1 en Python.",
+     "feedback": "En Python, les indices commencent à 0 : `len(t) - 1` est la dernière case. Le `+ 1` sert à exclure la case `m`, déjà regardée."
+    },
+    {
+     "texte": "Sans raison : `g = m` donne toujours le même résultat.",
+     "feedback": "Pas toujours : quand `g` et `d` sont voisins, `m` reste égal à `g` et la boucle tourne sans fin. Exemple : chercher 9 dans `[3, 6]`."
+    }
+   ],
+   "explication": "`g = m + 1` et `d = m - 1` : la zone rétrécit à chaque tour.",
+   "verifications": [
+    {
+     "code": [
+      "print(dichotomie([3, 6], 9))"
+     ],
+     "sortie": "-1"
+    },
+    {
+     "code": [
+      "t, v = [3, 6], 9",
+      "g, d, n = 0, 1, 0",
+      "while g <= d and n < 100:",
+      "    n = n + 1",
+      "    m = (g + d) // 2",
+      "    if t[m] < v:",
+      "        g = m",
+      "    else:",
+      "        d = m - 1",
+      "print(n, g, d)"
+     ],
+     "sortie": "100 0 1",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Code] `while g < d` ou `while g <= d` ?",
+   "objectif": "Voir pourquoi la boucle doit tourner tant que `g <= d`.",
+   "enonce": [
+    "Dans la fonction `dichotomie`, on remplace `while g <= d:` par `while g < d:`.",
+    "Que renvoie alors `dichotomie([4, 9], 9)` ?"
+   ],
+   "code": [
+    "def dichotomie(t, v):",
+    "    g, d = 0, len(t) - 1",
+    "    while g < d:",
+    "        m = (g + d) // 2",
+    "        if t[m] < v:",
+    "            g = m + 1",
+    "        elif t[m] > v:",
+    "            d = m - 1",
+    "        else:",
+    "            return m",
+    "    return -1",
+    "t = [4, 9]",
+    "print(dichotomie(t, 9))"
+   ],
+   "options": [
+    {
+     "texte": "-1, alors que 9 est en case 1.",
+     "juste": true,
+     "feedback": "Exact. Premier tour : 4 < 9, `g` = 1. La zone est la seule case 1, mais `g < d` est faux : la boucle s'arrête sans la regarder."
+    },
+    {
+     "texte": "1, la case de 9.",
+     "feedback": "C'est ce que renvoie la bonne version. Avec `g < d`, quand la zone n'a plus qu'une case, `g` = `d` et la boucle s'arrête avant de la tester."
+    },
+    {
+     "texte": "0, la case du premier milieu.",
+     "feedback": "La case 0 contient 4, pas 9 : on ne renvoie `m` que si `t[m] == v`. Ici, 4 < 9, on part à droite."
+    },
+    {
+     "texte": "Le programme ne s'arrête jamais.",
+     "feedback": "La zone rétrécit toujours, grâce à `m + 1` et `m - 1`. Le problème est inverse : la boucle s'arrête trop tôt, sur une zone d'une case."
+    }
+   ],
+   "explication": "`while g <= d` : une zone d'une seule case se teste encore.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "-1"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Combien de tours ?",
+   "texte": [
+    "À chaque tour, la zone est ==divisée par 2== : coût ==logarithmique==.",
+    "1 000 cases : 10 tours au plus. Un million : 20."
+   ],
+   "vocabulaire": "coût logarithmique = logarithmic cost"
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Coût] Deux fois plus de cases",
+   "objectif": "Prévoir l'effet d'un doublement de la taille sur une dichotomie.",
+   "enonce": [
+    "Dans un tableau trié de 1 000 cases, une dichotomie fait au plus 10 tours.",
+    "Combien de tours au plus pour 2 000 cases ?"
+   ],
+   "options": [
+    {
+     "texte": "20",
+     "feedback": "Ce serait vrai pour un parcours case par case : deux fois plus de cases, deux fois plus de tours. La dichotomie, elle, coupe en deux à chaque tour."
+    },
+    {
+     "texte": "10",
+     "feedback": "Presque : il faut un tour de plus. Le premier tour ramène 2 000 cases à 1 000, puis il en faut encore 10 au plus."
+    },
+    {
+     "texte": "11",
+     "juste": true,
+     "feedback": "Oui. Le premier tour coupe 2 000 cases en deux : il en reste 1 000, soit 10 tours de plus au plus. Doubler la taille ajoute un tour."
+    },
+    {
+     "texte": "40",
+     "feedback": "Doubler la taille ne multiplie pas les tours par 4 : c'est le cas d'un coût quadratique, comme un tri par sélection. Ici, on ajoute un seul tour."
+    }
+   ],
+   "explication": "Doubler la taille ajoute un seul tour.",
+   "verifications": [
+    {
+     "code": [
+      "print(pire(1000), pire(2000))"
+     ],
+     "sortie": "10 11"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Coût] Un million de numéros",
+   "objectif": "Comparer le parcours séquentiel et la dichotomie sur un grand tableau.",
+   "enonce": [
+    "Un tableau trié contient 1 000 000 de numéros.",
+    "Au pire, combien de tours faut-il pour un parcours case par case, puis pour une dichotomie ?"
+   ],
+   "options": [
+    {
+     "texte": "500 000 et 20",
+     "feedback": "500 000, c'est le nombre de tours en moyenne. Au pire, la valeur est en dernière case, ou absente : il faut regarder tout le tableau."
+    },
+    {
+     "texte": "1 000 000 et 500 000",
+     "feedback": "La dichotomie ne s'arrête pas à une moitié : elle coupe en deux à chaque tour. 1 000 000, 500 000, 250 000… il faut 20 tours."
+    },
+    {
+     "texte": "20 et 1 000 000",
+     "feedback": "Les deux nombres sont justes, mais inversés : c'est la dichotomie qui fait 20 tours, et le parcours case par case qui en fait un million."
+    },
+    {
+     "texte": "1 000 000 et 20",
+     "juste": true,
+     "feedback": "Oui. Case par case, il faut parfois tout regarder. La dichotomie divise par 2 à chaque tour : 20 tours suffisent, car 2 puissance 20 dépasse un million."
+    }
+   ],
+   "explication": "Un million de cases : 1 000 000 tours case par case, 20 par dichotomie.",
+   "verifications": [
+    {
+     "code": [
+      "t = list(range(1000000))",
+      "print(max(tours(t, v) for v in (-1, 0, 999999, 1000000, 524287)))"
+     ],
+     "sortie": "20"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "La boucle s'arrête toujours",
+   "texte": [
+    "`d - g` diminue à chaque tour : la boucle finit par s'arrêter.",
+    "On dit que `d - g` est un ==variant== de boucle."
+   ],
+   "vocabulaire": "terminaison = termination ; variant = variant"
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Terminaison] Pourquoi la boucle s'arrête",
+   "objectif": "Justifier la terminaison de la dichotomie par un variant.",
+   "enonce": [
+    "Pourquoi la boucle `while g <= d` de la fonction `dichotomie` s'arrête-t-elle toujours ?"
+   ],
+   "options": [
+    {
+     "texte": "À chaque tour, `g` monte ou `d` descend : `d - g` diminue.",
+     "juste": true,
+     "feedback": "Oui. `g = m + 1` ou `d = m - 1` réduit la zone d'au moins une case. `d - g` finit par être négatif : `g > d`, la boucle s'arrête."
+    },
+    {
+     "texte": "Parce que la valeur cherchée finit toujours par être trouvée.",
+     "feedback": "Si `v` est absent, on ne le trouve jamais : c'est justement là que la boucle s'arrête, quand la zone est vide."
+    },
+    {
+     "texte": "Parce que `m` augmente de 1 à chaque tour.",
+     "feedback": "`m` saute d'un milieu à l'autre, vers la gauche ou la droite : il peut diminuer. Ce qui diminue toujours, c'est `d - g`."
+    },
+    {
+     "texte": "Parce qu'une boucle `while` fait au plus `len(t)` tours.",
+     "feedback": "Une boucle `while` peut tourner sans fin si sa condition reste vraie : c'est ce qui arrive avec `g = m`. Ici, c'est `d - g` qui garantit l'arrêt."
+    }
+   ],
+   "explication": "Le variant `d - g` diminue à chaque tour : la boucle termine.",
+   "verifications": [
+    {
+     "code": [
+      "t = list(range(0, 40, 2))",
+      "ok = True",
+      "for v in range(-1, 41):",
+      "    g, d = 0, len(t) - 1",
+      "    while g <= d:",
+      "        avant = d - g",
+      "        m = (g + d) // 2",
+      "        if t[m] == v:",
+      "            break",
+      "        elif t[m] < v:",
+      "            g = m + 1",
+      "        else:",
+      "            d = m - 1",
+      "        ok = ok and d - g < avant",
+      "print(ok)"
+     ],
+     "sortie": "True"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Trace] Un prix au doukabé",
+   "objectif": "Donner le résultat d'une dichotomie et compter ses tours.",
+   "enonce": [
+    "Les prix de six articles du doukabé, en euros, sont rangés dans l'ordre : `prix = [1, 3, 5, 7, 9, 11]`.",
+    "Que renvoie `dichotomie(prix, 9)`, et en combien de tours de boucle ?"
+   ],
+   "code": [
+    "prix = [1, 3, 5, 7, 9, 11]",
+    "r = dichotomie(prix, 9)"
+   ],
+   "options": [
+    {
+     "texte": "9, en 2 tours.",
+     "feedback": "9 est la valeur cherchée. La fonction renvoie sa position, son indice : 9 est dans la case 4."
+    },
+    {
+     "texte": "4, en 5 tours.",
+     "feedback": "5 tours, c'est un parcours case par case : 1, 3, 5, 7, 9. La dichotomie commence au milieu et trouve en 2 tours."
+    },
+    {
+     "texte": "4, en 2 tours.",
+     "juste": true,
+     "feedback": "Exact. Tour 1 : `m` = 2, 5 < 9, donc `g` = 3. Tour 2 : `m` = 4, `prix[4]` vaut 9 : trouvé, la fonction renvoie 4."
+    },
+    {
+     "texte": "5, en 2 tours.",
+     "feedback": "Tu as compté les cases à partir de 1. En Python, la première case est la case 0 : 9 est dans la case 4."
+    }
+   ],
+   "explication": "La fonction renvoie l'indice, compté à partir de 0.",
+   "verifications": [
+    {
+     "code": [
+      "print(r, tours(prix, 9))"
+     ],
+     "sortie": "4 2"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Choisir] Quand peut-on l'utiliser ?",
+   "objectif": "Reconnaître une situation où la recherche dichotomique s'applique.",
+   "enonce": [
+    "Dans quelle situation peut-on utiliser une recherche dichotomique ?"
+   ],
+   "options": [
+    {
+     "texte": "Chercher un prénom dans la liste des élèves, notée dans l'ordre d'arrivée.",
+     "feedback": "L'ordre d'arrivée n'est pas un ordre alphabétique : la liste n'est pas triée, la dichotomie risque de rater le prénom."
+    },
+    {
+     "texte": "Chercher un numéro dans la liste des numéros de taxis, rangée dans l'ordre.",
+     "juste": true,
+     "feedback": "Oui. La liste est triée : on peut regarder le milieu et éliminer une moitié à chaque tour."
+    },
+    {
+     "texte": "Trouver la plus haute marée dans les relevés du mois, notés jour par jour.",
+     "feedback": "Trouver un maximum n'est pas chercher une valeur, et les relevés ne sont pas triés : il faut tout parcourir."
+    },
+    {
+     "texte": "Chercher une valeur dans un tableau dont les cases sont mélangées.",
+     "feedback": "Mélangé veut dire non trié : en regardant le milieu, on ne sait pas de quel côté continuer."
+    }
+   ],
+   "explication": "Dichotomie : chercher une valeur dans un tableau trié.",
+   "verifications": [
+    {
+     "code": [
+      "taxis = [104, 117, 128, 135, 152, 160, 171]",
+      "print(dichotomie(taxis, 152))"
+     ],
+     "sortie": "4"
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Recherche dichotomique"
+    ],
+    "lignes": [
+     [
+      "Condition",
+      "un tableau trié, sinon la réponse peut être fausse"
+     ],
+     [
+      "Un tour",
+      "`m = (g + d) // 2`, puis `g = m + 1` ou `d = m - 1`"
+     ],
+     [
+      "Arrêt",
+      "trouvé, ou zone vide : `g > d`, on renvoie -1"
+     ],
+     [
+      "Coût",
+      "logarithmique : doubler la taille ajoute un tour"
+     ]
+    ]
+   },
+   "ticket": [
+    "Qu'est-ce qui est encore flou pour toi dans la dichotomie ?",
+    "De 1 à 5, à quel point peux-tu dérouler une dichotomie avec `g`, `d` et `m` devant un·e camarade ?"
+   ]
+  }
+ ]
+}

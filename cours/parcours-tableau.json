@@ -1,0 +1,762 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "parcours-tableau",
+ "titre": "Parcours d'un tableau",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Algorithmique : parcours séquentiel d'un tableau (écrire un algorithme de recherche d'une occurrence, de recherche d'un extremum, de calcul d'une moyenne ; coût linéaire)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/fonction-usuelles/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Le parcours séquentiel d'un tableau » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je suis à la main un parcours qui calcule une somme, une moyenne ou un compte.",
+  "Niveau 2 : je lis une fonction qui cherche un maximum ou une valeur, et je repère une erreur d'initialisation ou de `return`.",
+  "Niveau 3 : je sais qu'un parcours a un coût linéaire et je trouve l'erreur d'un petit programme."
+ ],
+ "conventions": [
+  "Les tableaux sont des listes Python ; les indices commencent à 0.",
+  "Tous les codes sont en Python 3. « Qu'affiche ce code ? » : les valeurs sont données dans l'ordre d'affichage."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Le parcours séquentiel d'un tableau",
+   "conventions": false,
+   "texte": [
+    "Algorithmique · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Combien a-t-il plu en cinq jours ?",
+   "texte": [
+    "Un relevé de pluie par jour, en millimètres. On les lit un par un."
+   ],
+   "pistes": [
+    "On ajoute chaque relevé à un total !"
+   ],
+   "code": [
+    "pluie = [12, 0, 35, 8, 35]"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le parcours et l'accumulateur",
+   "texte": [
+    "On lit les éléments ==un par un==, du premier au dernier.",
+    "L'==accumulateur== : initialisé avant la boucle, mis à jour dedans, renvoyé après."
+   ],
+   "code": [
+    "def somme(t):",
+    "    s = 0",
+    "    for x in t:",
+    "        s = s + x",
+    "    return s"
+   ],
+   "vocabulaire": "parcours séquentiel = linear scan ; accumulateur = accumulator"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Moyenne] Suivre un parcours",
+   "objectif": "Suivre à la main un parcours qui calcule une moyenne.",
+   "enonce": [
+    "Le tableau `pluie` contient la pluie de cinq jours, en millimètres.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "def moyenne(t):",
+    "    s = 0",
+    "    for x in t:",
+    "        s = s + x",
+    "    return s / len(t)",
+    "",
+    "pluie = [12, 0, 35, 8, 35]",
+    "print(moyenne(pluie))"
+   ],
+   "options": [
+    {
+     "texte": "`90`",
+     "feedback": "90 est bien la somme `s` à la fin de la boucle. Mais la fonction renvoie `s / len(t)` : la somme divisée par 5."
+    },
+    {
+     "texte": "`22.5`",
+     "feedback": "Tu as écarté le jour sans pluie. La boucle lit tous les éléments, le 0 compris : on divise par 5, pas par 4."
+    },
+    {
+     "texte": "`18.0`",
+     "juste": true,
+     "feedback": "Oui. La somme vaut 12 + 0 + 35 + 8 + 35 = 90, et 90 / 5 = 18.0. La division `/` donne toujours un nombre à virgule."
+    },
+    {
+     "texte": "`35`",
+     "feedback": "35 est le maximum du tableau. Cette fonction additionne tous les éléments, puis divise par leur nombre."
+    }
+   ],
+   "explication": "Moyenne : la somme (accumulateur à 0, puis `s = s + x`), divisée par `len(t)`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "18.0"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Accumulateur] Initialiser au bon endroit",
+   "objectif": "Savoir qu'un accumulateur s'initialise avant la boucle.",
+   "enonce": [
+    "Cette fonction devrait renvoyer la somme des éléments.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "def somme(t):",
+    "    for x in t:",
+    "        s = 0",
+    "        s = s + x",
+    "    return s",
+    "",
+    "print(somme([4, 7, 10, 3]))"
+   ],
+   "options": [
+    {
+     "texte": "`3`",
+     "juste": true,
+     "feedback": "Exact. `s = 0` est dans la boucle : à chaque tour, la somme repart de 0. Au dernier tour, `s` vaut 0 + 3."
+    },
+    {
+     "texte": "`24`",
+     "feedback": "C'est la somme attendue, mais regarde où est `s = 0` : dans la boucle. La somme est remise à 0 à chaque tour."
+    },
+    {
+     "texte": "`0`",
+     "feedback": "`s = 0` est exécuté à chaque tour, mais suivi de `s = s + x` : au dernier tour, `s` vaut 3, pas 0."
+    },
+    {
+     "texte": "Une erreur : `s` n'existe pas avant la boucle.",
+     "feedback": "La boucle fait au moins un tour, et `s = 0` crée `s` dès le premier : il n'y a pas d'erreur ici."
+    }
+   ],
+   "explication": "On initialise l'accumulateur avant la boucle, jamais dedans.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Compter",
+   "texte": [
+    "Un compteur est un accumulateur : `c = 0`, puis `c = c + 1` pour chaque élément qui convient."
+   ],
+   "code": [
+    "def compte(t, v):",
+    "    c = 0",
+    "    for x in t:",
+    "        if x == v:",
+    "            c = c + 1",
+    "    return c",
+    "",
+    "print(compte([3, 1, 3], 3))"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Compter] Que compte cette fonction ?",
+   "objectif": "Reconnaître un comptage dans un parcours.",
+   "enonce": [
+    "On exécute `f([4, 7, 10, 3])`.",
+    "Que renvoie la fonction ?"
+   ],
+   "code": [
+    "def f(t):",
+    "    c = 0",
+    "    for x in t:",
+    "        if x % 2 == 0:",
+    "            c = c + 1",
+    "    return c"
+   ],
+   "options": [
+    {
+     "texte": "`14`",
+     "feedback": "14 est la somme des nombres pairs. Ici, on ajoute 1 au compteur, pas `x` : on compte les nombres pairs."
+    },
+    {
+     "texte": "`4`",
+     "feedback": "4 est le nombre d'éléments du tableau. Le compteur n'augmente que si `x % 2 == 0`, c'est-à-dire si `x` est pair."
+    },
+    {
+     "texte": "`[4, 10]`",
+     "feedback": "La fonction ne range pas les nombres pairs : elle compte combien il y en a. Elle renvoie un entier."
+    },
+    {
+     "texte": "`2`",
+     "juste": true,
+     "feedback": "Oui. `f` compte les nombres pairs : 4 et 10, donc 2."
+    }
+   ],
+   "explication": "`c = c + 1` sous un `if` compte les éléments qui vérifient la condition.",
+   "verifications": [
+    {
+     "code": [
+      "print(f([4, 7, 10, 3]))"
+     ],
+     "sortie": "2"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le maximum",
+   "texte": [
+    "On part du ==premier== élément, `t[0]`.",
+    "On garde le plus grand vu jusqu'ici."
+   ],
+   "code": [
+    "def maximum(t):",
+    "    m = t[0]",
+    "    for x in t:",
+    "        if x > m:",
+    "            m = x",
+    "    return m",
+    "",
+    "print(maximum([12, 0, 35]))"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Maximum] Combien de mises à jour ?",
+   "objectif": "Suivre pas à pas la recherche d'un maximum.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Combien de fois la ligne `m = x` (ligne 5) est-elle exécutée ?"
+   ],
+   "code": [
+    "def maximum(t):",
+    "    m = t[0]",
+    "    for x in t:",
+    "        if x > m:",
+    "            m = x",
+    "    return m",
+    "",
+    "pluie = [12, 0, 35, 8, 35]",
+    "print(maximum(pluie))"
+   ],
+   "options": [
+    {
+     "texte": "2 fois",
+     "feedback": "Le second 35 n'est pas plus grand que 35 : `x > m` est faux, `m` ne change pas. Avec `>=`, ce serait 2 fois."
+    },
+    {
+     "texte": "1 fois",
+     "juste": true,
+     "feedback": "Exact. `m` part de 12. Seul le premier 35 est plus grand que le maximum vu jusqu'ici."
+    },
+    {
+     "texte": "5 fois",
+     "feedback": "`m = x` est sous le `if` : il n'est exécuté que si `x` est plus grand que `m`, pas à chaque tour."
+    },
+    {
+     "texte": "0 fois",
+     "feedback": "`m` part de 12, mais 35 arrive ensuite : `35 > 12` est vrai, donc `m` devient 35."
+    }
+   ],
+   "explication": "`m` ne change que si `x > m` : il garde le plus grand vu jusqu'ici.",
+   "trace": {
+    "colonnes": [
+     "`x`",
+     "départ",
+     "12",
+     "0",
+     "35",
+     "8",
+     "35"
+    ],
+    "lignes": [
+     [
+      "`m`",
+      "12",
+      "12",
+      "12",
+      "35",
+      "35",
+      "35"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "35"
+    },
+    {
+     "code": [
+      "pluie = [12, 0, 35, 8, 35]",
+      "n = 0",
+      "m = pluie[0]",
+      "for x in pluie:",
+      "    if x > m:",
+      "        m = x",
+      "        n = n + 1",
+      "print(m, n)"
+     ],
+     "sortie": "35 1",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Maximum] Partir de 0 ?",
+   "objectif": "Comprendre pourquoi le maximum part du premier élément.",
+   "enonce": [
+    "Le tableau donne les écarts de température d'une semaine par rapport à la normale, en °C.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "def maxi(t):",
+    "    m = 0",
+    "    for x in t:",
+    "        if x > m:",
+    "            m = x",
+    "    return m",
+    "",
+    "t = [-3, -8, -1, -5]",
+    "print(maxi(t))"
+   ],
+   "options": [
+    {
+     "texte": "`0`",
+     "juste": true,
+     "feedback": "Oui. `m` part de 0, et aucun écart n'est plus grand que 0 : `m` ne change jamais. La fonction renvoie 0, qui n'est même pas dans le tableau."
+    },
+    {
+     "texte": "`-1`",
+     "feedback": "-1 est bien le plus grand écart, mais ce n'est pas ce que renvoie cette fonction : `m` part de 0, et `-1 > 0` est faux."
+    },
+    {
+     "texte": "`-8`",
+     "feedback": "-8 est le plus petit écart. La fonction garde le plus grand ; ici, elle garde surtout la valeur de départ, 0."
+    },
+    {
+     "texte": "`-3`",
+     "feedback": "-3 est le premier élément. La fonction part de 0, pas de `t[0]` : c'est justement son erreur."
+    }
+   ],
+   "explication": "Le maximum part de `t[0]` : partir de 0 est faux si tout est négatif.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "0"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Minimum] Adapter le maximum",
+   "objectif": "Adapter la recherche du maximum à celle du minimum.",
+   "enonce": [
+    "On part de la fonction `maximum` ci-dessous pour écrire une fonction `minimum`.",
+    "Quelle modification suffit ?"
+   ],
+   "code": [
+    "def maximum(t):",
+    "    m = t[0]",
+    "    for x in t:",
+    "        if x > m:",
+    "            m = x",
+    "    return m"
+   ],
+   "options": [
+    {
+     "texte": "`m = t[0]` devient `m = 0`.",
+     "feedback": "Partir de 0 est faux pour le minimum aussi : si tous les éléments sont positifs, on renverrait 0. On part toujours de `t[0]`."
+    },
+    {
+     "texte": "`return m` devient `return -m`.",
+     "feedback": "`-m` est l'opposé du maximum, pas le minimum : pour `[12, 0, 35]`, on obtiendrait -35 au lieu de 0."
+    },
+    {
+     "texte": "`if x > m:` devient `if x < m:`.",
+     "juste": true,
+     "feedback": "Oui. On garde maintenant le plus petit vu jusqu'ici : `m` change quand `x` est plus petit."
+    },
+    {
+     "texte": "`m = x` devient `x = m`.",
+     "feedback": "`x = m` change `x`, pas `m` : `m` resterait `t[0]`. C'est la comparaison qu'il faut inverser."
+    }
+   ],
+   "explication": "Minimum : la même fonction, avec `x < m`.",
+   "verifications": [
+    {
+     "code": [
+      "print(maximum([12, 0, 35, 8]))"
+     ],
+     "sortie": "35"
+    },
+    {
+     "code": [
+      "def minimum(t):",
+      "    m = t[0]",
+      "    for x in t:",
+      "        if x < m:",
+      "            m = x",
+      "    return m",
+      "print(minimum([12, 0, 35, 8]))"
+     ],
+     "sortie": "0",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] La valeur ou l'indice ?",
+   "objectif": "Lire un message `IndexError` et distinguer la valeur `x` de l'indice.",
+   "enonce": [
+    "Ce programme cherche le plus fort relevé de pluie.",
+    "Il s'arrête sur l'erreur affichée sous le code (« indice hors du tableau »)."
+   ],
+   "code": [
+    "def maximum(t):",
+    "    m = t[0]",
+    "    for x in t:",
+    "        if t[x] > m:",
+    "            m = x",
+    "    return m",
+    "",
+    "pluie = [12, 0, 35, 8]",
+    "print(maximum(pluie))"
+   ],
+   "console": [
+    "IndexError: list index out of range"
+   ],
+   "ligne": 4,
+   "correction": "        if x > m:",
+   "feedback": "Bien vu. `x` est une valeur (12, puis 0…), pas un indice : `t[12]` n'existe pas. On compare `x` lui-même. Corrigé, le programme affiche 35.",
+   "feedback_autre": "Cette ligne est correcte. `IndexError` dit qu'on lit une case qui n'existe pas : cherche où l'on écrit `t[...]` avec une valeur à la place d'un indice.",
+   "pieges": {
+    "2": "`m = t[0]` est juste : on part du premier élément. L'indice 0 existe.",
+    "5": "`m = x` est juste : on garde la valeur `x`. Le programme s'arrête avant, au premier tour."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "IndexError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "35"
+    }
+   ],
+   "explication": "`for x in t` donne les valeurs : on écrit `x`, pas `t[x]`."
+  },
+  {
+   "type": "notion",
+   "titre": "Chercher une valeur",
+   "texte": [
+    "Dès qu'on trouve : `return i`, la fonction s'arrête.",
+    "Tout parcouru sans trouver : `return -1`, ==après== la boucle."
+   ],
+   "code": [
+    "def indice(t, v):",
+    "    for i in range(len(t)):",
+    "        if t[i] == v:",
+    "            return i",
+    "    return -1"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Recherche] Le premier trouvé",
+   "objectif": "Savoir que la recherche renvoie l'indice de la première occurrence.",
+   "enonce": [
+    "On reprend `pluie = [12, 0, 35, 8, 35]`.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "def indice(t, v):",
+    "    for i in range(len(t)):",
+    "        if t[i] == v:",
+    "            return i",
+    "    return -1",
+    "",
+    "pluie = [12, 0, 35, 8, 35]",
+    "print(indice(pluie, 35))"
+   ],
+   "options": [
+    {
+     "texte": "`4`",
+     "feedback": "C'est l'indice du second 35. Mais `return i` arrête la fonction dès le premier 35 trouvé : la suite n'est pas lue."
+    },
+    {
+     "texte": "`3`",
+     "feedback": "Tu as compté à partir de 1 : 35 est le troisième élément, mais son indice est 2."
+    },
+    {
+     "texte": "`35`",
+     "feedback": "35 est la valeur cherchée. La fonction renvoie `i`, l'indice où elle l'a trouvée."
+    },
+    {
+     "texte": "`2`",
+     "juste": true,
+     "feedback": "Oui. Le premier 35 est à l'indice 2 : `return 2` arrête la fonction."
+    }
+   ],
+   "explication": "La recherche renvoie l'indice de la première occurrence, et s'arrête.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "2"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Recherche] Une valeur absente",
+   "objectif": "Savoir ce que renvoie la recherche quand la valeur est absente.",
+   "enonce": [
+    "Avec la même fonction `indice`, on cherche 4, qui n'est pas dans le tableau.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "def indice(t, v):",
+    "    for i in range(len(t)):",
+    "        if t[i] == v:",
+    "            return i",
+    "    return -1",
+    "",
+    "pluie = [12, 0, 35, 8, 35]",
+    "print(indice(pluie, 4))"
+   ],
+   "options": [
+    {
+     "texte": "`None`",
+     "feedback": "La fonction a un `return -1` après la boucle : quand on a tout parcouru sans trouver, elle renvoie -1."
+    },
+    {
+     "texte": "`-1`",
+     "juste": true,
+     "feedback": "Exact. Aucun `t[i]` ne vaut 4 : la boucle se termine, puis `return -1` dit « absent »."
+    },
+    {
+     "texte": "`5`",
+     "feedback": "5 est la taille du tableau. La boucle s'arrête au dernier indice, 4, et la fonction renvoie -1."
+    },
+    {
+     "texte": "Une erreur `IndexError: list index out of range`",
+     "feedback": "`range(len(t))` ne donne que des indices qui existent, de 0 à 4 : il n'y a pas d'erreur."
+    }
+   ],
+   "explication": "Valeur absente : on a tout parcouru, la fonction renvoie -1.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "-1"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Recherche] Un `return -1` trop tôt",
+   "objectif": "Repérer un `return -1` placé dans la boucle.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "def indice_faux(t, v):",
+    "    for i in range(len(t)):",
+    "        if t[i] == v:",
+    "            return i",
+    "        else:",
+    "            return -1",
+    "",
+    "t = [12, 0, 35]",
+    "print(indice_faux(t, 35))"
+   ],
+   "options": [
+    {
+     "texte": "`-1`",
+     "juste": true,
+     "feedback": "Oui, et c'est faux. Au premier tour, 12 n'est pas 35 : le `else` fait `return -1` et la fonction s'arrête, sans lire la suite."
+    },
+    {
+     "texte": "`2`",
+     "feedback": "C'est ce qu'on voudrait. Mais le `else` renvoie -1 dès le premier élément différent de 35 : la boucle ne va pas plus loin."
+    },
+    {
+     "texte": "`None`",
+     "feedback": "La fonction renvoie dès le premier tour, par le `if` ou par le `else` : elle ne finit jamais sans `return`."
+    },
+    {
+     "texte": "`0`",
+     "feedback": "0 serait l'indice de 12, mais 12 n'est pas 35 : c'est le `else` qui s'exécute, et il renvoie -1."
+    }
+   ],
+   "explication": "`return -1` s'écrit après la boucle, jamais dans un `else` de la boucle.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "-1"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le coût linéaire",
+   "texte": [
+    "Pour ==n== éléments, au plus ==n== tours de boucle : le coût est ==linéaire==.",
+    "Deux fois plus d'éléments : environ deux fois plus de temps."
+   ],
+   "vocabulaire": "coût = cost ; linéaire = linear"
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Coût] Quatre fois plus grand",
+   "objectif": "Prévoir l'effet de la taille du tableau sur un parcours de coût linéaire.",
+   "enonce": [
+    "Chercher une valeur absente dans un tableau de 1 000 éléments prend environ 1 ms.",
+    "Combien de temps, environ, pour un tableau de 4 000 éléments ?"
+   ],
+   "options": [
+    {
+     "texte": "1 ms",
+     "feedback": "Le temps dépend de la taille : avec une valeur absente, on lit tous les éléments, donc 4 fois plus de tours."
+    },
+    {
+     "texte": "2 ms",
+     "feedback": "Le temps ne double pas quand la taille est multipliée par 4 : 4 fois plus d'éléments, 4 fois plus de tours."
+    },
+    {
+     "texte": "16 ms",
+     "feedback": "16, c'est 4 × 4 : ce serait un coût quadratique, une boucle dans une boucle. Ici, une seule boucle, un tour par élément."
+    },
+    {
+     "texte": "4 ms",
+     "juste": true,
+     "feedback": "Oui. Le coût est linéaire : 4 fois plus d'éléments, 4 fois plus de tours, environ 4 fois plus de temps."
+    }
+   ],
+   "explication": "Coût linéaire : le temps est proportionnel à la taille du tableau.",
+   "verifications": [
+    {
+     "code": [
+      "def tours(t, v):",
+      "    n = 0",
+      "    for i in range(len(t)):",
+      "        n = n + 1",
+      "        if t[i] == v:",
+      "            return n",
+      "    return n",
+      "print(tours(list(range(1000)), -1), tours(list(range(4000)), -1))"
+     ],
+     "sortie": "1000 4000",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Coût] Le pire des cas",
+   "objectif": "Identifier le cas où la recherche fait le plus de tours de boucle.",
+   "enonce": [
+    "On cherche une valeur `v` dans un tableau `t` de `n` éléments, avec la fonction `indice`.",
+    "Dans quel cas la fonction fait-elle le plus de tours de boucle ?"
+   ],
+   "options": [
+    {
+     "texte": "`v` est le premier élément de `t`.",
+     "feedback": "C'est le meilleur cas : un seul tour, puis `return 0`."
+    },
+    {
+     "texte": "`v` est au milieu de `t`.",
+     "feedback": "La fonction s'arrête au milieu : environ n / 2 tours. Il y a pire : aller jusqu'au bout."
+    },
+    {
+     "texte": "`v` n'est pas dans `t`.",
+     "juste": true,
+     "feedback": "Exact. Il faut lire les n éléments pour conclure « absent » : n tours, le pire des cas."
+    },
+    {
+     "texte": "Le tableau `t` est trié.",
+     "feedback": "Trié ou non, cette fonction lit les éléments un par un : le nombre de tours dépend de la place de `v`, pas de l'ordre."
+    }
+   ],
+   "explication": "Pire des cas : la valeur est absente (ou en dernier), n tours.",
+   "verifications": [
+    {
+     "code": [
+      "def tours(t, v):",
+      "    n = 0",
+      "    for i in range(len(t)):",
+      "        n = n + 1",
+      "        if t[i] == v:",
+      "            return n",
+      "    return n",
+      "t = [5, 9, 2, 7]",
+      "print(tours(t, 5), tours(t, 2), tours(t, 4))"
+     ],
+     "sortie": "1 3 4",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "Algorithme",
+     "L'essentiel"
+    ],
+    "lignes": [
+     [
+      "Somme, moyenne, compte",
+      "accumulateur initialisé avant la boucle, mis à jour dedans, renvoyé après"
+     ],
+     [
+      "Maximum, minimum",
+      "partir de `t[0]` ; comparer avec `>` ou `<`"
+     ],
+     [
+      "Recherche",
+      "`return i` dès qu'on trouve ; `return -1` après la boucle"
+     ],
+     [
+      "`for x in t`",
+      "`x` est une valeur, pas un indice"
+     ],
+     [
+      "Coût",
+      "linéaire : au plus n tours pour n éléments"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade où placer `return -1` dans une recherche ?"
+   ]
+  }
+ ]
+}

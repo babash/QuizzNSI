@@ -8,7 +8,13 @@ Lancement, depuis la racine de QuizzNSI :
 
 Ce qu'il contrôle (le détail est dans cours/FORMAT.md) :
 - la forme : champs obligatoires, types de diapositives, schémas connus ;
-- les questions (règle 22) : 20 questions (moins dans un cours de démonstration, « demonstration »: true), 4 options, une seule juste, un feedback
+- le gabarit du cours (« gabarit ») :
+  « introduction » : 15 minutes, 12 questions (à choix, plus 2 au plus de type relier, puzzle ou ligne
+  fautive, jamais de nuage de mots), 8 écrans de cours au plus, 25 mots au plus par écran (hors code) ;
+  « revision » (la valeur par défaut, le format d'avant T113) : 20 questions à choix ;
+  un cours de démonstration (« demonstration »: true) : moins de questions, aucun gabarit ;
+  et la durée estimée de la séance ;
+- les questions (règle 22) : 4 options, une seule juste, un feedback
   pour chaque option, l'objectif, le nom, aucune mise en avant (gras) ;
 - la répartition des bonnes réponses entre A, B, C et D, sans série ni motif évident,
   et la bonne réponse qui n'est pas trop souvent la plus longue ;
@@ -36,10 +42,26 @@ TYPES_DIAPO = {"titre", "partie", "classe", "humour", "notion", "question", "bil
 AUTRES_TYPES = {"nuage", "relier", "puzzle", "ligne"}   # les autres types de questions (js/activites.js)
 RELIER_MAX, PUZZLE_MIN, PUZZLE_MAX, INDENT_MAX, LIGNES_MAX = 6, 3, 12, 6, 40
 TYPES_SCHEMA = {"pile", "file", "etapes", "deux-piles", "liste", "decalage", "svg"}
+LARGEUR_MAX = 27          # caractères par ligne de code : écrans d'introduction, questions, options, lignes fautives (320 px)
 FEEDBACK_MIN = 40          # caractères : un feedback plus court n'explique rien
 TEXTE_NOTION_MAX = 3       # puces par notion (peu de texte, règle 3)
 PUCE_MAX = 300             # caractères par puce
 DELAI = 20                 # secondes par exécution
+# Un message d'erreur cité dans un texte (`AttributeError: … Did you mean: 'empiler'?`) : il doit être, mot pour mot,
+# la dernière ligne d'une erreur obtenue en exécutant le code du cours (Python 3.13).
+MESSAGE_CITE = re.compile(r"`([A-Z][A-Za-z]*(?:Error|Exception|Warning)(?::[^`]*)?)`")
+MESSAGES_OBTENUS = set()   # rempli par executer(), vidé au début de chaque cours
+
+# Les gabarits (cours/FORMAT.md, « Les gabarits »). « revision » est la valeur par défaut : c'est le format
+# des cours écrits avant T113 (20 questions à choix, les autres types en bonus, non comptés).
+GABARITS = {
+    "introduction": {"questions": 12, "autres_max": 2, "nuage": False, "ecrans_max": 8, "mots_max": 25,
+                     "phrases_max": 2, "code_notion_max": 10, "duree": 15, "bilan_lignes_max": 5},
+    "revision": {"questions": 20},
+}
+ECRANS = {"notion", "classe", "humour", "partie"}   # les écrans de cours (ni question, ni titre, ni bilan)
+# La durée estimée, en minutes, d'après une séance projetée (réponse au téléphone, puis correction commentée).
+DUREE = {"titre": 0.5, "ecran": 0.5, "question": 0.75, "code": 0.15, "autre": 1.0, "bilan": 0.5}
 
 
 class Rapport:
@@ -181,7 +203,22 @@ def executer(lignes, delai=DELAI):
         derniere = [l for l in p.stderr.strip().splitlines() if l.strip()]
         derniere = derniere[-1] if derniere else ""
         erreur = derniere.split(":")[0].strip() or "Erreur"
+        MESSAGES_OBTENUS.add(derniere.strip())
     return p.stdout.rstrip("\n"), erreur, p.stderr.strip()
+
+
+def verifier_console(lignes, console, ou, r):
+    """« console » : ce que Python affiche en exécutant le code, mot pour mot (la sortie, puis la dernière ligne
+    de l'erreur, « Did you mean » compris)."""
+    if not liste_de_chaines(console) or not console:
+        r.erreur(ou, "« console » : une liste de lignes")
+        return
+    sortie, err, detail = executer(lignes)
+    obtenu = sortie.splitlines() if sortie else []
+    if err:
+        obtenu.append([l for l in detail.splitlines() if l.strip()][-1].strip())
+    if obtenu != console:
+        r.erreur(ou, f"console : Python affiche {obtenu!r}, le cours cite {console!r}")
 
 
 def verifier_question(q, n, prelude, r, executer_code=True):
@@ -193,6 +230,15 @@ def verifier_question(q, n, prelude, r, executer_code=True):
         r.erreur(ou, "« enonce » doit être une liste de paragraphes non vide")
     if "code" in q and not liste_de_chaines(q["code"]):
         r.erreur(ou, "« code » doit être une liste de lignes")
+    elif "code" in q:
+        for k, l in enumerate(q["code"]):
+            if len(l) > LARGEUR_MAX:
+                r.erreur(ou, f"ligne de code {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (lisible à 320 px)")
+    if "console" in q:
+        if not q.get("code"):
+            r.erreur(ou, "« console » : seulement sous un code")
+        elif executer_code:
+            verifier_console(list(prelude) + q["code"], q["console"], ou, r)
     if "schema" in q:
         verifier_schema(q["schema"], ou, r)
         if executer_code:
@@ -224,6 +270,10 @@ def verifier_question(q, n, prelude, r, executer_code=True):
             r.erreur(oo, "l'option n'a ni « texte » ni « code »")
         if "code" in o and not liste_de_chaines(code):
             r.erreur(oo, "« code » doit être une liste de lignes")
+        elif "code" in o:
+            for k, l in enumerate(code):
+                if len(l) > LARGEUR_MAX:
+                    r.erreur(oo, f"ligne de code {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (lisible à 320 px)")
         contenu = (texte if isinstance(texte, str) else "") + "\n".join(code if liste_de_chaines(code) else [])
         if "**" in contenu or "==" in contenu.replace("== ", "").replace(" ==", "") or "<b>" in contenu.lower() or "<strong" in contenu.lower():
             r.erreur(oo, "aucune mise en avant dans une option (gras interdit)")
@@ -350,7 +400,7 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
     if "code" in d and not liste_de_chaines(d["code"]):
         r.erreur(ou, "« code » doit être une liste de lignes")
     code = d.get("code", []) if liste_de_chaines(d.get("code", [])) else []
-    connus = {"type", "id", "nom", "objectif", "enonce", "explication", "code", "note_verification"}
+    connus = {"type", "id", "nom", "objectif", "enonce", "explication", "code", "note_verification", "console"}
     permis = {"nuage": {"exemples"}, "relier": {"paires", "verifications"}, "puzzle": {"lignes", "indentation", "verifications"},
               "ligne": {"ligne", "correction", "feedback", "feedback_autre", "pieges", "verifications", "verifications_corrigees"}}[t]
     inconnus = set(d) - connus - permis
@@ -392,6 +442,8 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
         return
     if t == "puzzle":
         lignes = d.get("lignes")
+        if "console" in d:
+            r.erreur(ou, "« console » : seulement pour une question à choix ou une ligne fautive")
         if not liste_de_chaines(lignes) or not PUZZLE_MIN <= len(lignes) <= PUZZLE_MAX:
             r.erreur(ou, f"« lignes » : la solution, {PUZZLE_MIN} à {PUZZLE_MAX} lignes")
             return
@@ -412,12 +464,16 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
         if not 2 <= len(code) <= LIGNES_MAX:
             r.erreur(ou, f"« code » : 2 à {LIGNES_MAX} lignes")
             return
+        for k, l in enumerate(code):
+            if len(l) > LARGEUR_MAX:
+                r.erreur(ou, f"ligne {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (chaque ligne est un bouton, coupé à 320 px)")
         n = d.get("ligne")
         if not isinstance(n, int) or isinstance(n, bool) or not 1 <= n <= len(code):
             r.erreur(ou, "« ligne » : le numéro (à partir de 1) de la ligne qui contient l'erreur")
             return
         corr = d.get("correction")
-        if not isinstance(corr, str) or not corr.strip() or corr.strip() == code[n - 1].strip():
+        # la comparaison garde les espaces de début : une correction d'indentation (IndentationError) est permise
+        if not isinstance(corr, str) or not corr.strip() or corr.rstrip() == code[n - 1].rstrip():
             r.erreur(ou, "« correction » : la ligne corrigée, différente de la ligne fautive")
             return
         fb(d.get("feedback"), "« feedback » (pour la bonne ligne)")
@@ -434,10 +490,105 @@ def verifier_autre(d, ou, prelude, r, executer_code=True):
             r.erreur(ou, "une ligne fautive a des « verifications » (le code fautif) et des « verifications_corrigees » (le code corrigé)")
         elif executer_code:
             executer_verifications(list(prelude) + code, d["verifications"], ou + " (code fautif)", r)
+            if "console" in d:
+                verifier_console(list(prelude) + code, d["console"], ou, r)
             corrige = list(code)
             corrige[n - 1] = corr
             executer_verifications(list(prelude) + corrige, d["verifications_corrigees"], ou + " (code corrigé)", r)
         return
+
+
+def mots(texte):
+    """Le nombre de mots d'un texte affiché : un `code` en ligne compte pour un mot ; la ponctuation seule
+    (« : », « → », « » ») ne compte pas ; « l'ordre » compte pour un mot."""
+    texte = re.sub(r"`[^`]*`", " X ", texte)
+    texte = texte.replace("==", " ").replace("**", " ").replace("*", " ")
+    return sum(1 for m in texte.split() if re.search(r"\w", m))
+
+
+def textes_ecran(d):
+    """Les textes d'un écran de cours qui comptent dans la limite de mots : tout ce qui se lit à l'écran,
+    sauf le titre (ou la question d'une diapositive « classe »), le surtitre, le code et le vocabulaire anglais."""
+    t = []
+    for champ in ("texte", "pistes", "lignes", "consigne"):
+        v = d.get(champ)
+        if liste_de_chaines(v):
+            t += v
+    for champ in ("chute", "sous_titre"):
+        if isinstance(d.get(champ), str):
+            t.append(d[champ])
+    if isinstance(d.get("schema"), dict) and isinstance(d["schema"].get("legende"), str):
+        t.append(d["schema"]["legende"])
+    return t
+
+
+def mots_ecran(d):
+    return sum(mots(x) for x in textes_ecran(d))
+
+
+def duree_estimee(diapos):
+    """La durée estimée d'une séance projetée, en minutes (le modèle est dans cours/FORMAT.md)."""
+    m = 0.0
+    for d in diapos:
+        if not isinstance(d, dict):
+            continue
+        t = d.get("type")
+        if t == "titre":
+            m += DUREE["titre"]
+        elif t == "bilan":
+            m += DUREE["bilan"]
+        elif t in ECRANS:
+            m += DUREE["ecran"]
+        elif t == "question":
+            m += DUREE["question"] + (DUREE["code"] if len(d.get("code", []) or []) >= 5 else 0)
+        elif t in AUTRES_TYPES:
+            m += DUREE["autre"]
+    return m
+
+
+def verifier_gabarit(cours, diapos, questions, autres, prelude, r, executer_code=True):
+    """Les règles du gabarit « introduction » : peu d'écrans, peu de mots, 12 questions, 15 minutes."""
+    g = GABARITS["introduction"]
+    if cours.get("duree_minutes") != g["duree"]:
+        r.erreur("gabarit", f"une introduction dure {g['duree']} minutes : « duree_minutes » vaut {g['duree']}")
+    nuages = [d for d in autres if d.get("type") == "nuage"]
+    if nuages:
+        r.erreur("gabarit", "pas de nuage de mots dans une introduction (il ne fait pas apprendre la notion)")
+    notes = [d for d in autres if d.get("type") != "nuage"]
+    if len(notes) > g["autres_max"]:
+        r.erreur("gabarit", f"{len(notes)} questions relier, puzzle ou ligne fautive : {g['autres_max']} au plus")
+    total = len(questions) + len(notes)
+    if total != g["questions"]:
+        r.erreur("cours", f"{total} questions au lieu de {g['questions']} (gabarit introduction : les questions à choix, plus les questions relier, puzzle et ligne fautive)")
+    ecrans = [(i, d) for i, d in enumerate(diapos) if isinstance(d, dict) and d.get("type") in ECRANS]
+    if len(ecrans) > g["ecrans_max"]:
+        r.erreur("gabarit", f"{len(ecrans)} écrans de cours : {g['ecrans_max']} au plus (notion, classe, humour, partie)")
+    for i, d in ecrans:
+        ou = f"diapositive {i + 1} ({d['type']})"
+        n = mots_ecran(d)
+        if n > g["mots_max"]:
+            r.erreur(ou, f"{n} mots : {g['mots_max']} au plus par écran (hors titre, code et vocabulaire)")
+        if d["type"] == "notion" and liste_de_chaines(d.get("texte")) and len(d["texte"]) > g["phrases_max"]:
+            r.erreur(ou, f"{len(d['texte'])} phrases : {g['phrases_max']} au plus dans une introduction")
+        code = d.get("code")
+        if liste_de_chaines(code):
+            for k, l in enumerate(code):
+                if len(l) > LARGEUR_MAX:
+                    r.erreur(ou, f"ligne de code {k + 1} : {len(l)} caractères ; {LARGEUR_MAX} au plus (lisible à 320 px)")
+            if len(code) > g["code_notion_max"]:
+                r.erreur(ou, f"{len(code)} lignes de code : {g['code_notion_max']} au plus sur un écran")
+            elif executer_code:
+                _, err, detail = executer(list(prelude) + code)
+                if err:
+                    r.erreur(ou, f"le code de l'écran ne s'exécute pas : {detail.splitlines()[-1] if detail else err}")
+    for i, d in enumerate(diapos):
+        if isinstance(d, dict) and d.get("type") == "bilan":
+            lignes = (d.get("tableau") or {}).get("lignes", [])
+            if isinstance(lignes, list) and len(lignes) > g["bilan_lignes_max"]:
+                r.avert(f"diapositive {i + 1} (bilan)", f"{len(lignes)} lignes : {g['bilan_lignes_max']} au plus, l'essentiel seulement")
+    estimee = duree_estimee(diapos)
+    if estimee > g["duree"] + 2:
+        r.avert("gabarit", f"durée estimée {estimee:.0f} min pour {g['duree']} min prévues")
 
 
 def verifier_repartition(positions, r, n_attendu):
@@ -459,10 +610,26 @@ def verifier_repartition(positions, r, n_attendu):
     for periode in (2, 3, 4):
         if n >= 2 * periode and all(positions[i] == positions[i % periode] for i in range(n)):
             r.erreur("répartition", f"motif périodique de longueur {periode}")
+    # un motif partiel : une lettre juste au même rang modulo 2, 3 ou 4, sur 4 questions de suite de ce rang
+    # (D en 3, 7, 11, 15…) ; un groupe de 4 bonnes réponses qui se répète (ACDB … ACDB)
+    trouves = set()
+    for periode in (2, 3, 4):
+        for debut in range(n):
+            rangs = list(range(debut, n, periode))[:4]
+            if len(rangs) == 4 and len({positions[i] for i in rangs}) == 1 and (periode, debut % periode) not in trouves:
+                trouves.add((periode, debut % periode))
+                r.erreur("répartition", f"motif : {LETTRES[positions[debut]]} est juste aux questions {', '.join(str(i + 1) for i in rangs)} (tous les {periode} rangs)")
+    groupes = {}
+    for i in range(n - 3):
+        g = tuple(positions[i:i + 4])
+        if g in groupes and i - groupes[g] >= 4:
+            r.erreur("répartition", f"motif : le groupe {''.join(LETTRES[x] for x in g)} se répète (questions {groupes[g] + 1} et {i + 1})")
+            break
+        groupes.setdefault(g, i)
     return comptes
 
 
-def verifier_cours(chemin, executer_code=True, n_questions=20):
+def verifier_cours(chemin, executer_code=True, n_questions=None):
     r = Rapport()
     try:
         with open(chemin, encoding="utf-8") as f:
@@ -478,9 +645,16 @@ def verifier_cours(chemin, executer_code=True, n_questions=20):
     attendu_id = os.path.splitext(os.path.basename(chemin))[0]
     if cours.get("id") != attendu_id:
         r.erreur("cours", f"« id » ({cours.get('id')!r}) doit être le nom du fichier ({attendu_id!r})")
+    gabarit = cours.get("gabarit", "revision")
+    if gabarit not in GABARITS:
+        r.erreur("cours", f"« gabarit » inconnu : {gabarit!r} (permis : {', '.join(sorted(GABARITS))})")
+        gabarit = "revision"
+    if isinstance(cours.get("duree_minutes"), (int, float)) and cours["duree_minutes"] > 45:
+        r.erreur("cours", "« duree_minutes » : 45 au plus (une activité ne dépasse jamais 45 minutes)")
     for champ in ("criteres", "conventions"):
         if not liste_de_chaines(cours.get(champ, [])):
             r.erreur("cours", f"« {champ} » doit être une liste de phrases")
+    MESSAGES_OBTENUS.clear()
     prelude = cours.get("prelude_python", [])
     if not liste_de_chaines(prelude):
         r.erreur("cours", "« prelude_python » doit être une liste de lignes")
@@ -551,29 +725,48 @@ def verifier_cours(chemin, executer_code=True, n_questions=20):
     demo = cours.get("demonstration") is True
     if "demonstration" in cours and not demo:
         r.erreur("cours", "« demonstration » vaut true, ou n'est pas écrit")
-    if demo and len(questions) > n_questions:
-        r.erreur("cours", f"un cours de démonstration a au plus {n_questions} questions à choix")
-    if demo and not questions and not autres:
-        r.erreur("cours", "un cours de démonstration a au moins une question")
-    if n_questions and not demo and len(questions) != n_questions:
-        r.erreur("cours", f"{len(questions)} questions au lieu de {n_questions}")
+    if demo and "gabarit" in cours:
+        r.erreur("cours", "un cours de démonstration n'a pas de gabarit")
+    if gabarit == "introduction":
+        verifier_gabarit(cours, diapos, questions, autres, prelude, r, executer_code)
+    else:
+        n_questions = n_questions or GABARITS["revision"]["questions"]
+        if demo and len(questions) > n_questions:
+            r.erreur("cours", f"un cours de démonstration a au plus {n_questions} questions à choix")
+        if demo and not questions and not autres:
+            r.erreur("cours", "un cours de démonstration a au moins une question")
+        if not demo and len(questions) != n_questions:
+            r.erreur("cours", f"{len(questions)} questions au lieu de {n_questions}")
     positions, longues = [], 0
     for n, q in enumerate(questions, 1):
         j, pl = verifier_question(q, n, prelude, r, executer_code)
         positions.append(j)
         longues += 1 if pl else 0
     comptes = verifier_repartition(positions, r, n_questions)
+    # chaque message d'erreur cité est celui que donne Python, en entier
+    if executer_code:
+        for ou, s in parcourir_chaines(cours):
+            for m in MESSAGE_CITE.finditer(s):
+                cite = m.group(1).strip()
+                if ":" in cite and cite not in MESSAGES_OBTENUS:
+                    proches = sorted(x for x in MESSAGES_OBTENUS if x.split(":")[0] == cite.split(":")[0])
+                    r.erreur(ou, f"message d'erreur cité « {cite} » : aucune exécution du cours ne le donne"
+                             + (f" (Python donne : {' ; '.join(proches)})" if proches else ""))
     if questions and longues / len(questions) > 0.4:
         r.erreur("répartition", f"la bonne réponse est la plus longue dans {longues} questions sur {len(questions)} : elle se repère")
     elif questions and longues / len(questions) > 0.25:
         r.avert("répartition", f"la bonne réponse est la plus longue dans {longues} questions sur {len(questions)}")
-    return r, {"cours": cours, "questions": questions, "positions": positions, "comptes": comptes, "longues": longues, "autres": autres}
+    ecrans = [d for d in diapos if isinstance(d, dict) and d.get("type") in ECRANS]
+    return r, {"cours": cours, "questions": questions, "positions": positions, "comptes": comptes, "longues": longues, "autres": autres,
+               "gabarit": gabarit, "ecrans": len(ecrans), "mots": sum(mots_ecran(d) for d in ecrans),
+               "mots_max": max((mots_ecran(d) for d in ecrans), default=0), "duree": duree_estimee(diapos)}
 
 
 def main(args):
     executer_code = "--sans-execution" not in args
     fichiers = [a for a in args if not a.startswith("--")]
     erreurs_catalogue = 0
+    cat = None
     if "--tous" in args:
         racine = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "cours")
         fichiers += sorted(os.path.join(racine, f) for f in os.listdir(racine) if f.endswith(".json") and f != "catalogue.json")
@@ -594,6 +787,14 @@ def main(args):
     total += erreurs_catalogue
     for chemin in fichiers:
         r, info = verifier_cours(chemin, executer_code)
+        # le catalogue de l'accueil annonce le bon nombre de questions, le bon gabarit et la bonne durée
+        if cat and info and info.get("cours"):
+            entree = next((x for x in cat.get("cours", []) if x.get("id") == info["cours"].get("id")), None)
+            if entree:
+                n = len(info["questions"]) + (len([d for d in info["autres"] if d.get("type") != "nuage"]) if info["gabarit"] == "introduction" else 0)
+                for champ, attendu in (("questions", n), ("gabarit", info["gabarit"]), ("duree_minutes", info["cours"].get("duree_minutes"))):
+                    if champ in entree and entree[champ] != attendu:
+                        r.erreur("cours/catalogue.json", f"« {champ} » vaut {entree[champ]!r}, le cours dit {attendu!r}")
         print(f"== {chemin}")
         if info and info.get("questions"):
             for n, (q, p) in enumerate(zip(info["questions"], info["positions"]), 1):
@@ -601,6 +802,8 @@ def main(args):
                 print(f"  {n:2d}. {lettre}  {q.get('nom', '')}")
             for d in info.get("autres", []):
                 print(f"   ·  {d['type']:<6} {d.get('nom', '')}")
+            print(f"  Gabarit {info['gabarit']} : {info['ecrans']} écrans de cours, {info['mots']} mots (au plus {info['mots_max']} par écran),"
+                  f" durée estimée {info['duree']:.0f} min" + (f" pour {info['cours'].get('duree_minutes')} prévues" if info['cours'].get('duree_minutes') else ""))
             if info.get("comptes"):
                 print("  Bonnes réponses : " + ", ".join(f"{l} {c}" for l, c in info["comptes"].items())
                       + f" ; la plus longue : {info['longues']} fois")

@@ -1,8 +1,30 @@
 {
   "format": "quizz-nsi-catalogue/1",
   "cours": [
-    { "id": "piles-files", "titre": "Piles et files", "niveau": "Terminale NSI", "questions": 20 },
-    { "id": "revision-conditions-boucles", "titre": "Révision : conditions, boucles, fonctions", "niveau": "Première NSI", "questions": 20 },
+    { "id": "variables", "titre": "Variables et opérateurs", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "conditions-boucles", "titre": "Conditions et boucles", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "fonctions", "titre": "Fonctions", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "revision-conditions-boucles", "titre": "Révision : conditions, boucles, fonctions", "niveau": "Première NSI", "gabarit": "revision", "questions": 20, "duree_minutes": 25 },
+    { "id": "chaines", "titre": "Chaînes de caractères", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "binaire", "titre": "Binaire et hexadécimal", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "listes", "titre": "Tableaux (listes)", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "tuples", "titre": "P-uplets (tuples)", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "dictionnaires", "titre": "Dictionnaires", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "parcours-tableau", "titre": "Parcours d'un tableau", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "tris", "titre": "Tris par sélection et insertion", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "dichotomie", "titre": "Recherche dichotomique", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "gloutons", "titre": "Algorithmes gloutons", "niveau": "Première NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "poo", "titre": "Programmation objet", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "piles-files", "titre": "Piles et files", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "revision-piles-files", "titre": "Révision : piles et files", "niveau": "Terminale NSI", "gabarit": "revision", "questions": 20, "duree_minutes": 30 },
+    { "id": "recursivite", "titre": "Récursivité", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "tri-fusion", "titre": "Tri fusion", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "arbres-binaires", "titre": "Arbres binaires", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "abr", "titre": "Arbres binaires de recherche", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "graphes", "titre": "Graphes", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "sql", "titre": "Bases de données et SQL", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "processus", "titre": "Processus et ordonnancement", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
+    { "id": "routage", "titre": "Routage : RIP et OSPF", "niveau": "Terminale NSI", "gabarit": "introduction", "questions": 12, "duree_minutes": 15 },
     { "id": "demo-types-de-questions", "titre": "Démonstration : les types de questions", "niveau": "Première NSI", "questions": 0, "demonstration": true }
   ]
 }

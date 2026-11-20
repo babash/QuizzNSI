@@ -178,11 +178,11 @@
       depart: Date.now() - ecoule, recu: false, ferme: m.ferme, fin: m.reste != null ? Date.now() + m.reste : null };
     const s = el('section', { class: 'd-question' + (qcu(q) ? '' : ' d-activite d-' + q.type) });
     if (qcu(q)) {
-      s.appendChild(Q.fragmentCours(Q.rendreEnonce(q, cours.questions.length)));
+      s.appendChild(Q.fragmentCours(Q.rendreEnonce(q, cours.total)));
       s.appendChild(el('p', { class: 'chrono', id: 'chrono', 'aria-live': 'off' }));
       s.appendChild(Q.fragmentCours(Q.rendreOptions(q, { boutons: true })));
     } else {
-      s.appendChild(Q.fragmentCours(Q.rendreEnonceActivite(q)));
+      s.appendChild(Q.fragmentCours(Q.rendreEnonceActivite(q, cours.total)));
       s.appendChild(el('p', { class: 'chrono', id: 'chrono', 'aria-live': 'off' }));
       question.ui = Q.activiteUI(q, { reponse: avant, libelle: q.type === 'nuage' ? 'Envoyer' : 'Valider', onValider: choisir });
       s.appendChild(question.ui.noeud);
@@ -308,7 +308,7 @@
     question = { qid: q.id, q, choix, recu: true, ferme: true };
     total = note.h.total; majPoints();
     const s = el('section', { class: 'd-question' },
-      el('header', { class: 'q-tete' }, el('p', { class: 'q-num' }, 'Question ' + q.numero + ' sur ' + cours.questions.length + ' · correction'),
+      el('header', { class: 'q-tete' }, el('p', { class: 'q-num' }, 'Question ' + q.numero + ' sur ' + cours.total + ' · correction'),
         (() => { const h = el('h2', { class: 'q-nom' }); h.appendChild(Q.fragmentCours(Q.texte(q.nom))); return h; })()));
     if (choix == null) s.appendChild(el('div', { class: 'verdict neutre', role: 'status' }, el('span', { class: 'symbole', 'aria-hidden': 'true' }, '•'),
       el('div', {}, el('p', { class: 'v-titre' }, 'Pas de réponse cette fois. La bonne réponse est ' + Q.LETTRES[q.bonne] + '.'))));
@@ -343,7 +343,7 @@
     const reponse = brute == null ? null : Q.activites.valider(q, brute), ms = question && question.qid === q.id && question.ms != null ? question.ms : (h0.reps[q.id] ? h0.reps[q.id].ms : 0);
     question = { qid: q.id, q, choix: reponse, recu: true, ferme: true };
     const s = el('section', { class: 'd-question d-activite d-' + q.type },
-      el('header', { class: 'q-tete' }, el('p', { class: 'q-num' }, Q.activites.NOMS[q.type] + ' · correction'),
+      el('header', { class: 'q-tete' }, el('p', { class: 'q-num' }, (q.type !== 'nuage' ? 'Question ' + q.numero + ' sur ' + cours.total + ' · ' : '') + Q.activites.NOMS[q.type] + ' · correction'),
         (() => { const t = el('h2', { class: 'q-nom' }); t.appendChild(Q.fragmentCours(Q.texte(q.nom))); return t; })()));
     if (q.type === 'nuage') {
       s.appendChild(reponse ? el('div', { class: 'verdict neutre', role: 'status' }, el('span', { class: 'symbole', 'aria-hidden': 'true' }, '•'),
@@ -407,7 +407,7 @@
       phase = 'nuage'; question = null;
       nuage = { qid: q.id, q, mots: null, miens: new Map(), votes: new Set(), envois: new Map(), pret: 0, erreur: '' };
       const s = el('section', { class: 'd-question d-activite d-nuage' });
-      s.appendChild(Q.fragmentCours(Q.rendreEnonceActivite(q)));
+      s.appendChild(Q.fragmentCours(Q.rendreEnonceActivite(q, cours.total)));
       const champ = el('input', { type: 'text', id: 'motNuage', maxlength: String(Q.activites.MOT_MAX + 6), autocomplete: 'off', spellcheck: 'false', autocapitalize: 'none', 'aria-describedby': 'motAide motErreur' });
       const f = el('form', { class: 'nuage-form', novalidate: '' }, el('label', { for: 'motNuage' }, 'Un mot (ou deux)'), champ,
         el('p', { class: 'aide', id: 'motAide' }, 'Autant de mots que tu veux, un à la fois. Ils s\'affichent au tableau et sur les téléphones de la classe, sans ton pseudo.'),

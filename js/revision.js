@@ -10,7 +10,13 @@
   const REJOUER = new URLSearchParams(location.search).has('rejouer');
   let cours, diapos = [], index = 0, etat;
   const cle = () => (REJOUER ? 'rejouer:' : 'revision:') + cours.id;
-  const sauver = () => (REJOUER ? Q.session : Q.stock).ecrire(cle(), etat);
+  // La signature du cours : une progression gardée pour une autre version du cours (questions renumérotées,
+  // ajoutées ou retirées, options, paires ou lignes changées ou dans un autre ordre, code modifié) est ignorée.
+  // Sur l'appareil, la progression est datée et gardée un jour au plus (Q.menage).
+  let signature = 0;
+  const signer = c => Q.graine((c.interactifs || []).map(q =>
+    JSON.stringify([q.id, q.nom, q.type, q.options || null, q.paires || null, q.lignes || null, q.code || null, q.ligne || null])).join('|'));
+  const sauver = () => REJOUER ? Q.session.ecrire(cle(), etat) : Q.stock.ecrire(cle(), Object.assign({}, etat, { t: Date.now(), sig: signature }));
   const nouvelleGraine = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0]; };
 
   /* Rejouer : les questions dans un ordre tiré au hasard (une graine par partie), et les quatre réponses de
@@ -23,7 +29,7 @@
     let k = 0;
     const qs = Q.melanger(original.interactifs.filter(d => d.type !== 'nuage'), etat.graine).map(q => {
       const graine = (etat.graine ^ Q.graine(q.id)) >>> 0;
-      if (q.type !== 'question') return Object.assign({}, q, { graine });
+      if (q.type !== 'question') return Object.assign({}, q, { graine, numero: ++k });
       const ordre = Q.melanger([0, 1, 2, 3], graine);
       const c = Object.assign({}, q, { options: ordre.map(i => q.options[i]), numero: ++k });
       c.bonne = ordre.indexOf(q.bonne);
@@ -84,7 +90,7 @@
     // apparitions progressives : en arrivant par « Suivante », on les montre une à une ; en revenant en arrière, tout est montré
     vus = arriere ? Q.nbFragments(scene) : 0; arriere = false;
     Q.montrerFragments(scene, vus); majSuivante();
-    const nq = d.type === 'question' ? ' · question ' + d.numero + ' sur ' + cours.questions.length : Q.INTERACTIFS.includes(d.type) ? ' · ' + Q.activites.NOMS[d.type].toLowerCase() : '';
+    const nq = d.type === 'question' ? ' · question ' + d.numero + ' sur ' + cours.total : Q.INTERACTIFS.includes(d.type) ? (d.type !== 'nuage' ? ' · question ' + d.numero + ' sur ' + cours.total : '') + ' · ' + Q.activites.NOMS[d.type].toLowerCase() : '';
     $('compteur').textContent = 'Diapositive ' + (index + 1) + ' sur ' + diapos.length + nq;
     $('barre').style.width = ((index + 1) / diapos.length * 100) + '%';
     $('prec').disabled = index === 0;
@@ -174,18 +180,14 @@
   }
 
   function bilanPerso() {
-    const qs = cours.questions, faites = qs.filter(q => q.id in etat.premiers);
-    const justes = faites.filter(q => etat.premiers[q.id] === q.bonne);
-    const arevoir = qs.filter(q => q.id in etat.premiers && etat.premiers[q.id] !== q.bonne);
+    // toutes les questions notées comptent : les questions à choix et les autres types (pas le nuage de mots)
+    const qs = (cours.interactifs || []).filter(d => d.type !== 'nuage');
+    const fait = q => q.type === 'question' ? q.id in etat.premiers : !!(etat.act[q.id] && etat.act[q.id].premier !== null);
+    const juste = q => q.type === 'question' ? etat.premiers[q.id] === q.bonne : etat.act[q.id].premier === true;
+    const faites = qs.filter(fait), justes = faites.filter(juste), arevoir = faites.filter(q => !juste(q));
     let h = '<div class="cadre" style="margin-top:14px"><h3>Ton bilan</h3>' + (qs.length ? '<p><strong>' + justes.length + ' sur ' + qs.length + '</strong> du premier coup'
       + (faites.length < qs.length ? ' (' + (qs.length - faites.length) + ' question' + (qs.length - faites.length > 1 ? 's' : '') + ' sans réponse)' : '') + '.</p>' : '');
-    const autres = (cours.interactifs || []).filter(d => d.type !== 'question' && d.type !== 'nuage');
-    if (autres.length) {
-      const faits = autres.filter(d => etat.act[d.id] && etat.act[d.id].premier !== null);
-      h += '<p>Les autres questions : <strong>' + faits.filter(d => etat.act[d.id].premier).length + ' sur ' + autres.length + '</strong> du premier coup.</p>';
-      arevoir.push(...autres.filter(d => etat.act[d.id] && etat.act[d.id].premier === false));
-    }
-    if (arevoir.length) h += '<p>À revoir :</p><ul class="cours-liste">' + arevoir.map(q => '<li><button class="bouton petit" type="button" data-aller="' + q.id + '">' + (q.type === 'question' ? 'Question ' + q.numero : Q.echapper(Q.activites.NOMS[q.type])) + ' · ' + Q.texte(q.nom) + '</button></li>').join('') + '</ul>';
+    if (arevoir.length) h += '<p>À revoir :</p><ul class="cours-liste">' + arevoir.map(q => '<li><button class="bouton petit" type="button" data-aller="' + q.id + '">' + 'Question ' + q.numero + (q.type === 'question' ? '' : ' (' + Q.echapper(Q.activites.NOMS[q.type]).toLowerCase() + ')') + ' · ' + Q.texte(q.nom) + '</button></li>').join('') + '</ul>';
     else if (faites.length) h += '<p>Tout juste du premier coup : bravo ! Tu peux aider un·e camarade.</p>';
     h += REJOUER
       ? '<p><button class="bouton fort" type="button" id="recommencer">Rejouer encore (nouvel ordre)</button> <a class="bouton" href="revision.html?cours=' + encodeURIComponent(cours.id) + '">Revoir le cours</a></p></div>'
@@ -237,7 +239,11 @@
       afficher(Math.min(etat.index, diapos.length - 1), false);
       return;
     }
-    etat = etatRelu(Q.stock.lire(cle(), null));
+    signature = signer(cours);
+    const garde = Q.stock.lire(cle(), null);
+    const valide = garde && typeof garde === 'object' && garde.sig === signature && Number.isFinite(garde.t) && Date.now() - garde.t <= Q.DUREE_REVISION;
+    if (garde && !valide) Q.stock.oublier(cle());
+    etat = etatRelu(valide ? garde : null);
     $('questionsSeules').checked = Q.stock.lire('questions-seules', false) === true;
     diapos = liste();
     $('questionsSeules').addEventListener('change', () => {

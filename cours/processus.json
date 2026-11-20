@@ -1,0 +1,642 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "processus",
+ "titre": "Processus et ordonnancement",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Terminale NSI",
+ "programme": "Architectures matérielles, systèmes d'exploitation et réseaux : gestion des processus et des ressources par un système d'exploitation (décrire la création d'un processus, l'ordonnancement de plusieurs processus par le système ; mettre en évidence le risque de l'interblocage)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/processus/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision FichesNSI « Les processus et l'ordonnancement » (Terminale NSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je distingue un programme d'un processus et je connais son PID.",
+  "Niveau 2 : je donne l'état d'un processus (prêt, élu, bloqué) et ses changements d'état.",
+  "Niveau 3 : je construis la frise d'un tourniquet et je reconnais un interblocage."
+ ],
+ "conventions": [
+  "Une frise d'ordonnancement a une case par unité de temps ; le temps commence à 0.",
+  "Au tourniquet, un processus qui n'a pas fini retourne au bout de la file, derrière ceux qui attendent déjà.",
+  "Le processeur n'a qu'un cœur."
+ ],
+ "prelude_python": [
+  "def tourniquet(processus, quantum):",
+  "    file = list(processus)",
+  "    frise = []",
+  "    while len(file) > 0:",
+  "        nom, reste = file.pop(0)",
+  "        for t in range(min(quantum, reste)):",
+  "            frise.append(nom)",
+  "        reste = reste - quantum",
+  "        if reste > 0:",
+  "            file.append((nom, reste))",
+  "    return frise",
+  "def fins(frise):",
+  "    return {nom: k + 1 for k, nom in enumerate(frise)}",
+  "liste = [('P1', 3), ('P2', 5), ('P3', 1)]"
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Processus et ordonnancement",
+   "conventions": false,
+   "texte": [
+    "Thème 4 · Systèmes d'exploitation · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "La musique continue pendant que tu écris : comment ?",
+   "texte": [
+    "Un cœur de processeur n'exécute qu'une instruction à la fois."
+   ],
+   "pistes": [
+    "Et s'il passait de l'un à l'autre, très vite ?"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Programme et processus",
+   "texte": [
+    "Un ==processus== est un programme ==en cours d'exécution==, repéré par un numéro : le ==PID==.",
+    "Lancé deux fois, un programme donne deux processus."
+   ],
+   "vocabulaire": "process = processus ; PID = process identifier ; ps = process status, la liste des processus ; kill = tuer, arrêter un processus"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Processus] Un programme lancé deux fois",
+   "objectif": "Distinguer un programme d'un processus.",
+   "enonce": [
+    "On ouvre deux fois le même éditeur de code, dans deux fenêtres.",
+    "Combien de processus sont créés ?"
+   ],
+   "options": [
+    {
+     "texte": "Un seul processus : c'est le même programme.",
+     "feedback": "Le programme est le même fichier, mais il est exécuté deux fois. Chaque exécution est un processus, avec sa propre mémoire."
+    },
+    {
+     "texte": "Aucun : un processus n'existe que pendant un calcul.",
+     "feedback": "Un processus existe de son lancement à sa fin, même quand il attend : une fenêtre ouverte, c'est un processus en cours."
+    },
+    {
+     "texte": "Deux processus, avec le même PID.",
+     "feedback": "Il y a bien deux processus, mais le PID sert justement à les distinguer : deux processus en cours n'ont jamais le même numéro."
+    },
+    {
+     "texte": "Deux processus, avec deux PID différents.",
+     "juste": true,
+     "feedback": "Oui : un seul programme (un fichier), mais deux exécutions. Chacune a sa mémoire et son numéro, le PID."
+    }
+   ],
+   "explication": "Un programme est un fichier ; un processus est une exécution de ce programme.",
+   "note_verification": "Fonctionnement d'un système d'exploitation multitâche (cours de NSI, fiche FichesNSI « Les processus et l'ordonnancement ») ; pas de code à exécuter."
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Commandes] Arrêter un processus",
+   "objectif": "Utiliser les commandes `ps` et `kill` d'un système Linux.",
+   "enonce": [
+    "La commande `ps` montre qu'un programme `boucle.py`, qui ne s'arrête jamais, tourne dans le processus de PID 4321.",
+    "Quelle commande l'arrête ?"
+   ],
+   "options": [
+    {
+     "texte": "`kill 4321`",
+     "juste": true,
+     "feedback": "Oui : `kill` envoie un signal d'arrêt au processus dont on donne le PID, ici 4321."
+    },
+    {
+     "texte": "`ps 4321`",
+     "feedback": "`ps` (process status) liste les processus et leur PID, mais n'arrête rien. C'est `kill` qui arrête un processus."
+    },
+    {
+     "texte": "`rm boucle.py`",
+     "feedback": "`rm` supprime le fichier du programme, pas son exécution : le processus continue de tourner. On arrête un processus avec `kill`."
+    },
+    {
+     "texte": "`kill boucle.py`",
+     "feedback": "`kill` attend un numéro de processus, pas un nom de fichier : le même programme peut d'ailleurs tourner dans plusieurs processus."
+    }
+   ],
+   "explication": "`ps` liste les processus et leur PID ; `kill PID` en arrête un.",
+   "note_verification": "Commandes Linux : `ps` et `kill` (manuel de procps et de bash) ; `rm` supprime le fichier, le processus garde son code en mémoire et continue."
+  },
+  {
+   "type": "notion",
+   "titre": "Chacun son tour",
+   "texte": [
+    "Un cœur exécute ==un seul== processus à la fois.",
+    "L'==ordonnanceur== du système d'exploitation les fait alterner, très vite."
+   ],
+   "vocabulaire": "ordonnanceur = scheduler ; système d'exploitation = operating system"
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Ordonnancement] Pourquoi la musique ne s'arrête pas",
+   "objectif": "Expliquer l'impression d'exécution simultanée sur un seul cœur.",
+   "enonce": [
+    "Un ordinateur à un seul cœur joue de la musique pendant qu'on écrit un texte.",
+    "Pourquoi la musique ne s'arrête-t-elle pas ?"
+   ],
+   "options": [
+    {
+     "texte": "Les deux processus s'exécutent vraiment au même instant sur le cœur.",
+     "feedback": "Un cœur n'exécute qu'un processus à la fois. L'impression de simultanéité vient de l'alternance très rapide, réglée par l'ordonnanceur."
+    },
+    {
+     "texte": "L'ordonnanceur fait alterner les deux processus, des centaines de fois par seconde.",
+     "juste": true,
+     "feedback": "Oui : chacun s'exécute à son tour, un court instant. L'alternance est si rapide qu'on croit qu'ils tournent en même temps."
+    },
+    {
+     "texte": "La musique passe d'abord, le texte attend qu'elle soit finie.",
+     "feedback": "Si chacun attendait la fin de l'autre, on ne pourrait pas écrire pendant la musique. L'ordonnanceur les fait alterner, par petits morceaux."
+    },
+    {
+     "texte": "La musique n'a pas besoin du processeur une fois lancée.",
+     "feedback": "Pour jouer un son, il faut sans cesse lire et décoder le fichier : la musique a besoin du processeur, comme l'éditeur de texte."
+    }
+   ],
+   "explication": "Sur un cœur, les processus alternent très vite : c'est l'ordonnanceur qui choisit.",
+   "note_verification": "Fonctionnement d'un système d'exploitation multitâche (cours de NSI, fiche FichesNSI « Les processus et l'ordonnancement ») ; pas de code à exécuter."
+  },
+  {
+   "type": "notion",
+   "titre": "Trois états",
+   "texte": [
+    "==Prêt== : il attend le processeur ; ==élu== : il s'exécute.",
+    "==Bloqué== : il attend une ressource (une saisie, un fichier)."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 186\" width=\"360\" height=\"186\" role=\"img\" aria-label=\"Les états d&#x27;un processus : Prêt vers Élu (choisi par l&#x27;ordonnanceur) ; Élu vers Prêt (fin de son quantum) ; Élu vers Bloqué (attend une ressource) ; Bloqué vers Prêt (ressource obtenue). On ne passe jamais de Bloqué à Élu.\"><title>Les états d&#x27;un processus : Prêt vers Élu (choisi par l&#x27;ordonnanceur) ; Élu vers Prêt (fin de son quantum) ; Élu vers Bloqué (attend une ressource) ; Bloqué vers Prêt (ressource obtenue). On ne passe jamais de Bloqué à Élu.</title><defs><marker id=\"pointe-etats\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\"><path d=\"M0 0 10 5 0 10z\" class=\"pointe\"/></marker></defs><rect x=\"20\" y=\"20\" width=\"90\" height=\"34\" rx=\"17\" class=\"case\"/><text x=\"65\" y=\"42\" text-anchor=\"middle\" class=\"val\">Prêt</text><rect x=\"250\" y=\"20\" width=\"90\" height=\"34\" rx=\"17\" class=\"case sommet\"/><text x=\"295\" y=\"42\" text-anchor=\"middle\" class=\"val\">Élu</text><rect x=\"135\" y=\"140\" width=\"90\" height=\"34\" rx=\"17\" class=\"case\"/><text x=\"180\" y=\"162\" text-anchor=\"middle\" class=\"val\">Bloqué</text><line x1=\"112\" y1=\"30\" x2=\"246\" y2=\"30\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"180\" y=\"22\" text-anchor=\"middle\" class=\"petit\">choisi par l&#x27;ordonnanceur</text><line x1=\"248\" y1=\"46\" x2=\"114\" y2=\"46\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"180\" y=\"66\" text-anchor=\"middle\" class=\"petit\">fin de son quantum</text><line x1=\"290\" y1=\"56\" x2=\"215\" y2=\"136\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"262\" y=\"112\" text-anchor=\"start\" class=\"petit\">attend une</text><text x=\"262\" y=\"128\" text-anchor=\"start\" class=\"petit\">ressource</text><line x1=\"140\" y1=\"136\" x2=\"72\" y2=\"58\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"98\" y=\"112\" text-anchor=\"end\" class=\"petit\">ressource</text><text x=\"98\" y=\"128\" text-anchor=\"end\" class=\"petit\">obtenue</text></svg>"
+   },
+   "vocabulaire": "prêt = ready ; élu = running ; bloqué = blocked"
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[États] Un programme qui attend une saisie",
+   "objectif": "Reconnaître l'état d'un processus.",
+   "enonce": [
+    "Un programme Python exécute `input(\"Ton prénom ? \")` : il attend que l'élève tape son prénom au clavier.",
+    "Dans quel état est son processus ?"
+   ],
+   "options": [
+    {
+     "texte": "Élu",
+     "feedback": "Un processus élu s'exécute. Celui-ci ne peut pas avancer sans la saisie : il laisse le processeur aux autres."
+    },
+    {
+     "texte": "Prêt",
+     "feedback": "Un processus prêt n'attend que le processeur : il pourrait s'exécuter tout de suite. Celui-ci attend autre chose, la saisie."
+    },
+    {
+     "texte": "Bloqué",
+     "juste": true,
+     "feedback": "Oui : il attend une ressource, la saisie au clavier. Tant qu'elle n'arrive pas, lui donner le processeur ne servirait à rien."
+    },
+    {
+     "texte": "Terminé",
+     "feedback": "Le programme n'est pas fini : il reprendra dès que le prénom sera tapé. Il est en attente d'une ressource."
+    }
+   ],
+   "explication": "Un processus qui attend une ressource (saisie, fichier, imprimante) est bloqué.",
+   "note_verification": "Fonctionnement d'un système d'exploitation multitâche (cours de NSI, fiche FichesNSI « Les processus et l'ordonnancement ») ; pas de code à exécuter."
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[États] Après le blocage",
+   "objectif": "Connaître les transitions entre les états d'un processus.",
+   "enonce": [
+    "Le processus bloqué reçoit enfin la saisie qu'il attendait.",
+    "Dans quel état passe-t-il ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 360 186\" width=\"360\" height=\"186\" role=\"img\" aria-label=\"Les états d&#x27;un processus : Prêt vers Élu (choisi par l&#x27;ordonnanceur) ; Élu vers Prêt (fin de son quantum) ; Élu vers Bloqué (attend une ressource) ; Bloqué vers Prêt (ressource obtenue). On ne passe jamais de Bloqué à Élu.\"><title>Les états d&#x27;un processus : Prêt vers Élu (choisi par l&#x27;ordonnanceur) ; Élu vers Prêt (fin de son quantum) ; Élu vers Bloqué (attend une ressource) ; Bloqué vers Prêt (ressource obtenue). On ne passe jamais de Bloqué à Élu.</title><defs><marker id=\"pointe-etats\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\"><path d=\"M0 0 10 5 0 10z\" class=\"pointe\"/></marker></defs><rect x=\"20\" y=\"20\" width=\"90\" height=\"34\" rx=\"17\" class=\"case\"/><text x=\"65\" y=\"42\" text-anchor=\"middle\" class=\"val\">Prêt</text><rect x=\"250\" y=\"20\" width=\"90\" height=\"34\" rx=\"17\" class=\"case sommet\"/><text x=\"295\" y=\"42\" text-anchor=\"middle\" class=\"val\">Élu</text><rect x=\"135\" y=\"140\" width=\"90\" height=\"34\" rx=\"17\" class=\"case\"/><text x=\"180\" y=\"162\" text-anchor=\"middle\" class=\"val\">Bloqué</text><line x1=\"112\" y1=\"30\" x2=\"246\" y2=\"30\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"180\" y=\"22\" text-anchor=\"middle\" class=\"petit\">choisi par l&#x27;ordonnanceur</text><line x1=\"248\" y1=\"46\" x2=\"114\" y2=\"46\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"180\" y=\"66\" text-anchor=\"middle\" class=\"petit\">fin de son quantum</text><line x1=\"290\" y1=\"56\" x2=\"215\" y2=\"136\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"262\" y=\"112\" text-anchor=\"start\" class=\"petit\">attend une</text><text x=\"262\" y=\"128\" text-anchor=\"start\" class=\"petit\">ressource</text><line x1=\"140\" y1=\"136\" x2=\"72\" y2=\"58\" class=\"trait\" marker-end=\"url(#pointe-etats)\"/><text x=\"98\" y=\"112\" text-anchor=\"end\" class=\"petit\">ressource</text><text x=\"98\" y=\"128\" text-anchor=\"end\" class=\"petit\">obtenue</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "Élu : il reprend tout de suite son exécution.",
+     "feedback": "C'est l'erreur la plus fréquente : un processus bloqué ne passe jamais directement à élu. Il redevient d'abord prêt, puis attend son tour."
+    },
+    {
+     "texte": "Terminé : il a obtenu ce qu'il voulait.",
+     "feedback": "Obtenir la saisie ne termine pas le programme : il lui reste la suite à exécuter. Il redevient prêt."
+    },
+    {
+     "texte": "Bloqué, jusqu'à la fin du quantum en cours.",
+     "feedback": "Le blocage s'arrête dès que la ressource arrive : le processus devient prêt aussitôt, sans attendre la fin du quantum d'un autre."
+    },
+    {
+     "texte": "Prêt : il attend que l'ordonnanceur le choisisse.",
+     "juste": true,
+     "feedback": "Oui : il rejoint les processus prêts. Il sera élu à son tour, quand l'ordonnanceur le choisira."
+    }
+   ],
+   "explication": "Bloqué → prêt → élu : jamais directement de bloqué à élu.",
+   "note_verification": "Fonctionnement d'un système d'exploitation multitâche (cours de NSI, fiche FichesNSI « Les processus et l'ordonnancement ») ; pas de code à exécuter."
+  },
+  {
+   "type": "notion",
+   "titre": "Le tourniquet",
+   "texte": [
+    "Aux feux de travaux : chacun son tour, un temps fixe, le ==quantum==.",
+    "Pas fini ? ==Au bout== de la file !"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 250 88\" width=\"250\" height=\"88\" role=\"img\" aria-label=\"Tourniquet de quantum 2, avec P1 (durée 3) puis P2 (durée 2) : P1 P1 P2 P2 P1. P1 n&#x27;a pas fini après son quantum : il retourne au bout de la file, derrière P2.\"><title>Tourniquet de quantum 2, avec P1 (durée 3) puis P2 (durée 2) : P1 P1 P2 P2 P1. P1 n&#x27;a pas fini après son quantum : il retourne au bout de la file, derrière P2.</title><rect x=\"10\" y=\"10\" width=\"46\" height=\"34\" class=\"case sommet\"/><text x=\"33.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">P1</text><text x=\"10\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">0</text><rect x=\"56\" y=\"10\" width=\"46\" height=\"34\" class=\"case sommet\"/><text x=\"79.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">P1</text><text x=\"56\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">1</text><rect x=\"102\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"125.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">P2</text><text x=\"102\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">2</text><rect x=\"148\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"171.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">P2</text><text x=\"148\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">3</text><rect x=\"194\" y=\"10\" width=\"46\" height=\"34\" class=\"case sommet\"/><text x=\"217.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">P1</text><text x=\"194\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">4</text><text x=\"240\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">5</text><text x=\"10\" y=\"82\" text-anchor=\"start\" class=\"muet petit\">temps</text></svg>",
+    "legende": "Quantum 2 ; durées 3 et 2."
+   },
+   "vocabulaire": "tourniquet = round robin ; quantum = time slice"
+  },
+  {
+   "type": "relier",
+   "id": "etats-p",
+   "nom": "[États] Les changements d'état",
+   "objectif": "Associer chaque événement au changement d'état d'un processus.",
+   "enonce": [
+    "Relier chaque événement au changement d'état qu'il provoque."
+   ],
+   "paires": [
+    {
+     "gauche": "L'ordonnanceur le choisit",
+     "droite": "prêt → élu",
+     "feedback": "Parmi les processus prêts, l'ordonnanceur en élit un : il s'exécute."
+    },
+    {
+     "gauche": "Son quantum est écoulé",
+     "droite": "élu → prêt",
+     "feedback": "Pas fini à la fin de son quantum : il rend le processeur et retourne au bout de la file des prêts."
+    },
+    {
+     "gauche": "Il demande une saisie au clavier",
+     "droite": "élu → bloqué",
+     "feedback": "Il attend une ressource : il est bloqué et laisse le processeur aux autres."
+    },
+    {
+     "gauche": "La saisie arrive",
+     "droite": "bloqué → prêt",
+     "feedback": "La ressource obtenue, il redevient prêt, et jamais élu directement."
+    }
+   ],
+   "explication": "Prêt → élu (choisi), élu → prêt (quantum écoulé), élu → bloqué (attente), bloqué → prêt (ressource obtenue)."
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Tourniquet] La frise d'exécution",
+   "objectif": "Construire l'ordonnancement de plusieurs processus avec le tourniquet.",
+   "enonce": [
+    "Trois processus arrivent dans l'ordre P1 (durée 3), P2 (durée 5) et P3 (durée 1). Le tourniquet a un quantum de 2.",
+    "Quelle est la frise d'exécution, une case par unité de temps ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 434 88\" width=\"434\" height=\"88\" role=\"img\" aria-label=\"Une frise de 9 unités de temps, à compléter.\"><title>Une frise de 9 unités de temps, à compléter.</title><rect x=\"10\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"33.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"10\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">0</text><rect x=\"56\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"79.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"56\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">1</text><rect x=\"102\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"125.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"102\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">2</text><rect x=\"148\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"171.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"148\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">3</text><rect x=\"194\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"217.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"194\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">4</text><rect x=\"240\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"263.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"240\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">5</text><rect x=\"286\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"309.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"286\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">6</text><rect x=\"332\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"355.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"332\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">7</text><rect x=\"378\" y=\"10\" width=\"46\" height=\"34\" class=\"case\"/><text x=\"401.0\" y=\"32\" text-anchor=\"middle\" class=\"val\">?</text><text x=\"378\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">8</text><text x=\"424\" y=\"62\" text-anchor=\"middle\" class=\"muet petit\">9</text><text x=\"10\" y=\"82\" text-anchor=\"start\" class=\"muet petit\">temps</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "P1 P1 P1 P2 P2 P2 P2 P2 P3",
+     "feedback": "Ici, chacun va jusqu'au bout avant de laisser la place : c'est « premier arrivé, premier servi ». Le tourniquet coupe après 2 unités, le quantum."
+    },
+    {
+     "texte": "P1 P1 P2 P2 P3 P1 P2 P2 P2",
+     "juste": true,
+     "feedback": "Oui : P1 et P2 font un quantum, P3 finit en 1 ; P1, revenu au bout de la file avant P2, finit ; P2 termine seul."
+    },
+    {
+     "texte": "P1 P2 P3 P1 P2 P1 P2 P2 P2",
+     "feedback": "Tu as pris un quantum de 1 : chacun ne fait qu'une unité. Avec un quantum de 2, P1 fait deux unités avant de laisser la place."
+    },
+    {
+     "texte": "P1 P1 P2 P2 P3 P2 P2 P2 P1",
+     "feedback": "Après P3, la file contient P1 puis P2 : P1 est revenu au bout de la file avant P2. C'est donc P1 qui passe d'abord."
+    }
+   ],
+   "explication": "Tourniquet : un quantum chacun, dans l'ordre de la file ; pas fini, retour au bout.",
+   "trace": {
+    "colonnes": [
+     "Temps",
+     "Élu",
+     "File des prêts ensuite"
+    ],
+    "lignes": [
+     [
+      "0 à 2",
+      "P1",
+      "P2 (5), P3 (1), P1 (1)"
+     ],
+     [
+      "2 à 4",
+      "P2",
+      "P3 (1), P1 (1), P2 (3)"
+     ],
+     [
+      "4 à 5",
+      "P3 (fini)",
+      "P1 (1), P2 (3)"
+     ],
+     [
+      "5 à 6",
+      "P1 (fini)",
+      "P2 (3)"
+     ],
+     [
+      "6 à 9",
+      "P2 (fini)",
+      "vide"
+     ]
+    ]
+   },
+   "verifications": [
+    {
+     "code": [
+      "print(' '.join(tourniquet(liste, 2)))"
+     ],
+     "sortie": "P1 P1 P2 P2 P3 P1 P2 P2 P2"
+    },
+    {
+     "code": [
+      "print(' '.join(tourniquet(liste, 100)))"
+     ],
+     "sortie": "P1 P1 P1 P2 P2 P2 P2 P2 P3"
+    },
+    {
+     "code": [
+      "print(' '.join(tourniquet(liste, 1)))"
+     ],
+     "sortie": "P1 P2 P3 P1 P2 P1 P2 P2 P2"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Tourniquet] Quand P3 se termine-t-il ?",
+   "objectif": "Lire une frise d'ordonnancement : le temps de fin d'un processus.",
+   "enonce": [
+    "Avec la même frise (quantum 2) : P1 P1 P2 P2 P3 P1 P2 P2 P2.",
+    "À quel temps P3 se termine-t-il ?"
+   ],
+   "options": [
+    {
+     "texte": "Au temps 1",
+     "feedback": "1 est la durée de P3, son temps de calcul. Mais il attend son tour : il ne commence qu'au temps 4."
+    },
+    {
+     "texte": "Au temps 4",
+     "feedback": "Au temps 4, P3 commence. Il lui faut encore 1 unité de calcul : il se termine au temps 5."
+    },
+    {
+     "texte": "Au temps 5",
+     "juste": true,
+     "feedback": "Oui : P3 attend 4 unités (deux quanta, de P1 puis de P2), puis s'exécute pendant 1 unité. Il finit au temps 5."
+    },
+    {
+     "texte": "Au temps 9",
+     "feedback": "9 est la fin de toute la frise, celle de P2. P3 est le plus court : il a fini bien avant."
+    }
+   ],
+   "explication": "Le temps de fin compte l'attente et le calcul.",
+   "verifications": [
+    {
+     "code": [
+      "print(fins(tourniquet(liste, 2)))"
+     ],
+     "sortie": "{'P1': 6, 'P2': 9, 'P3': 5}"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Tourniquet] Avec un quantum de 3",
+   "objectif": "Prévoir l'ordre de fin des processus selon le quantum.",
+   "enonce": [
+    "Mêmes processus : P1 (durée 3), P2 (durée 5), P3 (durée 1), dans cet ordre. Le quantum vaut maintenant 3.",
+    "Dans quel ordre se terminent-ils ?"
+   ],
+   "options": [
+    {
+     "texte": "P1 (temps 3), P3 (temps 7), P2 (temps 9)",
+     "juste": true,
+     "feedback": "Oui : P1 finit dans son quantum ; P2 fait 3 unités et retourne au bout, derrière P3 ; P3 finit au temps 7, puis P2 au temps 9."
+    },
+    {
+     "texte": "P3 (temps 1), P1 (temps 4), P2 (temps 9)",
+     "feedback": "Le tourniquet ne passe pas le plus court d'abord : il suit l'ordre d'arrivée. P1 arrive le premier, il passe le premier."
+    },
+    {
+     "texte": "P1 (temps 3), P2 (temps 8), P3 (temps 9)",
+     "feedback": "P2 ne peut pas faire ses 5 unités d'un coup : le quantum le coupe après 3. Il retourne au bout de la file, et P3 passe avant lui."
+    },
+    {
+     "texte": "P1 (temps 3), P2 (temps 6), P3 (temps 7)",
+     "feedback": "Après son quantum, P2 n'a pas fini : il lui reste 2 unités. Il retourne au bout de la file et termine au temps 9."
+    }
+   ],
+   "explication": "Le quantum change l'ordre de fin : un processus long est coupé et repasse plus tard.",
+   "verifications": [
+    {
+     "code": [
+      "print(fins(tourniquet(liste, 3)))",
+      "print(' '.join(tourniquet(liste, 3)))"
+     ],
+     "sortie": "{'P1': 3, 'P2': 9, 'P3': 7}\nP1 P1 P1 P2 P2 P2 P3 P2 P2"
+    },
+    {
+     "code": [
+      "print(fins(tourniquet(liste, 100)))"
+     ],
+     "sortie": "{'P1': 3, 'P2': 8, 'P3': 9}"
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "tourniquet-e",
+   "nom": "[Erreur] Le retour au bout de la file",
+   "objectif": "Lire un message d'erreur dans le programme du tourniquet.",
+   "enonce": [
+    "Ce programme simule le tourniquet de quantum `q` : chaque processus est un couple `(p, r)`, son nom et sa durée restante.",
+    "Il s'arrête sur l'erreur affichée sous le code (« `append` prend un seul argument, 2 sont donnés »)."
+   ],
+   "code": [
+    "f = [(\"P1\", 3), (\"P2\", 2)]",
+    "q = 2",
+    "frise = []",
+    "while len(f) > 0:",
+    "    p, r = f.pop(0)",
+    "    n = min(q, r)",
+    "    frise += [p] * n",
+    "    r = r - n",
+    "    if r > 0:",
+    "        f.append(p, r)",
+    "print(frise)"
+   ],
+   "console": [
+    "TypeError: list.append() takes exactly one argument (2 given)"
+   ],
+   "ligne": 10,
+   "correction": "        f.append((p, r))",
+   "feedback": "Bien vu : on remet un seul élément au bout de la file, le couple `(p, r)`, d'où les doubles parenthèses. Corrigé, le programme affiche ['P1', 'P1', 'P2', 'P2', 'P1'].",
+   "feedback_autre": "Cette ligne est correcte. Le message parle de `append` qui reçoit 2 arguments : cherche l'appel à `append` avec deux valeurs.",
+   "pieges": {
+    "5": "`f.pop(0)` retire bien le processus en tête de la file, et le couple se range dans `p` et `r`. Le message parle de `append`.",
+    "7": "`frise += [p] * n` ajoute `n` cases au nom du processus : pas d'`append` ici. Cherche l'appel à `append` qui reçoit deux valeurs."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    },
+    {
+     "code": [
+      "f = []",
+      "try:",
+      "    f.append('P1', 1)",
+      "except TypeError as e:",
+      "    print('TypeError:', e)"
+     ],
+     "sortie": "TypeError: list.append() takes exactly one argument (2 given)",
+     "reprendre_code": false
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "['P1', 'P1', 'P2', 'P2', 'P1']"
+    }
+   ],
+   "explication": "Pas fini : le couple `(p, r)` retourne au bout de la file, en un seul élément."
+  },
+  {
+   "type": "notion",
+   "titre": "L'interblocage",
+   "texte": [
+    "Chacun garde une ressource et attend celle de l'autre : personne n'avance.",
+    "C'est un ==interblocage== (*deadlock*), comme deux voitures face à face sur un pont étroit."
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 440 176\" width=\"440\" height=\"176\" role=\"img\" aria-label=\"Interblocage : P1 détient R1 et attend R2 ; P2 détient R2 et attend R1. Chacun attend l&#x27;autre.\"><title>Interblocage : P1 détient R1 et attend R2 ; P2 détient R2 et attend R1. Chacun attend l&#x27;autre.</title><defs><marker id=\"pointe-inter\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\"><path d=\"M0 0 10 5 0 10z\" class=\"pointe\"/></marker></defs><rect x=\"85\" y=\"20\" width=\"70\" height=\"34\" rx=\"17\" class=\"case sommet\"/><text x=\"120\" y=\"42\" text-anchor=\"middle\" class=\"val\">P1</text><rect x=\"285\" y=\"20\" width=\"70\" height=\"34\" rx=\"17\" class=\"case sommet\"/><text x=\"320\" y=\"42\" text-anchor=\"middle\" class=\"val\">P2</text><rect x=\"85\" y=\"130\" width=\"70\" height=\"34\" rx=\"4\" class=\"case\"/><text x=\"120\" y=\"152\" text-anchor=\"middle\" class=\"val\">R1</text><rect x=\"285\" y=\"130\" width=\"70\" height=\"34\" rx=\"4\" class=\"case\"/><text x=\"320\" y=\"152\" text-anchor=\"middle\" class=\"val\">R2</text><line x1=\"120\" y1=\"126\" x2=\"120\" y2=\"58\" class=\"trait\" marker-end=\"url(#pointe-inter)\"/><text x=\"112\" y=\"96\" text-anchor=\"end\" class=\"petit\">détenue par</text><line x1=\"320\" y1=\"126\" x2=\"320\" y2=\"58\" class=\"trait\" marker-end=\"url(#pointe-inter)\"/><text x=\"328\" y=\"96\" text-anchor=\"start\" class=\"petit\">détenue par</text><line x1=\"157\" y1=\"50\" x2=\"283\" y2=\"134\" class=\"trait\" stroke-dasharray=\"6 4\" marker-end=\"url(#pointe-inter)\"/><text x=\"165\" y=\"80\" text-anchor=\"start\" class=\"etiq petit\">attend</text><line x1=\"283\" y1=\"50\" x2=\"157\" y2=\"134\" class=\"trait\" stroke-dasharray=\"6 4\" marker-end=\"url(#pointe-inter)\"/><text x=\"275\" y=\"80\" text-anchor=\"end\" class=\"etiq petit\">attend</text></svg>"
+   },
+   "vocabulaire": "interblocage = deadlock ; ressource = resource"
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Interblocage] Le scanner et l'imprimante",
+   "objectif": "Reconnaître un interblocage.",
+   "enonce": [
+    "Le processus P1 a obtenu le scanner et attend l'imprimante. Le processus P2 a obtenu l'imprimante et attend le scanner. Aucun ne rend ce qu'il a.",
+    "Que se passe-t-il ?"
+   ],
+   "schema": {
+    "type": "svg",
+    "code": "<svg class=\"schema-svg\" viewBox=\"0 0 440 176\" width=\"440\" height=\"176\" role=\"img\" aria-label=\"Interblocage : P1 détient R1 et attend R2 ; P2 détient R2 et attend R1. Chacun attend l&#x27;autre.\"><title>Interblocage : P1 détient R1 et attend R2 ; P2 détient R2 et attend R1. Chacun attend l&#x27;autre.</title><defs><marker id=\"pointe-inter\" viewBox=\"0 0 10 10\" refX=\"9\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto-start-reverse\"><path d=\"M0 0 10 5 0 10z\" class=\"pointe\"/></marker></defs><rect x=\"85\" y=\"20\" width=\"70\" height=\"34\" rx=\"17\" class=\"case sommet\"/><text x=\"120\" y=\"42\" text-anchor=\"middle\" class=\"val\">P1</text><rect x=\"285\" y=\"20\" width=\"70\" height=\"34\" rx=\"17\" class=\"case sommet\"/><text x=\"320\" y=\"42\" text-anchor=\"middle\" class=\"val\">P2</text><rect x=\"85\" y=\"130\" width=\"70\" height=\"34\" rx=\"4\" class=\"case\"/><text x=\"120\" y=\"152\" text-anchor=\"middle\" class=\"val\">R1</text><rect x=\"285\" y=\"130\" width=\"70\" height=\"34\" rx=\"4\" class=\"case\"/><text x=\"320\" y=\"152\" text-anchor=\"middle\" class=\"val\">R2</text><line x1=\"120\" y1=\"126\" x2=\"120\" y2=\"58\" class=\"trait\" marker-end=\"url(#pointe-inter)\"/><text x=\"112\" y=\"96\" text-anchor=\"end\" class=\"petit\">détenue par</text><line x1=\"320\" y1=\"126\" x2=\"320\" y2=\"58\" class=\"trait\" marker-end=\"url(#pointe-inter)\"/><text x=\"328\" y=\"96\" text-anchor=\"start\" class=\"petit\">détenue par</text><line x1=\"157\" y1=\"50\" x2=\"283\" y2=\"134\" class=\"trait\" stroke-dasharray=\"6 4\" marker-end=\"url(#pointe-inter)\"/><text x=\"165\" y=\"80\" text-anchor=\"start\" class=\"etiq petit\">attend</text><line x1=\"283\" y1=\"50\" x2=\"157\" y2=\"134\" class=\"trait\" stroke-dasharray=\"6 4\" marker-end=\"url(#pointe-inter)\"/><text x=\"275\" y=\"80\" text-anchor=\"end\" class=\"etiq petit\">attend</text></svg>"
+   },
+   "options": [
+    {
+     "texte": "L'ordonnanceur les fait alterner et ils finissent par terminer.",
+     "feedback": "Donner le processeur à un processus bloqué ne sert à rien : il attend une ressource, pas le processeur. Ici, l'attente ne finit jamais."
+    },
+    {
+     "texte": "P1 passe d'abord, puisqu'il est arrivé le premier.",
+     "feedback": "P1 ne peut pas passer : il lui manque l'imprimante, gardée par P2. L'ordre d'arrivée ne change rien à l'attente circulaire."
+    },
+    {
+     "texte": "Ils attendent la fin de leur quantum, puis reprennent.",
+     "feedback": "Un processus bloqué n'a pas de quantum en cours : il attend une ressource. Comme personne ne rend la sienne, rien ne change."
+    },
+    {
+     "texte": "P1 et P2 restent bloqués pour toujours : c'est un interblocage.",
+     "juste": true,
+     "feedback": "Oui : chacun attend une ressource que l'autre garde. L'attente est circulaire, aucun des deux ne peut avancer."
+    }
+   ],
+   "explication": "Interblocage : chacun détient une ressource et attend celle d'un autre.",
+   "note_verification": "Fonctionnement d'un système d'exploitation multitâche (cours de NSI, fiche FichesNSI « Les processus et l'ordonnancement ») ; pas de code à exécuter."
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[Interblocage] L'éviter",
+   "objectif": "Connaître un moyen d'éviter l'interblocage.",
+   "enonce": [
+    "Les processus P1 et P2 ont besoin tous les deux du scanner et de l'imprimante.",
+    "Quelle règle évite l'interblocage de la question précédente ?"
+   ],
+   "options": [
+    {
+     "texte": "Augmenter le quantum de chaque processus.",
+     "feedback": "Le quantum règle le partage du processeur, pas celui du scanner ou de l'imprimante. Un processus bloqué le resterait."
+    },
+    {
+     "texte": "Demander toujours le scanner avant l'imprimante.",
+     "juste": true,
+     "feedback": "Oui : celui qui obtient le scanner le premier pourra aussi avoir l'imprimante. L'autre attend, sans rien garder : l'attente n'est plus circulaire."
+    },
+    {
+     "texte": "Ajouter un second cœur, pour que chacun ait le sien.",
+     "feedback": "Deux cœurs feraient s'exécuter P1 et P2 en même temps, mais chacun attendrait toujours la ressource de l'autre."
+    },
+    {
+     "texte": "Lancer P1 et P2 en même temps.",
+     "feedback": "C'est justement quand ils avancent en même temps que chacun prend une ressource et attend l'autre. Il faut une règle sur l'ordre des demandes."
+    }
+   ],
+   "explication": "Demander les ressources dans le même ordre empêche l'attente circulaire.",
+   "note_verification": "Fonctionnement d'un système d'exploitation multitâche (cours de NSI, fiche FichesNSI « Les processus et l'ordonnancement ») ; pas de code à exécuter."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "",
+     "Processus"
+    ],
+    "lignes": [
+     [
+      "Processus",
+      "un programme en cours d'exécution, repéré par son PID (`ps`, `kill`)"
+     ],
+     [
+      "Ordonnanceur",
+      "fait alterner les processus sur un cœur"
+     ],
+     [
+      "États",
+      "prêt, élu, bloqué ; jamais de bloqué à élu"
+     ],
+     [
+      "Tourniquet",
+      "un quantum chacun ; pas fini, retour au bout de la file"
+     ],
+     [
+      "Interblocage",
+      "chacun attend la ressource de l'autre"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu construire la frise d'un tourniquet ?"
+   ]
+  }
+ ]
+}

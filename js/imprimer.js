@@ -1,5 +1,5 @@
 /* QuizzNSI : la version à imprimer (MIT, Babash - NSI Tani Malandi).
-   imprimer.html?cours=<id> : le sujet (les 20 questions) ; &corrige : le corrigé, à part. */
+   imprimer.html?cours=<id> : le sujet (toutes les questions) ; &corrige : le corrigé, à part. */
 (function () {
   'use strict';
   const Q = window.QuizzNSI, $ = Q.$, t = Q.texte, e = Q.echapper;
@@ -13,7 +13,7 @@
 
   // Les autres types de questions, sur papier : la consigne, les éléments, et la place pour répondre.
   const autres = cours => cours.interactifs.filter(d => d.type !== 'question');
-  const titreAutre = d => '<h2><span class="f-num">' + e(Q.activites.NOMS[d.type]) + ' ·</span> ' + t(d.nom) + '</h2><p class="f-objectif">Objectif : ' + t(d.objectif) + '</p>';
+  const titreAutre = d => '<h2><span class="f-num">' + (d.type !== 'nuage' && Number.isInteger(d.numero) ? d.numero + '. ' : '') + e(Q.activites.NOMS[d.type]) + ' ·</span> ' + t(d.nom) + '</h2><p class="f-objectif">Objectif : ' + t(d.objectif) + '</p>';
   function sujetAutre(d) {
     let h = '<section class="f-question f-activite">' + titreAutre(d) + d.enonce.map(p => '<p>' + t(p) + '</p>').join('') + (d.code && d.type !== 'ligne' ? Q.blocCode(d.code) : '');
     if (d.type === 'nuage') h += '<p class="f-ligne">Un ou deux mots : ……………………………………</p>';
@@ -28,13 +28,13 @@
 
   function sujet(cours) {
     const n = autres(cours).length;
-    let h = entete(cours, cours.demonstration === true ? 'démonstration, ' + n + ' activité' + (n > 1 ? 's' : '') : 'cours-quiz, ' + cours.questions.length + ' questions' + (n ? ' et ' + n + ' activité' + (n > 1 ? 's' : '') : ''));
+    let h = entete(cours, cours.demonstration === true ? 'démonstration, ' + n + ' activité' + (n > 1 ? 's' : '') : 'cours-quiz, ' + cours.total + ' questions');
     h += '<div class="f-consignes">' + (cours.questions.length ? '<p><strong>Consigne :</strong> pour chaque question à choix, cocher la seule bonne réponse.</p>' : '')
       + '<p><strong>Conventions</strong></p><ul>' + (cours.conventions || []).map(c => '<li>' + t(c) + '</li>').join('') + '</ul></div>';
     h += cours.interactifs.map(q => q.type !== 'question' ? sujetAutre(q) : '<section class="f-question"><h2><span class="f-num">' + q.numero + '.</span> ' + t(q.nom) + '</h2>'
       + '<p class="f-objectif">Objectif : ' + t(q.objectif) + '</p>'
       + q.enonce.map(p => '<p>' + t(p) + '</p>').join('')
-      + (q.code || q.schema ? '<div class="f-illus">' + (q.code ? Q.blocCode(q.code) : '') + (q.schema ? Q.schema(q.schema) : '') + '</div>' : '')
+      + (q.code || q.schema ? '<div class="f-illus">' + (q.code ? Q.blocCode(q.code) + Q.console(q.console) : '') + (q.schema ? Q.schema(q.schema) : '') + '</div>' : '')
       + '<ol class="f-options">' + q.options.map((o, i) => '<li><span class="case" aria-hidden="true"></span>' + Q.pastille(i) + '<span>' + (o.texte ? t(o.texte) : '') + (o.code ? Q.blocCode(o.code, { numeros: false }) : '') + '</span></li>').join('') + '</ol></section>').join('');
     return h + pied(cours);
   }

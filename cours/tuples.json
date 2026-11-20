@@ -1,0 +1,718 @@
+{
+ "format": "quizz-nsi/1",
+ "id": "tuples",
+ "titre": "P-uplets (tuples)",
+ "sous_titre": "L'essentiel en 15 minutes et 12 questions",
+ "niveau": "Première NSI",
+ "programme": "Types construits : p-uplets, p-uplets nommés (écrire une fonction renvoyant un p-uplet de valeurs)",
+ "fiche": "https://babash.github.io/FichesNSI/fiches/tuple/",
+ "auteur": "Babash - NSI Tani Malandi",
+ "licence": "CC BY-SA 4.0",
+ "gabarit": "introduction",
+ "duree_minutes": 15,
+ "sources": [
+  "Fiche de révision « Les p-uplets (tuples) en Python » (FichesNSI)"
+ ],
+ "criteres": [
+  "Niveau 1 : je lis un élément d'un p-uplet et je sais qu'on ne peut pas le modifier.",
+  "Niveau 2 : je range les valeurs d'un p-uplet dans des variables (affectation multiple).",
+  "Niveau 3 : j'écris une fonction qui renvoie plusieurs valeurs et je trouve l'erreur d'un petit programme."
+ ],
+ "conventions": [
+  "Les indices commencent à 0, comme pour les tableaux.",
+  "Tous les codes sont en Python 3. « Qu'affiche ce code ? » : les valeurs sont données dans l'ordre d'affichage."
+ ],
+ "diapositives": [
+  {
+   "type": "titre",
+   "titre": "Les p-uplets (tuples)",
+   "conventions": false,
+   "texte": [
+    "Types construits · l'essentiel en 15 minutes."
+   ]
+  },
+  {
+   "type": "classe",
+   "question": "Où se trouve Mamoudzou ?",
+   "texte": [
+    "Deux nombres qui vont ensemble : la latitude et la longitude."
+   ],
+   "pistes": [
+    "Toujours dans le même ordre, et on ne les change pas !"
+   ],
+   "code": [
+    "mamoudzou = (-12.78, 45.23)"
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Le p-uplet",
+   "texte": [
+    "Des valeurs dans l'ordre, entre parenthèses, lues par leur ==indice== comme dans un tableau.",
+    "Elles peuvent être de types différents."
+   ],
+   "code": [
+    "d = (20, \"novembre\", 2026)",
+    "print(d[1])    # novembre",
+    "print(len(d))  # 3"
+   ],
+   "vocabulaire": "p-uplet = tuple"
+  },
+  {
+   "type": "question",
+   "id": "q01",
+   "nom": "[Lire] Un élément d'un p-uplet",
+   "objectif": "Lire un élément d'un p-uplet grâce à son indice.",
+   "enonce": [
+    "Le p-uplet `rdv` donne le lieu, l'heure et les minutes d'un rendez-vous.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "rdv = (\"Sada\", 7, 30)",
+    "print(rdv[1])"
+   ],
+   "options": [
+    {
+     "texte": "`Sada`",
+     "feedback": "Tu as compté à partir de 1. Comme dans un tableau, le premier élément a l'indice 0 : `rdv[0]` vaut \"Sada\"."
+    },
+    {
+     "texte": "`7`",
+     "juste": true,
+     "feedback": "Oui. `rdv[0]` vaut \"Sada\", `rdv[1]` vaut 7 : on lit un p-uplet par indice, à partir de 0."
+    },
+    {
+     "texte": "`(7, 30)`",
+     "feedback": "`rdv[1]` donne un seul élément, celui d'indice 1, pas tous les éléments à partir de l'indice 1."
+    },
+    {
+     "texte": "Une erreur : un p-uplet ne se lit pas par indice.",
+     "feedback": "Un p-uplet se lit exactement comme un tableau : `rdv[0]`, `rdv[1]`, `rdv[-1]`. C'est le modifier qui est interdit."
+    }
+   ],
+   "explication": "On lit un p-uplet par indice, à partir de 0.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "7"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q02",
+   "nom": "[Lire] Taille et dernier élément",
+   "objectif": "Utiliser `len` et l'indice -1 sur un p-uplet.",
+   "enonce": [
+    "Le p-uplet `t` donne le départ, l'arrivée et la durée d'un trajet en taxi, en minutes.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "t = (\"Sada\",",
+    "     \"Mamoudzou\", 45)",
+    "print(len(t), t[-1])"
+   ],
+   "options": [
+    {
+     "texte": "`2 45`",
+     "feedback": "2 est le dernier indice. `len` compte les éléments : il y en a 3."
+    },
+    {
+     "texte": "`3 Sada`",
+     "feedback": "L'indice -1 désigne le dernier élément, pas le premier : ici, la durée, 45."
+    },
+    {
+     "texte": "Une erreur : on ne peut pas mélanger textes et nombres.",
+     "feedback": "Un p-uplet peut mélanger des valeurs de types différents : deux chaînes et un entier, ici."
+    },
+    {
+     "texte": "`3 45`",
+     "juste": true,
+     "feedback": "Exact. 3 éléments, et `t[-1]` est le dernier, la durée."
+    }
+   ],
+   "explication": "`len(t)` compte les éléments ; `t[-1]` est le dernier.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "3 45"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Immuable",
+   "texte": [
+    "On ne peut ni changer, ni ajouter, ni retirer un élément : le p-uplet est ==immuable==.",
+    "On fabrique un ==nouveau== p-uplet."
+   ],
+   "code": [
+    "t = (3, 5, 8)",
+    "u = t + (13,)",
+    "print(u)  # (3, 5, 8, 13)"
+   ],
+   "vocabulaire": "immuable = immutable"
+  },
+  {
+   "type": "question",
+   "id": "q03",
+   "nom": "[Immuable] Changer un élément ?",
+   "objectif": "Savoir qu'un p-uplet ne se modifie pas, et reconnaître l'erreur.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Que se passe-t-il ?"
+   ],
+   "code": [
+    "t = (3, 5, 8)",
+    "t[0] = 10"
+   ],
+   "options": [
+    {
+     "texte": "Une erreur : un p-uplet ne se modifie pas.",
+     "juste": true,
+     "feedback": "Exact. Python s'arrête sur `TypeError: 'tuple' object does not support item assignment` (« un p-uplet n'accepte pas l'affectation d'un élément »)."
+    },
+    {
+     "texte": "`t` devient `(10, 5, 8)`.",
+     "feedback": "C'est ce qui se passerait avec un tableau, `[3, 5, 8]`. Un p-uplet est immuable : Python refuse et s'arrête sur une erreur."
+    },
+    {
+     "texte": "`t` devient `(10, 3, 5, 8)`.",
+     "feedback": "`t[0] = ...` n'insère jamais : avec un tableau, il remplacerait. Avec un p-uplet, il provoque une erreur."
+    },
+    {
+     "texte": "Rien ne change, et il n'y a pas d'erreur.",
+     "feedback": "Python ne laisse pas passer en silence : il s'arrête sur `TypeError: 'tuple' object does not support item assignment`."
+    }
+   ],
+   "explication": "Un p-uplet est immuable : `t[0] = ...` provoque `TypeError`.",
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "TypeError"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q04",
+   "nom": "[Immuable] Un nouveau p-uplet",
+   "objectif": "Fabriquer un nouveau p-uplet par concaténation.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "t = (1, 2)",
+    "t = t + (3,)",
+    "print(t)"
+   ],
+   "options": [
+    {
+     "texte": "Une erreur : un p-uplet est immuable.",
+     "feedback": "`t + (3,)` ne modifie pas `t` : il fabrique un nouveau p-uplet, rangé ensuite dans la variable `t`. C'est permis."
+    },
+    {
+     "texte": "`(1, 2, (3,))`",
+     "feedback": "`+` met bout à bout les éléments des deux p-uplets : 3 devient un élément, pas un p-uplet dans le p-uplet."
+    },
+    {
+     "texte": "`(1, 2, 3)`",
+     "juste": true,
+     "feedback": "Oui. `+` fabrique un nouveau p-uplet avec les éléments des deux, et `t` désigne maintenant ce nouveau p-uplet."
+    },
+    {
+     "texte": "`(1, 2)`",
+     "feedback": "Le p-uplet de départ ne change pas, c'est vrai. Mais `t = ...` range dans `t` le nouveau p-uplet, `(1, 2, 3)`."
+    }
+   ],
+   "explication": "`t + (v,)` fabrique un nouveau p-uplet ; l'ancien n'est pas modifié.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "(1, 2, 3)"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q05",
+   "nom": "[Écrire] Un p-uplet d'un seul élément",
+   "objectif": "Écrire un p-uplet d'un seul élément, avec sa virgule.",
+   "enonce": [
+    "On veut un p-uplet qui contient un seul élément, l'entier 5.",
+    "Quelle écriture convient ?"
+   ],
+   "options": [
+    {
+     "texte": "`(5,)`",
+     "juste": true,
+     "feedback": "Oui. C'est la virgule qui fait le p-uplet : `(5,)` est un p-uplet d'un élément, comme `(13,)` sur l'écran « Immuable »."
+    },
+    {
+     "texte": "`(5)`",
+     "feedback": "Sans virgule, les parenthèses ne servent qu'à grouper un calcul : `(5)` est l'entier 5, pas un p-uplet."
+    },
+    {
+     "texte": "`[5]`",
+     "feedback": "Les crochets font un tableau (type `list`), qui se modifie. Un p-uplet s'écrit entre parenthèses, avec une virgule."
+    },
+    {
+     "texte": "`(\"5\",)`",
+     "feedback": "C'est bien un p-uplet d'un élément, mais cet élément est la chaîne \"5\", pas l'entier 5."
+    }
+   ],
+   "explication": "Un p-uplet d'un seul élément s'écrit avec une virgule : `(5,)`.",
+   "verifications": [
+    {
+     "code": [
+      "print(type((5,)).__name__, type((5)).__name__, type([5]).__name__, (\"5\",)[0] == 5)"
+     ],
+     "sortie": "tuple int list False"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "L'affectation multiple",
+   "texte": [
+    "On ==déballe== un p-uplet dans autant de variables qu'il a de valeurs."
+   ],
+   "code": [
+    "point = (-12.78, 45.23)",
+    "lat, lon = point",
+    "print(lat)  # -12.78",
+    "a, b = 1, 2",
+    "a, b = b, a  # échange",
+    "print(a, b)  # 2 1"
+   ],
+   "vocabulaire": "déballer = unpack"
+  },
+  {
+   "type": "question",
+   "id": "q06",
+   "nom": "[Déballer] Ranger un p-uplet dans deux variables",
+   "objectif": "Ranger les valeurs d'un p-uplet dans des variables, dans l'ordre.",
+   "enonce": [
+    "La barge part à 17 h 45 : l'heure est rangée dans le p-uplet `depart`.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "depart = (17, 45)",
+    "h, m = depart",
+    "print(m, h)"
+   ],
+   "options": [
+    {
+     "texte": "`17 45`",
+     "feedback": "Le déballage est juste (`h` vaut 17, `m` vaut 45), mais regarde l'ordre du `print` : `m` d'abord."
+    },
+    {
+     "texte": "`(17, 45) (17, 45)`",
+     "feedback": "Avec deux variables à gauche, chacune reçoit une valeur : `h` reçoit 17, `m` reçoit 45."
+    },
+    {
+     "texte": "Une erreur : un p-uplet ne se range pas dans deux variables.",
+     "feedback": "C'est permis dès qu'il y a autant de variables que de valeurs : ici 2 et 2."
+    },
+    {
+     "texte": "`45 17`",
+     "juste": true,
+     "feedback": "Exact. `h` reçoit 17, `m` reçoit 45, et on affiche `m` puis `h`."
+    }
+   ],
+   "explication": "`a, b = (x, y)` range `x` dans `a` et `y` dans `b`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "45 17"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q07",
+   "nom": "[Déballer] Deux affectations en une",
+   "objectif": "Savoir que la partie droite est calculée avant l'affectation multiple.",
+   "enonce": [
+    "On exécute le code suivant.",
+    "Qu'affiche-t-il ?"
+   ],
+   "code": [
+    "a, b = 3, 8",
+    "a, b = b, a + b",
+    "print(a, b)"
+   ],
+   "options": [
+    {
+     "texte": "`8 16`",
+     "feedback": "Tu as fait les affectations l'une après l'autre (`a` vaut 8, puis `b` vaut 8 + 8). Python calcule d'abord toute la partie droite avec les anciennes valeurs."
+    },
+    {
+     "texte": "`8 11`",
+     "juste": true,
+     "feedback": "Oui. Python calcule d'abord `(b, a + b)`, soit `(8, 11)`, avec les anciennes valeurs, puis range 8 dans `a` et 11 dans `b`."
+    },
+    {
+     "texte": "`8 3`",
+     "feedback": "C'est l'échange `a, b = b, a`. Ici, `b` reçoit `a + b`, pas seulement `a`."
+    },
+    {
+     "texte": "`11 8`",
+     "feedback": "L'ordre compte : la première variable reçoit la première valeur. `a` reçoit `b` (8), `b` reçoit `a + b` (11)."
+    }
+   ],
+   "explication": "Dans `a, b = ...`, toute la partie droite est calculée avant de ranger les valeurs.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "8 11"
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Renvoyer plusieurs valeurs",
+   "texte": [
+    "`return a, b` renvoie ==un== p-uplet de deux valeurs.",
+    "On le déballe : `x, y = f(...)`."
+   ],
+   "code": [
+    "def divise(a, b):",
+    "    return a // b, a % b",
+    "",
+    "q, r = divise(17, 5)",
+    "print(q, r)  # 3 2"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q08",
+   "nom": "[Fonction] Ce que renvoie `return a, b`",
+   "objectif": "Savoir qu'une fonction qui renvoie deux valeurs renvoie un p-uplet.",
+   "enonce": [
+    "On range 17 mangues dans des sacs de 5 : la fonction renvoie le nombre de sacs pleins et le reste.",
+    "Qu'affiche ce programme ?"
+   ],
+   "code": [
+    "def partage(n, k):",
+    "    return n // k, n % k",
+    "",
+    "resultat = partage(17, 5)",
+    "print(resultat)"
+   ],
+   "options": [
+    {
+     "texte": "`3`",
+     "feedback": "`return` renvoie tout ce qui le suit : les deux valeurs, pas seulement la première."
+    },
+    {
+     "texte": "`3 2`",
+     "feedback": "On afficherait 3 2 avec `print(sacs, reste)` après un déballage. Ici, on affiche le p-uplet lui-même, avec ses parenthèses."
+    },
+    {
+     "texte": "`(3, 2)`",
+     "juste": true,
+     "feedback": "Exact. `return a, b` renvoie un seul objet : le p-uplet `(3, 2)`, que `print` affiche entre parenthèses."
+    },
+    {
+     "texte": "`[3, 2]`",
+     "feedback": "La virgule de `return` fabrique un p-uplet, entre parenthèses, pas un tableau entre crochets."
+    }
+   ],
+   "explication": "`return a, b` renvoie le p-uplet `(a, b)`.",
+   "verifications": [
+    {
+     "code": [],
+     "sortie": "(3, 2)"
+    }
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q09",
+   "nom": "[Fonction] Renvoyer le minimum et le maximum",
+   "objectif": "Écrire une fonction qui renvoie un p-uplet de valeurs.",
+   "enonce": [
+    "On veut écrire `bas, haut = extremes(notes)` pour obtenir la plus petite et la plus grande note.",
+    "Quelle fonction convient ?"
+   ],
+   "options": [
+    {
+     "code": [
+      "def extremes(t):",
+      "    return min(t)",
+      "    return max(t)"
+     ],
+     "feedback": "Le premier `return` arrête la fonction : le second n'est jamais exécuté. La fonction renvoie un seul nombre, et le déballage échoue : `TypeError: cannot unpack non-iterable int object`."
+    },
+    {
+     "code": [
+      "def extremes(t):",
+      "    print(min(t), max(t))"
+     ],
+     "feedback": "`print` affiche les valeurs mais ne les renvoie pas : la fonction renvoie `None`, et le déballage provoque `TypeError: cannot unpack non-iterable NoneType object`."
+    },
+    {
+     "code": [
+      "def extremes(t):",
+      "    return min(t) + max(t)"
+     ],
+     "feedback": "`min(t) + max(t)` est une somme, un seul nombre (23 ici). Il faut une virgule pour renvoyer deux valeurs."
+    },
+    {
+     "code": [
+      "def extremes(t):",
+      "    return min(t), max(t)"
+     ],
+     "juste": true,
+     "feedback": "Oui. La virgule fabrique le p-uplet `(8, 15)`, déballé dans `bas` et `haut`."
+    }
+   ],
+   "explication": "Pour renvoyer plusieurs valeurs : `return a, b`, une seule fois.",
+   "verifications": [
+    {
+     "code": [
+      "notes = [12, 8, 15]",
+      "def extremes(t):",
+      "    return min(t)",
+      "    return max(t)",
+      "bas, haut = extremes(notes)"
+     ],
+     "erreur": "TypeError",
+     "reprendre_code": false,
+     "option": 0
+    },
+    {
+     "code": [
+      "notes = [12, 8, 15]",
+      "def extremes(t):",
+      "    print(min(t), max(t))",
+      "bas, haut = extremes(notes)"
+     ],
+     "sortie": "8 15",
+     "erreur": "TypeError",
+     "reprendre_code": false,
+     "option": 1
+    },
+    {
+     "code": [
+      "notes = [12, 8, 15]",
+      "def extremes(t):",
+      "    return min(t) + max(t)",
+      "print(extremes(notes))",
+      "bas, haut = extremes(notes)"
+     ],
+     "sortie": "23",
+     "erreur": "TypeError",
+     "reprendre_code": false,
+     "option": 2
+    },
+    {
+     "code": [
+      "notes = [12, 8, 15]",
+      "def extremes(t):",
+      "    return min(t), max(t)",
+      "bas, haut = extremes(notes)",
+      "print(bas, haut)"
+     ],
+     "sortie": "8 15",
+     "reprendre_code": false
+    }
+   ]
+  },
+  {
+   "type": "ligne",
+   "id": "a01",
+   "nom": "[Erreur] Trop de variables",
+   "objectif": "Lire un message d'erreur de déballage et compter les valeurs d'un p-uplet.",
+   "enonce": [
+    "Ce programme affiche la plus petite et la plus grande note.",
+    "Il s'arrête sur l'erreur affichée sous le code (« pas assez de valeurs à déballer : 3 attendues, 2 reçues »)."
+   ],
+   "code": [
+    "def extremes(t):",
+    "    return min(t), max(t)",
+    "",
+    "notes = [12, 8, 15]",
+    "b, m, h = extremes(notes)",
+    "print(b, h)"
+   ],
+   "console": [
+    "ValueError: not enough values to unpack (expected 3, got 2)"
+   ],
+   "ligne": 5,
+   "correction": "b, h = extremes(notes)",
+   "feedback": "Bien vu. `extremes` renvoie un p-uplet de 2 valeurs : il faut 2 variables, pas 3. Corrigé, le programme affiche 8 15.",
+   "feedback_autre": "Cette ligne est correcte. Le message parle d'un déballage (unpack) : cherche la ligne où l'on range un p-uplet dans plusieurs variables.",
+   "pieges": {
+    "2": "`return min(t), max(t)` est juste : il renvoie le p-uplet `(8, 15)`. Le message dit que 3 variables attendent ces 2 valeurs.",
+    "6": "Le programme s'arrête avant cette ligne. Cherche la ligne où 3 variables reçoivent les 2 valeurs renvoyées."
+   },
+   "verifications": [
+    {
+     "code": [],
+     "erreur": "ValueError"
+    }
+   ],
+   "verifications_corrigees": [
+    {
+     "code": [],
+     "sortie": "8 15"
+    }
+   ],
+   "explication": "Autant de variables que de valeurs : `b, h = extremes(notes)`."
+  },
+  {
+   "type": "notion",
+   "titre": "Le p-uplet nommé",
+   "texte": [
+    "Chaque valeur porte un ==nom== : en Python, on l'écrit avec un dictionnaire, entre accolades."
+   ],
+   "code": [
+    "e = {\"prenom\": \"Faïza\",",
+    "     \"age\": 16}",
+    "print(e[\"age\"])  # 16"
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q10",
+   "nom": "[P-uplet nommé] Lire une valeur par son nom",
+   "objectif": "Lire une valeur d'un p-uplet nommé grâce à son nom.",
+   "enonce": [
+    "Le p-uplet nommé `taxi` décrit un trajet.",
+    "Quelle expression vaut `\"Mamoudzou\"` ?"
+   ],
+   "code": [
+    "taxi = {",
+    "  \"depart\": \"Sada\",",
+    "  \"arrivee\": \"Mamoudzou\",",
+    "  \"places\": 4}"
+   ],
+   "options": [
+    {
+     "texte": "`taxi[\"arrivee\"]`",
+     "juste": true,
+     "feedback": "Oui. Dans un p-uplet nommé, écrit en dictionnaire, on lit une valeur par son nom, entre crochets et entre guillemets."
+    },
+    {
+     "texte": "`taxi[1]`",
+     "feedback": "Ici, les valeurs se lisent par leur nom, pas par leur position : `taxi[1]` provoque `KeyError: 1`."
+    },
+    {
+     "texte": "`taxi.arrivee`",
+     "feedback": "Le point sert aux méthodes, comme `append` pour un tableau. Python répond `AttributeError: 'dict' object has no attribute 'arrivee'` : il faut `taxi[\"arrivee\"]`."
+    },
+    {
+     "texte": "`taxi(\"arrivee\")`",
+     "feedback": "Les parenthèses appellent une fonction : Python répond `TypeError: 'dict' object is not callable`. On lit avec des crochets."
+    }
+   ],
+   "explication": "Un p-uplet nommé se lit par le nom de la valeur : `t[\"nom\"]`.",
+   "verifications": [
+    {
+     "code": [
+      "print(taxi[\"arrivee\"])"
+     ],
+     "sortie": "Mamoudzou"
+    },
+    {
+     "code": [
+      "print(taxi[1])"
+     ],
+     "erreur": "KeyError",
+     "option": 1
+    },
+    {
+     "code": [
+      "print(taxi.arrivee)"
+     ],
+     "erreur": "AttributeError",
+     "option": 2
+    },
+    {
+     "code": [
+      "print(taxi(\"arrivee\"))"
+     ],
+     "erreur": "TypeError",
+     "option": 3
+    }
+   ]
+  },
+  {
+   "type": "notion",
+   "titre": "Tableau ou p-uplet ?",
+   "texte": [
+    "Des valeurs qui vont changer : un ==tableau==.",
+    "Des valeurs fixes, qui vont ensemble : un ==p-uplet==."
+   ]
+  },
+  {
+   "type": "question",
+   "id": "q11",
+   "nom": "[Choisir] Tableau ou p-uplet ?",
+   "objectif": "Choisir un p-uplet pour des valeurs fixes qui vont ensemble.",
+   "enonce": [
+    "Laquelle de ces données se range naturellement dans un **p-uplet** ?"
+   ],
+   "options": [
+    {
+     "texte": "La file d'attente du doukabé, qui change toute la journée.",
+     "feedback": "Des personnes arrivent et partent : les valeurs changent. Il faut une structure modifiable, comme un tableau."
+    },
+    {
+     "texte": "Les notes d'un trimestre, complétées à chaque contrôle.",
+     "feedback": "On ajoute une note à chaque contrôle : il faut pouvoir modifier, donc un tableau et son `append`."
+    },
+    {
+     "texte": "La position d'un arrêt de taxi : latitude et longitude.",
+     "juste": true,
+     "feedback": "Oui. Deux valeurs fixes, qui vont ensemble et dans un ordre précis : c'est un p-uplet, comme `(-12.78, 45.23)`."
+    },
+    {
+     "texte": "Le panier du marché, où l'on ajoute des fruits.",
+     "feedback": "On ajoute des fruits au fil des achats : les valeurs changent, il faut un tableau."
+    }
+   ],
+   "explication": "Des valeurs fixes qui vont ensemble : un p-uplet. Des valeurs qui changent : un tableau.",
+   "note_verification": "Pas de code : le choix suit la fiche (« un p-uplet est immuable ; usages : coordonnées, date, plusieurs valeurs renvoyées »)."
+  },
+  {
+   "type": "bilan",
+   "titre": "À retenir",
+   "tableau": {
+    "colonnes": [
+     "Écriture",
+     "Effet"
+    ],
+    "lignes": [
+     [
+      "`t = (3, 5, 8)`, `(5,)`",
+      "un p-uplet ; un p-uplet d'un seul élément"
+     ],
+     [
+      "`t[0]`, `len(t)`",
+      "on lit comme un tableau"
+     ],
+     [
+      "`t[0] = 10`",
+      "`TypeError` : un p-uplet est immuable"
+     ],
+     [
+      "`a, b = t`",
+      "déballe : autant de variables que de valeurs"
+     ],
+     [
+      "`return a, b`",
+      "renvoie le p-uplet `(a, b)`"
+     ]
+    ]
+   },
+   "ticket": [
+    "Quelle notion est encore floue pour toi aujourd'hui ?",
+    "De 1 à 5, à quel point peux-tu expliquer à un·e camarade quand choisir un p-uplet plutôt qu'un tableau ?"
+   ]
+  }
+ ]
+}
