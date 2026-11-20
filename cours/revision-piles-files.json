@@ -97,13 +97,13 @@
    ],
    "options": [
     {
-     "texte": "Il affiche `A ['B', 'C']` : le code est juste.",
-     "feedback": "`pop()` sans argument ne retire pas le premier élément, mais le dernier. Le code affiche C : il sert la demande la plus récente."
-    },
-    {
      "texte": "Il affiche `C ['A', 'B']` : il faut écrire `impressions.pop(0)`.",
      "juste": true,
      "feedback": "Exact. `pop()` retire le dernier élément : la demande la plus récente. Pour servir la plus ancienne, on retire l'indice 0 avec `pop(0)`."
+    },
+    {
+     "texte": "Il affiche `A ['B', 'C']` : le code est juste.",
+     "feedback": "`pop()` sans argument ne retire pas le premier élément, mais le dernier. Le code affiche C : il sert la demande la plus récente."
     },
     {
      "texte": "Il affiche `A ['B', 'C']`, mais il faut écrire `impressions.pop(-1)`.",
@@ -141,17 +141,17 @@
    ],
    "options": [
     {
-     "texte": "`pile.append(8)`",
-     "juste": true,
-     "feedback": "Oui. `append` ajoute à la fin de la liste, c'est-à-dire au sommet : la liste devient `[4, 1, 8]`."
+     "texte": "`pile = pile + 8`",
+     "feedback": "On ne peut pas ajouter un entier à une liste : Python affiche `TypeError: can only concatenate list (not \"int\") to list` (« on ne peut concaténer qu'une liste à une liste »)."
     },
     {
      "texte": "`pile.insert(0, 8)`",
      "feedback": "`insert(0, 8)` ajoute au début de la liste, donc en bas de la pile : `[8, 4, 1]`. Le sommet reste 1."
     },
     {
-     "texte": "`pile = pile + 8`",
-     "feedback": "On ne peut pas ajouter un entier à une liste : Python affiche `TypeError: can only concatenate list (not \"int\") to list` (« on ne peut concaténer qu'une liste à une liste »)."
+     "texte": "`pile.append(8)`",
+     "juste": true,
+     "feedback": "Oui. `append` ajoute à la fin de la liste, c'est-à-dire au sommet : la liste devient `[4, 1, 8]`."
     },
     {
      "texte": "`pile[len(pile)] = 8`",
@@ -204,17 +204,17 @@
      "feedback": "`pop()` renvoie bien le dernier élément, mais il le retire : c'est `depiler`, pas `sommet`. La pile serait modifiée."
     },
     {
-     "texte": "`pile[0]`",
-     "feedback": "L'indice 0 est le premier élément de la liste, c'est-à-dire le bas de la pile ici. Le sommet est à l'autre bout."
+     "texte": "`pile[-1]`",
+     "juste": true,
+     "feedback": "Oui. L'indice -1 désigne le dernier élément, sans le retirer. C'est aussi `pile[len(pile) - 1]`."
     },
     {
      "texte": "`pile[len(pile)]`",
      "feedback": "Les indices vont de 0 à `len(pile) - 1`. `pile[len(pile)]` sort de la liste : `IndexError: list index out of range` (« indice hors de la liste »)."
     },
     {
-     "texte": "`pile[-1]`",
-     "juste": true,
-     "feedback": "Oui. L'indice -1 désigne le dernier élément, sans le retirer. C'est aussi `pile[len(pile) - 1]`."
+     "texte": "`pile[0]`",
+     "feedback": "L'indice 0 est le premier élément de la liste, c'est-à-dire le bas de la pile ici. Le sommet est à l'autre bout."
     }
    ],
    "explication": "Sommet = dernier élément : `pile[-1]`.",
@@ -252,13 +252,13 @@
      "feedback": "Sur une pile vide, `pile[0]` n'existe pas : Python affiche `IndexError: list index out of range`. La fonction plante justement dans le cas qu'elle doit détecter."
     },
     {
+     "texte": "`return len(pile) - 1 == 0`",
+     "feedback": "`len(pile) - 1` est l'indice du dernier élément, pas le nombre d'éléments : cette fonction renvoie `True` quand la pile a un seul élément."
+    },
+    {
      "texte": "`return len(pile) == 0`",
      "juste": true,
      "feedback": "Oui. Une pile vide a une longueur nulle ; la fonction marche aussi quand la pile est vide, sans erreur."
-    },
-    {
-     "texte": "`return len(pile) - 1 == 0`",
-     "feedback": "`len(pile) - 1` est l'indice du dernier élément, pas le nombre d'éléments : cette fonction renvoie `True` quand la pile a un seul élément."
     }
    ],
    "explication": "Pile vide : `len(pile) == 0` (ou `pile == []`).",
@@ -311,13 +311,13 @@
    ],
    "options": [
     {
+     "texte": "Elle ne change pas, comme pour `pop()`.",
+     "feedback": "C'est vrai pour `pop()`, qui retire le dernier élément. `pop(0)` doit décaler tous les éléments restants : plus il y en a, plus c'est long."
+    },
+    {
      "texte": "Elle double environ : il y a deux fois plus de décalages.",
      "juste": true,
      "feedback": "Oui. Chaque élément restant avance d'une case vers le début : le travail est proportionnel à `n`. Le coût est linéaire."
-    },
-    {
-     "texte": "Elle ne change pas, comme pour `pop()`.",
-     "feedback": "C'est vrai pour `pop()`, qui retire le dernier élément. `pop(0)` doit décaler tous les éléments restants : plus il y en a, plus c'est long."
     },
     {
      "texte": "Elle est divisée par deux.",
@@ -364,17 +364,17 @@
    ],
    "options": [
     {
-     "texte": "`q` : 1, 2, 3 ; `p` est vide.",
-     "feedback": "Le passage dans une autre pile inverse l'ordre : 1, dépilé en premier, est empilé en premier, donc il se retrouve en bas de `q`."
+     "texte": "`q` : 3, 2, 1 ; `p` est vide.",
+     "juste": true,
+     "feedback": "Exact. 1 sort en premier de `p` et va au fond de `q` ; 3 sort en dernier et se retrouve au sommet. Chaque `depiler()` retire l'élément : `p` est vide."
     },
     {
      "texte": "`q` : 3, 2, 1 ; `p` contient 1, 2, 3.",
      "feedback": "L'ordre de `q` est juste, mais `depiler()` retire l'élément de `p`, il ne le copie pas : à la fin, `p` est vide."
     },
     {
-     "texte": "`q` : 3, 2, 1 ; `p` est vide.",
-     "juste": true,
-     "feedback": "Exact. 1 sort en premier de `p` et va au fond de `q` ; 3 sort en dernier et se retrouve au sommet. Chaque `depiler()` retire l'élément : `p` est vide."
+     "texte": "`q` : 1, 2, 3 ; `p` est vide.",
+     "feedback": "Le passage dans une autre pile inverse l'ordre : 1, dépilé en premier, est empilé en premier, donc il se retrouve en bas de `q`."
     },
     {
      "texte": "`q` : 1, 2, 3 ; `p` contient 1, 2, 3.",
@@ -427,13 +427,13 @@
      "feedback": "Un seul passage dans une autre pile inverse l'ordre, mais ici il y en a deux : de `p` vers `aux`, puis de `aux` vers `p`. Deux inversions redonnent l'ordre de départ."
     },
     {
-     "texte": "`n` vaut 1 et `p` contient 2, 5, 2, 7.",
-     "feedback": "La boucle ne s'arrête pas au premier 2 trouvé : elle dépile jusqu'à ce que `p` soit vide, et compte chaque 2."
-    },
-    {
      "texte": "`n` vaut 2 et `p` contient 2, 5, 2, 7.",
      "juste": true,
      "feedback": "Exact. Deux 2 sont comptés. Le passage par `aux` inverse l'ordre, le retour l'inverse encore : `p` est comme au départ."
+    },
+    {
+     "texte": "`n` vaut 1 et `p` contient 2, 5, 2, 7.",
+     "feedback": "La boucle ne s'arrête pas au premier 2 trouvé : elle dépile jusqu'à ce que `p` soit vide, et compte chaque 2."
     }
    ],
    "explication": "Dépiler dans `aux`, puis rempiler : on lit tout, et la pile est intacte.",
@@ -474,17 +474,17 @@
      "feedback": "2 n'est que la valeur de départ de `m`, le sommet. La boucle compare ensuite 9 puis 4 : 9 est plus grand, `m` prend la valeur 9."
     },
     {
-     "texte": "`m` vaut 9 et `p` est vide.",
-     "juste": true,
-     "feedback": "Oui. Tous les éléments sont dépilés et comparés : `m` garde le plus grand, 9. Comme rien n'est rempilé, `p` est vide."
+     "texte": "`m` vaut 4 et `p` est vide.",
+     "feedback": "4 est le dernier élément dépilé, au fond de la pile, mais `m` ne change que si l'élément est plus grand : 4 < 9, `m` reste 9."
     },
     {
      "texte": "`m` vaut 9 et `p` contient 2, 9, 4.",
      "feedback": "Le maximum est juste, mais chaque `depiler()` retire un élément : la fonction ne rempile rien, `p` est vide à la fin."
     },
     {
-     "texte": "`m` vaut 4 et `p` est vide.",
-     "feedback": "4 est le dernier élément dépilé, au fond de la pile, mais `m` ne change que si l'élément est plus grand : 4 < 9, `m` reste 9."
+     "texte": "`m` vaut 9 et `p` est vide.",
+     "juste": true,
+     "feedback": "Oui. Tous les éléments sont dépilés et comparés : `m` garde le plus grand, 9. Comme rien n'est rempilé, `p` est vide."
     }
    ],
    "explication": "Parcourir une pile avec `depiler`, c'est la vider, sauf si on rempile.",
@@ -572,13 +572,13 @@
      "feedback": "`depiler()` retire le sommet et le renvoie : `x` vaut 5. L'erreur arrive à la ligne suivante, sur `sommet()`."
     },
     {
-     "texte": "`p.empiler(x)` remet 5 une deuxième fois dans la pile.",
-     "feedback": "La ligne 4 n'est jamais atteinte : Python s'arrête à la ligne 3. Et rempiler `x` est juste, pour rendre la pile intacte."
-    },
-    {
      "texte": "Après `p.depiler()`, la pile est vide : `p.sommet()` n'a rien à lire.",
      "juste": true,
      "feedback": "Exact. Le seul élément, 5, est retiré à la ligne 2 ; à la ligne 3, `sommet()` lit une pile vide. Il faut tester `p.est_vide()` avant."
+    },
+    {
+     "texte": "`p.empiler(x)` remet 5 une deuxième fois dans la pile.",
+     "feedback": "La ligne 4 n'est jamais atteinte : Python s'arrête à la ligne 3. Et rempiler `x` est juste, pour rendre la pile intacte."
     },
     {
      "texte": "La pile est vide dès le départ : il faut la remplir avant d'appeler `deuxieme`.",
@@ -700,13 +700,13 @@
      "feedback": "Tu as dépilé directement `entree` : on aurait obtenu 3, le dernier arrivé. Pour défiler, on transvase d'abord `entree` dans `sortie`."
     },
     {
+     "texte": "`entree` vide ; `sortie` : 3, 2.",
+     "feedback": "Le transvasement inverse l'ordre : 3 était au sommet de `entree`, il arrive en bas de `sortie`. Le sommet de `sortie` est 1, puis 2 après le défilement."
+    },
+    {
      "texte": "`entree` vide ; `sortie` : 2, 3.",
      "juste": true,
      "feedback": "Exact. Le transvasement met 1 au sommet de `sortie`, puis on le dépile. Il reste 2 au sommet et 3 dessous : ils sortiront dans l'ordre d'arrivée."
-    },
-    {
-     "texte": "`entree` vide ; `sortie` : 3, 2.",
-     "feedback": "Le transvasement inverse l'ordre : 3 était au sommet de `entree`, il arrive en bas de `sortie`. Le sommet de `sortie` est 1, puis 2 après le défilement."
     },
     {
      "texte": "`entree` : 2, 3 ; `sortie` vide.",
@@ -922,7 +922,7 @@
     },
     {
      "texte": "Zaïd",
-     "feedback": "Tu as fait un tour de trop ou de moins. Écris la file après chaque tour : Mia, Zaïd, Anli ; puis Zaïd, Anli, Mia ; puis…"
+     "feedback": "Zaïd est en tête après 2 tours (ou après 5), pas après 4. Écris la file après chaque tour : Mia, Zaïd, Anli ; puis Zaïd, Anli, Mia ; puis Anli, Mia, Zaïd ; puis…"
     },
     {
      "texte": "Mia",
@@ -1071,36 +1071,40 @@
    "nom": "[Analyse de code] Annuler et rétablir",
    "objectif": "Suivre deux piles qui modélisent « Annuler » et « Rétablir ».",
    "enonce": [
-    "Un éditeur garde les actions faites dans la pile `actions` et les actions annulées dans la pile `annulees`. Ctrl + Z annule, Ctrl + Y rétablit.",
+    "Un éditeur garde les actions faites dans la pile `act` et les actions annulées dans la pile `ann`. Ctrl + Z annule, Ctrl + Y rétablit.",
     "Qu'affiche ce code ?"
    ],
    "code": [
-    "actions = Pile()",
-    "annulees = Pile()",
-    "for a in [\"écrire\", \"gras\", \"couleur\"]:",
-    "    actions.empiler(a)",
-    "annulees.empiler(actions.depiler())   # Ctrl + Z",
-    "annulees.empiler(actions.depiler())   # Ctrl + Z",
-    "actions.empiler(annulees.depiler())   # Ctrl + Y",
-    "print(actions.sommet(), annulees.sommet())"
+    "act = Pile()   # actions",
+    "ann = Pile()   # annulées",
+    "for a in [\"écrire\", \"gras\",",
+    "          \"couleur\"]:",
+    "    act.empiler(a)",
+    "# Ctrl + Z, deux fois",
+    "ann.empiler(act.depiler())",
+    "ann.empiler(act.depiler())",
+    "# Ctrl + Y",
+    "act.empiler(ann.depiler())",
+    "print(act.sommet(),",
+    "      ann.sommet())"
    ],
    "options": [
     {
-     "texte": "`gras couleur`",
-     "juste": true,
-     "feedback": "Exact. Deux Ctrl + Z mettent \"couleur\" puis \"gras\" dans `annulees`. Ctrl + Y dépile \"gras\" et le remet dans `actions`. Il reste \"couleur\" à rétablir."
+     "texte": "`couleur gras`",
+     "feedback": "Tu as rétabli l'action annulée en premier, comme dans une file. Rétablir reprend la dernière annulée : le sommet de `ann`, \"gras\"."
     },
     {
-     "texte": "`couleur gras`",
-     "feedback": "Tu as rétabli l'action annulée en premier, comme dans une file. Rétablir reprend la dernière annulée : le sommet de `annulees`, \"gras\"."
+     "texte": "`gras couleur`",
+     "juste": true,
+     "feedback": "Exact. Deux Ctrl + Z mettent \"couleur\" puis \"gras\" dans `ann`. Ctrl + Y dépile \"gras\" et le remet dans `act`. Il reste \"couleur\" à rétablir."
     },
     {
      "texte": "`écrire couleur`",
-     "feedback": "Tu as oublié le Ctrl + Y de la ligne 7 : il remet \"gras\" au sommet de `actions`."
+     "feedback": "\"couleur\" est bien au sommet de `ann`. Mais le Ctrl + Y de la ligne 10 ne fait pas que retirer \"gras\" de `ann` : il l'empile dans `act`, dont il devient le sommet. Sans la ligne 10, le code afficherait écrire gras."
     },
     {
      "texte": "`gras gras`",
-     "feedback": "`depiler()` retire l'élément : \"gras\" quitte `annulees` quand il est rétabli. Il reste \"couleur\" au sommet de `annulees`."
+     "feedback": "`depiler()` retire l'élément : \"gras\" quitte `ann` quand il est rétabli. Il reste \"couleur\" au sommet de `ann`."
     }
    ],
    "explication": "Annuler et Rétablir : deux piles, et l'action passe de l'une à l'autre.",
@@ -1136,13 +1140,13 @@
      "feedback": "`n` diminue de 1 à chaque appel : la condition finirait par être vraie. Le problème arrive avant, à cause du nombre d'appels en attente."
     },
     {
+     "texte": "La fonction n'utilise pas les primitives `empiler` et `depiler`.",
+     "feedback": "La pile d'appels est gérée par Python lui-même, sans primitive dans ton code. C'est elle qui déborde ici."
+    },
+    {
      "texte": "Les appels en attente remplissent la pile d'appels, qui est limitée.",
      "juste": true,
      "feedback": "Exact. Chaque appel attend le résultat du suivant : 100 000 appels s'empilent, bien plus que la limite d'environ 1 000. Python arrête le programme."
-    },
-    {
-     "texte": "La fonction n'utilise pas les primitives `empiler` et `depiler`.",
-     "feedback": "La pile d'appels est gérée par Python lui-même, sans primitive dans ton code. C'est elle qui déborde ici."
     }
    ],
    "explication": "Trop d'appels en attente : la pile d'appels déborde.",
@@ -1169,8 +1173,9 @@
    ],
    "options": [
     {
-     "texte": "Une file pour la station, une file pour la ruelle.",
-     "feedback": "La station est bien une file. Mais dans l'impasse, le dernier taxi garé bloque les autres : il sort le premier. C'est une pile."
+     "texte": "Une file pour la station, une pile pour la ruelle.",
+     "juste": true,
+     "feedback": "Oui. Station : premier arrivé, premier parti (FIFO). Impasse : une seule entrée, le dernier garé sort le premier (LIFO)."
     },
     {
      "texte": "Une pile pour la station, une file pour la ruelle.",
@@ -1181,9 +1186,8 @@
      "feedback": "La ruelle est bien une pile. Mais à la station, on respecte l'ordre d'arrivée : le premier taxi arrivé charge le premier, c'est une file."
     },
     {
-     "texte": "Une file pour la station, une pile pour la ruelle.",
-     "juste": true,
-     "feedback": "Oui. Station : premier arrivé, premier parti (FIFO). Impasse : une seule entrée, le dernier garé sort le premier (LIFO)."
+     "texte": "Une file pour la station, une file pour la ruelle.",
+     "feedback": "La station est bien une file. Mais dans l'impasse, le dernier taxi garé bloque les autres : il sort le premier. C'est une pile."
     }
    ],
    "explication": "Ordre d'arrivée : file. Une seule entrée qui sert de sortie : pile.",
@@ -1204,13 +1208,13 @@
      "feedback": "C'est rapide, mais c'est une pile : la dernière demande serait traitée en premier. L'ordre d'arrivée n'est pas respecté."
     },
     {
+     "texte": "Une liste avec `append` et `pop(0)` : elle est juste et rapide.",
+     "feedback": "Elle respecte bien l'ordre d'arrivée, mais chaque `pop(0)` décale toutes les demandes restantes : avec des centaines de milliers de demandes, c'est lent."
+    },
+    {
      "texte": "Une file à deux piles : en moyenne, chaque défilement est rapide.",
      "juste": true,
      "feedback": "Oui. C'est bien une file (ordre d'arrivée), et chaque élément n'est transvasé qu'une fois : le coût moyen d'un défilement est constant."
-    },
-    {
-     "texte": "Une liste avec `append` et `pop(0)` : elle est juste et rapide.",
-     "feedback": "Elle respecte bien l'ordre d'arrivée, mais chaque `pop(0)` décale toutes les demandes restantes : avec des centaines de milliers de demandes, c'est lent."
     },
     {
      "texte": "Une liste avec `insert(0, x)` pour ajouter et `pop(0)` pour retirer.",
