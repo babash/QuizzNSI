@@ -19,7 +19,7 @@
   "Niveau 3 : je trouve pourquoi une fonction récursive ne s'arrête pas ou renvoie `None`."
  ],
  "conventions": [
-  "Python arrête une récursion vers 1 000 appels en attente, avec l'erreur `RecursionError`.",
+  "Python arrête une récursion vers 1 000 appels en attente, avec l'erreur `RecursionError: maximum recursion depth exceeded`.",
   "n! (factorielle de n) vaut 1 × 2 × … × n, et 0! = 1."
  ],
  "diapositives": [
@@ -183,13 +183,13 @@
    "type": "notion",
    "titre": "La factorielle",
    "texte": [
-    "4! = 4 × 3 × 2 × 1. Donc ==n! = n × (n − 1)!==, avec 0! = 1."
+    "4! = 4 × 3 × 2 × 1. Donc ==n! = n × (n − 1)!==, avec 0! = 1 ; en Python, `fact(n)`."
    ],
    "code": [
-    "def factorielle(n):",
+    "def fact(n):",
     "    if n == 0:",
     "        return 1",
-    "    return n * factorielle(n - 1)"
+    "    return n * fact(n - 1)"
    ],
    "vocabulaire": "factorielle = factorial"
   },
@@ -199,19 +199,19 @@
    "nom": "[Trace] Calculer une factorielle",
    "objectif": "Calculer le résultat d'un appel récursif en remontant les appels.",
    "enonce": [
-    "On utilise la fonction `factorielle` de l'écran précédent.",
-    "Que renvoie `factorielle(5)` ?"
+    "On utilise la fonction `fact` de l'écran précédent.",
+    "Que renvoie `fact(5)` ?"
    ],
    "code": [
-    "def factorielle(n):",
+    "def fact(n):",
     "    if n == 0:",
     "        return 1",
-    "    return n * factorielle(n - 1)"
+    "    return n * fact(n - 1)"
    ],
    "options": [
     {
      "texte": "24",
-     "feedback": "24, c'est factorielle(4). factorielle(5) multiplie encore ce résultat par 5 : 5 × 24."
+     "feedback": "24, c'est fact(4). fact(5) multiplie encore ce résultat par 5 : 5 × 24."
     },
     {
      "texte": "15",
@@ -220,18 +220,18 @@
     {
      "texte": "120",
      "juste": true,
-     "feedback": "Bravo : 5 × 4 × 3 × 2 × 1 × 1 = 120. Le dernier 1 est celui du cas de base, factorielle(0)."
+     "feedback": "Bravo : 5 × 4 × 3 × 2 × 1 × 1 = 120. Le dernier 1 est celui du cas de base, fact(0)."
     },
     {
      "texte": "0",
      "feedback": "Le produit vaudrait 0 si le cas de base renvoyait 0. Ici il renvoie 1, et 1 ne change pas un produit."
     }
    ],
-   "explication": "factorielle(5) = 5 × factorielle(4) = 5 × 24 = 120.",
+   "explication": "fact(5) = 5 × fact(4) = 5 × 24 = 120.",
    "verifications": [
     {
      "code": [
-      "print(factorielle(5), factorielle(4))"
+      "print(fact(5), fact(4))"
      ],
      "sortie": "120 24"
     }
@@ -247,10 +247,10 @@
    "schema": {
     "type": "pile",
     "elements": [
-     "factorielle(3)",
-     "factorielle(2)",
-     "factorielle(1)",
-     "factorielle(0) → 1"
+     "fact(3)",
+     "fact(2)",
+     "fact(1)",
+     "fact(0) → 1"
     ],
     "legende": "Dernier appelé, premier fini."
    }
@@ -261,46 +261,46 @@
    "nom": "[Pile d'appels] Compter les appels",
    "objectif": "Compter les appels qui s'empilent avant le cas de base.",
    "enonce": [
-    "On exécute `factorielle(3)`.",
-    "Combien d'appels de `factorielle` sont faits en tout, en comptant le premier ?"
+    "On exécute `fact(3)`.",
+    "Combien d'appels de `fact` sont faits en tout, en comptant le premier ?"
    ],
    "code": [
-    "def factorielle(n):",
+    "def fact(n):",
     "    if n == 0:",
     "        return 1",
-    "    return n * factorielle(n - 1)"
+    "    return n * fact(n - 1)"
    ],
    "options": [
     {
      "texte": "4",
      "juste": true,
-     "feedback": "Oui : factorielle(3), (2), (1) et (0). Le cas de base est un appel lui aussi : c'est lui qui renvoie 1 et lance la remontée."
+     "feedback": "Oui : fact(3), (2), (1) et (0). Le cas de base est un appel lui aussi : c'est lui qui renvoie 1 et lance la remontée."
     },
     {
      "texte": "3",
-     "feedback": "Tu as oublié factorielle(0) : le cas de base est aussi un appel. Il y en a un pour 3, 2, 1 et 0."
+     "feedback": "Tu as oublié fact(0) : le cas de base est aussi un appel. Il y en a un pour 3, 2, 1 et 0."
     },
     {
      "texte": "1",
-     "feedback": "On n'écrit `factorielle` qu'une fois, mais chaque exécution de la ligne 4 lance un nouvel appel, avec n − 1."
+     "feedback": "On n'écrit `fact` qu'une fois, mais chaque exécution de la ligne 4 lance un nouvel appel, avec n − 1."
     },
     {
      "texte": "6",
      "feedback": "6, c'est le résultat : 3! = 6. La question porte sur le nombre d'appels : un pour 3, 2, 1 et 0."
     }
    ],
-   "explication": "factorielle(n) fait n + 1 appels : n, n − 1, … jusqu'à 0.",
+   "explication": "fact(n) fait n + 1 appels : n, n − 1, … jusqu'à 0.",
    "verifications": [
     {
      "code": [
       "appels = 0",
-      "def factorielle(n):",
+      "def fact(n):",
       "    global appels",
       "    appels = appels + 1",
       "    if n == 0:",
       "        return 1",
-      "    return n * factorielle(n - 1)",
-      "factorielle(3)",
+      "    return n * fact(n - 1)",
+      "fact(3)",
       "print(appels)"
      ],
      "sortie": "4",
@@ -377,7 +377,7 @@
    "titre": "Une récursion sans fin",
    "texte": [
     "Si les appels ne se rapprochent pas du cas de base, ils s'empilent sans fin.",
-    "Python s'arrête : `RecursionError`."
+    "Python s'arrête : `RecursionError: maximum recursion depth exceeded`."
    ]
   },
   {
@@ -386,31 +386,31 @@
    "nom": "[Terminaison] Un appel qui ne s'arrête pas",
    "objectif": "Repérer un appel qui n'atteint jamais le cas de base.",
    "enonce": [
-    "On utilise `factorielle`, dont le cas de base est n == 0.",
+    "On utilise `fact`, dont le cas de base est n == 0.",
     "Un de ces appels provoque `RecursionError: maximum recursion depth exceeded` (« profondeur maximale de récursion dépassée »). Lequel ?"
    ],
    "code": [
-    "def factorielle(n):",
+    "def fact(n):",
     "    if n == 0:",
     "        return 1",
-    "    return n * factorielle(n - 1)"
+    "    return n * fact(n - 1)"
    ],
    "options": [
     {
-     "texte": "`factorielle(0)`",
-     "feedback": "factorielle(0) est le cas de base : il renvoie 1 tout de suite, sans aucun appel."
+     "texte": "`fact(0)`",
+     "feedback": "fact(0) est le cas de base : il renvoie 1 tout de suite, sans aucun appel."
     },
     {
-     "texte": "`factorielle(-1)`",
+     "texte": "`fact(-1)`",
      "juste": true,
      "feedback": "Oui. −1, puis −2, −3… : on s'éloigne de 0, on ne l'atteint jamais. Python arrête vers 1 000 appels en attente."
     },
     {
-     "texte": "`factorielle(1)`",
-     "feedback": "factorielle(1) appelle factorielle(0), le cas de base : deux appels, et le résultat 1."
+     "texte": "`fact(1)`",
+     "feedback": "fact(1) appelle fact(0), le cas de base : deux appels, et le résultat 1."
     },
     {
-     "texte": "`factorielle(10)`",
+     "texte": "`fact(10)`",
      "feedback": "10 est grand, mais on descend 10, 9, … jusqu'à 0 : onze appels seulement, bien moins que la limite d'environ 1 000."
     }
    ],
@@ -418,13 +418,13 @@
    "verifications": [
     {
      "code": [
-      "print(factorielle(-1))"
+      "print(fact(-1))"
      ],
      "erreur": "RecursionError"
     },
     {
      "code": [
-      "print(factorielle(0), factorielle(1), factorielle(10))"
+      "print(fact(0), fact(1), fact(10))"
      ],
      "sortie": "1 1 3628800"
     }
@@ -437,8 +437,7 @@
    "objectif": "Lire `RecursionError` et trouver l'appel qui ne se rapproche pas du cas de base.",
    "enonce": [
     "Cette fonction doit calculer 3 + 2 + 1 + 0.",
-    "Le programme s'arrête sur l'erreur `RecursionError: maximum recursion depth exceeded`.",
-    "Toucher la ligne qui contient l'erreur."
+    "Le programme s'arrête sur l'erreur `RecursionError: maximum recursion depth exceeded`."
    ],
    "code": [
     "def somme(n):",
@@ -488,12 +487,12 @@
     "Quelle est la cause ?"
    ],
    "code": [
-    "def factorielle(n):",
+    "def fact(n):",
     "    if n == 0:",
     "        return 1",
-    "    n * factorielle(n - 1)",
+    "    n * fact(n - 1)",
     "",
-    "print(factorielle(3))"
+    "print(fact(3))"
    ],
    "options": [
     {
@@ -507,11 +506,11 @@
     {
      "texte": "Il manque `return` à la ligne 4 : l'appel renvoie `None`.",
      "juste": true,
-     "feedback": "Oui. factorielle(1) calcule 1 × 1 mais ne renvoie rien, donc `None`. Puis factorielle(2) essaie 2 × None : erreur."
+     "feedback": "Oui. fact(1) calcule 1 × 1 mais ne renvoie rien, donc `None`. Puis fact(2) essaie 2 × None : erreur."
     },
     {
-     "texte": "`factorielle(3)` fait trop d'appels : la pile déborde.",
-     "feedback": "Une pile qui déborde donne `RecursionError`, pas `TypeError`. Ici, il n'y a que quatre appels."
+     "texte": "`fact(3)` fait trop d'appels : la pile déborde.",
+     "feedback": "Une pile qui déborde donne `RecursionError: maximum recursion depth exceeded`, pas une `TypeError`. Ici, il n'y a que quatre appels."
     }
    ],
    "explication": "Sans `return`, la fonction renvoie `None` : le résultat est perdu.",
@@ -544,7 +543,8 @@
     "def somme(t):",
     "    if len(t) == 0:",
     "        return 0",
-    "    return t[0] + somme(t[1:])",
+    "    reste = somme(t[1:])",
+    "    return t[0] + reste",
     "",
     "print(somme([3, 8, 1]))"
    ],
@@ -563,7 +563,8 @@
     "def mystere(t):",
     "    if len(t) == 0:",
     "        return 0",
-    "    return 1 + mystere(t[1:])"
+    "    n = mystere(t[1:])",
+    "    return 1 + n"
    ],
    "options": [
     {
@@ -607,7 +608,8 @@
     "def mystere(n):",
     "    if n < 10:",
     "        return 1",
-    "    return 1 + mystere(n // 10)"
+    "    r = mystere(n // 10)",
+    "    return 1 + r"
    ],
    "options": [
     {
@@ -681,7 +683,8 @@
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 0",
-      "    return x * puissance(x, n - 1)"
+      "    r = puissance(x, n - 1)",
+      "    return x * r"
      ],
      "feedback": "Le cas de base renvoie 0 : tous les produits valent alors 0. Il faut x⁰ = 1."
     },
@@ -690,7 +693,8 @@
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 1",
-      "    return x * puissance(x, n - 1)"
+      "    r = puissance(x, n - 1)",
+      "    return x * r"
      ],
      "juste": true,
      "feedback": "Oui : le cas de base x⁰ = 1, et chaque appel diminue n de 1. puissance(2, 10) vaut 1024."
@@ -700,16 +704,18 @@
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 1",
-      "    return x * puissance(x, n)"
+      "    r = puissance(x, n)",
+      "    return x * r"
      ],
-     "feedback": "n ne diminue jamais : les appels s'empilent sans fin, jusqu'à `RecursionError`."
+     "feedback": "n ne diminue jamais : les appels s'empilent sans fin, jusqu'à `RecursionError: maximum recursion depth exceeded`."
     },
     {
      "code": [
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 1",
-      "    return puissance(x, n - 1)"
+      "    r = puissance(x, n - 1)",
+      "    return r"
      ],
      "feedback": "Cette fonction ne multiplie jamais par x : elle renvoie toujours 1, la valeur du cas de base."
     }
@@ -721,7 +727,8 @@
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 1",
-      "    return x * puissance(x, n - 1)",
+      "    r = puissance(x, n - 1)",
+      "    return x * r",
       "print(puissance(2, 10))"
      ],
      "sortie": "1024",
@@ -732,7 +739,8 @@
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 0",
-      "    return x * puissance(x, n - 1)",
+      "    r = puissance(x, n - 1)",
+      "    return x * r",
       "print(puissance(2, 10))"
      ],
      "sortie": "0",
@@ -744,7 +752,8 @@
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 1",
-      "    return x * puissance(x, n)",
+      "    r = puissance(x, n)",
+      "    return x * r",
       "print(puissance(2, 10))"
      ],
      "erreur": "RecursionError",
@@ -756,7 +765,8 @@
       "def puissance(x, n):",
       "    if n == 0:",
       "        return 1",
-      "    return puissance(x, n - 1)",
+      "    r = puissance(x, n - 1)",
+      "    return r",
       "print(puissance(2, 10))"
      ],
      "sortie": "1",
