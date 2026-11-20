@@ -483,12 +483,12 @@
    "nom": "[Booléens] Une condition avec `or`",
    "objectif": "Évaluer une expression avec `or`.",
    "enonce": [
-    "La hauteur d'eau du lagon est rangée dans `maree`, en mètres.",
+    "La hauteur d'eau du lagon est rangée dans `h`, en mètres.",
     "Qu'affiche le code suivant ?"
    ],
    "code": [
-    "maree = 2",
-    "print(maree < 1 or maree > 3)"
+    "h = 2",
+    "print(h < 1 or h > 3)"
    ],
    "options": [
     {
@@ -517,8 +517,8 @@
     },
     {
      "code": [
-      "maree = 2",
-      "print(maree < 1, maree > 3)"
+      "h = 2",
+      "print(h < 1, h > 3)"
      ],
      "sortie": "False False",
      "reprendre_code": false
@@ -613,7 +613,7 @@
      "code": [
       "n = input(int(\"Nombre ? \"))"
      ],
-     "feedback": "Les fonctions sont dans le mauvais ordre : Python essaie de convertir la question « Nombre ? » en entier, d'où `ValueError: invalid literal for int()`."
+     "feedback": "Les fonctions sont dans le mauvais ordre : Python essaie de convertir la question « Nombre ? » en entier, d'où `ValueError: invalid literal for int() with base 10: 'Nombre ? '`."
     },
     {
      "code": [
@@ -626,7 +626,7 @@
      "code": [
       "int(n) = input(\"Nombre ? \")"
      ],
-     "feedback": "À gauche du `=`, il faut un nom de variable, pas un calcul : `SyntaxError: cannot assign to function call` (« on ne range rien dans un appel de fonction »)."
+     "feedback": "À gauche du `=`, il faut un nom de variable, pas un calcul : `SyntaxError: cannot assign to function call here. Maybe you meant '==' instead of '='?` (« on ne range rien dans un appel de fonction »)."
     }
    ],
    "explication": "On convertit le résultat de `input()` : `int(input(...))`.",
@@ -681,9 +681,9 @@
     "Toucher la ligne qui contient l'erreur."
    ],
    "code": [
-    "prix_mangue = 2",
+    "prix = 2",
     "nombre = 3",
-    "total = prix_mangue * nombre",
+    "total = prix * nombre",
     "print(Total)"
    ],
    "ligne": 4,

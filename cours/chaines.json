@@ -305,7 +305,7 @@
    ],
    "code": [
     "lieu = \"Petite-\" + \"Terre\"",
-    "print(lieu)   # Petite-Terre",
+    "print(lieu) # Petite-Terre",
     "n = 3",
     "print(\"quai \" + str(n))"
    ],

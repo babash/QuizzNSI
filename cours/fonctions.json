@@ -252,7 +252,7 @@
    "code": [
     "def double(x):",
     "    print(2 * x)",
-    "r = double(5)   # affiche 10",
+    "r = double(5) # affiche 10",
     "print(r)        # None"
    ],
    "vocabulaire": "afficher = print ; renvoyer = return ; None = rien"
@@ -639,8 +639,8 @@
     "    if age < 12:",
     "        return 1",
     "    return 2",
-    "total = tarif(8) + tarif(15)",
-    "print(total)"
+    "t = tarif(8) + tarif(15)",
+    "print(t)"
    ],
    "options": [
     {
@@ -658,7 +658,7 @@
     },
     {
      "texte": "`1 2`",
-     "feedback": "Les deux valeurs sont justes, mais le programme les additionne avant d'afficher : `total` vaut 3."
+     "feedback": "Les deux valeurs sont justes, mais le programme les additionne avant d'afficher : `t` vaut 3."
     }
    ],
    "explication": "Chaque appel s'exécute avec son argument et renvoie sa propre valeur.",
