@@ -409,7 +409,7 @@
     "p.empiler(20)",
     "total = 0",
     "for i in range(3):",
-    "    total = total + p.depiler()"
+    "    total += p.depiler()"
    ],
    "options": [
     {
@@ -444,7 +444,7 @@
       "total = 0",
       "try:",
       "    for i in range(3):",
-      "        total = total + p.depiler()",
+      "        total += p.depiler()",
       "except IndexError as e:",
       "    print(i, total, e)"
      ],
@@ -466,7 +466,7 @@
     {
      "code": [
       "while not p.est_vide():",
-      "    total = total + p.depiler()"
+      "    total += p.depiler()"
      ],
      "juste": true,
      "feedback": "Oui. La boucle s'arrête exactement quand la pile est vide : aucune erreur, quelle que soit la taille. C'est la boucle à retenir."
@@ -474,21 +474,22 @@
     {
      "code": [
       "while p.est_vide():",
-      "    total = total + p.depiler()"
+      "    total += p.depiler()"
      ],
      "feedback": "La condition est inversée : la pile n'est pas vide au départ, donc la boucle ne fait aucun tour et `total` reste à 0. Il faut « tant que la pile n'est pas vide »."
     },
     {
      "code": [
-      "for i in range(p.taille() + 1):",
-      "    total = total + p.depiler()"
+      "n = p.taille() + 1",
+      "for i in range(n):",
+      "    total += p.depiler()"
      ],
      "feedback": "Avec `+ 1`, la boucle fait un tour de trop : le dernier tour dépile une pile vide et provoque encore `IndexError`."
     },
     {
      "code": [
       "if not p.est_vide():",
-      "    total = total + p.depiler()"
+      "    total += p.depiler()"
      ],
      "feedback": "Un `if` ne s'exécute qu'une fois : on ne dépile que le sommet, et `total` vaut 20. Pour répéter, il faut une boucle `while`."
     }
@@ -502,7 +503,7 @@
       "p.empiler(20)",
       "total = 0",
       "while not p.est_vide():",
-      "    total = total + p.depiler()",
+      "    total += p.depiler()",
       "print(total)"
      ],
      "sortie": "30",
@@ -515,7 +516,7 @@
       "p.empiler(20)",
       "total = 0",
       "while p.est_vide():",
-      "    total = total + p.depiler()",
+      "    total += p.depiler()",
       "print(total)"
      ],
      "sortie": "0",
@@ -528,8 +529,9 @@
       "p.empiler(10)",
       "p.empiler(20)",
       "total = 0",
-      "for i in range(p.taille() + 1):",
-      "    total = total + p.depiler()"
+      "n = p.taille() + 1",
+      "for i in range(n):",
+      "    total += p.depiler()"
      ],
      "erreur": "IndexError",
      "reprendre_code": false,
@@ -542,7 +544,7 @@
       "p.empiler(20)",
       "total = 0",
       "if not p.est_vide():",
-      "    total = total + p.depiler()",
+      "    total += p.depiler()",
       "print(total)"
      ],
      "sortie": "20",
@@ -826,9 +828,11 @@
     "def mystere(f):",
     "    p = Pile()",
     "    while not f.est_vide():",
-    "        p.empiler(f.defiler())",
+    "        x = f.defiler()",
+    "        p.empiler(x)",
     "    while not p.est_vide():",
-    "        f.enfiler(p.depiler())"
+    "        x = p.depiler()",
+    "        f.enfiler(x)"
    ],
    "options": [
     {
