@@ -24,7 +24,9 @@
  ],
  "prelude_python": [
   "class Noeud:",
-  "    def __init__(self, v, g=None, d=None):",
+  "    def __init__(self, v,",
+  "                 g=None,",
+  "                 d=None):",
   "        self.valeur = v",
   "        self.gauche = g",
   "        self.droit = d",
@@ -106,7 +108,7 @@
    "nom": "[Vocabulaire] Trouver les feuilles",
    "objectif": "Repérer les feuilles d'un arbre binaire.",
    "enonce": [
-    "On considère l'arbre de l'écran précédent, dessiné ci-dessous.",
+    "On considère l'arbre ci-dessous, celui de l'écran « Le vocabulaire ».",
     "Quelles sont ses feuilles ?"
    ],
    "schema": {
@@ -136,8 +138,10 @@
    "verifications": [
     {
      "code": [
-      "b = Noeud(\"B\", Noeud(\"D\"), Noeud(\"E\"))",
-      "c = Noeud(\"C\", None, Noeud(\"F\"))",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
       "arbre = Noeud(\"A\", b, c)",
       "def feuilles(a):",
       "    if a is None:",
@@ -200,15 +204,21 @@
    "verifications": [
     {
      "code": [
-      "t2 = Noeud(7, Noeud(3, Noeud(1), Noeud(5, Noeud(4))), Noeud(9))",
+      "n5 = Noeud(5, Noeud(4))",
+      "n3 = Noeud(3, Noeud(1), n5)",
+      "t2 = Noeud(7, n3, Noeud(9))",
       "def taille(a):",
       "    if a is None:",
       "        return 0",
-      "    return 1 + taille(a.gauche) + taille(a.droit)",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
       "def hauteur(a):",
       "    if a is None:",
       "        return -1",
-      "    return 1 + max(hauteur(a.gauche), hauteur(a.droit))",
+      "    g = hauteur(a.gauche)",
+      "    d = hauteur(a.droit)",
+      "    return 1 + max(g, d)",
       "print(taille(t2), hauteur(t2))"
      ],
      "sortie": "6 3"
@@ -249,11 +259,15 @@
       "def taille(a):",
       "    if a is None:",
       "        return 0",
-      "    return 1 + taille(a.gauche) + taille(a.droit)",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
       "def hauteur(a):",
       "    if a is None:",
       "        return -1",
-      "    return 1 + max(hauteur(a.gauche), hauteur(a.droit))",
+      "    g = hauteur(a.gauche)",
+      "    d = hauteur(a.droit)",
+      "    return 1 + max(g, d)",
       "a = Noeud(1, Noeud(2, Noeud(4), Noeud(5)), Noeud(3, Noeud(6), Noeud(7)))",
       "print(hauteur(a), taille(a), 2 ** (2 + 1) - 1)"
      ],
@@ -306,14 +320,15 @@
    ],
    "code": [
     "class Noeud:",
-    "    def __init__(self, v, g=None, d=None):",
+    "    def __init__(self, v,",
+    "                 g=None,",
+    "                 d=None):",
     "        self.valeur = v",
     "        self.gauche = g",
     "        self.droit = d",
     "",
-    "b = Noeud(\"B\", Noeud(\"D\"), Noeud(\"E\"))",
-    "c = Noeud(\"C\", None, Noeud(\"F\"))",
-    "arbre = Noeud(\"A\", b, c)"
+    "f = Noeud(\"F\")",
+    "c = Noeud(\"C\", None, f)"
    ]
   },
   {
@@ -382,12 +397,9 @@
     "def taille(a):",
     "    if a is None:",
     "        return 0",
-    "    return 1 + taille(a.gauche) + taille(a.droit)",
-    "",
-    "def hauteur(a):",
-    "    if a is None:",
-    "        return -1",
-    "    return 1 + max(hauteur(a.gauche), hauteur(a.droit))"
+    "    g = taille(a.gauche)",
+    "    d = taille(a.droit)",
+    "    return 1 + g + d"
    ]
   },
   {
@@ -396,17 +408,21 @@
    "nom": "[Python] Calculer une hauteur",
    "objectif": "Calculer le résultat de la fonction récursive `hauteur`.",
    "enonce": [
-    "On utilise les fonctions `taille` et `hauteur` de l'écran précédent, et l'arbre `arbre` (A, B, C, D, E, F) de l'écran « En Python ».",
+    "On considère la fonction `hauteur` ci-dessous et l'arbre `arbre` (A, B, C, D, E, F) de l'écran « Le vocabulaire ».",
     "Que renvoie `hauteur(arbre)` ?"
    ],
    "code": [
     "def hauteur(a):",
     "    if a is None:",
     "        return -1",
-    "    return 1 + max(hauteur(a.gauche), hauteur(a.droit))",
+    "    g = hauteur(a.gauche)",
+    "    d = hauteur(a.droit)",
+    "    return 1 + max(g, d)",
     "",
-    "b = Noeud(\"B\", Noeud(\"D\"), Noeud(\"E\"))",
-    "c = Noeud(\"C\", None, Noeud(\"F\"))",
+    "b = Noeud(\"B\", Noeud(\"D\"),",
+    "          Noeud(\"E\"))",
+    "c = Noeud(\"C\", None,",
+    "          Noeud(\"F\"))",
     "arbre = Noeud(\"A\", b, c)"
    ],
    "options": [
@@ -435,7 +451,9 @@
       "def taille(a):",
       "    if a is None:",
       "        return 0",
-      "    return 1 + taille(a.gauche) + taille(a.droit)",
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
       "print(hauteur(arbre), taille(arbre))"
      ],
      "sortie": "2 6"
@@ -453,9 +471,12 @@
    ],
    "code": [
     "def taille(a):",
-    "    return 1 + taille(a.gauche) + taille(a.droit)",
+    "    g = taille(a.gauche)",
+    "    d = taille(a.droit)",
+    "    return 1 + g + d",
     "",
-    "print(taille(Noeud(\"A\", Noeud(\"B\"))))"
+    "a = Noeud(\"A\", Noeud(\"B\"))",
+    "print(taille(a))"
    ],
    "options": [
     {
@@ -464,11 +485,11 @@
     },
     {
      "texte": "Les appels sont trop nombreux : la pile d'appels déborde.",
-     "feedback": "Une pile qui déborde donne `RecursionError`. Ici, l'erreur arrive après trois appels seulement."
+     "feedback": "Une pile qui déborde donne `RecursionError: maximum recursion depth exceeded`. Ici, l'erreur arrive après trois appels seulement."
     },
     {
      "texte": "Il faudrait mettre `0` et pas `None` pour les sous-arbres vides.",
-     "feedback": "`None` est bien la convention de l'arbre vide. Avec 0, Python dirait que `'int'` n'a pas d'attribut `gauche`."
+     "feedback": "`None` est bien la convention de l'arbre vide. Avec 0, Python répondrait `AttributeError: 'int' object has no attribute 'gauche'`."
     },
     {
      "texte": "Il manque le cas de base : `if a is None: return 0`.",
@@ -487,8 +508,11 @@
       "def taille(a):",
       "    if a is None:",
       "        return 0",
-      "    return 1 + taille(a.gauche) + taille(a.droit)",
-      "print(taille(Noeud(\"A\", Noeud(\"B\"))))"
+      "    g = taille(a.gauche)",
+      "    d = taille(a.droit)",
+      "    return 1 + g + d",
+      "a = Noeud(\"A\", Noeud(\"B\"))",
+      "print(taille(a))"
      ],
      "sortie": "2",
      "reprendre_code": false
@@ -544,8 +568,10 @@
    "verifications": [
     {
      "code": [
-      "b = Noeud(\"B\", Noeud(\"D\"), Noeud(\"E\"))",
-      "c = Noeud(\"C\", None, Noeud(\"F\"))",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
       "arbre = Noeud(\"A\", b, c)",
       "def parcours(a):",
       "    if a is None:",
@@ -595,7 +621,9 @@
    "verifications": [
     {
      "code": [
-      "t2 = Noeud(7, Noeud(3, Noeud(1), Noeud(5, Noeud(4))), Noeud(9))",
+      "n5 = Noeud(5, Noeud(4))",
+      "n3 = Noeud(3, Noeud(1), n5)",
+      "t2 = Noeud(7, n3, Noeud(9))",
       "def parcours(a):",
       "    if a is None:",
       "        return []",
@@ -658,7 +686,9 @@
    "verifications": [
     {
      "code": [
-      "t2 = Noeud(7, Noeud(3, Noeud(1), Noeud(5, Noeud(4))), Noeud(9))",
+      "n5 = Noeud(5, Noeud(4))",
+      "n3 = Noeud(3, Noeud(1), n5)",
+      "t2 = Noeud(7, n3, Noeud(9))",
       "def largeur(a):",
       "    file, res = [a], []",
       "    while file:",
@@ -722,8 +752,10 @@
     {
      "code": [
       "    return g + [a.valeur] + d",
-      "b = Noeud(\"B\", Noeud(\"D\"), Noeud(\"E\"))",
-      "c = Noeud(\"C\", None, Noeud(\"F\"))",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
       "arbre = Noeud(\"A\", b, c)",
       "print(*parcours(arbre))"
      ],
@@ -732,8 +764,10 @@
     {
      "code": [
       "    return [a.valeur] + g + d",
-      "b = Noeud(\"B\", Noeud(\"D\"), Noeud(\"E\"))",
-      "c = Noeud(\"C\", None, Noeud(\"F\"))",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
       "arbre = Noeud(\"A\", b, c)",
       "print(*parcours(arbre))"
      ],
@@ -743,8 +777,10 @@
     {
      "code": [
       "    return g + d + [a.valeur]",
-      "b = Noeud(\"B\", Noeud(\"D\"), Noeud(\"E\"))",
-      "c = Noeud(\"C\", None, Noeud(\"F\"))",
+      "b = Noeud(\"B\", Noeud(\"D\"),",
+      "          Noeud(\"E\"))",
+      "c = Noeud(\"C\", None,",
+      "          Noeud(\"F\"))",
       "arbre = Noeud(\"A\", b, c)",
       "print(*parcours(arbre))"
      ],
