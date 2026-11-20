@@ -193,7 +193,8 @@
     "            resultat.append(p)",
     "            somme = somme - p",
     "    return resultat",
-    "print(rendu(40, [20, 10, 5, 2, 1]))"
+    "euros = [20, 10, 5, 2, 1]",
+    "print(rendu(40, euros))"
    ],
    "ligne": 4,
    "correction": "        while somme >= p:",

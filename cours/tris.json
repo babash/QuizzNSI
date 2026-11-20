@@ -516,21 +516,21 @@
    "nom": "[Erreur] Un tri qui fait perdre le tableau",
    "objectif": "Lire un message d'erreur et retrouver la ligne qui l'a provoqué, même plus haut.",
    "enonce": [
-    "Ce programme range des tailles de mangues (en cm) et doit afficher la plus petite. La fonction `tri_selection` est celle de l'écran « Le code de la sélection ».",
+    "Ce programme range le tableau `t` des tailles de mangues (en cm) et doit afficher la plus petite. La fonction `tri_selection` est celle de l'écran « Le code de la sélection ».",
     "Il s'arrête à la ligne 3 sur l'erreur `TypeError: 'NoneType' object is not subscriptable` (« on ne peut pas prendre une case de `None` »).",
     "Toucher la ligne qui contient l'erreur."
    ],
    "code": [
-    "tailles = [14, 9, 12, 11]",
-    "tailles = tri_selection(tailles)",
-    "print(\"La plus petite :\", tailles[0])"
+    "t = [14, 9, 12, 11]",
+    "t = tri_selection(t)",
+    "print(t[0])"
    ],
    "ligne": 2,
-   "correction": "tri_selection(tailles)",
-   "feedback": "Bien vu : `tri_selection` trie en place et renvoie `None`, et `tailles = ...` range ce `None`. Corrigé, le programme affiche « La plus petite : 9 ».",
-   "feedback_autre": "Cette ligne est correcte. Le message dit que `tailles` vaut `None` à la ligne 3 : cherche la ligne qui a donné à `tailles` la valeur `None`.",
+   "correction": "tri_selection(t)",
+   "feedback": "Bien vu : `tri_selection` trie en place et renvoie `None`, et `t = ...` range ce `None` dans `t`. Corrigé, le programme affiche 9.",
+   "feedback_autre": "Cette ligne est correcte. Le message dit que `t` vaut `None` à la ligne 3 : cherche la ligne qui a donné à `t` la valeur `None`.",
    "pieges": {
-    "3": "Python s'arrête bien ici, mais `tailles[0]` est juste si `tailles` est un tableau. Le problème vient d'avant : quelle ligne a fait de `tailles` un `None` ?"
+    "3": "Python s'arrête bien ici, mais `t[0]` est juste si `t` est un tableau. Le problème vient d'avant : quelle ligne a fait de `t` un `None` ?"
    },
    "verifications": [
     {
@@ -541,7 +541,7 @@
    "verifications_corrigees": [
     {
      "code": [],
-     "sortie": "La plus petite : 9"
+     "sortie": "9"
     }
    ],
    "explication": "Un tri en place s'appelle seul : `tri_selection(t)`, jamais `t = tri_selection(t)`."

@@ -345,7 +345,7 @@
    "nom": "[Erreur] Un milieu qui n'est pas entier",
    "objectif": "Lire un message d'erreur et retrouver le calcul du milieu.",
    "enonce": [
-    "Ce programme cherche le départ de 14 h dans les horaires de la barge, rangés dans l'ordre.",
+    "Ce programme cherche le départ de 14 h dans la liste `h` des horaires de la barge, rangés dans l'ordre.",
     "Il s'arrête à la ligne 5 sur l'erreur `TypeError: list indices must be integers or slices, not float` (« les indices d'une liste sont des entiers, pas des flottants »).",
     "Toucher la ligne qui contient l'erreur."
    ],
@@ -361,8 +361,8 @@
     "        else:",
     "            return m",
     "    return -1",
-    "departs = [6, 8, 11, 14, 17, 20]",
-    "print(dichotomie(departs, 14))"
+    "h = [6, 8, 11, 14, 17, 20]",
+    "print(dichotomie(h, 14))"
    ],
    "ligne": 4,
    "correction": "        m = (g + d) // 2",
