@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : p-uplets, p-uplets nommés (écrire une fonction renvoyant un p-uplet de valeurs)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/tuple/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/tuple/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

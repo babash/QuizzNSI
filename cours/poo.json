@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Structures de données : vocabulaire de la programmation objet (classes, attributs, méthodes, objets) ; écrire la définition d'une classe ; accéder aux attributs et méthodes d'une classe",
- "fiche": "https://babash.github.io/FichesNSI/fiches/poo/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/poo/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

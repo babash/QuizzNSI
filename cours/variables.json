@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Langages et programmation : constructions élémentaires (affectation, séquences) ; types de base : entiers, flottants, booléens, chaînes (SNT : variables et affectations)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/variable/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/variable/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

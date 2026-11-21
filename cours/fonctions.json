@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Langages et programmation : constructions élémentaires (appels de fonction) ; spécification ; mise au point de programmes (SNT : définitions et appels de fonctions)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/fonctions/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/fonctions/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Types construits : tableau indexé, tableau donné en compréhension (lire et modifier les éléments d'un tableau grâce à leurs index ; construire un tableau par compréhension ; utiliser des tableaux de tableaux pour représenter des matrices ; itérer sur les éléments d'un tableau)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/liste/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/liste/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",
