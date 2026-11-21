@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Langages et programmation : constructions élémentaires (séquences, boucles bornées) ; types construits : accès par indice et parcours d'une séquence, appliqués aux chaînes de caractères",
- "fiche": "https://babash.github.io/FichesNSI/fiches/chaines-de-caracteres/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/chaines-de-caracteres/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Architectures matérielles, systèmes d'exploitation et réseaux : gestion des processus et des ressources par un système d'exploitation (décrire la création d'un processus, l'ordonnancement de plusieurs processus par le système ; mettre en évidence le risque de l'interblocage)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/processus/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/processus/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

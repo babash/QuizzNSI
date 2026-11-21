@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Structures de données : arbres binaires (nœuds, racines, feuilles, sous-arbres gauches et droits ; taille, hauteur) ; algorithmique : calculer la taille et la hauteur d'un arbre, le parcourir (préfixe, infixe, suffixe, en largeur)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/arbres/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/arbres/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

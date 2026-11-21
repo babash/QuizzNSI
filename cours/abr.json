@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Terminale NSI",
  "programme": "Algorithmique : algorithmes sur les arbres binaires de recherche (rechercher une clé, insérer une clé ; coût logarithmique de la recherche dans un arbre équilibré)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/abr/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/abr/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",

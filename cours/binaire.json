@@ -5,7 +5,7 @@
  "sous_titre": "L'essentiel en 15 minutes et 12 questions",
  "niveau": "Première NSI",
  "programme": "Représentation des données : types et valeurs de base ; écriture d'un entier positif dans une base b ≥ 2 (passer de la représentation d'une base dans une autre ; les bases 2, 10 et 16 sont privilégiées)",
- "fiche": "https://babash.github.io/FichesNSI/fiches/binaire/",
+ "fiche": "https://babash.github.io/fiches-nsi/fiches/binaire/",
  "auteur": "Babash - NSI Tani Malandi",
  "licence": "CC BY-SA 4.0",
  "gabarit": "introduction",
